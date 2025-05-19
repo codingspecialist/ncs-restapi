@@ -64,7 +64,7 @@ public class DocumentResponse {
             public RubricDTO(Question question) {
                 this.subjectElement = question.getSubjectElement().getSubtitle();
                 this.questionPurpose = question.getQuestionPurpose();
-                this.questionFail = "미흡하다.";
+                this.questionFail = question.getQuestionFail();
             }
         }
     }

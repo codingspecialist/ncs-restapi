@@ -20,6 +20,7 @@ public class PaperRequest {
         private Integer questionPoint;
         private Integer questionAnswerNumber;
         private String questionPurpose;
+        private String questionFail;
         List<OptionDTO> options;
 
         public Question toEntity(Paper paper, SubjectElement subjectElement) {
@@ -29,6 +30,7 @@ public class PaperRequest {
                     .point(questionPoint)
                     .answerNumber(questionAnswerNumber)
                     .questionPurpose(questionPurpose)
+                    .questionFail(questionFail)
                     .paper(paper)
                     .subjectElement(subjectElement)
                     .build();

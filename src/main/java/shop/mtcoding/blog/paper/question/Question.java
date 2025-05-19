@@ -36,7 +36,8 @@ public class Question {
     @ManyToOne(fetch = FetchType.LAZY)
     private Paper paper;
 
-    private String questionPurpose;
+    private String questionPurpose; // 평가기준
+    private String questionFail; // 실패기준
 
     @CreationTimestamp
     private LocalDateTime createDate;
@@ -44,20 +45,21 @@ public class Question {
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<QuestionOption> questionOptions = new ArrayList<>();
 
-    public void addOption(QuestionOption option){
+    public void addOption(QuestionOption option) {
         questionOptions.add(option);
     }
 
     @Builder
-    public Question(Long id, Integer no, String questionPurpose, String title, Integer point, Integer answerNumber, Paper paper, LocalDateTime createDate, SubjectElement subjectElement) {
+    public Question(Long id, Integer no, String title, Integer point, Integer answerNumber, SubjectElement subjectElement, Paper paper, String questionPurpose, String questionFail, LocalDateTime createDate) {
         this.id = id;
         this.no = no;
         this.title = title;
         this.point = point;
         this.answerNumber = answerNumber;
+        this.subjectElement = subjectElement;
         this.paper = paper;
         this.questionPurpose = questionPurpose;
+        this.questionFail = questionFail;
         this.createDate = createDate;
-        this.subjectElement = subjectElement;
     }
 }

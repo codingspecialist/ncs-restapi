@@ -146,9 +146,7 @@ public class CourseResponse {
             private String learningWay; // 학습 방법
             private String evaluationWay; // 평가 방법
             private LocalDate evaluationDate; // 평가일
-            private LocalDate revaluationDate; // 재평가일
-            private LocalDate evaluationScheduleDate; // 평가 예정일
-            private LocalDate revaluationScheduleDate; // 재평가 예정일
+            private String revaluationDate; // 재평가일
             private LocalDate startDate; // 교과목 시작 날짜
             private LocalDate endDate; // 교과목 종료 날짜
             private Long courseId; // 과정 PK
@@ -156,6 +154,7 @@ public class CourseResponse {
             // TODO : 재평가일 떄문에 터질수있음
             public SubjectDTO(Subject subject) {
                 Paper paper = subject.getPapers().stream().filter(p -> p.getIsReEvaluation() == false).findFirst().orElse(null);
+                Paper rePaper = subject.getPapers().stream().filter(p -> p.getIsReEvaluation() == true).findFirst().orElse(null);
 
                 this.subjectId = subject.getId();
                 this.code = subject.getCode();
@@ -169,6 +168,12 @@ public class CourseResponse {
                 // TODO: 수정해야함
                 this.evaluationWay = paper.getEvaluationWay();
                 this.evaluationDate = paper.getEvaluationDate();
+                if (rePaper != null) {
+                    this.revaluationDate = rePaper.getEvaluationDate().toString();
+                } else {
+                    this.revaluationDate = "시험지없음";
+                }
+
                 this.startDate = subject.getStartDate();
                 this.endDate = subject.getEndDate();
                 this.courseId = subject.getCourse().getId();

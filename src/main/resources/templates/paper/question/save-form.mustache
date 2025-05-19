@@ -21,7 +21,8 @@
             <div class="card-header">
                 <div><b>문제 점수를 입력해주세요</b></div>
                 <div class="mt-1">
-                    <input type="text" class="form-control" placeholder="문제점수" value="{{expectPoint}}" id="questionPoint">
+                    <input type="text" class="form-control" placeholder="문제점수" value="{{expectPoint}}"
+                           id="questionPoint">
                 </div>
             </div>
 
@@ -80,9 +81,15 @@
             </div>
 
             <div class="card-header">
-                <div><b>평가기준을 입력해주세요</b></div>
+                <div class="mb-2"><b>평가기준과 실패기준을 입력해주세요. 루브릭 예시를 참고하세요</b></div>
+                <div>
+                    <img class="ex-img" src="/img/rubric.png">
+                </div>
                 <div class="mt-1">
                     <input type="text" class="form-control" placeholder="평가기준" value="" id="questionPurpose">
+                </div>
+                <div class="mt-1">
+                    <input type="text" class="form-control" placeholder="실패기준" value="" id="questionFail">
                 </div>
             </div>
 
@@ -98,21 +105,21 @@
     let paperId = $("#paperId").val();
     let elementId = $("#elementId").val();
 
-    function saveQuestion(){
+    function saveQuestion() {
 
         let requestBody = {
             elementId: $("#elementId").val(),
             paperId: paperId,
-            questionNo : $("#questionNo").val(),
-            questionTitle : $("#questionTitle").val(),
-            questionPoint : $("#questionPoint").val(),
-            questionPurpose : $("#questionPurpose").val(),
-            questionAnswerNumber : selectedAnswerNumber,
-            options : []
+            questionNo: $("#questionNo").val(),
+            questionTitle: $("#questionTitle").val(),
+            questionPoint: $("#questionPoint").val(),
+            questionPurpose: $("#questionPurpose").val(),
+            questionAnswerNumber: selectedAnswerNumber,
+            options: []
         };
 
         let items = $("#questionBox").find(".questionItem");
-        items.each(function(index, element){
+        items.each(function (index, element) {
             let option = {
                 optionNo: $(element).find(".optionNo").val(),
                 optionContent: $(element).find(".optionContent").val(),
@@ -129,7 +136,7 @@
             contentType: "application/json; charset=utf-8"
         }).done((res) => {
             console.log(res);
-            location.href = "/api/teacher/paper/"+paperId;
+            location.href = "/api/teacher/paper/" + paperId;
         }).fail((res) => {
             alert(res.responseJSON.msg);
             console.log(res.responseJSON.msg);
@@ -137,13 +144,12 @@
     }
 
 
-
     // 체크박스 체크 유효성 및 정답 번호 체크
     let checkList = 0;
-    $("input[type='checkbox']").click(function(){
+    $("input[type='checkbox']").click(function () {
         if ($(this).is(':checked')) {
             selectedAnswerNumber = $(this).val();
-            if(checkList > 0){
+            if (checkList > 0) {
                 alert('정답 체크는 하나만 가능해요');
                 $(this).prop('checked', false);
                 return;
@@ -153,7 +159,7 @@
             selectedAnswerNumber = 0;
             checkList--;
         }
-        console.log("선택한 정답 : "+selectedAnswerNumber);
+        console.log("선택한 정답 : " + selectedAnswerNumber);
     });
 </script>
 

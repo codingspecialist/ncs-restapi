@@ -12,7 +12,7 @@ public interface PaperRepository extends JpaRepository<Paper, Long> {
     List<Paper> findByCourseId(@Param("courseId") Long courseId);
 
     @Query("select p from Paper p where p.subject.id = :subjectId and p.isReEvaluation = :isReEvaluation")
-    Paper findBySubjectIdAndPaperState(@Param("subjectId") Long subjectId, @Param("isReEvaluation") Boolean isReEvaluation);
+    List<Paper> findBySubjectIdAndPaperState(@Param("subjectId") Long subjectId, @Param("isReEvaluation") Boolean isReEvaluation);
 
     List<Paper> findBySubjectId(@Param("subjectId") Long subjectId);
 }

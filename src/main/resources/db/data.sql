@@ -64,27 +64,39 @@ values (2, now(), 5, '본평가', '2024-06-13', '서술형시험', false);
 insert into paper_tb(subject_id, create_date, count, paper_state, evaluation_date, evaluation_way, is_re_evaluation)
 values (1, now(), 2, '재평가', '2024-06-08', '서술형시험', true);
 
-insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose)
-values (1, '다음 중 for문 설명으로 틀린것은?', 50, 4, 1, now(), 1, '끝이 있는 반복문 코드를 작성할 수 있다.');
-insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose)
-values (2, '다음 중 while문 설명으로 틀린것은?', 50, 4, 1, now(), 2, '끝이 없는 반복문 코드를 작성하고, break와 continue를 활용할 수 있다.');
+insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose,
+                        question_fail)
+values (1, '다음 중 for문 설명으로 틀린것은?', 50, 4, 1, now(), 1, '끝이 있는 반복문 코드를 작성할 수 있다.', '끝이 있는 반복문 코드를 작성할 수 없다.');
+insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose,
+                        question_fail)
+values (2, '다음 중 while문 설명으로 틀린것은?', 50, 4, 1, now(), 2, '끝이 없는 반복문 코드를 작성하고, break와 continue를 활용할 수 있다.',
+        '끝이 없는 반복문 코드를 작성하고, break와 continue를 활용할 수 없다');
 
-insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose)
-values (1, '다음 중 select 설명으로 틀린것은?', 20, 4, 2, now(), 3, 'DB에 값을 찾아서 읽을 수 있다.');
-insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose)
-values (2, '다음 중 insert 설명으로 틀린것은?', 20, 4, 2, now(), 4, 'DB에 값을 입력할 수 있다.');
-insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose)
-values (3, '다음 중 update 설명으로 틀린것은?', 20, 4, 2, now(), 5, 'DB에 값을 수정할 수 있다.');
-insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose)
-values (4, '다음 중 delete 설명으로 틀린것은?', 20, 4, 2, now(), 6, 'DB에 값을 삭제할 수 있다.');
-insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose)
-values (5, '다음 중 dml 설명으로 틀린것은?', 20, 4, 2, now(), 7, 'DML에 대해서 이해할 수 있다');
+insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose,
+                        question_fail)
+values (1, '다음 중 select 설명으로 틀린것은?', 20, 4, 2, now(), 3, 'DB에 값을 찾아서 읽을 수 있다.', 'DB에 값을 찾아서 읽을 수 없다.');
+insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose,
+                        question_fail)
+values (2, '다음 중 insert 설명으로 틀린것은?', 20, 4, 2, now(), 4, 'DB에 값을 입력할 수 있다.', 'DB에 값을 입력할 수 없다.');
+insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose,
+                        question_fail)
+values (3, '다음 중 update 설명으로 틀린것은?', 20, 4, 2, now(), 5, 'DB에 값을 수정할 수 있다.', 'DB에 값을 수정할 수 없다.');
+insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose,
+                        question_fail)
+values (4, '다음 중 delete 설명으로 틀린것은?', 20, 4, 2, now(), 6, 'DB에 값을 삭제할 수 있다.', 'DB에 값을 삭제할 수 없다.');
+insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose,
+                        question_fail)
+values (5, '다음 중 dml 설명으로 틀린것은?', 20, 4, 2, now(), 7, 'DML에 대해서 이해할 수 있다', 'DML에 대해서 이해할 수 없다.');
 
-insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose)
-values (1, '다음 중 스레드 설명으로 틀린것은?', 50, 4, 3, now(), 1, '멀티쓰레드를 활용하여 동시성을 가진 프로그램을 작성할 수 있다.');
+insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose,
+                        question_fail)
+values (1, '다음 중 스레드 설명으로 틀린것은?', 50, 4, 3, now(), 1, '멀티쓰레드를 활용하여 동시성을 가진 프로그램을 작성할 수 있다.',
+        '멀티쓰레드를 활용하여 동시성을 가진 프로그램을 작성할 수 없다.');
 
-insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose)
-values (2, '다음 중 소켓 설명으로 틀린것은?', 50, 4, 3, now(), 2, '시스템콜을 이해하고, 다른 프로세스와 통신할 수 있다.');
+insert into question_tb(no, title, point, answer_number, paper_id, create_date, subject_element_id, question_purpose,
+                        question_fail)
+values (2, '다음 중 소켓 설명으로 틀린것은?', 50, 4, 3, now(), 2, '시스템콜을 이해하고, 다른 프로세스와 통신할 수 있다.',
+        '시스템콜을 이해하지 못하고, 다른 프로세스와 통신할 수 없다.');
 insert into question_option_tb(no, content, question_id, create_date, is_right)
 values (1, '반복문이다', 1, now(), false);
 insert into question_option_tb(no, content, question_id, create_date, is_right)

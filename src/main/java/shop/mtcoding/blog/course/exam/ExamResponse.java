@@ -38,6 +38,7 @@ public class ExamResponse {
         private Integer courseRound;
 
         public SubjectDTO(Subject subject) {
+            Paper paper = subject.getPapers().stream().filter(p -> p.getIsReEvaluation() == false).findFirst().orElse(null);
             this.subjectId = subject.getId();
             this.code = subject.getCode();
             this.title = subject.getTitle();
@@ -47,10 +48,9 @@ public class ExamResponse {
             this.totalTime = subject.getTotalTime();
             this.no = subject.getNo();
             this.learningWay = subject.getLearningWay();
-            // TODO : 수정해야함
-            this.evaluationWay = "TODO1";
-            this.evaluationDate = LocalDate.now();
-            this.revaluationDate = LocalDate.now();
+            this.evaluationWay = paper.getEvaluationWay();
+            this.evaluationDate = paper.getEvaluationDate();
+            this.revaluationDate = paper.getEvaluationDate();
             this.startDate = subject.getStartDate();
             this.endDate = subject.getEndDate();
             this.courseId = subject.getCourse().getId();

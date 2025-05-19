@@ -2,6 +2,7 @@ package shop.mtcoding.blog.course.subject;
 
 import lombok.Data;
 import org.springframework.data.domain.Page;
+import shop.mtcoding.blog.paper.Paper;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -65,6 +66,7 @@ public class SubjectResponse {
             private Integer courseRound;
 
             public SubjectDTO(Subject subject) {
+                Paper paper = subject.getPapers().stream().filter(p -> p.getIsReEvaluation() == false).findFirst().orElse(null);
                 this.subjectId = subject.getId();
                 this.code = subject.getCode();
                 this.title = subject.getTitle();
@@ -74,10 +76,9 @@ public class SubjectResponse {
                 this.totalTime = subject.getTotalTime();
                 this.no = subject.getNo();
                 this.learningWay = subject.getLearningWay();
-                // TODO : 수정해야함
-                this.evaluationWay = "TODO1";
-                this.evaluationDate = LocalDate.now();
-                this.revaluationDate = LocalDate.now();
+                // TODO : 재평가일 때문에 터질수 있음
+                this.evaluationWay = paper.getEvaluationWay();
+                this.evaluationDate = paper.getEvaluationDate();
                 this.startDate = subject.getStartDate();
                 this.endDate = subject.getEndDate();
                 this.courseId = subject.getCourse().getId();

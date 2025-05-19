@@ -8,9 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.Exception404;
 import shop.mtcoding.blog.course.Course;
 import shop.mtcoding.blog.course.CourseRepository;
-import shop.mtcoding.blog.course.CourseResponse;
 import shop.mtcoding.blog.course.exam.ExamResponse;
-import shop.mtcoding.blog.course.student.Student;
 
 import java.util.List;
 
@@ -21,6 +19,7 @@ public class SubjectService {
     private final SubjectRepository subjectRepository;
     private final CourseRepository courseRepository;
 
+    // TODO : SubjectDTO 수정
     public List<ExamResponse.SubjectDTO> 과정별교과목(Long courseId) {
         Course coursePS = courseRepository.findById(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));

@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.data.domain.Page;
 import shop.mtcoding.blog.course.student.Student;
 import shop.mtcoding.blog.course.subject.Subject;
+import shop.mtcoding.blog.paper.Paper;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -152,7 +153,10 @@ public class CourseResponse {
             private LocalDate endDate; // 교과목 종료 날짜
             private Long courseId; // 과정 PK
 
+            // TODO : 재평가일 떄문에 터질수있음
             public SubjectDTO(Subject subject) {
+                Paper paper = subject.getPapers().stream().filter(p -> p.getIsReEvaluation() == false).findFirst().orElse(null);
+
                 this.subjectId = subject.getId();
                 this.code = subject.getCode();
                 this.title = subject.getTitle();
@@ -163,9 +167,8 @@ public class CourseResponse {
                 this.no = subject.getNo();
                 this.learningWay = subject.getLearningWay();
                 // TODO: 수정해야함
-                this.evaluationWay = "TODO1";
-                this.evaluationDate = LocalDate.now();
-                this.revaluationDate = LocalDate.now();
+                this.evaluationWay = paper.getEvaluationWay();
+                this.evaluationDate = paper.getEvaluationDate();
                 this.startDate = subject.getStartDate();
                 this.endDate = subject.getEndDate();
                 this.courseId = subject.getCourse().getId();

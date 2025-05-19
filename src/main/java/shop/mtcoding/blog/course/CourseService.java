@@ -6,10 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.Exception404;
-import shop.mtcoding.blog.course.student.Student;
-import shop.mtcoding.blog.course.student.StudentRepository;
 import shop.mtcoding.blog.course.subject.Subject;
 import shop.mtcoding.blog.course.subject.SubjectRepository;
+import shop.mtcoding.blog.user.student.Student;
+import shop.mtcoding.blog.user.student.StudentRepository;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class CourseService {
     private final CourseRepository courseRepository;
 
     @Transactional
-    public void 과정등록(CourseRequest.SaveDTO reqDTO){
+    public void 과정등록(CourseRequest.SaveDTO reqDTO) {
         courseRepository.save(reqDTO.toEntity());
     }
 

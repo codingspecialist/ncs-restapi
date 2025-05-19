@@ -8,8 +8,6 @@ import shop.mtcoding.blog._core.errors.exception.Exception404;
 import shop.mtcoding.blog._core.errors.exception.Exception500;
 import shop.mtcoding.blog.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.course.exam.answer.ExamAnswerRepository;
-import shop.mtcoding.blog.course.student.Student;
-import shop.mtcoding.blog.course.student.StudentRepository;
 import shop.mtcoding.blog.course.subject.SubjectRepository;
 import shop.mtcoding.blog.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.course.subject.element.SubjectElementRepository;
@@ -19,6 +17,8 @@ import shop.mtcoding.blog.paper.question.Question;
 import shop.mtcoding.blog.paper.question.QuestionRepository;
 import shop.mtcoding.blog.user.User;
 import shop.mtcoding.blog.user.UserRepository;
+import shop.mtcoding.blog.user.student.Student;
+import shop.mtcoding.blog.user.student.StudentRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -155,7 +155,7 @@ public class ExamService {
 
         Student studentPS = studentRepository.findByUserId(sessionUser.getId());
 
-        String studentName = studentPS.getName();
+        String studentName = studentPS.getUser().getName();
 
         List<Question> questionListPS = questionRepository.findByPaperId(paperId);
 
@@ -341,7 +341,7 @@ public class ExamService {
                 dto.setCourseNameAndRound(student.getCourse().getTitle() + "/" + student.getCourse().getRound() + "회차");
                 dto.setSubjectTitle(mainPaper.getSubject().getTitle());
                 dto.setExamState("본평가");
-                dto.setStudentName(student.getName());
+                dto.setStudentName(student.getUser().getName());
                 dto.setTeacherName(mainPaper.getSubject().getTeacherName());
                 dto.setExamScore(0.0);
                 dto.setExamPassState("미응시");

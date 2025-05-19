@@ -95,7 +95,7 @@ public class ExamResponse {
         public ResultDetailDTO(Exam exam, List<SubjectElement> subjectElements, User teacher, Long prevExamId, Long nextExamId, Long fExamId) {
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
-            this.studentName = exam.getStudent().getName();
+            this.studentName = exam.getStudent().getUser().getName();
             this.teacherName = exam.getTeacherName();
             this.evaluationDate = exam.getPaper().getEvaluationDate().toString();
             this.loc = "3호";
@@ -109,7 +109,7 @@ public class ExamResponse {
             this.score = exam.getScore();
             this.teacherComment = exam.getTeacherComment();
             this.grade = exam.getGrade();
-            this.teacherSign = teacher.getSign();
+            this.teacherSign = teacher.getTeacher().getSign();
             this.studentSign = exam.getStudentSign();
             this.isStudentSign = exam.getStudentSign() == null ? false : true;
             this.studentNo = exam.getStudent().getStudentNo();
@@ -198,7 +198,7 @@ public class ExamResponse {
             this.courseNameAndRound = exam.getStudent().getCourse().getTitle() + "/" + exam.getStudent().getCourse().getRound() + "회차";
             this.subjectTitle = exam.getPaper().getSubject().getTitle();
             this.examState = exam.getExamState();
-            this.studentName = exam.getStudent().getName();
+            this.studentName = exam.getStudent().getUser().getName();
             this.teacherName = exam.getTeacherName();
             this.examScore = exam.getScore();
             this.examPassState = exam.getPassState();

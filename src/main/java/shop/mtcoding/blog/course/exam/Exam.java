@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.course.exam.answer.ExamAnswer;
-import shop.mtcoding.blog.course.student.Student;
 import shop.mtcoding.blog.paper.Paper;
+import shop.mtcoding.blog.user.student.Student;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

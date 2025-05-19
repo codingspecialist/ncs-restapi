@@ -3,7 +3,7 @@ canvas {
 }
 
 .modal-body {
-    width: 100%;  /* 부모 컨테이너의 너비를 꽉 채우도록 설정 */
+    width: 100%; /* 부모 컨테이너의 너비를 꽉 채우도록 설정 */
 }
 
 .click-tr {
@@ -25,4 +25,9 @@ canvas {
     font-weight: bold;
     font-size: 16px;
     border: 2px solid #000;
+}
+
+.table td,
+.table th {
+    vertical-align: middle !important;
 }

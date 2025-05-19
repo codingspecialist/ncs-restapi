@@ -2,9 +2,9 @@ package shop.mtcoding.blog.course;
 
 import lombok.Data;
 import org.springframework.data.domain.Page;
-import shop.mtcoding.blog.course.student.Student;
 import shop.mtcoding.blog.course.subject.Subject;
 import shop.mtcoding.blog.paper.Paper;
+import shop.mtcoding.blog.user.student.Student;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -122,7 +122,7 @@ public class CourseResponse {
 
             public StudentDTO(Student student) {
                 this.studentId = student.getId();
-                this.name = student.getName();
+                this.name = student.getUser().getName();
                 this.birthday = student.getBirthday();
                 this.state = student.getState().getValue();
                 this.dropOutDate = student.getDropOutDate() == null ? "" : student.getDropOutDate().toString();

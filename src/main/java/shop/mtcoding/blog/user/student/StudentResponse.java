@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.course.student;
+package shop.mtcoding.blog.user.student;
 
 import lombok.Data;
 import org.springframework.data.domain.Page;
@@ -42,13 +42,13 @@ public class StudentResponse {
 
             public StudentDTO(Student student) {
                 this.studentId = student.getId();
-                this.name = student.getName();
+                this.name = student.getUser().getName();
                 this.birthday = student.getBirthday();
                 this.state = student.getState().getValue();
                 this.dropOutDate = student.getDropOutDate() == null ? "" : student.getDropOutDate().toString();
                 this.dropOutReason = student.getDropOutReason() == null ? "" : student.getDropOutReason();
-                this.comment = student.getComment()  == null ? "" : student.getComment();
-                this.grade = student.getGrade()  == null ? "" : student.getGrade().toString();
+                this.comment = student.getComment() == null ? "" : student.getComment();
+                this.grade = student.getGrade() == null ? "" : student.getGrade().toString();
                 this.courseId = student.getCourse().getId();
                 this.courseTitle = student.getCourse().getTitle();
                 this.courseRound = student.getCourse().getRound();

@@ -123,6 +123,6 @@ public class DocumentService {
 
         Paper paperPS = paperRepository.findBySubjectIdAndPaperState(subjectId, false).get(0);
         List<Question> questionListPS = questionRepository.findByPaperId(paperPS.getId());
-        return new DocumentResponse.No1DTO(subjectPS, questionListPS, teacherPS.getSign(), paperPS);
+        return new DocumentResponse.No1DTO(subjectPS, questionListPS, teacherPS.getTeacher().getSign(), paperPS);
     }
 }

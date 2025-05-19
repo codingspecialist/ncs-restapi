@@ -5,7 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import shop.mtcoding.blog.course.student.Student;
+import shop.mtcoding.blog.course.courseteacher.CourseTeacher;
+import shop.mtcoding.blog.user.student.Student;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,13 +34,15 @@ public class Course {
     private Integer totalDay; // 과정일수
     private LocalDate startDate; // 년월일
     private LocalDate endDate; // 년월일
-    private String mainTeacherName; // 훈련교사 이름
+    private String mainTeacherName; // 메인훈련교사 이름 (courseTeachers 중에 메인강사)
+    @Enumerated(EnumType.STRING)
+    private CourseEnum courseStatus; // 과정진행전, 과정진행중, 과정종료 (기본값은 과정진행전이다 - 숫자로는 0번)
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CourseTeacher> courseTeachers = new ArrayList<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Student> students = new ArrayList<>();
-
-    @Enumerated(EnumType.STRING)
-    private CourseEnum courseStatus; // 과정진행전, 과정진행중, 과정종료 (기본값은 과정진행전이다 - 숫자로는 0번)
 
     @CreationTimestamp
     private LocalDateTime createDate;

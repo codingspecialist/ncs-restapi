@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.course.student;
+package shop.mtcoding.blog.user.student;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class StudentController {
     private final StudentService studentService;
 
     @GetMapping("/api/teacher/student")
-    public String list(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable){
+    public String list(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         StudentResponse.PagingDTO respDTO = studentService.모든학생목록(pageable);
         model.addAttribute("paging", respDTO);
         return "course/student/list";
@@ -38,12 +38,12 @@ public class StudentController {
     }
 
     @PostMapping("/api/teacher/course/{courseId}/student/save")
-    public String save(@PathVariable(value = "courseId") Long courseId, StudentRequest.SaveDTO reqDTO, @RequestParam(value = "screen", required = false) String screen){
+    public String save(@PathVariable(value = "courseId") Long courseId, StudentRequest.SaveDTO reqDTO, @RequestParam(value = "screen", required = false) String screen) {
         studentService.학생등록(courseId, reqDTO);
 
-        if(screen.equals("detail")){
-            return "redirect:/api/teacher/course/"+courseId+"?tabNum=1";
-        }else{
+        if (screen.equals("detail")) {
+            return "redirect:/api/teacher/course/" + courseId + "?tabNum=1";
+        } else {
             return "redirect:/api/teacher/student";
         }
     }

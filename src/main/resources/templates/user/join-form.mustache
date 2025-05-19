@@ -10,15 +10,21 @@
                     <option value="student">학생</option>
                     <option value="teacher">강사</option>
                 </select>
+                <!-- 인증코드 입력창 (초기에는 숨김) -->
+                <div class="mb-3 mt-3" id="authCodeBox" style="display: none;">
+                    <input type="text" class="form-control" placeholder="인증코드를 입력하세요" name="authCode">
+                </div>
                 <hr>
                 <div class="mb-3">
                     <input type="text" class="form-control" placeholder="Enter username" name="username" value="love">
                 </div>
                 <div class="mb-3">
-                    <input type="password" class="form-control" placeholder="Enter password" name="password" value="1234">
+                    <input type="password" class="form-control" placeholder="Enter password" name="password"
+                           value="1234">
                 </div>
                 <div class="mb-3">
-                    <input type="email" class="form-control" placeholder="Enter email" name="email" value="love@nate.com">
+                    <input type="email" class="form-control" placeholder="Enter email" name="email"
+                           value="love@nate.com">
                 </div>
                 <button type="submit" class="btn btn-primary form-control">회원가입</button>
             </form>
@@ -28,6 +34,23 @@
 
 <script>
     $(".select-option").css("color", "blue");
+
+    // 인증코드 박스를 보여주거나 숨기는 로직
+    const roleSelect = document.getElementById("roleSelect");
+    const authCodeBox = document.getElementById("authCodeBox");
+
+    roleSelect.addEventListener("change", function () {
+        if (this.value === "student") {
+            authCodeBox.style.display = "block";
+        } else {
+            authCodeBox.style.display = "none";
+        }
+    });
+
+    // 페이지 진입 시 기본값에 따라 처리 (예: 자동선택 되어 있는 경우)
+    if (roleSelect.value === "student") {
+        authCodeBox.style.display = "block";
+    }
 </script>
 
 {{> layout/footer}}

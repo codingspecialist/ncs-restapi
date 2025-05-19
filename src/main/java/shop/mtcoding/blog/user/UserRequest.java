@@ -23,16 +23,15 @@ public class UserRequest {
         private String email;
         private String name;
         private String role;
+        private String autoCode;
 
-        public User toEntity(){
+        public User toEntity() {
             return User.builder()
                     .username(username)
                     .password(password)
                     .email(email)
                     .name(name)
-                    .role(role)
-                    .isCheck(false) // 인증안됨
-                    .isTeacher(role.equals("teacher") ? true : false)
+                    .role(UserEnum.valueOf(role))
                     .build();
         }
     }

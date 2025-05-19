@@ -1,0 +1,45 @@
+{{> layout/header}}
+
+<div class="container p-5">
+
+    <div class="card">
+        <div class="card-header"><b>과정을 등록 해주세요</b></div>
+        <div class="card-body">
+            <form action="/api/teacher/course/save" method="post" enctype="application/x-www-form-urlencoded">
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="과정명" name="title" value="자바 크로스 플랫폼 양성과정">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="과정ID" name="code" value="C1001">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="과정수준" name="level" value="5">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="과정목표" name="purpose" value="크로스 플랫폼 개발자가 되어서 풀스택을 달성한다">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="과정시간" name="totalTime" value="900">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="과정일수" name="totalDay" value="113">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="회차" name="round" value="1">
+                </div>
+                <div class="mb-3">
+                    <input type="date" class="form-control" placeholder="과정시작일" name="startDate" value="2024-05-01">
+                </div>
+                <div class="mb-3">
+                    <input type="date" class="form-control" placeholder="과정종료일" name="endDate" value="2024-11-14">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="메인훈련강사명" name="mainTeacherName" value="홍길동">
+                </div>
+                <button type="submit" class="btn btn-primary form-control">과정등록</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{> layout/footer}}

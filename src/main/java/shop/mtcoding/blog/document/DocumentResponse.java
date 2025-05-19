@@ -92,7 +92,7 @@ public class DocumentResponse {
 
             this.ah = "해당사항 없음 (추후수정필요)";
             this.ja = rePaper == null ? "해당사항 없음" : rePaper.getEvaluationDate().toString();
-            this.sign = teacher.getSign();
+            this.sign = teacher.getTeacher().getSign();
         }
     }
 
@@ -247,7 +247,7 @@ public class DocumentResponse {
             this.subjectTitle = paper.getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
             this.questionCount = paper.getCount();
-            this.teacherSign = teacher.getSign();
+            this.teacherSign = teacher.getTeacher().getSign();
             this.grade = paper.getSubject().getGrade();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
         }
@@ -320,7 +320,7 @@ public class DocumentResponse {
             this.courseId = exam.getPaper().getSubject().getCourse().getId();
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
-            this.studentName = exam.getStudent().getName();
+            this.studentName = exam.getStudent().getUser().getName();
             this.teacherName = exam.getTeacherName();
             this.evaluationDate = exam.getPaper().getEvaluationDate().toString();
             this.loc = "3호";
@@ -334,7 +334,7 @@ public class DocumentResponse {
             this.score = exam.getScore();
             this.teacherComment = exam.getTeacherComment();
             this.grade = exam.getGrade();
-            this.teacherSign = teacher.getSign();
+            this.teacherSign = teacher.getTeacher().getSign();
             this.studentSign = exam.getStudentSign();
             this.isStudentSign = exam.getStudentSign() == null ? false : true;
             this.studentNo = exam.getStudent().getStudentNo();

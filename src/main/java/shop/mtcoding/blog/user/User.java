@@ -5,7 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import shop.mtcoding.blog.course.student.Student;
+import shop.mtcoding.blog.user.student.Student;
+import shop.mtcoding.blog.user.teacher.Teacher;
 
 import java.sql.Timestamp;
 
@@ -21,34 +22,39 @@ public class User {
     private String username;
     private String password;
     private String email;
-    private String name; // 선생님 이름 or 학생 이름
-
-    @Lob
-    private String sign; // 선생님이라면 서명 (base64 저장)
-    private String role; // student, teacher
-    private Boolean isTeacher;
-    private Boolean isCheck; // 학생 인증 여부
-
+    private String name; // 이름
+    @Enumerated(EnumType.STRING)
+    private UserEnum role; // 학생, 강사, 직원, 팀장, 원장
     @CreationTimestamp // pc -> db (날짜주입)
     private Timestamp createdAt;
 
-    @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    public void authentication(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
+
+    /////////////////////////////////////////////// 단순 조회용도!!!!!!!!!!!!!!!!!!!
     // @Column(unique = true) // OneToOne은 UK가 기본적용됨.
+    @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     @OneToOne(fetch = FetchType.LAZY)
     private Student student; // role이 student이면 연결된 객체 필요!! 선생이 먼저 학생을 등록해야 가입가능
 
+    @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @OneToOne(fetch = FetchType.LAZY)
+    private Teacher teacher;
+    /////////////////////////////////////////////////////////////////////////////
+
     @Builder
-    public User(Long id, String username, String password, String email, String name, String sign, String role, Boolean isTeacher, Boolean isCheck, Timestamp createdAt, Student student) {
+    public User(Long id, String username, String password, String email, String name, UserEnum role, Timestamp createdAt, Student student, Teacher teacher) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.name = name;
-        this.sign = sign;
         this.role = role;
-        this.isTeacher = isTeacher;
-        this.isCheck = isCheck;
         this.createdAt = createdAt;
         this.student = student;
+        this.teacher = teacher;
     }
 }

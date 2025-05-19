@@ -11,9 +11,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query("select st from Student st join fetch st.user u where st.course.id = :courseId order by u.name asc")
     List<Student> findByCourseId(@Param("courseId") Long courseId);
-
-    Student findByNameAndBirthday(@Param("name") String name, @Param("courseId") String courseId);
-
+    
     Student findByUserId(@Param("userId") Long userId);
 
     Optional<Student> findByAuthCode(@Param("authCode") String authCode);

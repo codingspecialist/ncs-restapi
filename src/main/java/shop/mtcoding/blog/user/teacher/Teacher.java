@@ -18,20 +18,20 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     private User user;
 
     @Lob
     private String sign; // 선생님이라면 서명 (base64 저장)
 
     @CreationTimestamp
-    private LocalDateTime createDate;
+    private LocalDateTime createdAt;
 
     @Builder
-    public Teacher(Long id, User user, String sign, LocalDateTime createDate) {
+    public Teacher(Long id, User user, String sign, LocalDateTime createdAt) {
         this.id = id;
         this.user = user;
         this.sign = sign;
-        this.createDate = createDate;
+        this.createdAt = createdAt;
     }
 }

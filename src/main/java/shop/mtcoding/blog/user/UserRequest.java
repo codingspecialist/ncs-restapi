@@ -23,7 +23,7 @@ public class UserRequest {
         private String email;
         private String name;
         private String role;
-        private String autoCode;
+        private String authCode;
 
         public User toEntity() {
             return User.builder()

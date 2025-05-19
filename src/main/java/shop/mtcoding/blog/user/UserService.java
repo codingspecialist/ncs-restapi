@@ -39,11 +39,11 @@ public class UserService {
         // 2. 학생 or 선생 회원가입
         User userPS;
         if (UserEnum.valueOf(reqDTO.getRole()) == UserEnum.STUDENT) {
-            Student student = studentRepository.findByAuthCode(reqDTO.getAutoCode())
+            Student student = studentRepository.findByAuthCode(reqDTO.getAuthCode())
                     .orElseThrow(() -> new Exception403("학생 인증이 실패하였습니다"));
             userPS = userRepository.findById(student.getUser().getId())
                     .orElseThrow(() -> new Exception500("학생으로 등록되어 있는데 유저를 찾을 수 없습니다. 관리자에게 문의하세요"));
-            userPS.authentication(reqDTO.getUsername(), reqDTO.getPassword(), reqDTO.getEmail());
+            userPS.authentication(reqDTO.getUsername(), reqDTO.getPassword(), reqDTO.getEmail(), UserEnum.STUDENT);
             student.setVerified(true);
         } else {
             // 2. 회원가입 (Save or Update) - update는 학생일때만!

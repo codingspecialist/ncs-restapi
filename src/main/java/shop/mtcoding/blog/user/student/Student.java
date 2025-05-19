@@ -21,7 +21,7 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "student", fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,7 +38,7 @@ public class Student {
     private Boolean isVerified; // 학생 인증 여부
     private Integer studentNo; // 교과목 1에 학생번호 1 (유니크 복합키)
     @CreationTimestamp
-    private LocalDateTime createDate;
+    private LocalDateTime createdAt;
 
     public void setVerified(Boolean verified) {
         isVerified = verified;
@@ -50,7 +50,7 @@ public class Student {
     }
 
     @Builder
-    public Student(Long id, User user, Course course, String birthday, LocalDate dropOutDate, String dropOutReason, String comment, Integer grade, StudentEnum state, String authCode, Boolean isVerified, Integer studentNo, LocalDateTime createDate) {
+    public Student(Long id, User user, Course course, String birthday, LocalDate dropOutDate, String dropOutReason, String comment, Integer grade, StudentEnum state, String authCode, Boolean isVerified, Integer studentNo, LocalDateTime createdAt) {
         this.id = id;
         this.user = user;
         this.course = course;
@@ -63,6 +63,6 @@ public class Student {
         this.authCode = authCode;
         this.isVerified = isVerified;
         this.studentNo = studentNo;
-        this.createDate = createDate;
+        this.createdAt = createdAt;
     }
 }

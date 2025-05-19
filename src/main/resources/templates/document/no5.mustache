@@ -61,7 +61,7 @@
         <tbody>
         <tr>
             <th style="width: 15%;">기안부서</th>
-            <td style="width: 22%;">교육운영팀</td>
+            <td style="width: 22%;">{{model.draftingTeam}}</td>
             <td rowspan="5" style="width: 3%;">결재</td>
             <td style="width: 15%;"></td>
             <th style="width: 15%;">담 당</th>
@@ -70,7 +70,7 @@
         </tr>
         <tr>
             <th>문서번호</th>
-            <td>부산-2402-20</td>
+            <td>{{model.docNumber}}</td>
 
             <td rowspan="4"></td>
             <td rowspan="4"></td>
@@ -79,25 +79,25 @@
         </tr>
         <tr>
             <th>작성일자</th>
-            <td>2024.02.20</td>
+            <td>{{model.writingDate}}</td>
 
         </tr>
         <tr>
             <th>처리요망</th>
-            <td>2024.02.20</td>
+            <td>{{model.requestDate}}</td>
 
 
         </tr>
         <tr>
             <th>보존기간</th>
-            <td>5년</td>
+            <td>{{model.retentionPeriod}}</td>
 
 
         </tr>
         <tr>
             <th>작성자</th>
             <td>
-                최주호 <span class="signature">(인)</span>
+                {{model.author}} <span class="signature">(인)</span>
                 <img src="#" class="signature-img" alt="signature">
             </td>
             <td rowspan="2"></td>
@@ -115,7 +115,7 @@
         </tr>
         <tr>
             <th>제목</th>
-            <td colspan="6">자바&Springboot 크로스 플랫폼(풀스택)융합 응용SW개발자 양성과정 평가 실시보고</td>
+            <td colspan="6">{{model.title}}</td>
         </tr>
         </tbody>
     </table>
@@ -125,15 +125,15 @@
         <div>
             <h6 class="mb-2"><strong>1. 교육훈련생 평가 실시보고</strong></h6>
             <ul class="list-unstyled">
-                <li class="list-item">가. 훈련과정 : 자바&Springboot 크로스 플랫폼(풀스택) 융합 응용SW개발자 양성과정</li>
-                <li class="list-item">나. 훈련기간 : 2023.11.27. ~ 2024.05.23. (950시간)</li>
-                <li class="list-item">다. 정기평가(평가구분) : Springboot Security(작업형 평가)</li>
-                <li class="list-item">라. 담당교사 : 최주호</li>
-                <li class="list-item">마. 평가일시 : 2024.02.20.</li>
-                <li class="list-item">바. 평가인원 : 재적 25명 / 실시 25명</li>
-                <li class="list-item">사. 재평가인원 : 해당사항 없음.</li>
-                <li class="list-item">아. 평가결과 조치 : 해당사항 없음.</li>
-                <li class="list-item">자. 재평가 시기 : 해당사항 없음.</li>
+                <li class="list-item">가. 훈련과정 : {{model.ga}}</li>
+                <li class="list-item">나. 훈련기간 : {{model.na}}</li>
+                <li class="list-item">다. 정기평가(평가구분) : {{model.da}}</li>
+                <li class="list-item">라. 담당교사 : {{model.ra}}</li>
+                <li class="list-item">마. 평가일시 : {{model.ma}}</li>
+                <li class="list-item">바. 평가인원 : {{model.ba}}</li>
+                <li class="list-item">사. 재평가인원 : {{model.sa}}</li>
+                <li class="list-item">아. 평가결과 조치 : {{model.ah}}</li>
+                <li class="list-item">자. 재평가 시기 : {{model.ja}}.</li>
             </ul>
         </div>
     </div>

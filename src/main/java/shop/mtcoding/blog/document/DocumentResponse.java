@@ -32,11 +32,57 @@ public class DocumentResponse {
         private String na; // course.startDate + endDate
         private String da; // subject.title (subject.evaluationWay)
         private String ra; // course.mainTeacherName
-        private String ma; // paper.
-        private String ba;
-        private String sa;
-        private String ah;
-        private String ja;
+        private String ma; // paper.evaluationDate
+        private String ba; // List<Student>.size() (과정ID로 조회)
+        private String sa; // 교과목ID로 paper를 조회하는데, isUse가 true걸로, 그 중에 isReEvaluation이 true인것들의 count값
+        private String ah; // 해당 사항 없음!!
+        private String ja; // 교과목ID로 paper를 조회하는데, isUse가 true걸로, 그 중에 isReEvaluation이 true인것들의 평가일자 0번지하나만!!
+
+        public No5DTO(List<Exam> exams, List<Exam> reExams) {
+            Paper paper = exams.stream().map(Exam::getPaper).findFirst().orElse(null);
+            Paper rePaper = reExams.stream().map(Exam::getPaper).findFirst().orElse(null);
+            this.draftingTeam = "교육운영팀";
+            this.docNumber = "부산 " + paper.getEvaluationDate().toString().substring(2);
+            this.writingDate = paper.getEvaluationDate().toString();
+            this.requestDate = paper.getEvaluationDate().toString();
+            this.retentionPeriod = "5년";
+            this.author = paper.getSubject().getTeacherName();
+            this.recipient = "내부결재";
+            this.title = paper.getSubject().getCourse().getTitle() + " 평가 실시보고";
+            this.ga = paper.getSubject().getCourse().getTitle();
+            this.na = paper.getSubject().getCourse().getStartDate() + " ~ " + paper.getSubject().getCourse().getEndDate() + " (" + paper.getSubject().getCourse().getTotalTime() + "시간)";
+            this.da = paper.getSubject().getTitle() + " (" + paper.getEvaluationWay() + ")";
+            this.ra = paper.getSubject().getTeacherName();
+            this.ma = paper.getEvaluationDate().toString();
+
+            // 중탈안한 총 학생수
+            long allStudentCount = paper.getSubject().getCourse().getStudents().stream()
+                    .filter(student ->
+                            student.getDropOutDate() == null || student.getDropOutDate().isAfter(paper.getEvaluationDate())
+                    )
+                    .count();
+            // 1. 본평가 응시자 수 (시험을 실제로 사용하고, 재시험 아님)
+            long doExamCount = exams.stream()
+                    .filter(exam -> exam.getReExamReason() == null && exam.getIsUse())
+                    .count();
+
+            // 2. 미응시자 수 = 재적 인원 - 실제 시험 본 사람
+            long notExamCount = allStudentCount - doExamCount;
+
+            // 3. 결과 표시
+            this.ba = "재적 " + allStudentCount + "명 / 실시 " + doExamCount + "명 / 미실시 " + notExamCount + "명";
+
+            // 재평가 실시 인원
+            if (notExamCount > 0 && notExamCount != reExams.size()) {
+                this.sa = "재평가를 실시하지 않았습니다. 재평가를 완료하세요!!";
+            } else {
+                this.sa = reExams.size() + "";
+            }
+
+
+            this.ah = "해당사항 없음 (추후수정필요)";
+            this.ja = rePaper == null ? "해당사항 없음" : rePaper.getEvaluationDate().toString();
+        }
     }
 
     @Data

@@ -9,6 +9,12 @@ import java.util.Optional;
 
 public interface ExamRepository extends JpaRepository<Exam, Long> {
 
+    @Query("select ex from Exam ex left join fetch ex.paper p left join fetch p.subject sb where p.isReEvaluation = :isReEvaluation and sb.id = :subjectId")
+    List<Exam> findByExamGubun(Boolean isReEvaluation, Long subjectId); // isReEvaluation = 본평가, 재평가
+
+    @Query("select ex from Exam ex where ex.paper.subject.id = :subjectId and ex.student.id = :studentId and ex.isUse = :isUse")
+    Optional<Exam> findByOrigin(@Param("subjectId") Long subjectId, @Param("studentId") Long studentId, @Param("isUse") Boolean isUse);
+
     @Query("select ex from Exam ex left join fetch ex.paper p join fetch p.subject sb where sb.id = :subjectId and ex.isUse = true")
     List<Exam> findBySubjectIdAndIsUse(@Param("subjectId") Long subjectId);
 
@@ -17,10 +23,6 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
 
     @Query("select ex from Exam ex join fetch ex.paper p join fetch ex.student st where ex.paper.subject.id = :subjectId order by st.studentNo asc")
     List<Exam> findBySubjectId(@Param("subjectId") Long subjectId);
-
-
-    @Query("select ex from Exam ex where ex.paper.subject.id = :subjectId and ex.student.id = :studentId and ex.isUse = :isUse")
-    Optional<Exam> findByOrigin(@Param("subjectId") Long subjectId, @Param("studentId") Long studentId, @Param("isUse") Boolean isUse);
 
 
     @Query("select ex from Exam ex join fetch ex.paper p join fetch ex.student st where ex.student.id = :studentId order by p.subject.no asc")

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import shop.mtcoding.blog.course.exam.Exam;
 import shop.mtcoding.blog.course.subject.Subject;
 import shop.mtcoding.blog.paper.question.Question;
 
@@ -49,6 +50,13 @@ public class Paper {
 
     @OneToMany(mappedBy = "paper", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Question> questions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "paper", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Exam> exams = new ArrayList<>();
+
+    public void addExam(Exam exam) {
+        this.exams.add(exam);
+    }
 
     public void addQuestion(Question question) {
         this.questions.add(question);

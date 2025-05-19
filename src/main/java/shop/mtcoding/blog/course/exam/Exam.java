@@ -103,7 +103,7 @@ public class Exam {
         }
     }
 
-    public void isNotUse() {
+    public void setNotUse() {
         this.isUse = false;
     }
 

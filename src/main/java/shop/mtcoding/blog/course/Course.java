@@ -5,9 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import shop.mtcoding.blog.course.student.Student;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 1. 크로스플랫폼 과정에 특정 회차 정보
@@ -31,6 +34,9 @@ public class Course {
     private LocalDate startDate; // 년월일
     private LocalDate endDate; // 년월일
     private String mainTeacherName; // 훈련교사 이름
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Student> students = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private CourseEnum courseStatus; // 과정진행전, 과정진행중, 과정종료 (기본값은 과정진행전이다 - 숫자로는 0번)

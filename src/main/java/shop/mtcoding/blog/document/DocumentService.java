@@ -37,7 +37,9 @@ public class DocumentService {
     private final ExamRepository examRepository;
 
     public DocumentResponse.No5DTO no5(Long courseId, Long subjectId) {
-        return null;
+        List<Exam> examList = examRepository.findByExamGubun(false, subjectId); // 본평가들
+        List<Exam> reExamList = examRepository.findByExamGubun(true, subjectId); // 재평가들
+        return new DocumentResponse.No5DTO(examList, reExamList);
     }
 
     public DocumentResponse.No2DTO no2(Long courseId, Long subjectId) {

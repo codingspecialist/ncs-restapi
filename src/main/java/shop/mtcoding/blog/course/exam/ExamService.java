@@ -214,12 +214,13 @@ public class ExamService {
         Student student = studentRepository.findByUserId(sessionUser.getId());
 
         // 2. 재평가인데, 이전 시험(Exam)이 있으면 이전 시험 isNotUse로 변경
+        // 재평가를 10번 해도, 모든 이전 재평가, 본평가는 isNotUse가 true가 됨
         if (paper.getPaperState().equals("재평가")) {
             Optional<Exam> examOP = examRepository.findByOrigin(paper.getSubject().getId(), student.getId(), true);
 
             if (examOP.isPresent()) {
-                // 1. 재평가가 저장되면, 본평가를 사용안함으로 변경
-                examOP.get().isNotUse();
+                // 1. 새로운 평가가 저장되면, 기존 사용중인 평가를 사용안함으로 변경
+                examOP.get().setNotUse();
             }
         }
 

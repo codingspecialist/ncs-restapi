@@ -39,7 +39,11 @@ public class DocumentService {
     public DocumentResponse.No5DTO no5(Long courseId, Long subjectId) {
         List<Exam> examList = examRepository.findByExamGubun(false, subjectId); // 본평가들
         List<Exam> reExamList = examRepository.findByExamGubun(true, subjectId); // 재평가들
-        return new DocumentResponse.No5DTO(examList, reExamList);
+
+        User teacherPS = userRepository.findByTeacherName(examList.get(0).getTeacherName())
+                .orElseThrow(() -> new Exception404("해당 선생님이 존재하지 않아요"));
+
+        return new DocumentResponse.No5DTO(examList, reExamList, teacherPS);
     }
 
     public DocumentResponse.No2DTO no2(Long courseId, Long subjectId) {

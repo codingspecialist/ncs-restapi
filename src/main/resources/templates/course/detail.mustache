@@ -7,8 +7,10 @@
 
     <div class="d-flex justify-content-end">
         <div>
-            <a id="subject-save-form" href="/api/teacher/subject/save-form?courseId={{model.courseId}}" class="btn btn-primary mr-3">교과목등록</a>
-            <a id="student-save-form" href="/api/teacher/student/save-form?courseId={{model.courseId}}" class="btn btn-primary">학생등록</a>
+            <a id="subject-save-form" href="/api/teacher/subject/save-form?courseId={{model.courseId}}" class="btn
+            btn-primary mr-3">교과목등록</a>
+            <a id="student-save-form" href="/api/teacher/student/save-form?courseId={{model.courseId}}" class="btn
+            btn-primary">학생등록</a>
         </div>
     </div>
 
@@ -81,13 +83,13 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th>이름</th>
-                    <th>생일</th>
-                    <th>상태</th>
-                    <th>중탈날짜</th>
-                    <th>중탈이유</th>
-                    <th>학생총평</th>
-                    <th>학생수준</th>
+                    <th style="width: 10%">이름</th>
+                    <th style="width: 10%">생일</th>
+                    <th style="width: 10%">상태</th>
+                    <th style="width: 10%">중탈날짜</th>
+                    <th style="width: 10%">중탈이유</th>
+                    <th style="width: 10%">학생수준</th>
+                    <th style="width: 40%">학생총평</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -98,8 +100,11 @@
                         <td>{{state}}</td>
                         <td>{{dropOutDate}}</td>
                         <td>{{dropOutReason}}</td>
-                        <td>{{comment}}</td>
                         <td>{{grade}}</td>
+                        <td style="word-break: break-all">{{comment}}dfdsaegfdsgdsfag44
+                            dfasgfdsagvadfsgdfasgafdg44vfd gfdasgasdgfdasfadsfsad 3rfvfdzvfdgdsafgdsafsad
+                            3fvdsgdsaffgadsgfasdf 3vdgadsgfregsdagdsagsadfdsafasdfadsfasfdsafas
+                        </td>
                     </tr>
                 {{/model.students}}
                 </tbody>
@@ -113,9 +118,9 @@
 <script>
     let selectedTabNum = $("#tabNum").val();
 
-    if(selectedTabNum == 0){
+    if (selectedTabNum == 0) {
         $("#subject-tab").click();
-    }else{
+    } else {
         $("#student-tab").click();
     }
 </script>

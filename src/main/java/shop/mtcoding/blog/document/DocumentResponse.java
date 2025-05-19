@@ -38,7 +38,9 @@ public class DocumentResponse {
         private String ah; // 해당 사항 없음!!
         private String ja; // 교과목ID로 paper를 조회하는데, isUse가 true걸로, 그 중에 isReEvaluation이 true인것들의 평가일자 0번지하나만!!
 
-        public No5DTO(List<Exam> exams, List<Exam> reExams) {
+        private String sign;
+
+        public No5DTO(List<Exam> exams, List<Exam> reExams, User teacher) {
             Paper paper = exams.stream().map(Exam::getPaper).findFirst().orElse(null);
             Paper rePaper = reExams.stream().map(Exam::getPaper).findFirst().orElse(null);
             this.draftingTeam = "교육운영팀";
@@ -73,21 +75,24 @@ public class DocumentResponse {
             long doExamCount = exams.size() - absentCount;
 
             // 3. 결과 표시 (결석 1명, 재평가대상 1명 이런식으로 표시해야함)
-            this.ba = "재적 " + allStudentCount + "명 / 실시 " + doExamCount + "명";
+            String temp1 = "";
+            if (reExamExpectCount > 0) {
+                temp1 += " (미이수 " + reExamExpectCount + "명)";
+            }
+
+            String temp2 = "";
+            if (absentCount > 0) {
+                temp2 += " / 결석 " + absentCount + "명";
+            }
+
+            this.ba = "재적 " + allStudentCount + "명 / 실시 " + doExamCount + "명" + temp1 + temp2;
 
             // 재평가 실시 인원
             this.sa = reExams.size() + "명";
-            if (reExamExpectCount > 0) {
-                this.sa += "/ 60점미만 " + reExamExpectCount + "명";
-            }
-
-            if (absentCount > 0) {
-                this.sa += "/ 결석 " + absentCount + "명";
-            }
-
 
             this.ah = "해당사항 없음 (추후수정필요)";
             this.ja = rePaper == null ? "해당사항 없음" : rePaper.getEvaluationDate().toString();
+            this.sign = teacher.getSign();
         }
     }
 

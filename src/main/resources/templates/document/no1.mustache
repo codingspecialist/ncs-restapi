@@ -22,7 +22,7 @@
     <div class="page-title">
         <h1>평가개요서</h1>
     </div>
-    
+
     <div class="table-responsive">
         <table class="table table-bordered">
             <tbody>
@@ -39,9 +39,11 @@
                 <th>평가방법</th>
                 <td>{{model.subjectEvaluationWay}}</td>
                 <th>평가자</th>
-                <td class="content">
+                <td>
+                    <span class="content">
                     {{model.subjectTeacherName}} <span class="signature">(인)</span>
                     <img src="{{model.sign}}" class="signature-img" alt="signature">
+                </span>
                 </td>
             </tr>
             <tr class="sub-header-row">

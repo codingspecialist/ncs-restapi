@@ -27,10 +27,8 @@ public class ExamResponse {
         private Integer no; // 과정에서 몇번째로 시작하는 교과목인지에 대한 연번
         private String learningWay; // 학습 방법
         private String evaluationWay; // 평가 방법
-        private LocalDate evaluationDate; // 평가일
-        private LocalDate revaluationDate; // 재평가일
-        private LocalDate evaluationScheduleDate; // 평가 예정일
-        private LocalDate revaluationScheduleDate; // 재평가 예정일
+        private String evaluationDate; // 평가일
+        private String revaluationDate; // 재평가일
         private LocalDate startDate; // 교과목 시작 날짜
         private LocalDate endDate; // 교과목 종료 날짜
         private Long courseId; // 과정 PK
@@ -39,6 +37,8 @@ public class ExamResponse {
 
         public SubjectDTO(Subject subject) {
             Paper paper = subject.getPapers().stream().filter(p -> p.getIsReEvaluation() == false).findFirst().orElse(null);
+            Paper rePaper = subject.getPapers().stream().filter(p -> p.getIsReEvaluation() == true).findFirst().orElse(null);
+
             this.subjectId = subject.getId();
             this.code = subject.getCode();
             this.title = subject.getTitle();
@@ -49,8 +49,13 @@ public class ExamResponse {
             this.no = subject.getNo();
             this.learningWay = subject.getLearningWay();
             this.evaluationWay = paper.getEvaluationWay();
-            this.evaluationDate = paper.getEvaluationDate();
-            this.revaluationDate = paper.getEvaluationDate();
+            this.evaluationDate = paper.getEvaluationDate().toString();
+
+            if (rePaper != null) {
+                this.revaluationDate = rePaper.getEvaluationDate().toString();
+            } else {
+                this.revaluationDate = "시험지없음";
+            }
             this.startDate = subject.getStartDate();
             this.endDate = subject.getEndDate();
             this.courseId = subject.getCourse().getId();

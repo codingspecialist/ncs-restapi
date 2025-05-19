@@ -16,28 +16,28 @@ public class DocumentController {
     private final DocumentService documentService;
 
     @GetMapping("/api/teacher/document/course/{courseId}/subject/{subjectId}/no1")
-    public String no1(@PathVariable Long courseId, @PathVariable Long subjectId, Model model) {
+    public String no1(@PathVariable("courseId") Long courseId, @PathVariable("subjectId") Long subjectId, Model model) {
         DocumentResponse.No1DTO respDTO = documentService.no1(subjectId);
         model.addAttribute("model", respDTO);
         return "document/no1";
     }
 
     @GetMapping("/api/teacher/document/course/{courseId}/subject/{subjectId}/no2")
-    public String no2(@PathVariable Long courseId, @PathVariable Long subjectId, Model model) {
+    public String no2(@PathVariable("courseId") Long courseId, @PathVariable("subjectId") Long subjectId, Model model) {
         DocumentResponse.No2DTO respDTO = documentService.no2(courseId, subjectId);
         model.addAttribute("model", respDTO);
         return "document/no2";
     }
 
     @GetMapping("/api/teacher/document/course/{courseId}/subject/{subjectId}/no3")
-    public String no3(@PathVariable Long courseId, @PathVariable Long subjectId, Model model) {
+    public String no3(@PathVariable("courseId") Long courseId, @PathVariable("subjectId") Long subjectId, Model model) {
         DocumentResponse.No3DTO respDTO = documentService.no3(courseId, subjectId);
         model.addAttribute("model", respDTO);
         return "document/no3";
     }
 
     @GetMapping("/api/teacher/document/course/{courseId}/subject/{subjectId}/no4")
-    public String no4(@PathVariable Long courseId, @PathVariable Long subjectId, Model model, @RequestParam(value = "examId", defaultValue = "0") Long examId) {
+    public String no4(@PathVariable("courseId") Long courseId, @PathVariable("subjectId") Long subjectId, Model model, @RequestParam(value = "examId", defaultValue = "0") Long examId) {
         DocumentResponse.No4DTO respDTO = documentService.no4(courseId, subjectId, examId);
         model.addAttribute("model", respDTO);
         return "document/no4";
@@ -45,7 +45,7 @@ public class DocumentController {
 
 
     @GetMapping("/api/teacher/document/course/{courseId}/subject/{subjectId}/no5")
-    public String no5(@PathVariable Long courseId, @PathVariable Long subjectId, Model model) {
+    public String no5(@PathVariable("courseId") Long courseId, @PathVariable("subjectId") Long subjectId, Model model) {
         DocumentResponse.No5DTO respDTO = documentService.no5(courseId, subjectId);
         model.addAttribute("model", respDTO);
         return "document/no5";

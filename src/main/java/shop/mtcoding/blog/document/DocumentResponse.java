@@ -61,22 +61,28 @@ public class DocumentResponse {
                             student.getDropOutDate() == null || student.getDropOutDate().isAfter(paper.getEvaluationDate())
                     )
                     .count();
-            // 1. 본평가 응시자 수 (시험을 실제로 사용하고, 재시험 아님)
-            long doExamCount = exams.stream()
-                    .filter(exam -> exam.getReExamReason() == null && exam.getIsUse())
+            // 1. 본평가 응시자 수 (시험을 실제로 사용하고, 재시험 아님) - 결석자 제외
+            long absentCount = exams.stream()
+                    .filter(exam -> "결석".equals(exam.getReExamReason()))
                     .count();
 
-            // 2. 미응시자 수 = 재적 인원 - 실제 시험 본 사람
-            long notExamCount = allStudentCount - doExamCount;
+            long reExamExpectCount = exams.stream()
+                    .filter(exam -> "60점미만".equals(exam.getReExamReason()))
+                    .count();
 
-            // 3. 결과 표시
-            this.ba = "재적 " + allStudentCount + "명 / 실시 " + doExamCount + "명 / 미실시 " + notExamCount + "명";
+            long doExamCount = exams.size() - absentCount;
+
+            // 3. 결과 표시 (결석 1명, 재평가대상 1명 이런식으로 표시해야함)
+            this.ba = "재적 " + allStudentCount + "명 / 실시 " + doExamCount + "명";
 
             // 재평가 실시 인원
-            if (notExamCount > 0 && notExamCount != reExams.size()) {
-                this.sa = "재평가를 실시하지 않았습니다. 재평가를 완료하세요!!";
-            } else {
-                this.sa = reExams.size() + "";
+            this.sa = reExams.size() + "명";
+            if (reExamExpectCount > 0) {
+                this.sa += "/ 60점미만 " + reExamExpectCount + "명";
+            }
+
+            if (absentCount > 0) {
+                this.sa += "/ 결석 " + absentCount + "명";
             }
 
 

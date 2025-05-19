@@ -30,6 +30,7 @@ public class ExamRequest {
             private Integer answerId;
             private Integer selectedOptionNo; // 정답 번호 (PK 아님)
 
+            // 통과헀으면, 이유 삭제해야함
             public void update(Question question, ExamAnswer answer) {
                 if (selectedOptionNo == null) throw new ApiException400("모든 문제에 대한 답안을 제출해야 됩니다");
 

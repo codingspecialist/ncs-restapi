@@ -89,7 +89,7 @@ public class ExamService {
         double score = examAnswers.stream().mapToInt(value -> value.getIsCorrect() ? value.getQuestion().getPoint() : 0).sum();
 
         // 5. 재평가지로 시험쳤으면 10%
-        if (examPS.getExamState().equals("재평가")) {
+        if (examPS.getPaper().getIsReEvaluation() == true) {
             score = score * 0.9;
         }
 
@@ -252,7 +252,7 @@ public class ExamService {
 
         // 6. 점수 입력 수준 입력
         examPS.updatePointAndGrade(score);
-        
+
 
         // 7. 총평 자동화
         String teacherGoodComment = "";

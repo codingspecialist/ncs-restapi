@@ -96,6 +96,7 @@ public class Exam {
 
         if (grade > 1) {
             passState = "통과";
+            reExamReason = "";
         } else {
             passState = "미통과";
             reExamReason = "60점미만";

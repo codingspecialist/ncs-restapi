@@ -17,12 +17,12 @@
 <body>
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
     <div class="container-fluid">
-        {{#sessionUser.isTeacher}}
-            <a class="navbar-brand" href="/">Ncs</a>
-        {{/sessionUser.isTeacher}}
-        {{^sessionUser.isTeacher}}
+        {{#isStudent}}
             <a class="navbar-brand" href="/api/student/exam">Ncs</a>
-        {{/sessionUser.isTeacher}}
+        {{/isStudent}}
+        {{^isStudent}}
+            <a class="navbar-brand" href="/">Ncs</a>
+        {{/isStudent}}
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
             <span class="navbar-toggler-icon"></span>
@@ -31,7 +31,15 @@
             <ul class="navbar-nav">
 
                 {{#sessionUser}}
-                    {{#sessionUser.isTeacher}}
+                    {{#isStudent}}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/api/student/exam">시험응시</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/api/student/exam/result">시험결과</a>
+                        </li>
+                    {{/isStudent}}
+                    {{^isStudent}}
                         <li class="nav-item">
                             <a class="nav-link" href="/api/teacher/course">과정DB</a>
                         </li>
@@ -44,15 +52,7 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/api/teacher/document/course">이수자준비</a>
                         </li>
-                    {{/sessionUser.isTeacher}}
-                    {{^sessionUser.isTeacher}}
-                        <li class="nav-item">
-                            <a class="nav-link" href="/api/student/exam">시험응시</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/api/student/exam/result">시험결과</a>
-                        </li>
-                    {{/sessionUser.isTeacher}}
+                    {{/isStudent}}
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">로그아웃</a>
                     </li>

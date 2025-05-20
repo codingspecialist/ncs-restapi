@@ -68,17 +68,14 @@ public class UserController {
         User sessionUser = userService.로그인(reqDTO);
         session.setAttribute("sessionUser", sessionUser);
 
-        if (sessionUser.getRole() == UserEnum.STUDENT) {
-            if (sessionUser.getStudent().getIsVerified()) {
-                return "redirect:/api/student/exam";
-            } else {
-                return "redirect:/student/check-form";
-            }
+        System.out.println("================ " + sessionUser.getRole());
+        if (UserEnum.STUDENT.equals(sessionUser.getRole())) {
+            session.setAttribute("isStudent", true);
+            return "redirect:/api/student/exam";
         } else {
+            session.setAttribute("isStudent", false);
             return "redirect:/";
         }
-
-
     }
 
     @GetMapping("/logout")

@@ -1,5 +1,4 @@
 {{> layout/header}}
-<input type="hidden" id="screen" value="{{screen}}">
 
 <div class="container p-5">
 
@@ -16,61 +15,60 @@
         </div>
 
         <div class="card-body">
-            <form id="save-form" action="/api/teacher/course/{{model.currentCourseId}}/subject/save?screen={{screen}}"
-            method="post"
-            enctype="application/x-www-form-urlencoded">
-            <div class="mb-3">
-                <input type="text" class="form-control" placeholder="훈련교사" name="teacherName" value="최주호">
-            </div>
-            <div class="mb-3">
-                <input type="text" class="form-control" placeholder="교과목코드" name="code" value="S1001">
-            </div>
-            <div class="mb-3">
-                <input type="text" class="form-control" placeholder="교과목명" name="title" value="자바">
-            </div>
-            <div class="mb-3">
-                <input type="text" class="form-control" placeholder="교과목목표" name="purpose"
-                       value="자바 for, if, 객체지향을 학습하여 프로그래밍의 기본기를 배양하는 능력이다">
-            </div>
-            <div class="mb-3">
-                <select class="form-control" name="gubun">
-                    <option value="ncs">NCS</option>
-                    <option value="비ncs">비NCS</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <input type="text" class="form-control" placeholder="교과목수준" name="grade" value="3">
-            </div>
-            <div class="mb-3">
-                <input type="text" class="form-control" placeholder="교과목 시간" name="totalTime" value="80">
-            </div>
-            <div class="mb-3">
-                <input type="text" class="form-control" placeholder="교과목 순서" name="no" value="1">
-            </div>
-            <div class="mb-3">
-                <input type="text" class="form-control" placeholder="교수 학습방법" name="learningWay" value="실습">
-            </div>
-          
-            <div class="mb-3">
-                <label>시작일</label>
-                <input type="date" class="form-control" placeholder="교과목 시작일" name="startDate" value="2024-05-01">
-            </div>
-            <div class="mb-3">
-                <label>종료일</label>
-                <input type="date" class="form-control" placeholder="교과목 종료일" name="endDate" value="2024-05-10">
-            </div>
+            <form id="save-form" action="/api/course/{{model.currentCourseId}}/subject/save"
+                  method="post">
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="훈련교사" name="teacherName" value="최주호">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="교과목코드" name="code" value="S1001">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="교과목명" name="title" value="자바">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="교과목목표" name="purpose"
+                           value="자바 for, if, 객체지향을 학습하여 프로그래밍의 기본기를 배양하는 능력이다">
+                </div>
+                <div class="mb-3">
+                    <select class="form-control" name="gubun">
+                        <option value="ncs">NCS</option>
+                        <option value="비ncs">비NCS</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="교과목수준" name="grade" value="3">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="교과목 시간" name="totalTime" value="80">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="교과목 순서" name="no" value="1">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="교수 학습방법" name="learningWay" value="실습">
+                </div>
 
-            <button type="submit" class="btn btn-primary form-control">교과목 등록</button>
+                <div class="mb-3">
+                    <label>시작일</label>
+                    <input type="date" class="form-control" placeholder="교과목 시작일" name="startDate" value="2024-05-01">
+                </div>
+                <div class="mb-3">
+                    <label>종료일</label>
+                    <input type="date" class="form-control" placeholder="교과목 종료일" name="endDate" value="2024-05-10">
+                </div>
+
+                <button type="submit" class="btn btn-primary form-control">교과목 등록</button>
             </form>
         </div>
     </div>
 </div>
 
 <script>
+    let currentCourseId = $("#select-option").val();
     $("#select-option").change(() => {
-        let currentCourseId = $("#select-option").val();
-        let screen = $("#screen").val();
-        $("#save-form").prop("action", `/api/teacher/course/${currentCourseId}/subject/save?screen=${screen}`);
+        currentCourseId = $("#select-option").val();
+        $("#save-form").prop("action", `/api/course/${currentCourseId}/subject/save`);
     });
 
     $("#select-option").css("color", "blue");

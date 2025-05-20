@@ -1,5 +1,4 @@
 {{> layout/header}}
-<input type="hidden" id="screen" value="{{screen}}">
 
 <div class="container p-5">
 
@@ -16,29 +15,28 @@
         </div>
 
         <div class="card-body">
-            <form id="save-form" action="/api/teacher/course/{{model.currentCourseId}}/student/save?screen={{screen}}"
-            method="post"
-            enctype="application/x-www-form-urlencoded">
-            <div class="mb-3">
-                <input type="text" class="form-control" placeholder="학생명" name="name" value="김성훈">
-            </div>
-            <div class="mb-3">
-                <input type="text" class="form-control" placeholder="생년원일6자리" name="birthday" value="860205">
-            </div>
-            <div class="mb-3">
-                <input type="text" class="form-control" placeholder="인증번호" name="authCode" value="123456">
-            </div>
-            <button type="submit" class="btn btn-primary form-control">학생 등록</button>
+            <form id="save-form" action="#" method="post">
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="학생명" name="name" value="김성훈">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="생년원일6자리" name="birthday" value="860205">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="인증번호" name="authCode" value="123456">
+                </div>
+                <button type="submit" class="btn btn-primary form-control">학생 등록</button>
             </form>
         </div>
     </div>
 </div>
 
 <script>
+    let currentCourseId = $("#select-option").val();
     $("#select-option").change(() => {
-        let currentCourseId = $("#select-option").val();
+        currentCourseId = $("#select-option").val();
         let screen = $("#screen").val();
-        $("#save-form").prop("action", `/api/teacher/course/${currentCourseId}/student/save?screen=${screen}`);
+        $("#save-form").prop("action", `/api/course/${currentCourseId}/student/save`);
     });
 
     $("#select-option").css("color", "blue");

@@ -21,14 +21,14 @@ public class StudentController {
     private final CourseService courseService;
     private final StudentService studentService;
 
-    @GetMapping("/api/teacher/student")
+    @GetMapping("/api/course/student")
     public String list(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         StudentResponse.PagingDTO respDTO = studentService.모든학생목록(pageable);
         model.addAttribute("paging", respDTO);
         return "course/student/list";
     }
 
-    @GetMapping("/api/teacher/student/save-form")
+    @GetMapping("/api/course/{courseId}/student/save-form")
     public String saveForm(@RequestParam(value = "courseId", required = false) Long courseId, Model model) {
         CourseResponse.SelectedDTO respDTO = courseService.선택된과정목록(courseId);
         model.addAttribute("model", respDTO);
@@ -37,14 +37,9 @@ public class StudentController {
         return "course/student/save-form";
     }
 
-    @PostMapping("/api/teacher/course/{courseId}/student/save")
-    public String save(@PathVariable(value = "courseId") Long courseId, StudentRequest.SaveDTO reqDTO, @RequestParam(value = "screen", required = false) String screen) {
+    @PostMapping("/api/course/{courseId}/student/save")
+    public String save(@PathVariable(value = "courseId") Long courseId, StudentRequest.SaveDTO reqDTO) {
         studentService.학생등록(courseId, reqDTO);
-
-        if (screen.equals("detail")) {
-            return "redirect:/api/teacher/course/" + courseId + "?tabNum=1";
-        } else {
-            return "redirect:/api/teacher/student";
-        }
+        return "redirect:/api/teacher/course/" + courseId + "?tabNum=1";
     }
 }

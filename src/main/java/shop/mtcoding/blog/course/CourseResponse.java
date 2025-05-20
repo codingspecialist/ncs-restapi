@@ -147,7 +147,7 @@ public class CourseResponse {
             private Integer no; // 과정에서 몇번째로 시작하는 교과목인지에 대한 연번
             private String learningWay; // 학습 방법
             private String evaluationWay; // 평가 방법
-            private LocalDate evaluationDate; // 평가일
+            private String evaluationDate; // 평가일
             private String revaluationDate; // 재평가일
             private LocalDate startDate; // 교과목 시작 날짜
             private LocalDate endDate; // 교과목 종료 날짜
@@ -167,13 +167,19 @@ public class CourseResponse {
                 this.totalTime = subject.getTotalTime();
                 this.no = subject.getNo();
                 this.learningWay = subject.getLearningWay();
-                // TODO: 수정해야함
-                this.evaluationWay = paper.getEvaluationWay();
-                this.evaluationDate = paper.getEvaluationDate();
-                if (rePaper != null) {
-                    this.revaluationDate = rePaper.getEvaluationDate().toString();
+
+                if (paper == null) {
+                    this.evaluationWay = "시험지없음";
+                    this.evaluationDate = "시험지없음";
                 } else {
+                    this.evaluationWay = paper.getEvaluationWay();
+                    this.evaluationDate = paper.getEvaluationDate().toString();
+                }
+
+                if (rePaper == null) {
                     this.revaluationDate = "시험지없음";
+                } else {
+                    this.revaluationDate = rePaper.getEvaluationDate().toString();
                 }
 
                 this.startDate = subject.getStartDate();

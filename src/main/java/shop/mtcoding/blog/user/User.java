@@ -47,10 +47,12 @@ public class User {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
     private Teacher teacher;
 
+    // 영속화는 불가능 (객체에 연결만)
     public void setTeacher(Teacher teacher) {
         this.teacher = teacher;
     }
 
+    // 영속화는 불가능 (객체에 연결만)
     public void setStudent(Student student) {
         this.student = student;
     }

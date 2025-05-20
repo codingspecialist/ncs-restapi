@@ -24,9 +24,9 @@ public class UserService {
     private final TeacherRepository teacherRepository;
 
     public User 로그인(UserRequest.LoginDTO reqDTO) {
-        User sessionUser = userRepository.findByUsernameAndPassword(reqDTO.getUsername(), reqDTO.getPassword())
+        User userPS = userRepository.findByUsernameAndPassword(reqDTO.getUsername(), reqDTO.getPassword())
                 .orElseThrow(() -> new Exception401("인증되지 않았습니다"));
-        return sessionUser; // student 정보 포함
+        return userPS; // student, teacher 정보 포함
     }
 
     @Transactional
@@ -49,6 +49,7 @@ public class UserService {
         return userPS;
     }
 
+    // TODO: 현재사용안함 version 2.0 에 하기
     @Transactional
     public User 직원회원가입(UserRequest.JoinDTO reqDTO) {
         // 1. 유저네임 중복검사
@@ -75,16 +76,23 @@ public class UserService {
 
         // 3. 학생 인증 완료 및 업데이트로 회원가입
         User userPS = userRepository.findById(student.getUser().getId())
-                .orElseThrow(() -> new Exception500("학생으로 등록되어 있는데 유저를 찾을 수 없습니다. 관리자에게 문의하세요"));
-        userPS.authentication(reqDTO.getUsername(), reqDTO.getPassword(), reqDTO.getEmail(), UserEnum.STUDENT);
+                .orElseThrow(() -> new Exception500("학생으로 등록되어 있는데 유저를 찾을 수 없는 오류!! 관리자에게 문의하세요"));
+
+        if (!reqDTO.getName().equals(userPS.getName())) {
+            throw new Exception400("인증된 학생의 이름이 아니에요");
+        }
+
+        userPS.studentAuthentication(reqDTO.getUsername(), reqDTO.getPassword(), reqDTO.getEmail(), UserEnum.STUDENT);
         student.setVerified(true);
 
         return userPS;
     }
 
     @Transactional
-    public void 사인저장(UserRequest.TeacherSignDTO reqDTO, User sessionUser) {
+    public User 강사사인저장(UserRequest.TeacherSignDTO reqDTO, User sessionUser) {
         Teacher teacherPS = teacherRepository.findByUserId(sessionUser.getId());
         teacherPS.setSign(reqDTO.getSign());
+        sessionUser.setTeacher(teacherPS);
+        return sessionUser;
     }
 }

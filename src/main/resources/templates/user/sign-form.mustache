@@ -26,14 +26,14 @@
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stopDrawing);
-    canvas.addEventListener('mouseout', function(e) {
-        console.log("마우스 나감 : "+drawing);
+    canvas.addEventListener('mouseout', function (e) {
+        console.log("마우스 나감 : " + drawing);
         if (drawing) {
             stopDrawing(e, true);
         }
     });
-    canvas.addEventListener('mouseenter', function(e) {
-        console.log("마우스 들어옴 : "+drawing);
+    canvas.addEventListener('mouseenter', function (e) {
+        console.log("마우스 들어옴 : " + drawing);
         if (outside && drawing) {
             startDrawing(e, true); // 마우스가 캔바스 밖으로 나갔다가 돌아왔을 때 재시작
         }
@@ -78,12 +78,12 @@
         }
 
         $.ajax({
-            url: `/teacher/sign`,
+            url: `/sign`,
             method: "put",
             data: JSON.stringify(requestBody),
             contentType: "application/json; charset=utf-8"
         }).done((res) => {
-            location.href = '/login-form';
+            location.href = '/';
         }).fail((res) => {
             alert(res.responseJSON.msg);
             console.log(res.responseJSON.msg);

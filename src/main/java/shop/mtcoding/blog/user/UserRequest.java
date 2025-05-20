@@ -16,8 +16,8 @@ public class UserRequest {
         private String email;
         private String name;
         private String role;
-        private String authCode; // null 가능
-        private String birthday; // null 가능
+        private String authCode; // 학생일때만 받음
+        private String birthday; // 학생일때만 받음
 
         public User toEntity() {
             return User.builder()

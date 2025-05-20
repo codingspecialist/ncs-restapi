@@ -28,14 +28,16 @@ public class User {
     @CreationTimestamp // pc -> db (날짜주입)
     private LocalDateTime createdAt;
 
-    public void authentication(String username, String password, String email, UserEnum role) {
+    // 학생 인증
+    public void studentAuthentication(String username, String password, String email, UserEnum role) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
     }
 
-    /////////////////////////////////////////////// 단순 조회용도!!!!!!!!!!!!!!!!!!!
+    /// //////////////////////////////////////////// 단순 조회용도!!!!!!!!!!!!!!!!!!!
+    // 이건 캐스캐이드 저장 불가능함 (FK가 이쪽에 없고, 반대방향에 있음)
     // @Column(unique = true) // OneToOne은 UK가 기본적용됨.
     @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
@@ -44,7 +46,16 @@ public class User {
     @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
     private Teacher teacher;
-    /////////////////////////////////////////////////////////////////////////////
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    /// //////////////////////////////////////////////////////////////////////////
 
     @Builder
     public User(Long id, String username, String password, String email, String name, UserEnum role, LocalDateTime createdAt, Student student, Teacher teacher) {

@@ -32,41 +32,42 @@ public class UserController {
     @PostMapping("/join")
     public String join(UserRequest.JoinDTO reqDTO) {
         if (UserEnum.valueOf(reqDTO.getRole()) == UserEnum.STUDENT) {
-            User sessionUser = userService.학생회원가입(reqDTO);
+            User userPS = userService.학생회원가입(reqDTO);
             session.setAttribute("isStudent", true);
-            session.setAttribute("sessionUser", sessionUser);
+            session.setAttribute("sessionUser", userPS);
             return "redirect:/api/student/exam";
         } else {
-            User sessionUser = userService.강사회원가입(reqDTO);
+            User userPS = userService.강사회원가입(reqDTO);
             session.setAttribute("isStudent", false);
-            session.setAttribute("sessionUser", sessionUser);
-            return "redirect:/teacher/sign-form";
+            session.setAttribute("sessionUser", userPS);
+            return "redirect:/sign-form";
         }
     }
 
-    @PutMapping("/teacher/sign")
-    public ResponseEntity<?> sign(@RequestBody UserRequest.TeacherSignDTO reqDTO) {
+    @PutMapping("/sign")
+    public ResponseEntity<?> teacherSign(@RequestBody UserRequest.TeacherSignDTO reqDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        if (sessionUser.getRole().equals("student")) throw new ApiException401("당신은 선생님이 아니에요");
-        userService.사인저장(reqDTO, sessionUser);
-        session.invalidate();
+        if (!UserEnum.TEACHER.equals(sessionUser.getRole())) throw new ApiException401("당신은 강사가 아니에요");
+        User userPS = userService.강사사인저장(reqDTO, sessionUser);
+
+        // 세션 동기화 (user - teacher(sign))
+        session.setAttribute("sessionUser", userPS);
         return ResponseEntity.ok(new ApiUtil<>(null));
     }
 
-    @GetMapping("/teacher/sign-form")
+    @GetMapping("/sign-form")
     public String teacherSignForm() {
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null) return "redirect:/login-form";
-        return "user/teacher-sign-form";
+        return "user/sign-form";
     }
 
     @PostMapping("/login")
     public String login(UserRequest.LoginDTO reqDTO) {
-        User sessionUser = userService.로그인(reqDTO);
-        session.setAttribute("sessionUser", sessionUser);
+        User userPS = userService.로그인(reqDTO);
+        session.setAttribute("sessionUser", userPS);
 
-        System.out.println("================ " + sessionUser.getRole());
-        if (UserEnum.STUDENT.equals(sessionUser.getRole())) {
+        if (UserEnum.STUDENT.equals(userPS.getRole())) {
             session.setAttribute("isStudent", true);
             return "redirect:/api/student/exam";
         } else {

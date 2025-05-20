@@ -12,14 +12,14 @@
                 </select>
                 <!-- 인증코드 입력창 (초기에는 숨김) -->
                 <div class="mb-3 mt-3" id="authCodeBox" style="display: none;">
-                    <input type="text" class="form-control" placeholder="인증코드를 입력하세요" name="authCode">
+                    <input type="text" class="form-control" placeholder="인증코드를 입력하세요" name="authCode" value="123456">
                 </div>
                 <div class="mb-3 mt-3" id="birthdayBox" style="display: none;">
-                    <input type="text" class="form-control" placeholder="생년월일을 입력하세요" name="birthday">
+                    <input type="text" class="form-control" placeholder="생년월일을 입력하세요" name="birthday" value="860205">
                 </div>
                 <hr>
                 <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Enter username" name="username" value="love">
+                    <input type="text" class="form-control" placeholder="Enter username" name="username" value="boss">
                 </div>
                 <div class="mb-3">
                     <input type="password" class="form-control" placeholder="Enter password" name="password"
@@ -27,10 +27,10 @@
                 </div>
                 <div class="mb-3">
                     <input type="email" class="form-control" placeholder="Enter email" name="email"
-                           value="love@nate.com">
+                           value="bos@nate.com">
                 </div>
-                <div class="mb-3 mt-3" id="nameBox" style="display: none;">
-                    <input type="text" class="form-control" placeholder="이름을 입력하세요" name="name">
+                <div class="mb-3 mt-3">
+                    <input type="text" class="form-control" placeholder="이름을 입력하세요" name="name" value="보스">
                 </div>
                 <button type="submit" class="btn btn-primary form-control">회원가입</button>
             </form>
@@ -45,17 +45,14 @@
     const roleSelect = document.getElementById("roleSelect");
     const authCodeBox = document.getElementById("authCodeBox");
     const birthdayBox = document.getElementById("birthdayBox");
-    const nameBox = document.getElementById("nameBox");
 
     roleSelect.addEventListener("change", function () {
         if (this.value === "STUDENT") {
             authCodeBox.style.display = "block";
             birthdayBox.style.display = "block";
-            nameBox.style.display = "none";
         } else {
             authCodeBox.style.display = "none";
             birthdayBox.style.display = "none";
-            nameBox.style.display = "block";
         }
     });
 
@@ -63,7 +60,6 @@
     if (roleSelect.value === "STUDENT") {
         authCodeBox.style.display = "block";
         birthdayBox.style.display = "block";
-        nameBox.style.display = "none";
     }
 </script>
 

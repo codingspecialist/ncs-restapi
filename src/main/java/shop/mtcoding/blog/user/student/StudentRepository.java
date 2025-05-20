@@ -11,8 +11,10 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query("select st from Student st join fetch st.user u where st.course.id = :courseId order by u.name asc")
     List<Student> findByCourseId(@Param("courseId") Long courseId);
-    
+
     Student findByUserId(@Param("userId") Long userId);
 
-    Optional<Student> findByAuthCode(@Param("authCode") String authCode);
+    @Query("select st from Student st where st.authCode = :authCode and st.birthday = :birthday and st.isVerified is null")
+    Optional<Student> findByAuthCodeAndBirthdayAndIsNotVerified(@Param("authCode") String authCode, @Param("birthday") String birthday);
+
 }

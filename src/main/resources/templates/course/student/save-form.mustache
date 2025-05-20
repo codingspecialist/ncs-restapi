@@ -16,15 +16,19 @@
         </div>
 
         <div class="card-body">
-            <form id="save-form" action="/api/teacher/course/{{model.currentCourseId}}/student/save?screen={{screen}}" method="post"
-                  enctype="application/x-www-form-urlencoded">
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="학생명" name="name" value="김성훈">
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="생년원일6자리" name="birthday" value="860205">
-                </div>
-                <button type="submit" class="btn btn-primary form-control">학생 등록</button>
+            <form id="save-form" action="/api/teacher/course/{{model.currentCourseId}}/student/save?screen={{screen}}"
+            method="post"
+            enctype="application/x-www-form-urlencoded">
+            <div class="mb-3">
+                <input type="text" class="form-control" placeholder="학생명" name="name" value="김성훈">
+            </div>
+            <div class="mb-3">
+                <input type="text" class="form-control" placeholder="생년원일6자리" name="birthday" value="860205">
+            </div>
+            <div class="mb-3">
+                <input type="text" class="form-control" placeholder="인증번호" name="authCode" value="123456">
+            </div>
+            <button type="submit" class="btn btn-primary form-control">학생 등록</button>
             </form>
         </div>
     </div>

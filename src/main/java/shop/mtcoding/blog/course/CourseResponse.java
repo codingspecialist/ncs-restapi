@@ -118,6 +118,7 @@ public class CourseResponse {
             private String dropOutReason; // 중탈 이유
             private String comment; // 학생 모든 교과목에 대한 총평
             private String grade; // 학생 모든 교과목에 대한 수준 1,2,3,4,5
+            private String authCode; // 인증코드
             private Long courseId;
 
             public StudentDTO(Student student) {
@@ -129,6 +130,7 @@ public class CourseResponse {
                 this.dropOutReason = student.getDropOutReason() == null ? "" : student.getDropOutReason();
                 this.comment = student.getComment() == null ? "" : student.getComment();
                 this.grade = student.getGrade() == null ? "" : student.getGrade().toString();
+                this.authCode = student.getAuthCode() == null ? "완료" : student.getAuthCode().toString();
                 this.courseId = student.getCourse().getId();
             }
         }

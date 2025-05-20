@@ -29,19 +29,16 @@ public class UserController {
         return "user/login-form";
     }
 
-    @GetMapping("/student/check-form")
-    public String studentCheckForm() {
-        return "user/student-check-form";
-    }
-
     @PostMapping("/join")
     public String join(UserRequest.JoinDTO reqDTO) {
-        User sessionUser = userService.회원가입(reqDTO);
-
         if (UserEnum.valueOf(reqDTO.getRole()) == UserEnum.STUDENT) {
+            User sessionUser = userService.학생회원가입(reqDTO);
+            session.setAttribute("isStudent", true);
             session.setAttribute("sessionUser", sessionUser);
-            return "redirect:/student/check-form";
+            return "redirect:/api/student/exam";
         } else {
+            User sessionUser = userService.강사회원가입(reqDTO);
+            session.setAttribute("isStudent", false);
             session.setAttribute("sessionUser", sessionUser);
             return "redirect:/teacher/sign-form";
         }

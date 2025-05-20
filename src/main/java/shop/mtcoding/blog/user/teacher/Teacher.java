@@ -27,6 +27,10 @@ public class Teacher {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    public void setSign(String sign) {
+        this.sign = sign;
+    }
+
     @Builder
     public Teacher(Long id, User user, String sign, LocalDateTime createdAt) {
         this.id = id;

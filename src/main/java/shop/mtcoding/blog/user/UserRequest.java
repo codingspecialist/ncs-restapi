@@ -10,20 +10,14 @@ public class UserRequest {
     }
 
     @Data
-    public static class StudentCheckDTO {
-        private Long userId;
-        private String name;
-        private String birthday;
-    }
-
-    @Data
     public static class JoinDTO {
         private String username;
         private String password;
         private String email;
         private String name;
         private String role;
-        private String authCode;
+        private String authCode; // null 가능
+        private String birthday; // null 가능
 
         public User toEntity() {
             return User.builder()

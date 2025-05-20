@@ -41,7 +41,8 @@ public class Student {
     private LocalDateTime createdAt;
 
     public void setVerified(Boolean verified) {
-        isVerified = verified;
+        this.isVerified = verified;
+        this.authCode = null;
     }
 
     // 학생이 입력될 때 마다 자동으로 이름순으로 번호 업데이트

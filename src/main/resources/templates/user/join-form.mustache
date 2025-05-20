@@ -6,13 +6,16 @@
         <div class="card-header"><b>회원가입을 해주세요</b></div>
         <div class="card-body">
             <form action="/join" method="post" enctype="application/x-www-form-urlencoded">
-                <select class="form-control select-option" name="role">
-                    <option value="student">학생</option>
-                    <option value="teacher">강사</option>
+                <select class="form-control select-option" name="role" id="roleSelect">
+                    <option value="STUDENT">학생</option>
+                    <option value="TEACHER">강사</option>
                 </select>
                 <!-- 인증코드 입력창 (초기에는 숨김) -->
                 <div class="mb-3 mt-3" id="authCodeBox" style="display: none;">
                     <input type="text" class="form-control" placeholder="인증코드를 입력하세요" name="authCode">
+                </div>
+                <div class="mb-3 mt-3" id="birthdayBox" style="display: none;">
+                    <input type="text" class="form-control" placeholder="생년월일을 입력하세요" name="birthday">
                 </div>
                 <hr>
                 <div class="mb-3">
@@ -26,6 +29,9 @@
                     <input type="email" class="form-control" placeholder="Enter email" name="email"
                            value="love@nate.com">
                 </div>
+                <div class="mb-3 mt-3" id="nameBox" style="display: none;">
+                    <input type="text" class="form-control" placeholder="이름을 입력하세요" name="name">
+                </div>
                 <button type="submit" class="btn btn-primary form-control">회원가입</button>
             </form>
         </div>
@@ -38,18 +44,26 @@
     // 인증코드 박스를 보여주거나 숨기는 로직
     const roleSelect = document.getElementById("roleSelect");
     const authCodeBox = document.getElementById("authCodeBox");
+    const birthdayBox = document.getElementById("birthdayBox");
+    const nameBox = document.getElementById("nameBox");
 
     roleSelect.addEventListener("change", function () {
-        if (this.value === "student") {
+        if (this.value === "STUDENT") {
             authCodeBox.style.display = "block";
+            birthdayBox.style.display = "block";
+            nameBox.style.display = "none";
         } else {
             authCodeBox.style.display = "none";
+            birthdayBox.style.display = "none";
+            nameBox.style.display = "block";
         }
     });
 
     // 페이지 진입 시 기본값에 따라 처리 (예: 자동선택 되어 있는 경우)
-    if (roleSelect.value === "student") {
+    if (roleSelect.value === "STUDENT") {
         authCodeBox.style.display = "block";
+        birthdayBox.style.display = "block";
+        nameBox.style.display = "none";
     }
 </script>
 

@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.user.student;
+package shop.mtcoding.blog.course.student;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

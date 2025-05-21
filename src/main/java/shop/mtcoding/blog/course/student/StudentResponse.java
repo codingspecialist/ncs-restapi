@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.user.student;
+package shop.mtcoding.blog.course.student;
 
 import lombok.Data;
 import org.springframework.data.domain.Page;

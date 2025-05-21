@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import shop.mtcoding.blog.course.CourseResponse;
 import shop.mtcoding.blog.course.CourseService;
 
 @RequiredArgsConstructor
@@ -31,9 +30,7 @@ public class SubjectController {
 
     @GetMapping("/api/course/{courseId}/subject/save-form")
     public String saveForm(@PathVariable("courseId") Long courseId, Model model) {
-        CourseResponse.SelectedDTO respDTO = courseService.선택된과정목록(courseId);
-        model.addAttribute("model", respDTO);
-
+        model.addAttribute("courseId", courseId);
         return "course/subject/save-form";
     }
 

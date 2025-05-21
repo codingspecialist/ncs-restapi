@@ -6,10 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.Exception404;
+import shop.mtcoding.blog.course.student.Student;
+import shop.mtcoding.blog.course.student.StudentRepository;
 import shop.mtcoding.blog.course.subject.Subject;
 import shop.mtcoding.blog.course.subject.SubjectRepository;
-import shop.mtcoding.blog.user.student.Student;
-import shop.mtcoding.blog.user.student.StudentRepository;
 
 import java.util.List;
 
@@ -24,11 +24,6 @@ public class CourseService {
     @Transactional
     public void 과정등록(CourseRequest.SaveDTO reqDTO) {
         courseRepository.save(reqDTO.toEntity());
-    }
-
-    public CourseResponse.SelectedDTO 선택된과정목록(Long courseId) {
-        List<Course> courseList = courseRepository.findAll();
-        return new CourseResponse.SelectedDTO(courseId, courseList);
     }
 
     public CourseResponse.PagingDTO 과정목록(Pageable pageable) {

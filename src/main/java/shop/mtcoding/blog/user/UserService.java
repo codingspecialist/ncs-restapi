@@ -7,8 +7,8 @@ import shop.mtcoding.blog._core.errors.exception.Exception400;
 import shop.mtcoding.blog._core.errors.exception.Exception401;
 import shop.mtcoding.blog._core.errors.exception.Exception403;
 import shop.mtcoding.blog._core.errors.exception.Exception500;
-import shop.mtcoding.blog.user.student.Student;
-import shop.mtcoding.blog.user.student.StudentRepository;
+import shop.mtcoding.blog.course.student.Student;
+import shop.mtcoding.blog.course.student.StudentRepository;
 import shop.mtcoding.blog.user.teacher.Teacher;
 import shop.mtcoding.blog.user.teacher.TeacherRepository;
 

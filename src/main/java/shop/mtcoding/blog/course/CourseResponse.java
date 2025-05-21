@@ -2,9 +2,9 @@ package shop.mtcoding.blog.course;
 
 import lombok.Data;
 import org.springframework.data.domain.Page;
+import shop.mtcoding.blog.course.student.Student;
 import shop.mtcoding.blog.course.subject.Subject;
 import shop.mtcoding.blog.paper.Paper;
-import shop.mtcoding.blog.user.student.Student;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,11 +12,11 @@ import java.util.List;
 public class CourseResponse {
 
     @Data
-    public static class SelectedDTO {
+    public static class SelectedV2DTO {
         private Long currentCourseId;
         private List<CourseDTO> courses;
 
-        public SelectedDTO(Long currentCourseId, List<Course> courses) {
+        public SelectedV2DTO(Long currentCourseId, List<Course> courses) {
             this.currentCourseId = currentCourseId == null ? 0 : currentCourseId;
             this.courses = courses.stream().map(course -> new CourseDTO(course, this.currentCourseId)).toList();
         }

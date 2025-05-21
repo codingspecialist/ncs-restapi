@@ -3,19 +3,10 @@
 <div class="container p-5">
 
     <div class="card">
-        <div class="card-header"><b>학생을 등록 해주세요</b></div>
-
-        <div class="card-header">
-            <select class="form-select" id="select-option">
-                <option value="0">과정을 선택해주세요 (필수)</option>
-                {{#model.courses}}
-                    <option value="{{courseId}}" {{#isSelected}}selected{{/isSelected}}>{{round}}회차 {{title}}</option>
-                {{/model.courses}}
-            </select>
-        </div>
+        <div class="card-header"><b>{{courseTitle}}</b></div>
 
         <div class="card-body">
-            <form id="save-form" action="#" method="post">
+            <form id="save-form" action="/api/course/{{courseId}}/student/save" method="post">
                 <div class="mb-3">
                     <input type="text" class="form-control" placeholder="학생명" name="name" value="김성훈">
                 </div>
@@ -31,15 +22,22 @@
     </div>
 </div>
 
-<script>
-    let currentCourseId = $("#select-option").val();
-    $("#select-option").change(() => {
-        currentCourseId = $("#select-option").val();
-        let screen = $("#screen").val();
-        $("#save-form").prop("action", `/api/course/${currentCourseId}/student/save`);
-    });
+<!--<script>-->
+<!--    let currentCourseId = $("#select-option").val();-->
+<!--    $("#select-option").change(() => {-->
+<!--        currentCourseId = $("#select-option").val();-->
+<!--        $("#save-form").prop("action", `/api/course/${currentCourseId}/student/save`);-->
+<!--    });-->
 
-    $("#select-option").css("color", "blue");
-</script>
+<!--    $("#select-option").css("color", "blue");-->
+
+<!--    $("#save-form").submit(function (event) {-->
+<!--        const selectedVal = $("#select-option").val();-->
+<!--        if (selectedVal === "0") {-->
+<!--            alert("과정을 선택해주세요.");-->
+<!--            event.preventDefault(); // 제출 막기-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
 
 {{> layout/footer}}

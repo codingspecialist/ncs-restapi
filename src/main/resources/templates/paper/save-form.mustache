@@ -5,9 +5,9 @@
     <div class="card">
         <div class="card-header"><b>시험지를 등록 해주세요</b></div>
         <div class="card-body">
-            <form action="/api/teacher/paper/save" method="post" enctype="application/x-www-form-urlencoded">
+            <form id="save-form" action="/api/teacher/paper/save" method="post">
                 <div class="mb-3">
-                    <select class="form-select" name="subjectId">
+                    <select class="form-select" name="subjectId" id="select-option">
                         <option value="0">교과목을 선택해주세요 (필수)</option>
                         {{#models}}
                             <option value="{{subjectId}}">{{subjectTitle}} : {{courseTitle}} {{courseRound}}회차</option>
@@ -42,5 +42,15 @@
         </div>
     </div>
 </div>
+
+<script>
+    $("#save-form").submit(function (event) {
+        const selectedVal = $("#select-option").val();
+        if (selectedVal === "0") {
+            alert("교과목을 선택해주세요.");
+            event.preventDefault(); // 제출 막기
+        }
+    });
+</script>
 
 {{> layout/footer}}

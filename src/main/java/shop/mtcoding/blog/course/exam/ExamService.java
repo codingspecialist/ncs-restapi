@@ -8,6 +8,8 @@ import shop.mtcoding.blog._core.errors.exception.Exception404;
 import shop.mtcoding.blog._core.errors.exception.Exception500;
 import shop.mtcoding.blog.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.course.exam.answer.ExamAnswerRepository;
+import shop.mtcoding.blog.course.student.Student;
+import shop.mtcoding.blog.course.student.StudentRepository;
 import shop.mtcoding.blog.course.subject.SubjectRepository;
 import shop.mtcoding.blog.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.course.subject.element.SubjectElementRepository;
@@ -17,8 +19,6 @@ import shop.mtcoding.blog.paper.question.Question;
 import shop.mtcoding.blog.paper.question.QuestionRepository;
 import shop.mtcoding.blog.user.User;
 import shop.mtcoding.blog.user.UserRepository;
-import shop.mtcoding.blog.user.student.Student;
-import shop.mtcoding.blog.user.student.StudentRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;

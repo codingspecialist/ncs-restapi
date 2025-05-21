@@ -3,9 +3,9 @@ package shop.mtcoding.blog.course.exam;
 import lombok.Data;
 import shop.mtcoding.blog._core.errors.exception.api.ApiException400;
 import shop.mtcoding.blog.course.exam.answer.ExamAnswer;
+import shop.mtcoding.blog.course.student.Student;
 import shop.mtcoding.blog.paper.Paper;
 import shop.mtcoding.blog.paper.question.Question;
-import shop.mtcoding.blog.user.student.Student;
 
 import java.util.List;
 

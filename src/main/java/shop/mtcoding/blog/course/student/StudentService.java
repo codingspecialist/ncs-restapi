@@ -12,8 +12,6 @@ import shop.mtcoding.blog.user.User;
 import shop.mtcoding.blog.user.UserEnum;
 import shop.mtcoding.blog.user.UserRepository;
 
-import java.util.List;
-
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
@@ -43,12 +41,5 @@ public class StudentService {
         // 3. 학생 저장
         Student student = reqDTO.toEntity(coursePS, userPS);
         studentRepository.save(student);
-
-        // 4. 학생 이름으로 조회하여 과정별 학생 번호 이름순으로 부여
-        List<Student> studentListPS = studentRepository.findByCourseId(courseId);
-        for (int i = 0; i < studentListPS.size(); i++) {
-            Student st = studentListPS.get(i);
-            st.updateStudentNo(i + 1);
-        }
     }
 }

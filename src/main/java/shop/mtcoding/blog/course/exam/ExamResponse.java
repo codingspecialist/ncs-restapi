@@ -112,7 +112,7 @@ public class ExamResponse {
             this.teacherSign = teacher.getTeacher().getSign();
             this.studentSign = exam.getStudentSign();
             this.isStudentSign = exam.getStudentSign() == null ? false : true;
-            this.studentNo = exam.getStudent().getStudentNo();
+            this.studentNo = 99;
             this.prevExamId = prevExamId;
             this.nextExamId = nextExamId;
             this.fExamId = fExamId;
@@ -193,7 +193,7 @@ public class ExamResponse {
             this.studentId = exam.getStudent().getId();
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
-            this.studentNo = exam.getStudent().getStudentNo();
+            this.studentNo = 99;
             this.subjectNo = exam.getPaper().getSubject().getNo();
             this.courseNameAndRound = exam.getStudent().getCourse().getTitle() + "/" + exam.getStudent().getCourse().getRound() + "회차";
             this.subjectTitle = exam.getPaper().getSubject().getTitle();

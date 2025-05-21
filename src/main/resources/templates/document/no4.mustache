@@ -11,19 +11,19 @@
 
 <div class="container p-5">
     <ul class="pagination d-flex justify-content-end">
-        {{#model.prevExamId}}
+        {{#model.prevIndex}}
             <li class="page-item"><a class="page-link"
-                                     href="/api/teacher/document/course/{{model.courseId}}/subject/{{model.subjectId}}/no4?examId={{model.prevExamId}}
+                                     href="/api/teacher/document/course/{{model.courseId}}/subject/{{model.subjectId}}/no4?currentIndex={{model.prevIndex}}
                 ">이전학생</a>
             </li>
-        {{/model.prevExamId}}
+        {{/model.prevIndex}}
 
-        {{#model.nextExamId}}
+        {{#model.nextIndex}}
             <li class="page-item"><a class="page-link"
-                                     href="/api/teacher/document/course/{{model.courseId}}/subject/{{model.subjectId}}/no4?examId={{model.nextExamId}}
+                                     href="/api/teacher/document/course/{{model.courseId}}/subject/{{model.subjectId}}/no4?currentIndex={{model.nextIndex}}
                 ">다음학생</a>
             </li>
-        {{/model.nextExamId}}
+        {{/model.nextIndex}}
     </ul>
 
     <div class="page-title">
@@ -46,7 +46,7 @@
                     평가유형 : {{model.examState}} <br>
                 </div>
                 <div>
-                    <div class="d-flex justify-content-end mb-3">연번 : {{model.studentNo}}</div>
+                    <div class="d-flex justify-content-end mb-3">연번 : {{model.no}}</div>
                     <div class="d-flex">
                         <table class="sign-table">
                             <tr>

@@ -311,11 +311,11 @@ public class DocumentResponse {
         private String teacherSign;
         private String studentSign;
         private Boolean isStudentSign;
-        private Integer studentNo;
-        private Long prevExamId; // 해당 교과목에 이전 학생 id
-        private Long nextExamId; // 해당 교과목에 다음 학생 id
+        private Integer prevIndex;
+        private Integer nextIndex;
+        private Integer no;
 
-        public No4DTO(Exam exam, List<SubjectElement> subjectElements, User teacher, Long prevExamId, Long nextExamId) {
+        public No4DTO(Exam exam, List<SubjectElement> subjectElements, User teacher, Integer prevIndex, Integer nextIndex, Integer currentIndex) {
             this.subjectId = exam.getPaper().getSubject().getId();
             this.courseId = exam.getPaper().getSubject().getCourse().getId();
             this.examId = exam.getId();
@@ -337,9 +337,9 @@ public class DocumentResponse {
             this.teacherSign = teacher.getTeacher().getSign();
             this.studentSign = exam.getStudentSign();
             this.isStudentSign = exam.getStudentSign() == null ? false : true;
-            this.studentNo = exam.getStudent().getStudentNo();
-            this.prevExamId = prevExamId;
-            this.nextExamId = nextExamId;
+            this.prevIndex = prevIndex;
+            this.nextIndex = nextIndex;
+            this.no = currentIndex + 1;
         }
 
         @Data

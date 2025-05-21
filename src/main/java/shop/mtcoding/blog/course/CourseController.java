@@ -78,6 +78,7 @@ public class CourseController {
     @PostMapping("/api/course/{courseId}/student/save")
     public String studentSave(@PathVariable(value = "courseId") Long courseId, StudentRequest.SaveDTO reqDTO) {
         studentService.학생등록(courseId, reqDTO);
+        System.out.println("-----------------------------------------------------------------");
         return "redirect:/api/teacher/course/" + courseId + "?tabNum=1";
     }
 }

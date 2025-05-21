@@ -33,14 +33,14 @@ values ('최주호', 'S2002', 1, '2024-06-08', '2024-06-13', 3, 'NCS', '실습',
         'HTTP를 학습하는 능력이다', '스프링부트', 50, now());
 
 
-insert into student_tb(user_id, birthday, auth_code, course_id, created_at, state, student_no, is_verified)
-values (2, '100000', null, 1, now(), 'ENROLLED', 1, true);
-insert into student_tb(user_id, birthday, auth_code, course_id, created_at, state, student_no, is_verified)
-values (3, '200000', null, 1, now(), 'ENROLLED', 2, true);
-insert into student_tb(user_id, birthday, auth_code, course_id, created_at, state, student_no, is_verified)
-values (4, '300000', null, 1, now(), 'ENROLLED', 3, true);
-insert into student_tb(user_id, birthday, auth_code, course_id, created_at, state, student_no, is_verified)
-values (5, '400000', null, 1, now(), 'ENROLLED', 4, true);
+insert into student_tb(user_id, birthday, auth_code, course_id, created_at, state, is_verified)
+values (2, '100000', null, 1, now(), 'ENROLLED', true);
+insert into student_tb(user_id, birthday, auth_code, course_id, created_at, state, is_verified)
+values (3, '200000', null, 1, now(), 'ENROLLED', true);
+insert into student_tb(user_id, birthday, auth_code, course_id, created_at, state, is_verified)
+values (4, '300000', null, 1, now(), 'ENROLLED', true);
+insert into student_tb(user_id, birthday, auth_code, course_id, created_at, state, is_verified)
+values (5, '400000', null, 1, now(), 'ENROLLED', true);
 
 
 insert into subject_element_tb(create_date, no, subject_id, subtitle)

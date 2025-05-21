@@ -19,9 +19,7 @@ import shop.mtcoding.blog.paper.question.QuestionRepository;
 import shop.mtcoding.blog.user.User;
 import shop.mtcoding.blog.user.UserRepository;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -53,39 +51,32 @@ public class DocumentService {
         return new DocumentResponse.No2DTO(paperPS.getSubject(), questionList);
     }
 
-    public DocumentResponse.No4DTO no4(Long courseId, Long subjectId, Long examId) {
-        Exam examPS = null;
-        if (examId == 0) {
-            List<Exam> examListPS = examRepository.findBySubjectIdAndIsUse(subjectId);
+    public DocumentResponse.No4DTO no4(Long courseId, Long subjectId, Integer currentIndex) {
+        // 1. 본평가, 재평가중에 사용중인 평가들을 학생 이름순으로 조회 (가이름0, 나이름1, 다이름2)
+        List<Exam> examListPS = examRepository.findBySubjectIdAndIsUseOrderByStudentNameAsc(subjectId);
 
-            Optional<Exam> minExamOpt = examListPS.stream()
-                    .min(Comparator.comparingLong(Exam::getId));
+        // 2. 가이름 먼저 가져옴
+        Exam examPS = examListPS.get(currentIndex);
+        if (examPS == null) throw new Exception404("시험친 기록이 없어요");
 
-            if (minExamOpt.isPresent()) {
-                examPS = minExamOpt.get();
-            } else {
-                throw new Exception404("시험친 기록이 없어요");
-            }
-        } else {
-            examPS = examRepository.findById(examId)
-                    .orElseThrow(() -> new Exception404("시험을 치지 않았네요"));
-        }
+        // 3. 이전 인덱스, 다음 인덱스 존재유무 확인
+        Integer prevIndex = currentIndex - 1;
+        Integer nextIndex = currentIndex + 1;
 
+        if (prevIndex < 0) prevIndex = null;
+        if (nextIndex >= examListPS.size()) nextIndex = null;
+
+        // 4. 교과목 요소 찾기
         List<SubjectElement> subjectElementListPS =
                 elementRepository.findBySubjectId(subjectId);
 
+        // 5. 선생님 사인 찾기
         User teacher = userRepository.findByTeacherName(examPS.getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
 
-        // 현재 학생 번호 찾기
-        Integer currentStudentNo = examPS.getStudent().getStudentNo();
 
-        // NOTE: 다음 학생 번호, 이전 학생 번호로 ExamId 찾기 (만약에 재평가와 본평가가 있으면 재평가만 불러오기)
-        Long prevExamId = examRepository.findByStudentNoToExamId(subjectId, currentStudentNo - 1, true);
-        Long nextExamId = examRepository.findByStudentNoToExamId(subjectId, currentStudentNo + 1, true);
+        return new DocumentResponse.No4DTO(examPS, subjectElementListPS, teacher, prevIndex, nextIndex, currentIndex);
 
-
-        return new DocumentResponse.No4DTO(examPS, subjectElementListPS, teacher, prevExamId, nextExamId);
     }
 
     public DocumentResponse.No3DTO no3(Long courseId, Long subjectId) {

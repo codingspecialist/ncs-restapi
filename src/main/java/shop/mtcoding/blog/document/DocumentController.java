@@ -37,8 +37,8 @@ public class DocumentController {
     }
 
     @GetMapping("/api/teacher/document/course/{courseId}/subject/{subjectId}/no4")
-    public String no4(@PathVariable("courseId") Long courseId, @PathVariable("subjectId") Long subjectId, Model model, @RequestParam(value = "examId", defaultValue = "0") Long examId) {
-        DocumentResponse.No4DTO respDTO = documentService.no4(courseId, subjectId, examId);
+    public String no4(@PathVariable("courseId") Long courseId, @PathVariable("subjectId") Long subjectId, Model model, @RequestParam(value = "currentIndex", defaultValue = "0") Integer currentIndex) {
+        DocumentResponse.No4DTO respDTO = documentService.no4(courseId, subjectId, currentIndex);
         model.addAttribute("model", respDTO);
         return "document/no4";
     }

@@ -11,7 +11,6 @@ import shop.mtcoding.blog.user.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-// INFO: 학생은 과정에 종속된다
 @NoArgsConstructor
 @Getter
 @Entity
@@ -36,7 +35,6 @@ public class Student {
     private StudentEnum state; // 취업, 중도탈락, 미이수, 이수, 재학중
     private String authCode; // 학생 인증 코드
     private Boolean isVerified; // 학생 인증 여부
-    private Integer studentNo; // 교과목 1에 학생번호 1 (유니크 복합키)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -45,13 +43,8 @@ public class Student {
         this.authCode = null;
     }
 
-    // 학생이 입력될 때 마다 자동으로 이름순으로 번호 업데이트
-    public void updateStudentNo(Integer studentNo) {
-        this.studentNo = studentNo;
-    }
-
     @Builder
-    public Student(Long id, User user, Course course, String birthday, LocalDate dropOutDate, String dropOutReason, String comment, Integer grade, StudentEnum state, String authCode, Boolean isVerified, Integer studentNo, LocalDateTime createdAt) {
+    public Student(Long id, User user, Course course, String birthday, LocalDate dropOutDate, String dropOutReason, String comment, Integer grade, StudentEnum state, String authCode, Boolean isVerified, LocalDateTime createdAt) {
         this.id = id;
         this.user = user;
         this.course = course;
@@ -63,7 +56,6 @@ public class Student {
         this.state = state;
         this.authCode = authCode;
         this.isVerified = isVerified;
-        this.studentNo = studentNo;
         this.createdAt = createdAt;
     }
 }

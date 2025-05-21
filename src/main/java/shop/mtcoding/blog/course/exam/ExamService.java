@@ -18,6 +18,7 @@ import shop.mtcoding.blog.paper.PaperRepository;
 import shop.mtcoding.blog.paper.question.Question;
 import shop.mtcoding.blog.paper.question.QuestionRepository;
 import shop.mtcoding.blog.user.User;
+import shop.mtcoding.blog.user.UserEnum;
 import shop.mtcoding.blog.user.UserRepository;
 
 import java.util.*;
@@ -40,7 +41,7 @@ public class ExamService {
     @Transactional
     public void 결석입력(ExamRequest.AbsentDTO reqDTO, User sessionUser) {
         // 1. 유저가 선생님인지 검증
-        if (!"teacher".equals(sessionUser.getRole())) {
+        if (UserEnum.STUDENT.equals(sessionUser.getRole())) {
             throw new Exception403("권한이 없습니다.");
         }
 
@@ -114,11 +115,11 @@ public class ExamService {
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
 
         // 현재 학생 번호 찾기
-        Integer currentStudentNo = examPS.getStudent().getStudentNo();
+        Integer currentStudentNo = 99;
 
         // NOTE: 다음 학생 번호, 이전 학생 번호로 ExamId 찾기 (만약에 재평가와 본평가가 있으면 재평가만 불러오기)
-        Long prevExamId = examRepository.findByStudentNoToExamId(subjectId, currentStudentNo - 1, true);
-        Long nextExamId = examRepository.findByStudentNoToExamId(subjectId, currentStudentNo + 1, true);
+//        Long prevExamId = examRepository.findByStudentNoToExamId(subjectId, currentStudentNo - 1, true);
+//        Long nextExamId = examRepository.findByStudentNoToExamId(subjectId, currentStudentNo + 1, true);
 
         Long fExamId = null;
         if (examPS.getExamState().equals("재평가")) {
@@ -127,7 +128,7 @@ public class ExamService {
             fExamId = reExamPS.getId();
         }
 
-        return new ExamResponse.ResultDetailDTO(examPS, subjectElementListPS, teacher, prevExamId, nextExamId, fExamId);
+        return new ExamResponse.ResultDetailDTO(examPS, subjectElementListPS, teacher, 1l, 2l, fExamId);
     }
 
     public ExamResponse.ResultDetailDTO 미이수시험친결과상세보기(Long examId) {
@@ -336,7 +337,7 @@ public class ExamService {
                 ExamResponse.ResultDTO dto = new ExamResponse.ResultDTO();
                 dto.setExamId(0L);
                 dto.setPaperId(mainPaper.getId());
-                dto.setStudentNo(student.getStudentNo());
+                dto.setStudentNo(99);
                 dto.setSubjectNo(0);
                 dto.setCourseNameAndRound(student.getCourse().getTitle() + "/" + student.getCourse().getRound() + "회차");
                 dto.setSubjectTitle(mainPaper.getSubject().getTitle());

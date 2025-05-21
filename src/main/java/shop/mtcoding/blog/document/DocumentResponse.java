@@ -11,6 +11,7 @@ import shop.mtcoding.blog.paper.Paper;
 import shop.mtcoding.blog.paper.question.Question;
 import shop.mtcoding.blog.paper.question.option.QuestionOption;
 import shop.mtcoding.blog.user.User;
+import shop.mtcoding.blog.user.teacher.Teacher;
 
 import java.util.Arrays;
 import java.util.List;
@@ -315,7 +316,7 @@ public class DocumentResponse {
         private Integer nextIndex;
         private Integer no;
 
-        public No4DTO(Exam exam, List<SubjectElement> subjectElements, User teacher, Integer prevIndex, Integer nextIndex, Integer currentIndex) {
+        public No4DTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher, Integer prevIndex, Integer nextIndex, Integer currentIndex) {
             this.subjectId = exam.getPaper().getSubject().getId();
             this.courseId = exam.getPaper().getSubject().getCourse().getId();
             this.examId = exam.getId();
@@ -334,7 +335,7 @@ public class DocumentResponse {
             this.score = exam.getScore();
             this.teacherComment = exam.getTeacherComment();
             this.grade = exam.getGrade();
-            this.teacherSign = teacher.getTeacher().getSign();
+            this.teacherSign = teacher.getSign();
             this.studentSign = exam.getStudentSign();
             this.isStudentSign = exam.getStudentSign() == null ? false : true;
             this.prevIndex = prevIndex;

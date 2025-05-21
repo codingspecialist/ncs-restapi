@@ -18,6 +18,8 @@ import shop.mtcoding.blog.paper.question.Question;
 import shop.mtcoding.blog.paper.question.QuestionRepository;
 import shop.mtcoding.blog.user.User;
 import shop.mtcoding.blog.user.UserRepository;
+import shop.mtcoding.blog.user.teacher.Teacher;
+import shop.mtcoding.blog.user.teacher.TeacherRepository;
 
 import java.util.List;
 
@@ -31,6 +33,7 @@ public class DocumentService {
     private final QuestionRepository questionRepository;
     private final PaperRepository paperRepository;
     private final UserRepository userRepository;
+    private final TeacherRepository teacherRepository;
     private final SubjectElementRepository elementRepository;
     private final ExamRepository examRepository;
 
@@ -70,10 +73,11 @@ public class DocumentService {
         List<SubjectElement> subjectElementListPS =
                 elementRepository.findBySubjectId(subjectId);
 
+        System.out.println("-----------------------------------3333-----------------------");
         // 5. 선생님 사인 찾기
-        User teacher = userRepository.findByTeacherName(examPS.getTeacherName())
+        Teacher teacher = teacherRepository.findByName(examPS.getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
-
+        System.out.println("-------------------------------44444---------------------------");
 
         return new DocumentResponse.No4DTO(examPS, subjectElementListPS, teacher, prevIndex, nextIndex, currentIndex);
 

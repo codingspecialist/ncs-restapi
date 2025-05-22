@@ -69,9 +69,10 @@ public class CourseController {
     }
 
     @GetMapping("/api/course/{courseId}/student/save-form")
-    public String studentSaveForm(@PathVariable("courseId") Long courseId, @RequestParam("courseTitle") String courseTitle, Model model) {
+    public String studentSaveForm(@PathVariable("courseId") Long courseId, @RequestParam("courseTitle") String courseTitle, @RequestParam("courseRound") String courseRound, Model model) {
         model.addAttribute("courseId", courseId);
         model.addAttribute("courseTitle", courseTitle);
+        model.addAttribute("courseRound", courseRound);
         return "course/student/save-form";
     }
 

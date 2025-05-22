@@ -29,13 +29,15 @@ public class SubjectController {
     }
 
     @GetMapping("/api/course/{courseId}/subject/save-form")
-    public String saveForm(@PathVariable("courseId") Long courseId, Model model) {
+    public String saveForm(@PathVariable("courseId") Long courseId, @RequestParam("courseTitle") String courseTitle, @RequestParam("courseRound") String courseRound, Model model) {
         model.addAttribute("courseId", courseId);
+        model.addAttribute("courseTitle", courseTitle);
+        model.addAttribute("courseRound", courseRound);
         return "course/subject/save-form";
     }
 
     @PostMapping("/api/course/{courseId}/subject/save")
-    public String save(@PathVariable(value = "courseId") Long courseId, SubjectRequest.SaveDTO reqDTO, @RequestParam(value = "screen", required = false) String screen) {
+    public String save(@PathVariable(value = "courseId") Long courseId, SubjectRequest.SaveDTO reqDTO) {
         subjectService.교과목등록(courseId, reqDTO);
         return "redirect:/api/teacher/course/" + courseId + "?tabNum=0";
     }

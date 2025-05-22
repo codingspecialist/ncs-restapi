@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import shop.mtcoding.blog.course.student.StudentRequest;
 import shop.mtcoding.blog.course.student.StudentResponse;
 import shop.mtcoding.blog.course.student.StudentService;
+import shop.mtcoding.blog.user.User;
 import shop.mtcoding.blog.user.teacher.TeacherResponse;
 import shop.mtcoding.blog.user.teacher.TeacherService;
 
@@ -30,7 +31,8 @@ public class CourseController {
 
     @GetMapping("/api/course")
     public String list(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
-        CourseResponse.PagingDTO respDTO = courseService.과정목록(pageable);
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        CourseResponse.PagingDTO respDTO = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
         model.addAttribute("paging", respDTO);
 
         return "course/list";

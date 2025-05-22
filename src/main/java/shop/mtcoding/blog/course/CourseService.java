@@ -63,8 +63,8 @@ public class CourseService {
         courseTeacherRepository.saveAll(subTeachers);
     }
 
-    public CourseResponse.PagingDTO 과정목록(Pageable pageable) {
-        Page<Course> paging = courseRepository.findAll(pageable);
+    public CourseResponse.PagingDTO 과정목록(Long teacherId, Pageable pageable) {
+        Page<Course> paging = courseRepository.findAllByTeacherId(teacherId, pageable);
         return new CourseResponse.PagingDTO(paging);
     }
 

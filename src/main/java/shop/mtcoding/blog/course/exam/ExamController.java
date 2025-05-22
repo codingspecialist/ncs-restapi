@@ -59,7 +59,8 @@ public class ExamController {
 
     @GetMapping("/api/teacher/exam/course")
     public String course(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
-        CourseResponse.PagingDTO respDTO = courseService.과정목록(pageable);
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        CourseResponse.PagingDTO respDTO = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
         model.addAttribute("paging", respDTO);
         return "course/exam/teacher-course-list";
     }

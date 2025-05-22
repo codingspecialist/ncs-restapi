@@ -42,7 +42,7 @@ public class Student {
     private LocalDateTime createdAt;
 
     public Boolean checkNameAndBirthday(String name, String birthday) {
-        if (this.name == name && this.birthday == birthday) return true;
+        if (this.name.equals(name) && this.birthday.equals(birthday)) return true;
         else return false;
     }
 

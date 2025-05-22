@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.Exception403;
 import shop.mtcoding.blog._core.errors.exception.Exception404;
-import shop.mtcoding.blog._core.errors.exception.Exception500;
 import shop.mtcoding.blog.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.course.exam.answer.ExamAnswerRepository;
 import shop.mtcoding.blog.course.student.Student;
@@ -104,34 +103,39 @@ public class ExamService {
         examPS.updateTeacherComment(reqDTO.getTeacherComment());
     }
 
-    public ExamResponse.ResultDetailDTO 시험친결과상세보기(Long examId) {
+    // TODO: 이부분 currentIndex, fExamId 등등 복잡하게 수정해야함
+    public ExamResponse.ResultDetailDTO 시험친결과상세보기(Long examId, Integer currentIndex) {
+        // 1. 시험 결과 찾기
         Exam examPS = examRepository.findById(examId)
-                .orElseThrow(() -> new Exception404("응시한 시험이 존재하지 않아요"));
+                .orElseThrow(() -> new Exception404("시험친 기록이 없어요"));
 
+        // 2. 본평가, 재평가중에 사용중인 평가들을 학생 이름순으로 조회 (가이름0, 나이름1, 다이름2)
         Long subjectId = examPS.getPaper().getSubject().getId();
-        Long studentId = examPS.getStudent().getId();
+        List<Exam> examListPS = examRepository.findBySubjectIdAndIsUseOrderByStudentNameAsc(subjectId);
 
+        // 3. currentIndex 찾기
+        for (int i = 0; i < examListPS.size(); i++) {
+            if (examListPS.get(i).getId().equals(examId)) {
+                currentIndex = i;
+            }
+        }
+
+        // 4. 이전 인덱스, 다음 인덱스 존재유무 확인
+        Integer prevIndex = currentIndex - 1;
+        Integer nextIndex = currentIndex + 1;
+
+        if (prevIndex < 0) prevIndex = null;
+        if (nextIndex >= examListPS.size()) nextIndex = null;
+
+        // 5. 교과목 요소 찾기
         List<SubjectElement> subjectElementListPS =
                 elementRepository.findBySubjectId(subjectId);
 
+        // 6. 선생님 사인 찾기
         Teacher teacher = teacherRepository.findByName(examPS.getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
 
-        // 현재 학생 번호 찾기
-        Integer currentStudentNo = 99;
-
-        // NOTE: 다음 학생 번호, 이전 학생 번호로 ExamId 찾기 (만약에 재평가와 본평가가 있으면 재평가만 불러오기)
-//        Long prevExamId = examRepository.findByStudentNoToExamId(subjectId, currentStudentNo - 1, true);
-//        Long nextExamId = examRepository.findByStudentNoToExamId(subjectId, currentStudentNo + 1, true);
-
-        Long fExamId = null;
-        if (examPS.getExamState().equals("재평가")) {
-            Exam reExamPS = examRepository.findByOrigin(subjectId, studentId, false)
-                    .orElseThrow(() -> new Exception500("재평가 본평가 저장 프로세스 오류 : 관리자 문의"));
-            fExamId = reExamPS.getId();
-        }
-
-        return new ExamResponse.ResultDetailDTO(examPS, subjectElementListPS, teacher, 1l, 2l, fExamId);
+        return new ExamResponse.ResultDetailDTO(examPS, subjectElementListPS, teacher, prevIndex, nextIndex, currentIndex);
     }
 
     public ExamResponse.ResultDetailDTO 미이수시험친결과상세보기(Long examId) {

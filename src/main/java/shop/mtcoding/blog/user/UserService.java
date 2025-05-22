@@ -73,7 +73,7 @@ public class UserService {
 
         // 3. 인증번호의 학생 정보와 회원가입시 들어오는 정보 비교
         Boolean isSameInfo = student.checkNameAndBirthday(reqDTO.getName(), reqDTO.getBirthday());
-        if (isSameInfo) throw new Exception400("인증된 학생의 정보가 아닙니다. 생년월일/이름을 확인하세요.");
+        if (!isSameInfo) throw new Exception400("인증된 학생의 정보가 아닙니다. 생년월일/이름을 확인하세요.");
 
         // 4. 유저 회원가입
         User userPS = userRepository.save(reqDTO.toEntity());

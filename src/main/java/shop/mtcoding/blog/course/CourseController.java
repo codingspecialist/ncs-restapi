@@ -52,7 +52,7 @@ public class CourseController {
         return "redirect:/api/course";
     }
 
-    @GetMapping("/api/teacher/course/{courseId}")
+    @GetMapping("/api/course/{courseId}")
     public String detail(@PathVariable(value = "courseId") Long courseId, @RequestParam(value = "tabNum", required = false, defaultValue = "0") Integer tabNum, Model model) {
         CourseResponse.DetailDTO respDTO = courseService.과정상세(courseId);
         model.addAttribute("model", respDTO);
@@ -83,6 +83,6 @@ public class CourseController {
     public String studentSave(@PathVariable(value = "courseId") Long courseId, StudentRequest.SaveDTO reqDTO) {
         studentService.학생등록(courseId, reqDTO);
         System.out.println("-----------------------------------------------------------------");
-        return "redirect:/api/course" + courseId + "?tabNum=1";
+        return "redirect:/api/course/" + courseId + "?tabNum=1";
     }
 }

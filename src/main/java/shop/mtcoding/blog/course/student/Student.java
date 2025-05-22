@@ -26,6 +26,7 @@ public class Student {
     @ManyToOne(fetch = FetchType.LAZY)
     private Course course;
 
+    private String name;
     private String birthday; // 생년월일 (800825)
     private LocalDate dropOutDate; // 중탈 날짜
     private String dropOutReason; // 중탈 이유
@@ -44,9 +45,10 @@ public class Student {
     }
 
     @Builder
-    public Student(Long id, User user, Course course, String birthday, LocalDate dropOutDate, String dropOutReason, String comment, Integer grade, StudentEnum state, String authCode, Boolean isVerified, LocalDateTime createdAt) {
+    public Student(Long id, User user, String name, Course course, String birthday, LocalDate dropOutDate, String dropOutReason, String comment, Integer grade, StudentEnum state, String authCode, Boolean isVerified, LocalDateTime createdAt) {
         this.id = id;
         this.user = user;
+        this.name = name;
         this.course = course;
         this.birthday = birthday;
         this.dropOutDate = dropOutDate;

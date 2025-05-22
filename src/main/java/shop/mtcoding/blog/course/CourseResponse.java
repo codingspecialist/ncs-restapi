@@ -123,7 +123,7 @@ public class CourseResponse {
 
             public StudentDTO(Student student) {
                 this.studentId = student.getId();
-                this.name = student.getUser().getName();
+                this.name = student.getName();
                 this.birthday = student.getBirthday();
                 this.state = student.getState().getValue();
                 this.dropOutDate = student.getDropOutDate() == null ? "" : student.getDropOutDate().toString();

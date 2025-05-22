@@ -7,7 +7,7 @@ import shop.mtcoding.blog.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.paper.Paper;
 import shop.mtcoding.blog.paper.question.Question;
 import shop.mtcoding.blog.paper.question.option.QuestionOption;
-import shop.mtcoding.blog.user.User;
+import shop.mtcoding.blog.user.teacher.Teacher;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -92,10 +92,10 @@ public class ExamResponse {
         private Long fExamId;
         private Boolean isAbsent;
 
-        public ResultDetailDTO(Exam exam, List<SubjectElement> subjectElements, User teacher, Long prevExamId, Long nextExamId, Long fExamId) {
+        public ResultDetailDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher, Long prevExamId, Long nextExamId, Long fExamId) {
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
-            this.studentName = exam.getStudent().getUser().getName();
+            this.studentName = exam.getStudent().getName();
             this.teacherName = exam.getTeacherName();
             this.evaluationDate = exam.getPaper().getEvaluationDate().toString();
             this.loc = "3호";
@@ -109,7 +109,7 @@ public class ExamResponse {
             this.score = exam.getScore();
             this.teacherComment = exam.getTeacherComment();
             this.grade = exam.getGrade();
-            this.teacherSign = teacher.getTeacher().getSign();
+            this.teacherSign = teacher.getSign();
             this.studentSign = exam.getStudentSign();
             this.isStudentSign = exam.getStudentSign() == null ? false : true;
             this.studentNo = 99;
@@ -198,7 +198,7 @@ public class ExamResponse {
             this.courseNameAndRound = exam.getStudent().getCourse().getTitle() + "/" + exam.getStudent().getCourse().getRound() + "회차";
             this.subjectTitle = exam.getPaper().getSubject().getTitle();
             this.examState = exam.getExamState();
-            this.studentName = exam.getStudent().getUser().getName();
+            this.studentName = exam.getStudent().getName();
             this.teacherName = exam.getTeacherName();
             this.examScore = exam.getScore();
             this.examPassState = exam.getPassState();

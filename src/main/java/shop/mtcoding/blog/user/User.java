@@ -22,7 +22,6 @@ public class User {
     private String username;
     private String password;
     private String email;
-    private String name; // 이름
     @Enumerated(EnumType.STRING)
     private UserEnum role; // 학생, 강사, 직원, 팀장, 원장
     @CreationTimestamp // pc -> db (날짜주입)
@@ -60,12 +59,11 @@ public class User {
     /// //////////////////////////////////////////////////////////////////////////
 
     @Builder
-    public User(Long id, String username, String password, String email, String name, UserEnum role, LocalDateTime createdAt, Student student, Teacher teacher) {
+    public User(Long id, String username, String password, String email, UserEnum role, LocalDateTime createdAt, Student student, Teacher teacher) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
-        this.name = name;
         this.role = role;
         this.createdAt = createdAt;
         this.student = student;

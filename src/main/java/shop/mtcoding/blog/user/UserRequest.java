@@ -24,7 +24,6 @@ public class UserRequest {
                     .username(username)
                     .password(password)
                     .email(email)
-                    .name(name)
                     .role(UserEnum.valueOf(role))
                     .build();
         }

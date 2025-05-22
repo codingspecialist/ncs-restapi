@@ -10,7 +10,6 @@ import shop.mtcoding.blog.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.paper.Paper;
 import shop.mtcoding.blog.paper.question.Question;
 import shop.mtcoding.blog.paper.question.option.QuestionOption;
-import shop.mtcoding.blog.user.User;
 import shop.mtcoding.blog.user.teacher.Teacher;
 
 import java.util.Arrays;
@@ -41,7 +40,7 @@ public class DocumentResponse {
 
         private String sign;
 
-        public No5DTO(List<Exam> exams, List<Exam> reExams, User teacher) {
+        public No5DTO(List<Exam> exams, List<Exam> reExams, Teacher teacher) {
             Paper paper = exams.stream().map(Exam::getPaper).findFirst().orElse(null);
             Paper rePaper = reExams.stream().map(Exam::getPaper).findFirst().orElse(null);
             this.draftingTeam = "교육운영팀";
@@ -93,7 +92,7 @@ public class DocumentResponse {
 
             this.ah = "해당사항 없음 (추후수정필요)";
             this.ja = rePaper == null ? "해당사항 없음" : rePaper.getEvaluationDate().toString();
-            this.sign = teacher.getTeacher().getSign();
+            this.sign = teacher.getSign();
         }
     }
 
@@ -241,14 +240,14 @@ public class DocumentResponse {
         private Integer grade;
         private List<QuestionDTO> questions;
 
-        public No3DTO(Paper paper, List<SubjectElement> subjectElements, List<Question> questions, User teacher) {
+        public No3DTO(Paper paper, List<SubjectElement> subjectElements, List<Question> questions, Teacher teacher) {
             this.teacherName = paper.getSubject().getTeacherName();
             this.evaluationDate = paper.getEvaluationDate().toString();
             this.loc = "3호";
             this.subjectTitle = paper.getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
             this.questionCount = paper.getCount();
-            this.teacherSign = teacher.getTeacher().getSign();
+            this.teacherSign = teacher.getSign();
             this.grade = paper.getSubject().getGrade();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
         }
@@ -321,7 +320,7 @@ public class DocumentResponse {
             this.courseId = exam.getPaper().getSubject().getCourse().getId();
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
-            this.studentName = exam.getStudent().getUser().getName();
+            this.studentName = exam.getStudent().getName();
             this.teacherName = exam.getTeacherName();
             this.evaluationDate = exam.getPaper().getEvaluationDate().toString();
             this.loc = "3호";

@@ -26,8 +26,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
             where u.username = :username
             """)
     Optional<User> findByUsername(String username);
-
-    // 선생님으로 조회하면 teacher를 정해서 조인하기
-    @Query("select u from User u join fetch u.teacher tc where u.name = :teacherName")
-    Optional<User> findByTeacherName(@Param("teacherName") String teacherName);
 }

@@ -24,6 +24,8 @@ public class Teacher {
     @Lob
     private String sign; // 선생님이라면 서명 (base64 저장)
 
+    private String name;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -32,10 +34,11 @@ public class Teacher {
     }
 
     @Builder
-    public Teacher(Long id, User user, String sign, LocalDateTime createdAt) {
+    public Teacher(Long id, User user, String sign, String name, LocalDateTime createdAt) {
         this.id = id;
         this.user = user;
         this.sign = sign;
+        this.name = name;
         this.createdAt = createdAt;
     }
 }

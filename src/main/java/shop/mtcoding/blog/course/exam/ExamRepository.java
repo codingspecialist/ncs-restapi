@@ -15,11 +15,11 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     @Query("select ex from Exam ex where ex.paper.subject.id = :subjectId and ex.student.id = :studentId and ex.isUse = :isUse")
     Optional<Exam> findByOrigin(@Param("subjectId") Long subjectId, @Param("studentId") Long studentId, @Param("isUse") Boolean isUse);
 
-    @Query("select ex from Exam ex left join fetch ex.paper p join fetch p.subject sb join fetch ex.student st join fetch st.user u where sb.id = :subjectId and ex.isUse = true order by u.name")
+    @Query("select ex from Exam ex left join fetch ex.paper p join fetch p.subject sb join fetch ex.student st join fetch st.user u where sb.id = :subjectId and ex.isUse = true order by st.name")
     List<Exam> findBySubjectIdAndIsUseOrderByStudentNameAsc(@Param("subjectId") Long subjectId);
 
 
-    @Query("select ex from Exam ex join fetch ex.paper p join fetch ex.student st join fetch st.user u where ex.paper.subject.id = :subjectId order by u.name asc")
+    @Query("select ex from Exam ex join fetch ex.paper p join fetch ex.student st join fetch st.user u where ex.paper.subject.id = :subjectId order by st.name asc")
     List<Exam> findBySubjectId(@Param("subjectId") Long subjectId);
 
 

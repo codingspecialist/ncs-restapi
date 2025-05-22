@@ -43,6 +43,7 @@ public class UserService {
         // 2. 회원가입
         Teacher teacher = Teacher.builder()
                 .user(userPS)
+                .name(reqDTO.getName())
                 .build();
 
         teacherRepository.save(teacher);
@@ -78,7 +79,7 @@ public class UserService {
         User userPS = userRepository.findById(student.getUser().getId())
                 .orElseThrow(() -> new Exception500("학생으로 등록되어 있는데 유저를 찾을 수 없는 오류!! 관리자에게 문의하세요"));
 
-        if (!reqDTO.getName().equals(userPS.getName())) {
+        if (!reqDTO.getName().equals(userPS.getStudent().getName())) {
             throw new Exception400("인증된 학생의 이름이 아니에요");
         }
 

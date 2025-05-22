@@ -33,7 +33,6 @@ public class StudentService {
 
         // 2. 유저 저장 (학생 회원가입시에 업데이트 해야함)
         User user = User.builder()
-                .name(reqDTO.getName())
                 .role(UserEnum.STUDENT)
                 .build();
         User userPS = userRepository.save(user);

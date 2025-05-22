@@ -20,6 +20,8 @@ import shop.mtcoding.blog.paper.question.QuestionRepository;
 import shop.mtcoding.blog.user.User;
 import shop.mtcoding.blog.user.UserEnum;
 import shop.mtcoding.blog.user.UserRepository;
+import shop.mtcoding.blog.user.teacher.Teacher;
+import shop.mtcoding.blog.user.teacher.TeacherRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,6 +38,7 @@ public class ExamService {
     private final SubjectRepository subjectRepository;
     private final SubjectElementRepository elementRepository;
     private final QuestionRepository questionRepository;
+    private final TeacherRepository teacherRepository;
 
 
     @Transactional
@@ -111,7 +114,7 @@ public class ExamService {
         List<SubjectElement> subjectElementListPS =
                 elementRepository.findBySubjectId(subjectId);
 
-        User teacher = userRepository.findByTeacherName(examPS.getTeacherName())
+        Teacher teacher = teacherRepository.findByName(examPS.getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
 
         // 현재 학생 번호 찾기
@@ -140,7 +143,7 @@ public class ExamService {
         List<SubjectElement> subjectElementListPS =
                 elementRepository.findBySubjectId(subjectId);
 
-        User teacher = userRepository.findByTeacherName(examPS.getTeacherName())
+        Teacher teacher = teacherRepository.findByName(examPS.getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
 
         return new ExamResponse.ResultDetailDTO(examPS, subjectElementListPS, teacher, null, null, null);
@@ -156,7 +159,7 @@ public class ExamService {
 
         Student studentPS = studentRepository.findByUserId(sessionUser.getId());
 
-        String studentName = studentPS.getUser().getName();
+        String studentName = studentPS.getName();
 
         List<Question> questionListPS = questionRepository.findByPaperId(paperId);
 
@@ -342,7 +345,7 @@ public class ExamService {
                 dto.setCourseNameAndRound(student.getCourse().getTitle() + "/" + student.getCourse().getRound() + "회차");
                 dto.setSubjectTitle(mainPaper.getSubject().getTitle());
                 dto.setExamState("본평가");
-                dto.setStudentName(student.getUser().getName());
+                dto.setStudentName(student.getName());
                 dto.setTeacherName(mainPaper.getSubject().getTeacherName());
                 dto.setExamScore(0.0);
                 dto.setExamPassState("미응시");

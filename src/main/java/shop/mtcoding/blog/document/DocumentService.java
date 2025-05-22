@@ -16,7 +16,6 @@ import shop.mtcoding.blog.paper.Paper;
 import shop.mtcoding.blog.paper.PaperRepository;
 import shop.mtcoding.blog.paper.question.Question;
 import shop.mtcoding.blog.paper.question.QuestionRepository;
-import shop.mtcoding.blog.user.User;
 import shop.mtcoding.blog.user.UserRepository;
 import shop.mtcoding.blog.user.teacher.Teacher;
 import shop.mtcoding.blog.user.teacher.TeacherRepository;
@@ -41,7 +40,7 @@ public class DocumentService {
         List<Exam> examList = examRepository.findByExamGubun(false, subjectId); // 본평가들
         List<Exam> reExamList = examRepository.findByExamGubun(true, subjectId); // 재평가들
 
-        User teacherPS = userRepository.findByTeacherName(examList.get(0).getTeacherName())
+        Teacher teacherPS = teacherRepository.findByName(examList.get(0).getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 선생님이 존재하지 않아요"));
 
         return new DocumentResponse.No5DTO(examList, reExamList, teacherPS);
@@ -90,7 +89,7 @@ public class DocumentService {
         List<SubjectElement> subjectElementListPS =
                 elementRepository.findBySubjectId(subjectId);
 
-        User teacher = userRepository.findByTeacherName(paperPS.getSubject().getTeacherName())
+        Teacher teacher = teacherRepository.findByName(paperPS.getSubject().getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
 
         return new DocumentResponse.No3DTO(paperPS, subjectElementListPS, questionListPS, teacher);
@@ -112,12 +111,12 @@ public class DocumentService {
         );
 
 
-        User teacherPS = userRepository.findByTeacherName(subjectPS.getTeacherName())
+        Teacher teacherPS = teacherRepository.findByName(subjectPS.getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 선생님이 존재하지 않아요"));
 
 
         Paper paperPS = paperRepository.findBySubjectIdAndPaperState(subjectId, false).get(0);
         List<Question> questionListPS = questionRepository.findByPaperId(paperPS.getId());
-        return new DocumentResponse.No1DTO(subjectPS, questionListPS, teacherPS.getTeacher().getSign(), paperPS);
+        return new DocumentResponse.No1DTO(subjectPS, questionListPS, teacherPS.getSign(), paperPS);
     }
 }

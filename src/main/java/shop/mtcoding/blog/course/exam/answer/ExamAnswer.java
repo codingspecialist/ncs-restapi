@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.course.exam.Exam;
 import shop.mtcoding.blog.paper.question.Question;
+
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -26,18 +29,22 @@ public class ExamAnswer {
     private Integer selectedOptionNo;
     private Boolean isCorrect; // true이면 맞춘거임
 
-    public void update(Integer selectedOptionNo, Boolean isCorrect){
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    public void update(Integer selectedOptionNo, Boolean isCorrect) {
         this.selectedOptionNo = selectedOptionNo;
         this.isCorrect = isCorrect;
     }
 
     @Builder
-    public ExamAnswer(Long id, Exam exam, Question question, Integer questionNo, Integer selectedOptionNo, Boolean isCorrect) {
+    public ExamAnswer(Long id, Exam exam, Question question, Integer questionNo, Integer selectedOptionNo, Boolean isCorrect, LocalDateTime createdAt) {
         this.id = id;
         this.exam = exam;
         this.question = question;
         this.questionNo = questionNo;
         this.selectedOptionNo = selectedOptionNo;
         this.isCorrect = isCorrect;
+        this.createdAt = createdAt;
     }
 }

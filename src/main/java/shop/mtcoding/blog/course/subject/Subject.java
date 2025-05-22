@@ -59,10 +59,10 @@ public class Subject {
     private Course course;
 
     @CreationTimestamp
-    private LocalDateTime createDate;
+    private LocalDateTime createdAt;
 
     @Builder
-    public Subject(Long id, String code, String title, String purpose, String gubun, Integer grade, Integer totalTime, Integer no, String learningWay, LocalDate startDate, LocalDate endDate, String teacherName, Course course, LocalDateTime createDate) {
+    public Subject(Long id, String code, String title, String purpose, String gubun, Integer grade, Integer totalTime, Integer no, String learningWay, LocalDate startDate, LocalDate endDate, String teacherName, Course course, LocalDateTime createdAt) {
         this.id = id;
         this.code = code;
         this.title = title;
@@ -76,6 +76,6 @@ public class Subject {
         this.endDate = endDate;
         this.teacherName = teacherName;
         this.course = course;
-        this.createDate = createDate;
+        this.createdAt = createdAt;
     }
 }

@@ -29,14 +29,14 @@ public class CourseTeacher {
     private CourseTeacherEnum role; // 메인강사, 보조강사
 
     @CreationTimestamp
-    private LocalDateTime createDate;
+    private LocalDateTime createdAt;
 
     @Builder
-    public CourseTeacher(Long id, Course course, Teacher teacher, CourseTeacherEnum role, LocalDateTime createDate) {
+    public CourseTeacher(Long id, Course course, Teacher teacher, CourseTeacherEnum role, LocalDateTime createdAt) {
         this.id = id;
         this.course = course;
         this.teacher = teacher;
         this.role = role;
-        this.createDate = createDate;
+        this.createdAt = createdAt;
     }
 }

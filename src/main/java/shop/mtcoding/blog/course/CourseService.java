@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.mtcoding.blog._core.errors.exception.Exception400;
 import shop.mtcoding.blog._core.errors.exception.Exception404;
 import shop.mtcoding.blog.course.courseteacher.CourseTeacher;
 import shop.mtcoding.blog.course.courseteacher.CourseTeacherEnum;
@@ -32,6 +33,8 @@ public class CourseService {
     @Transactional
     public void 과정등록(CourseRequest.SaveDTO reqDTO) {
         // 1. 과정 등록 (메인강사 이름 전달)
+        Long mainTeacherId = reqDTO.getMainTeacherId();
+        if (mainTeacherId == null) throw new Exception400("메인강사는 필수로 등록되어야 합니다");
         Teacher teacherPS = teacherRepository.findById(reqDTO.getMainTeacherId())
                 .orElseThrow(() -> new Exception404("메인강사를 찾을 수 없습니다"));
 
@@ -47,7 +50,9 @@ public class CourseService {
 
         // 3. 과정별 강사들 등록 (보조강사들)
         List<CourseTeacher> subTeachers = new ArrayList<>();
-        reqDTO.getSubTeacherIds().forEach(subTeacherId -> {
+        List<Long> subTeacherIds = reqDTO.getSubTeacherIds() == null ? new ArrayList<>() : reqDTO.getSubTeacherIds();
+
+        subTeacherIds.forEach(subTeacherId -> {
             CourseTeacher subTeacher = CourseTeacher.builder()
                     .role(CourseTeacherEnum.SUB)
                     .course(coursePS)

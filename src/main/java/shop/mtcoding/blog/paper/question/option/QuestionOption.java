@@ -27,19 +27,19 @@ public class QuestionOption {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Question question;
-    
+
     private Boolean isRight; // true 이면 정답
 
     @CreationTimestamp
-    private LocalDateTime createDate;
+    private LocalDateTime createdAt;
 
     @Builder
-    public QuestionOption(Long id, Integer no, String content, Question question, Boolean isRight, LocalDateTime createDate) {
+    public QuestionOption(Long id, Integer no, String content, Question question, Boolean isRight, LocalDateTime createdAt) {
         this.id = id;
         this.no = no;
         this.content = content;
         this.question = question;
         this.isRight = isRight;
-        this.createDate = createDate;
+        this.createdAt = createdAt;
     }
 }

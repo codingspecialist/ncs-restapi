@@ -45,10 +45,10 @@ public class Course {
     private List<Student> students = new ArrayList<>();
 
     @CreationTimestamp
-    private LocalDateTime createDate;
+    private LocalDateTime createdAt;
 
     @Builder
-    public Course(Long id, String title, String code, Integer level, String purpose, Integer totalTime, Integer totalDay, Integer round, LocalDate startDate, LocalDate endDate, String mainTeacherName, CourseEnum courseStatus, LocalDateTime createDate) {
+    public Course(Long id, String title, String code, Integer level, String purpose, Integer totalTime, Integer totalDay, Integer round, LocalDate startDate, LocalDate endDate, String mainTeacherName, CourseEnum courseStatus, LocalDateTime createdAt) {
         this.id = id;
         this.title = title;
         this.code = code;
@@ -61,7 +61,7 @@ public class Course {
         this.endDate = endDate;
         this.mainTeacherName = mainTeacherName;
         this.courseStatus = courseStatus;
-        this.createDate = createDate;
+        this.createdAt = createdAt;
     }
 
     public void setCourseStatus(CourseEnum courseStatus) {

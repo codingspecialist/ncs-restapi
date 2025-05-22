@@ -30,14 +30,14 @@ public class SubjectElement {
     private Subject subject;
 
     @CreationTimestamp
-    private LocalDateTime createDate;
+    private LocalDateTime createdAt;
 
     @Builder
-    public SubjectElement(Long id, Integer no, String subtitle, Subject subject, LocalDateTime createDate) {
+    public SubjectElement(Long id, Integer no, String subtitle, Subject subject, LocalDateTime createdAt) {
         this.id = id;
         this.no = no;
         this.subtitle = subtitle;
         this.subject = subject;
-        this.createDate = createDate;
+        this.createdAt = createdAt;
     }
 }

@@ -40,7 +40,7 @@ public class Question {
     private String questionFail; // 실패기준
 
     @CreationTimestamp
-    private LocalDateTime createDate;
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<QuestionOption> questionOptions = new ArrayList<>();
@@ -50,7 +50,7 @@ public class Question {
     }
 
     @Builder
-    public Question(Long id, Integer no, String title, Integer point, Integer answerNumber, SubjectElement subjectElement, Paper paper, String questionPurpose, String questionFail, LocalDateTime createDate) {
+    public Question(Long id, Integer no, String title, Integer point, Integer answerNumber, SubjectElement subjectElement, Paper paper, String questionPurpose, String questionFail, LocalDateTime createdAt) {
         this.id = id;
         this.no = no;
         this.title = title;
@@ -60,6 +60,6 @@ public class Question {
         this.paper = paper;
         this.questionPurpose = questionPurpose;
         this.questionFail = questionFail;
-        this.createDate = createDate;
+        this.createdAt = createdAt;
     }
 }

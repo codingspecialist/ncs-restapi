@@ -48,6 +48,9 @@ public class Paper {
     private String paperState; // 본평가, 재평가
     private Boolean isReEvaluation;
 
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
     @OneToMany(mappedBy = "paper", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Question> questions = new ArrayList<>();
 
@@ -62,11 +65,9 @@ public class Paper {
         this.questions.add(question);
     }
 
-    @CreationTimestamp
-    private LocalDateTime createDate;
 
     @Builder
-    public Paper(Long id, String evaluationWay, LocalDate evaluationDate, Subject subject, Integer count, String paperState, Boolean isReEvaluation, LocalDateTime createDate) {
+    public Paper(Long id, String evaluationWay, LocalDate evaluationDate, Subject subject, Integer count, String paperState, Boolean isReEvaluation, LocalDateTime createdAt) {
         this.id = id;
         this.evaluationWay = evaluationWay;
         this.evaluationDate = evaluationDate;
@@ -74,6 +75,6 @@ public class Paper {
         this.count = count;
         this.paperState = paperState;
         this.isReEvaluation = paperState.equals("재평가");
-        this.createDate = createDate;
+        this.createdAt = createdAt;
     }
 }

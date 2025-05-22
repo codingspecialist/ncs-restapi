@@ -68,7 +68,7 @@ public class Exam {
     }
 
     @CreationTimestamp
-    private LocalDateTime createDate;
+    private LocalDateTime createdAt;
 
     public void updateSign(String studentSign) {
         this.studentSign = studentSign;
@@ -108,7 +108,7 @@ public class Exam {
     }
 
     @Builder
-    public Exam(Boolean isUse, Long id, Student student, String teacherName, Paper paper, String examState, String reExamReason, String passState, Double score, Integer grade, String studentSign, String teacherComment, LocalDateTime commentUpdatedAt, LocalDateTime createDate) {
+    public Exam(Boolean isUse, Long id, Student student, String teacherName, Paper paper, String examState, String reExamReason, String passState, Double score, Integer grade, String studentSign, String teacherComment, LocalDateTime commentUpdatedAt, LocalDateTime createdAt) {
         this.id = id;
         this.student = student;
         this.teacherName = teacherName;
@@ -121,7 +121,7 @@ public class Exam {
         this.studentSign = studentSign;
         this.teacherComment = teacherComment;
         this.commentUpdatedAt = commentUpdatedAt;
-        this.createDate = createDate;
+        this.createdAt = createdAt;
         this.isUse = isUse;
     }
 }

@@ -63,4 +63,8 @@ public class Course {
         this.courseStatus = courseStatus;
         this.createDate = createDate;
     }
+
+    public void setCourseStatus(CourseEnum courseStatus) {
+        this.courseStatus = courseStatus;
+    }
 }

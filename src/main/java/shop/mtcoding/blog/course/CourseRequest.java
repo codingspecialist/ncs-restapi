@@ -1,6 +1,7 @@
 package shop.mtcoding.blog.course;
 
 import lombok.Data;
+import shop.mtcoding.blog._core.utils.MyUtil;
 
 import java.time.LocalDate;
 
@@ -19,7 +20,10 @@ public class CourseRequest {
         private LocalDate endDate;
         private String mainTeacherName;
 
-        public Course toEntity(){
+        public Course toEntity() {
+
+            CourseEnum courseStatus = MyUtil.courseStatusUpdate(startDate, endDate);
+
             return Course.builder()
                     .code(code)
                     .title(title)
@@ -30,7 +34,7 @@ public class CourseRequest {
                     .round(round)
                     .startDate(startDate)
                     .endDate(endDate)
-                    .courseStatus(CourseEnum.NOT_STARTED)
+                    .courseStatus(courseStatus)
                     .mainTeacherName(mainTeacherName)
                     .build();
         }

@@ -1,3 +1,14 @@
+table {
+    font-size: 13px;
+}
+
+.td-overflow {
+    overflow: hidden;
+    text-overflow: ellipsis; /* 너무 길면 ... 으로 표시 */
+    white-space: nowrap;
+}
+
+
 canvas {
     border: 1px solid black; /* 캔버스 경계 표시 */
 }

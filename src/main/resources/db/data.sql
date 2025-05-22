@@ -19,7 +19,7 @@ values (1, '최주호', now(),
 
 insert into course_tb(code, course_status, start_date, end_date, level, purpose, round, main_teacher_name, title,
                       total_day, total_time, create_date)
-values ('A1001', 'NOT_STARTED', '2024-06-01', '2025-03-07', 5, '마이크로 아키텍쳐에 대해서 이해한다.', 1, '최주호', 'MSA기반 자바과정', 150,
+values ('A1001', 'NOT_STARTED', '2025-06-01', '2025-12-24', 5, '마이크로 아키텍쳐에 대해서 이해한다.', 1, '최주호', 'MSA기반 자바과정', 150,
         1200, now());
 
 

@@ -26,18 +26,19 @@
         <tbody>
         {{#paging.courses}}
             <tr class="click-tr" onclick="location.href='/api/teacher/course/{{id}}'">
-                <td>{{code}}</td>
-                <td>{{title}}</td>
-                <td>{{round}}</td>
-                <td>{{level}}</td>
-                <td>{{purpose}}</td>
-                <td>{{totalTime}}</td>
-                <td>{{totalDay}}</td>
-                <td>{{startDate}}</td>
-                <td>{{endDate}}</td>
-                <td>{{teacherName}}</td>
-                <td>{{courseStatus}}</td>
-                <td><a href="/api/teacher/course/{{id}}/update-form" class="btn btn-outline-warning">수정</a></td>
+                <td style="width: 4%">{{code}}</td>
+                <td style="width: 15%">{{title}}</td>
+                <td style="width: 5%">{{round}}</td>
+                <td style="width: 5%">{{level}}</td>
+                <td style="width: 15%">{{purpose}}</td>
+                <td style="width: 8%">{{totalTime}}</td>
+                <td style="width: 8%">{{totalDay}}</td>
+                <td style="width: 8%">{{startDate}}</td>
+                <td style="width: 8%">{{endDate}}</td>
+                <td style="width: 8%">{{teacherName}}</td>
+                <td style="width: 8%">{{courseStatus}}</td>
+                <td style="width: 8%"><a href="/api/teacher/course/{{id}}/update-form" class="btn btn-outline-warning">수정</a>
+                </td>
             </tr>
         {{/paging.courses}}
         </tbody>

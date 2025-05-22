@@ -65,26 +65,23 @@ public class UserService {
     public User 학생회원가입(UserRequest.JoinDTO reqDTO) {
         // 1. 유저네임 중복검사
         Optional<User> userOP = userRepository.findByUsername(reqDTO.getUsername());
+        if (userOP.isPresent()) throw new Exception400("중복된 유저네임입니다");
 
-        if (userOP.isPresent()) {
-            throw new Exception400("중복된 유저네임입니다");
-        }
+        // 2. 인증번호로 강사 조회 (두 줄이 나올 수 없다. 인증번호는 유니크이다)
+        Student student = studentRepository.findByAuthCode(reqDTO.getAuthCode())
+                .orElseThrow(() -> new Exception403("인증번호가 정확하지 않습니다. 강사에게 문의하세요"));
 
-        // 2. 강사가 등록한 학생과 매칭되는지 확인 (인증코드, 생년월일)
-        Student student = studentRepository.findByAuthCodeAndBirthdayAndIsNotVerified(reqDTO.getAuthCode(), reqDTO.getBirthday())
-                .orElseThrow(() -> new Exception403("강사가 등록한 학생의 정보와 일치하지 않습니다.(인증실패)"));
+        // 3. 인증번호의 학생 정보와 회원가입시 들어오는 정보 비교
+        Boolean isSameInfo = student.checkNameAndBirthday(reqDTO.getName(), reqDTO.getBirthday());
+        if (isSameInfo) throw new Exception400("인증된 학생의 정보가 아닙니다. 생년월일/이름을 확인하세요.");
 
-        if (!reqDTO.getName().equals(student.getName())) {
-            throw new Exception400("인증된 학생의 이름이 아니에요");
-        }
-
-        // 3. 유저 회원가입
+        // 4. 유저 회원가입
         User userPS = userRepository.save(reqDTO.toEntity());
 
-        // 4. 학생 인증 완료 (더티체킹)
+        // 5. 학생 인증 완료 (더티체킹)
         student.setVerified(userPS);
 
-        // 5. 세션 동기화를 위해 user에 값 채워주기 sync
+        // 6. 세션 동기화를 위해 user에 값 채워주기 sync
         userPS.setStudent(student);
 
         return userPS;

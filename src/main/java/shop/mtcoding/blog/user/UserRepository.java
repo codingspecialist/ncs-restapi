@@ -17,13 +17,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
                 where u.username = :username and u.password = :password
             """)
     Optional<User> findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
+    
+    Optional<User> findByUsername(String username);
 
-    // 유저네임으로 조회시에는 teacher, student를 함께 outer join 하기
     @Query("""
             select u from User u 
             left join fetch u.student 
             left join fetch u.teacher 
             where u.username = :username
             """)
-    Optional<User> findByUsername(String username);
+    Optional<User> findByUsernameWithStudentOrTeacher(String username);
 }

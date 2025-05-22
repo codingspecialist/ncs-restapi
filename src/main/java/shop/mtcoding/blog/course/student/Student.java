@@ -34,10 +34,17 @@ public class Student {
     private Integer grade; // 학생 모든 교과목에 대한 수준 1,2,3,4,5
     @Enumerated(EnumType.STRING)
     private StudentEnum state; // 취업, 중도탈락, 미이수, 이수, 재학중
+
+    @Column(unique = true)
     private String authCode; // 학생 인증 코드
     private Boolean isVerified; // 학생 인증 여부
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    public Boolean checkNameAndBirthday(String name, String birthday) {
+        if (this.name == name && this.birthday == birthday) return true;
+        else return false;
+    }
 
     public void setVerified(User user) {
         this.isVerified = true;

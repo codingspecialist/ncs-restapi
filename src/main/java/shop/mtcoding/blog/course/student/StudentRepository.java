@@ -17,4 +17,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query("select st from Student st where st.authCode = :authCode and st.birthday = :birthday and st.isVerified is null")
     Optional<Student> findByAuthCodeAndBirthdayAndIsNotVerified(@Param("authCode") String authCode, @Param("birthday") String birthday);
 
+    @Query("select st from Student st where st.authCode = :authCode")
+    Optional<Student> findByAuthCode(@Param("authCode") String authCode);
+
 }

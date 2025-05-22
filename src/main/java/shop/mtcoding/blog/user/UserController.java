@@ -32,7 +32,9 @@ public class UserController {
     @PostMapping("/join")
     public String join(UserRequest.JoinDTO reqDTO) {
         if (UserEnum.valueOf(reqDTO.getRole()) == UserEnum.STUDENT) {
+            System.out.println("--------------------------------학생회원가입 시작");
             User userPS = userService.학생회원가입(reqDTO);
+            System.out.println("--------------------------------학생회원가입 끝");
             session.setAttribute("isStudent", true);
             session.setAttribute("sessionUser", userPS);
             return "redirect:/api/student/exam";

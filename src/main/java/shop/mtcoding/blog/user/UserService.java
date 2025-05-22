@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.Exception400;
 import shop.mtcoding.blog._core.errors.exception.Exception401;
 import shop.mtcoding.blog._core.errors.exception.Exception403;
-import shop.mtcoding.blog._core.errors.exception.Exception500;
 import shop.mtcoding.blog.course.student.Student;
 import shop.mtcoding.blog.course.student.StudentRepository;
 import shop.mtcoding.blog.user.teacher.Teacher;
@@ -71,20 +70,22 @@ public class UserService {
             throw new Exception400("중복된 유저네임입니다");
         }
 
-        // 2. 강사가 등록한 학생과 매칭되는지 확인
+        // 2. 강사가 등록한 학생과 매칭되는지 확인 (인증코드, 생년월일)
         Student student = studentRepository.findByAuthCodeAndBirthdayAndIsNotVerified(reqDTO.getAuthCode(), reqDTO.getBirthday())
-                .orElseThrow(() -> new Exception403("학생 인증이 실패하였습니다"));
+                .orElseThrow(() -> new Exception403("강사가 등록한 학생의 정보와 일치하지 않습니다.(인증실패)"));
 
-        // 3. 학생 인증 완료 및 업데이트로 회원가입
-        User userPS = userRepository.findById(student.getUser().getId())
-                .orElseThrow(() -> new Exception500("학생으로 등록되어 있는데 유저를 찾을 수 없는 오류!! 관리자에게 문의하세요"));
-
-        if (!reqDTO.getName().equals(userPS.getStudent().getName())) {
+        if (!reqDTO.getName().equals(student.getName())) {
             throw new Exception400("인증된 학생의 이름이 아니에요");
         }
 
-        userPS.studentAuthentication(reqDTO.getUsername(), reqDTO.getPassword(), reqDTO.getEmail(), UserEnum.STUDENT);
-        student.setVerified(true);
+        // 3. 유저 회원가입
+        User userPS = userRepository.save(reqDTO.toEntity());
+
+        // 4. 학생 인증 완료 (더티체킹)
+        student.setVerified(userPS);
+
+        // 5. 세션 동기화를 위해 user에 값 채워주기 sync
+        userPS.setStudent(student);
 
         return userPS;
     }

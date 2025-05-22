@@ -39,9 +39,10 @@ public class Student {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    public void setVerified(Boolean verified) {
-        this.isVerified = verified;
+    public void setVerified(User user) {
+        this.isVerified = true;
         this.authCode = null;
+        this.user = user;
     }
 
     @Builder

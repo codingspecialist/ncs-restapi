@@ -6,10 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.Exception404;
+import shop.mtcoding.blog._core.utils.MyUtil;
 import shop.mtcoding.blog.course.Course;
 import shop.mtcoding.blog.course.CourseRepository;
-import shop.mtcoding.blog.user.User;
-import shop.mtcoding.blog.user.UserEnum;
 import shop.mtcoding.blog.user.UserRepository;
 
 @Transactional(readOnly = true)
@@ -31,14 +30,11 @@ public class StudentService {
         Course coursePS = courseRepository.findById(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
 
-        // 2. 유저 저장 (학생 회원가입시에 업데이트 해야함)
-        User user = User.builder()
-                .role(UserEnum.STUDENT)
-                .build();
-        User userPS = userRepository.save(user);
+        // 2. 인증 코드 발급 (유저 회원가입시 매칭하기 위해)
+        String authCode = MyUtil.generateAuthCode();
 
         // 3. 학생 저장
-        Student student = reqDTO.toEntity(coursePS, userPS);
+        Student student = reqDTO.toEntity(coursePS, authCode);
         studentRepository.save(student);
     }
 }

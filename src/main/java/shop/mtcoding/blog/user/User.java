@@ -27,14 +27,6 @@ public class User {
     @CreationTimestamp // pc -> db (날짜주입)
     private LocalDateTime createdAt;
 
-    // 학생 인증
-    public void studentAuthentication(String username, String password, String email, UserEnum role) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.role = role;
-    }
-
     /// //////////////////////////////////////////// 단순 조회용도!!!!!!!!!!!!!!!!!!!
     // 이건 캐스캐이드 저장 불가능함 (FK가 이쪽에 없고, 반대방향에 있음)
     // @Column(unique = true) // OneToOne은 UK가 기본적용됨.

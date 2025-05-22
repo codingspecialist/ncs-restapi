@@ -2,7 +2,6 @@ package shop.mtcoding.blog.course.student;
 
 import lombok.Data;
 import shop.mtcoding.blog.course.Course;
-import shop.mtcoding.blog.user.User;
 
 public class StudentRequest {
 
@@ -10,14 +9,13 @@ public class StudentRequest {
     public static class SaveDTO {
         private String name;
         private String birthday;
-        private String authCode;
 
-        public Student toEntity(Course course, User user) {
+        public Student toEntity(Course course, String authCode) {
             return Student.builder()
                     .birthday(birthday)
                     .state(StudentEnum.ENROLLED)
+                    .name(name)
                     .course(course)
-                    .user(user)
                     .authCode(authCode)
                     .build();
         }

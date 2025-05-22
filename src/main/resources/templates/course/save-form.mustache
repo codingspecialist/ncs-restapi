@@ -65,7 +65,7 @@
     <div class="card">
         <div class="card-header"><b>과정을 등록 해주세요</b></div>
         <div class="card-body">
-            <form action="/api/teacher/course/save" method="post" enctype="application/x-www-form-urlencoded">
+            <form action="/api/course/save" method="post">
                 <div class="mb-3">
                     <input type="text" class="form-control" placeholder="과정명" name="title" value="자바 크로스 플랫폼 양성과정">
                 </div>
@@ -107,10 +107,10 @@
                                    oninput="filterTeachers(this.value)">
 
                             <div id="all-teacher-list" class="all-teacher-list">
-                                {{#teachers}}
+                                {{#models}}
                                     <div class="teacher-item" draggable="true" data-id="{{id}}"
                                          data-name="{{name}}">{{name}}</div>
-                                {{/teachers}}
+                                {{/models}}
                             </div>
                         </div>
 
@@ -134,44 +134,89 @@
 </div>
 
 <script>
-    // 드래그 대상 저장용
     let dragged;
 
+    // 드래그 대상 설정
     document.querySelectorAll('.teacher-item').forEach(item => {
         item.addEventListener('dragstart', (e) => {
             dragged = e.target;
         });
     });
 
-    // 모든 드롭 영역
-    ['all-teachers', 'main-teacher', 'sub-teachers'].forEach(id => {
-        const box = document.getElementById(id);
+    ['#all-teachers', '#main-teacher', '#sub-teachers'].forEach(selector => {
+        const box = document.querySelector(selector);
+
         box.addEventListener('dragover', e => e.preventDefault());
 
         box.addEventListener('drop', () => {
-            // 메인은 1명 제한
-            if (id === 'main-teacher') {
-                box.innerHTML = '<b>메인 강사 (1명)</b>';
+            const draggedFrom = dragged.parentElement.id;
+            const mainBox = document.querySelector('#main-teacher');
+            const subBox = document.querySelector('#sub-teachers');
+            const allBox = document.querySelector('#all-teacher-list');
+            const currentMain = mainBox.querySelector('.teacher-item');
+
+            // 중복 방지: 이미 해당 영역에 있는 경우 무시
+            if (selector === '#main-teacher') {
+                if (mainBox.contains(dragged)) return;
+
+                // 기존 메인이 있으면 스왑
+                if (currentMain) {
+                    if (draggedFrom === 'sub-teachers') {
+                        subBox.appendChild(currentMain);
+                        currentMain.style.display = 'block';
+                    } else {
+                        allBox.appendChild(currentMain);
+                        currentMain.style.display = 'block';
+                    }
+                }
+
+                mainBox.innerHTML = '<b>메인 강사 (1명)</b>';
+                mainBox.appendChild(dragged);
+                dragged.style.display = 'block';
+            } else if (selector === '#sub-teachers') {
+                if (subBox.contains(dragged)) return; // 이미 보조에 있으면 무시
+                if (mainBox.contains(dragged)) return; // 메인에 있는 걸 다시 보조로 넣는 건 허용하지 않음
+
+                subBox.appendChild(dragged);
+                dragged.style.display = 'block';
+            } else if (selector === '#all-teachers') {
+                if (allBox.contains(dragged)) return;
+
+                allBox.appendChild(dragged);
+                dragged.style.display = 'block';
             }
-            // 이미 있으면 이동 제거
-            dragged.parentNode.removeChild(dragged);
-            box.appendChild(dragged);
+
             updateHiddenInputs();
         });
     });
 
+    // 폼 전송을 위한 input 값 업데이트
     function updateHiddenInputs() {
         const main = document.querySelector('#main-teacher .teacher-item');
         const subs = document.querySelectorAll('#sub-teachers .teacher-item');
 
-        document.getElementById('mainTeacherInput').value = main ? main.dataset.id : '';
+        // 메인 강사 설정
+        document.querySelector('#mainTeacherInput').value = main ? main.dataset.id : '';
 
-        const subIds = Array.from(subs).map(el => el.dataset.id);
-        document.getElementById('subTeacherInput').value = subIds.join(',');
+        // 이전에 생성된 모든 subTeacherIds input 제거
+        document.querySelectorAll('input[name="subTeacherIds"]').forEach(el => el.remove());
+
+        // 새로 보조강사 input들 추가
+        const form = document.querySelector('form');
+        Array.from(subs).forEach(sub => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'subTeacherIds';
+            input.value = sub.dataset.id;
+            form.appendChild(input);
+        });
     }
 
+
+    // 전체강사 리스트 필터링 (다른 영역에 있는 강사는 무시)
     function filterTeachers(keyword) {
         keyword = keyword.trim().toLowerCase();
+
         const teacherItems = document.querySelectorAll('#all-teacher-list .teacher-item');
 
         teacherItems.forEach(item => {

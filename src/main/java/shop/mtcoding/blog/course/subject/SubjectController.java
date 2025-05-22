@@ -1,6 +1,5 @@
 package shop.mtcoding.blog.course.subject;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -11,15 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import shop.mtcoding.blog.course.CourseService;
 
 @RequiredArgsConstructor
 @Controller
 public class SubjectController {
 
-    private final HttpSession session;
     private final SubjectService subjectService;
-    private final CourseService courseService;
 
     @GetMapping("/api/course/subject")
     public String list(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
@@ -39,7 +35,7 @@ public class SubjectController {
     @PostMapping("/api/course/{courseId}/subject/save")
     public String save(@PathVariable(value = "courseId") Long courseId, SubjectRequest.SaveDTO reqDTO) {
         subjectService.교과목등록(courseId, reqDTO);
-        return "redirect:/api/teacher/course/" + courseId + "?tabNum=0";
+        return "redirect:/api/course/" + courseId + "?tabNum=0";
     }
 
 }

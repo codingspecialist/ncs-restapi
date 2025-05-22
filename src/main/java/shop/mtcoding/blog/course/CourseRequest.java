@@ -4,6 +4,7 @@ import lombok.Data;
 import shop.mtcoding.blog._core.utils.MyUtil;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class CourseRequest {
 
@@ -18,9 +19,10 @@ public class CourseRequest {
         private Integer round;
         private LocalDate startDate;
         private LocalDate endDate;
-        private String mainTeacherName;
+        private Long mainTeacherId;         // 메인 강사 1명
+        private List<Long> subTeacherIds;   // 보조 강사 여러 명
 
-        public Course toEntity() {
+        public Course toEntity(String mainTeacherName) {
 
             CourseEnum courseStatus = MyUtil.courseStatusUpdate(startDate, endDate);
 

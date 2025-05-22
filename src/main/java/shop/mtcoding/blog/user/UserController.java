@@ -74,7 +74,7 @@ public class UserController {
             return "redirect:/api/student/exam";
         } else {
             session.setAttribute("isStudent", false);
-            return "redirect:/";
+            return "redirect:/api/course";
         }
     }
 

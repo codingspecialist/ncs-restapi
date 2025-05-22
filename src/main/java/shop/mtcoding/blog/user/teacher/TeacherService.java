@@ -14,6 +14,6 @@ public class TeacherService {
     private final TeacherRepository teacherRepository;
 
     public List<TeacherResponse.DTO> 강사목록() {
-        return teacherRepository.findAll().stream().map(TeacherResponse.DTO::new).toList();
+        return teacherRepository.findAllWithUser().stream().map(TeacherResponse.DTO::new).toList();
     }
 }

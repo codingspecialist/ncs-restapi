@@ -18,7 +18,7 @@
             <th>훈련일수</th>
             <th>개강일</th>
             <th>수료일</th>
-            <th>훈련교사</th>
+            <th>담임교사</th>
             <th>진행상태</th>
             <th></th>
         </tr>
@@ -26,10 +26,10 @@
         <tbody>
         {{#paging.courses}}
             <tr class="click-tr" onclick="location.href='/api/teacher/course/{{id}}'">
-                <td style="width: 4%">{{code}}</td>
+                <td style="width: 6%">{{code}}</td>
                 <td style="width: 15%">{{title}}</td>
-                <td style="width: 5%">{{round}}</td>
-                <td style="width: 5%">{{level}}</td>
+                <td style="width: 4%">{{round}}</td>
+                <td style="width: 4%">{{level}}</td>
                 <td style="width: 15%">{{purpose}}</td>
                 <td style="width: 8%">{{totalTime}}</td>
                 <td style="width: 8%">{{totalDay}}</td>

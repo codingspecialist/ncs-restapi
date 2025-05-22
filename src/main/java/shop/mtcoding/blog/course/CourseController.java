@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import shop.mtcoding.blog.course.student.StudentRequest;
 import shop.mtcoding.blog.course.student.StudentResponse;
 import shop.mtcoding.blog.course.student.StudentService;
-import shop.mtcoding.blog.user.User;
 import shop.mtcoding.blog.user.teacher.TeacherResponse;
 import shop.mtcoding.blog.user.teacher.TeacherService;
 
@@ -29,12 +28,8 @@ public class CourseController {
     private final StudentService studentService;
     private final TeacherService teacherService;
 
-    @GetMapping({"/", "/api/course"})
+    @GetMapping("/api/course")
     public String list(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
-        // 인터셉터에서 / 주소 때문에 이 부분만 예외로 세션 인증 처리하기
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        if (sessionUser == null) return "redirect:/login-form";
-
         CourseResponse.PagingDTO respDTO = courseService.과정목록(pageable);
         model.addAttribute("paging", respDTO);
 
@@ -44,15 +39,15 @@ public class CourseController {
     @GetMapping("/api/course/save-form")
     public String saveForm(Model model) {
         List<TeacherResponse.DTO> respDTOs = teacherService.강사목록();
-        model.addAttribute("teachers", respDTOs);
+        model.addAttribute("models", respDTOs);
         return "course/save-form";
     }
 
 
-    @PostMapping("/api/teacher/course/save")
+    @PostMapping("/api/course/save")
     public String save(CourseRequest.SaveDTO reqDTO) {
         courseService.과정등록(reqDTO);
-        return "redirect:/";
+        return "redirect:/api/course";
     }
 
     @GetMapping("/api/teacher/course/{courseId}")
@@ -86,6 +81,6 @@ public class CourseController {
     public String studentSave(@PathVariable(value = "courseId") Long courseId, StudentRequest.SaveDTO reqDTO) {
         studentService.학생등록(courseId, reqDTO);
         System.out.println("-----------------------------------------------------------------");
-        return "redirect:/" + courseId + "?tabNum=1";
+        return "redirect:/api/course" + courseId + "?tabNum=1";
     }
 }

@@ -38,7 +38,7 @@ public class Subject {
 
     private LocalDate startDate; // 교과목 시작일
     private LocalDate endDate; // 교과목 종료일
-    private String teacherName; // 교과목 훈련교사 이름
+    private String teacherName; // 교과목 훈련교사 이름 (CourseTeacher 조인해서 교과목에서 담당 선생님 확인해야함)
 
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
     private List<SubjectElement> elements = new ArrayList<>();

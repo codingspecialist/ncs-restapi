@@ -11,7 +11,7 @@ public class UserRequest {
 
     @Data
     public static class JoinDTO {
-        private String username;
+        private String username; // 3~20 자 사이로 받아야 함
         private String password;
         private String email;
         private String name;

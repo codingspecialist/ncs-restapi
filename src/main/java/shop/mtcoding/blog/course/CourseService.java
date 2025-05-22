@@ -6,11 +6,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.Exception404;
+import shop.mtcoding.blog.course.courseteacher.CourseTeacher;
+import shop.mtcoding.blog.course.courseteacher.CourseTeacherEnum;
+import shop.mtcoding.blog.course.courseteacher.CourseTeacherRepository;
 import shop.mtcoding.blog.course.student.Student;
 import shop.mtcoding.blog.course.student.StudentRepository;
 import shop.mtcoding.blog.course.subject.Subject;
 import shop.mtcoding.blog.course.subject.SubjectRepository;
+import shop.mtcoding.blog.user.teacher.Teacher;
+import shop.mtcoding.blog.user.teacher.TeacherRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Transactional(readOnly = true)
@@ -20,10 +26,36 @@ public class CourseService {
     private final StudentRepository studentRepository;
     private final SubjectRepository subjectRepository;
     private final CourseRepository courseRepository;
+    private final TeacherRepository teacherRepository;
+    private final CourseTeacherRepository courseTeacherRepository;
 
     @Transactional
     public void 과정등록(CourseRequest.SaveDTO reqDTO) {
-        courseRepository.save(reqDTO.toEntity());
+        // 1. 과정 등록 (메인강사 이름 전달)
+        Teacher teacherPS = teacherRepository.findById(reqDTO.getMainTeacherId())
+                .orElseThrow(() -> new Exception404("메인강사를 찾을 수 없습니다"));
+
+        Course coursePS = courseRepository.save(reqDTO.toEntity(teacherPS.getName()));
+
+        // 2. 과정별 강사 등록 (메인강사)
+        CourseTeacher mainTeacher = CourseTeacher.builder()
+                .role(CourseTeacherEnum.MAIN)
+                .course(coursePS)
+                .teacher(teacherPS)
+                .build();
+        courseTeacherRepository.save(mainTeacher);
+
+        // 3. 과정별 강사들 등록 (보조강사들)
+        List<CourseTeacher> subTeachers = new ArrayList<>();
+        reqDTO.getSubTeacherIds().forEach(subTeacherId -> {
+            CourseTeacher subTeacher = CourseTeacher.builder()
+                    .role(CourseTeacherEnum.SUB)
+                    .course(coursePS)
+                    .teacher(Teacher.builder().id(subTeacherId).build())
+                    .build();
+            subTeachers.add(subTeacher);
+        });
+        courseTeacherRepository.saveAll(subTeachers);
     }
 
     public CourseResponse.PagingDTO 과정목록(Pageable pageable) {

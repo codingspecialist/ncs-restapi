@@ -21,7 +21,6 @@
                     평가유형 : {{model.examState}} <br>
                 </div>
                 <div>
-                    <div class="d-flex justify-content-end mb-3">연번 : {{model.studentNo}}</div>
                     <div class="d-flex">
                         <table class="sign-table">
                             <tr>
@@ -96,57 +95,5 @@
     </form>
 </div>
 
-<script>
-
-    function sendAnswer() {
-
-        let nextExamId = $("#nextExamId").val();
-        console.log("nextExamId", nextExamId);
-
-        let requestBody = {
-            examId: {{model.examId}},
-            teacherComment: $("#teacherComment").val(),
-            answers: []
-        };
-        let items = $(".exam-body > tr");
-
-
-        items.each(function (index, element) {
-            console.log(element);
-            let answerId = $(element).find(".answerId:first").val();
-            let selectedOptionNo = $(element).find(".optionNo:checked").val();
-            // console.log("문제번호", questionNo);
-            // console.log("정답번호", selectedOptionNo);
-
-            let answer = {
-                answerId: Number(answerId),
-                selectedOptionNo: Number(selectedOptionNo),
-            };
-
-            requestBody.answers.push(answer);
-        });
-
-        console.log(JSON.stringify(requestBody));
-
-        $.ajax({
-            url: "/api/teacher/exam/update",
-            type: "put",
-            data: JSON.stringify(requestBody),
-            contentType: "application/json; charset=utf-8"
-        }).done((res) => {
-            if (nextExamId !== undefined) {
-                alert("총평 저장 완료");
-                location.href = `/api/teacher/exam/${nextExamId}/result`;
-            } else {
-                alert("총평 저장 완료 - 마지막페이지입니다");
-                location.reload();
-            }
-        }).fail((res) => {
-            alert(res.responseJSON.msg);
-        });
-    }
-
-
-</script>
 
 {{> layout/footer}}

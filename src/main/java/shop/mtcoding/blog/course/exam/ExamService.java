@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.Exception403;
 import shop.mtcoding.blog._core.errors.exception.Exception404;
+import shop.mtcoding.blog._core.errors.exception.Exception500;
 import shop.mtcoding.blog.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.course.exam.answer.ExamAnswerRepository;
 import shop.mtcoding.blog.course.student.Student;
@@ -131,15 +132,15 @@ public class ExamService {
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
 
         // 5. 본평가 ID 찾기 (내가 재평가일 때)
-//        Long fExamId = null;
-//        if (examPS.getPaper().getIsReEvaluation()) {
-//            // 같은 학생, 같은 과목의 본평가를 찾음
-//            fExamId = examRepository.findFirstByStudentIdAndSubjectIdAndIsReEvaluationFalse(
-//                    examPS.getStudent().getId(), subjectId
-//            ).map(Exam::getId).orElse(null);
-//        }
+        Long originExamId = null;
+        Long studentId = examPS.getStudent().getId();
+        if (examPS.getExamState().equals("재평가")) {
+            Exam reExamPS = examRepository.findBySubjectIdAndStudentIdAndIsNotUse(subjectId, studentId, false)
+                    .orElseThrow(() -> new Exception500("재평가 본평가 저장 프로세스 오류 : 관리자 문의"));
+            originExamId = reExamPS.getId();
+        }
 
-        return new ExamResponse.ResultDetailDTO(examPS, subjectElementList, teacher, prevExamId, nextExamId, currentIndex);
+        return new ExamResponse.ResultDetailDTO(examPS, subjectElementList, teacher, prevExamId, nextExamId, currentIndex, originExamId);
     }
 
     public ExamResponse.ResultDetailDTO 미이수시험친결과상세보기(Long examId) {
@@ -154,7 +155,7 @@ public class ExamService {
         Teacher teacher = teacherRepository.findByName(examPS.getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
 
-        return new ExamResponse.ResultDetailDTO(examPS, subjectElementListPS, teacher, null, null, null);
+        return new ExamResponse.ResultDetailDTO(examPS, subjectElementListPS, teacher, null, null, null, null);
     }
 
     public ExamResponse.StartDTO 시험응시(User sessionUser, Long paperId) {
@@ -228,7 +229,7 @@ public class ExamService {
         // 2. 재평가인데, 이전 시험(Exam)이 있으면 이전 시험 isNotUse로 변경
         // 재평가를 10번 해도, 모든 이전 재평가, 본평가는 isNotUse가 true가 됨
         if (paper.getPaperState().equals("재평가")) {
-            Optional<Exam> examOP = examRepository.findByOrigin(paper.getSubject().getId(), student.getId(), true);
+            Optional<Exam> examOP = examRepository.findBySubjectIdAndStudentIdAndIsNotUse(paper.getSubject().getId(), student.getId(), true);
 
             if (examOP.isPresent()) {
                 // 1. 새로운 평가가 저장되면, 기존 사용중인 평가를 사용안함으로 변경

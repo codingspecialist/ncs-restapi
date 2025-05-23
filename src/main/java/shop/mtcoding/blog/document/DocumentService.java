@@ -37,8 +37,8 @@ public class DocumentService {
     private final ExamRepository examRepository;
 
     public DocumentResponse.No5DTO no5(Long courseId, Long subjectId) {
-        List<Exam> examList = examRepository.findByExamGubun(false, subjectId); // 본평가들
-        List<Exam> reExamList = examRepository.findByExamGubun(true, subjectId); // 재평가들
+        List<Exam> examList = examRepository.findBySubjectIdAndEvaludationType(false, subjectId); // 본평가들
+        List<Exam> reExamList = examRepository.findBySubjectIdAndEvaludationType(true, subjectId); // 재평가들
 
         Teacher teacherPS = teacherRepository.findByName(examList.get(0).getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 선생님이 존재하지 않아요"));

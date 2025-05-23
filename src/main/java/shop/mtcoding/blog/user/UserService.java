@@ -84,8 +84,11 @@ public class UserService {
         // 6. 세션 동기화를 위해 user에 값 채워주기 sync
         userPS.setStudent(student);
 
+        // user select 쳐야함 (student join해서)
+
         return userPS;
     }
+    
 
     @Transactional
     public User 강사사인저장(UserRequest.TeacherSignDTO reqDTO, User sessionUser) {

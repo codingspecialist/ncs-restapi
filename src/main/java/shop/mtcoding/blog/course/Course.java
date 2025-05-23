@@ -48,6 +48,10 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Subject> subjects = new ArrayList<>();
 
+    public void addSubject(Subject subject) {
+        this.subjects.add(subject);
+    }
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 

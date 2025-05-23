@@ -103,8 +103,7 @@ public class ExamService {
         examPS.updateTeacherComment(reqDTO.getTeacherComment());
     }
 
-    // TODO: 이부분 currentIndex, fExamId 등등 복잡하게 수정해야함
-    public ExamResponse.ResultDetailDTO 시험친결과상세보기(Long examId, Integer currentIndex) {
+    public ExamResponse.ResultDetailDTO 시험친결과상세보기(Long examId) {
         // 1. 시험 결과 찾기
         Exam examPS = examRepository.findById(examId)
                 .orElseThrow(() -> new Exception404("시험친 기록이 없어요"));
@@ -113,29 +112,34 @@ public class ExamService {
         Long subjectId = examPS.getPaper().getSubject().getId();
         List<Exam> examListPS = examRepository.findBySubjectIdAndIsUseOrderByStudentNameAsc(subjectId);
 
-        // 3. currentIndex 찾기
+        // 3. 현재 시험의 인덱스를 찾고, prev/next Id를 저장
+        Long prevExamId = null;
+        Long nextExamId = null;
+        Integer currentIndex = 0;
         for (int i = 0; i < examListPS.size(); i++) {
             if (examListPS.get(i).getId().equals(examId)) {
                 currentIndex = i;
+                if (i > 0) prevExamId = examListPS.get(i - 1).getId();
+                if (i < examListPS.size() - 1) nextExamId = examListPS.get(i + 1).getId();
+                break;
             }
         }
 
-        // 4. 이전 인덱스, 다음 인덱스 존재유무 확인
-        Integer prevIndex = currentIndex - 1;
-        Integer nextIndex = currentIndex + 1;
-
-        if (prevIndex < 0) prevIndex = null;
-        if (nextIndex >= examListPS.size()) nextIndex = null;
-
-        // 5. 교과목 요소 찾기
-        List<SubjectElement> subjectElementListPS =
-                elementRepository.findBySubjectId(subjectId);
-
-        // 6. 선생님 사인 찾기
+        // 4. 교과목 요소와 선생님 사인 조회
+        List<SubjectElement> subjectElementList = elementRepository.findBySubjectId(subjectId);
         Teacher teacher = teacherRepository.findByName(examPS.getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
 
-        return new ExamResponse.ResultDetailDTO(examPS, subjectElementListPS, teacher, prevIndex, nextIndex, currentIndex);
+        // 5. 본평가 ID 찾기 (내가 재평가일 때)
+//        Long fExamId = null;
+//        if (examPS.getPaper().getIsReEvaluation()) {
+//            // 같은 학생, 같은 과목의 본평가를 찾음
+//            fExamId = examRepository.findFirstByStudentIdAndSubjectIdAndIsReEvaluationFalse(
+//                    examPS.getStudent().getId(), subjectId
+//            ).map(Exam::getId).orElse(null);
+//        }
+
+        return new ExamResponse.ResultDetailDTO(examPS, subjectElementList, teacher, prevExamId, nextExamId, currentIndex);
     }
 
     public ExamResponse.ResultDetailDTO 미이수시험친결과상세보기(Long examId) {

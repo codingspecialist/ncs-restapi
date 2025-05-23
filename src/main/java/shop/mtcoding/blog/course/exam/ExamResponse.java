@@ -87,11 +87,11 @@ public class ExamResponse {
         private String studentSign;
         private Boolean isStudentSign;
         private Integer studentNo;
-        private Integer prevIndex; // 해당 교과목에 이전 학생 id
-        private Integer nextIndex; // 해당 교과목에 다음 학생 id
+        private Long prevExamId; // 해당 교과목에 이전 학생 id
+        private Long nextExamId; // 해당 교과목에 다음 학생 id
         private Boolean isAbsent;
 
-        public ResultDetailDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher, Integer prevIndex, Integer nextIndex, Integer currentIndex) {
+        public ResultDetailDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher, Long prevExamId, Long nextExamId, Integer currentIndex) {
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
             this.studentName = exam.getStudent().getName();
@@ -112,8 +112,8 @@ public class ExamResponse {
             this.studentSign = exam.getStudentSign();
             this.isStudentSign = exam.getStudentSign() == null ? false : true;
             this.studentNo = currentIndex + 1;
-            this.prevIndex = prevIndex;
-            this.nextIndex = nextIndex;
+            this.prevExamId = prevExamId;
+            this.nextExamId = nextExamId;
             this.isAbsent = exam.getReExamReason().equals("결석");
         }
 

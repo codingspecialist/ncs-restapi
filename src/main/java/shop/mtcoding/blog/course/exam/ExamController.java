@@ -91,8 +91,8 @@ public class ExamController {
     }
 
     @GetMapping("/api/teacher/exam/{examId}/result")
-    public String teacherResultDetail(@PathVariable(value = "examId") Long examId, Model model, @RequestParam(value = "currentIndex", defaultValue = "0") Integer currentIndex) {
-        ExamResponse.ResultDetailDTO respDTO = examService.시험친결과상세보기(examId, currentIndex);
+    public String teacherResultDetail(@PathVariable(value = "examId") Long examId, Model model) {
+        ExamResponse.ResultDetailDTO respDTO = examService.시험친결과상세보기(examId);
         model.addAttribute("model", respDTO);
         return "course/exam/teacher-result-detail";
     }
@@ -100,8 +100,7 @@ public class ExamController {
 
     @GetMapping("/api/student/exam/{examId}/result")
     public String studentExamResultDetail(@PathVariable(value = "examId") Long examId, Model model) {
-        // TODO: 수정해야함
-        ExamResponse.ResultDetailDTO respDTO = examService.시험친결과상세보기(examId, 0);
+        ExamResponse.ResultDetailDTO respDTO = examService.시험친결과상세보기(examId);
 
         model.addAttribute("model", respDTO);
         return "course/exam/student-result-detail";

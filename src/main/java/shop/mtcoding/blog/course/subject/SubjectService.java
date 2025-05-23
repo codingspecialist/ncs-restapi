@@ -21,12 +21,11 @@ public class SubjectService {
     private final SubjectRepository subjectRepository;
     private final CourseRepository courseRepository;
 
-    // TODO : SubjectDTO 수정
+    // Query 수정 완료
     public List<ExamResponse.SubjectDTO> 과정별교과목(Long courseId) {
         Course coursePS = courseRepository.findByIdWithSubject(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
 
-        //List<Subject> subjectListPS = subjectRepository.findByCourseId(coursePS.getId());
         return coursePS.getSubjects().stream().map(ExamResponse.SubjectDTO::new).toList();
     }
 

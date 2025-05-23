@@ -17,9 +17,6 @@ import shop.mtcoding.blog.user.User;
 
 import java.util.List;
 
-/**
- * 주소에 my가 붙어있으면 학생쪽, 없으면 관리자 or 강사 or 직원
- */
 @RequiredArgsConstructor
 @Controller
 public class ExamController {
@@ -49,6 +46,9 @@ public class ExamController {
     }
 
 
+    // TeacherExamController, StudentExamController 두 개로 나눠야 겠다!!
+    // 그리고 교과목별시험결과 쿼리 수정하자.
+    // 그리고 view 정리하자
     @GetMapping("/api/teacher/exam/result")
     public String teacherResult(Model model, @RequestParam("subjectId") Long subjectId) {
         List<ExamResponse.ResultDTO> respDTO = examService.교과목별시험결과(subjectId);

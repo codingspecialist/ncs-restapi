@@ -23,11 +23,11 @@ public class SubjectService {
 
     // TODO : SubjectDTO 수정
     public List<ExamResponse.SubjectDTO> 과정별교과목(Long courseId) {
-        Course coursePS = courseRepository.findById(courseId)
+        Course coursePS = courseRepository.findByIdWithSubject(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
 
-        List<Subject> subjectListPS = subjectRepository.findByCourseId(coursePS.getId());
-        return subjectListPS.stream().map(ExamResponse.SubjectDTO::new).toList();
+        //List<Subject> subjectListPS = subjectRepository.findByCourseId(coursePS.getId());
+        return coursePS.getSubjects().stream().map(ExamResponse.SubjectDTO::new).toList();
     }
 
     public SubjectResponse.PagingDTO 모든교과목목록(Pageable pageable) {

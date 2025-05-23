@@ -30,6 +30,7 @@ public class CourseService {
     private final TeacherRepository teacherRepository;
     private final CourseTeacherRepository courseTeacherRepository;
 
+    // 쿼리 리팩토링 완료!!
     @Transactional
     public void 과정등록(CourseRequest.SaveDTO reqDTO) {
         // 1. 과정 등록 (메인강사 이름 전달)

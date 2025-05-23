@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.course.courseteacher.CourseTeacher;
 import shop.mtcoding.blog.course.student.Student;
+import shop.mtcoding.blog.course.subject.Subject;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,6 +44,9 @@ public class Course {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Student> students = new ArrayList<>();
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Subject> subjects = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;

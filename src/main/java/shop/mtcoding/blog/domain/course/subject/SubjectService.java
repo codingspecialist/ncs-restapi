@@ -9,7 +9,7 @@ import shop.mtcoding.blog.core.errors.exception.Exception400;
 import shop.mtcoding.blog.core.errors.exception.Exception404;
 import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.CourseRepository;
-import shop.mtcoding.blog.domain.course.exam.ExamResponse;
+import shop.mtcoding.blog.web.exam.ExamResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -22,6 +22,7 @@ import shop.mtcoding.blog.domain.user.UserEnum;
 import shop.mtcoding.blog.domain.user.UserRepository;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
+import shop.mtcoding.blog.web.exam.ExamResponse;
 
 import java.util.*;
 import java.util.stream.Collectors;

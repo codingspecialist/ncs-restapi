@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.domain.course.exam;
+package shop.mtcoding.blog.web.exam;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -10,10 +10,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog.core.utils.ApiUtil;
-import shop.mtcoding.blog.domain.course.CourseResponse;
 import shop.mtcoding.blog.domain.course.CourseService;
+import shop.mtcoding.blog.domain.course.exam.ExamRequest;
+import shop.mtcoding.blog.domain.course.exam.ExamService;
 import shop.mtcoding.blog.domain.course.subject.SubjectService;
 import shop.mtcoding.blog.domain.user.User;
+import shop.mtcoding.blog.web.course.CourseResponse;
 
 import java.util.List;
 

@@ -16,6 +16,8 @@ import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.SubjectRepository;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
+import shop.mtcoding.blog.web.course.CourseRequest;
+import shop.mtcoding.blog.web.course.CourseResponse;
 
 import java.util.ArrayList;
 import java.util.List;

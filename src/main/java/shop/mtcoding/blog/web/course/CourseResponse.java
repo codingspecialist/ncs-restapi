@@ -1,7 +1,8 @@
-package shop.mtcoding.blog.domain.course;
+package shop.mtcoding.blog.web.course;
 
 import lombok.Data;
 import org.springframework.data.domain.Page;
+import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.student.Student;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;

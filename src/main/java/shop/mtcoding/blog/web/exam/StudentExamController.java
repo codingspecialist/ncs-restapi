@@ -1,9 +1,9 @@
-package shop.mtcoding.blog.domain.course.exam;
+package shop.mtcoding.blog.web.exam;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
 @RequiredArgsConstructor
 @Controller
-public class TeacherExamController {
+public class StudentExamController {
 }

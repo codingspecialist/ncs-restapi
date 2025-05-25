@@ -1,7 +1,9 @@
-package shop.mtcoding.blog.domain.course;
+package shop.mtcoding.blog.web.course;
 
 import lombok.Data;
 import shop.mtcoding.blog.core.utils.MyUtil;
+import shop.mtcoding.blog.domain.course.Course;
+import shop.mtcoding.blog.domain.course.CourseEnum;
 
 import java.time.LocalDate;
 import java.util.List;

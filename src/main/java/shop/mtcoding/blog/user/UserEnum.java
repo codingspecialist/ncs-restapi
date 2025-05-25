@@ -8,7 +8,7 @@ import lombok.Getter;
 public enum UserEnum {
     STUDENT("학생"),
     TEACHER("강사"),
-    ADMIN("관리자"); // 직원, 팀장, 원장
+    EMP("직원"); // 사원, 팀장, 원장
 
     private String value;
 

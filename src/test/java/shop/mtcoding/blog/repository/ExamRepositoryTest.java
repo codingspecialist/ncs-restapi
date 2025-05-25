@@ -3,8 +3,7 @@ package shop.mtcoding.blog.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import shop.mtcoding.blog.course.exam.ExamRepository;
-import shop.mtcoding.blog.paper.PaperRepository;
+import shop.mtcoding.blog.domain.course.exam.ExamRepository;
 
 @DataJpaTest
 public class ExamRepositoryTest {
@@ -13,7 +12,7 @@ public class ExamRepositoryTest {
     private ExamRepository examRepository;
 
     @Test
-    public void findByOrigin_test(){
+    public void findByOrigin_test() {
         // given
 
         // when

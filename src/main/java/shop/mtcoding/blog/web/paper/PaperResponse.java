@@ -1,8 +1,9 @@
-package shop.mtcoding.blog.domain.course.subject.paper;
+package shop.mtcoding.blog.web.paper;
 
 import lombok.Data;
 import org.springframework.data.domain.Page;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
+import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
 

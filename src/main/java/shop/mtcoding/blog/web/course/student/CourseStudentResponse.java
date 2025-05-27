@@ -1,11 +1,12 @@
-package shop.mtcoding.blog.domain.course.student;
+package shop.mtcoding.blog.web.course.student;
 
 import lombok.Data;
 import org.springframework.data.domain.Page;
+import shop.mtcoding.blog.domain.course.student.Student;
 
 import java.util.List;
 
-public class StudentResponse {
+public class CourseStudentResponse {
 
     @Data
     public static class PagingDTO {

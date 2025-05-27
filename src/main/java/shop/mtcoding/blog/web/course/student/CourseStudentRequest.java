@@ -1,9 +1,11 @@
-package shop.mtcoding.blog.domain.course.student;
+package shop.mtcoding.blog.web.course.student;
 
 import lombok.Data;
 import shop.mtcoding.blog.domain.course.Course;
+import shop.mtcoding.blog.domain.course.student.Student;
+import shop.mtcoding.blog.domain.course.student.StudentEnum;
 
-public class StudentRequest {
+public class CourseStudentRequest {
 
     @Data
     public static class SaveDTO {

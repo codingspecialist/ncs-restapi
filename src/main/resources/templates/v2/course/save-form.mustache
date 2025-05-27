@@ -1,0 +1,230 @@
+{{> layout/header}}
+
+<style>
+    .teacher-dnd-section {
+        background-color: #f5f7fa;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .all-teacher-list {
+        max-height: calc(3 * 40px); /* 1개당 높이 약 40px 기준 */
+        overflow-y: auto;
+    }
+
+    .teacher-box-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .teacher-box {
+        flex: 1;
+        min-width: 200px;
+        background-color: #ffffff;
+        border: 2px dashed #d3d3d3;
+        border-radius: 10px;
+        padding: 10px;
+        min-height: 220px;
+        overflow-y: auto;
+        transition: background-color 0.3s;
+    }
+
+    .teacher-box:hover {
+        background-color: #f0f8ff;
+    }
+
+    .teacher-box b {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 10px;
+        color: #343a40;
+    }
+
+    .teacher-item {
+        background-color: #e9ecef;
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        padding: 6px 10px;
+        margin-bottom: 5px;
+        cursor: grab;
+        font-size: 14px;
+        color: #495057;
+    }
+
+    .teacher-item:hover {
+        background-color: #dee2e6;
+    }
+</style>
+
+<div class="container p-5">
+
+    <div class="card">
+        <div class="card-header"><b>과정을 등록 해주세요</b></div>
+        <div class="card-body">
+            <form action="/api/emp/course/save" method="post">
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="과정명" name="title" value="자바 크로스 플랫폼 양성과정">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="과정ID" name="code" value="C1001">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="과정수준" name="level" value="5">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="과정목표" name="purpose"
+                           value="크로스 플랫폼 개발자가 되어서 풀스택을 달성한다">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="과정시간" name="totalTime" value="900">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="과정일수" name="totalDay" value="113">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="회차" name="round" value="1">
+                </div>
+                <div class="mb-3">
+                    <input type="date" class="form-control" placeholder="과정시작일" name="startDate" value="2024-05-01">
+                </div>
+                <div class="mb-3">
+                    <input type="date" class="form-control" placeholder="과정종료일" name="endDate" value="2024-11-14">
+                </div>
+
+                <!-- 강사 드래그 앤 드롭 영역 -->
+                <div class="teacher-dnd-section">
+                    <input type="hidden" name="mainTeacherId" id="mainTeacherInput">
+                    <input type="hidden" name="subTeacherIds" id="subTeacherInput">
+                    <div class="teacher-box-container">
+                        <!-- 전체 강사 목록 -->
+                        <div class="teacher-box" id="all-teachers">
+                            <b>전체 강사 목록</b>
+                            <input type="text" class="form-control form-control-sm mb-2" placeholder="이름으로 검색"
+                                   oninput="filterTeachers(this.value)">
+
+                            <div id="all-teacher-list" class="all-teacher-list">
+                                {{#models}}
+                                    <div class="teacher-item" draggable="true" data-id="{{id}}"
+                                         data-name="{{name}}">{{name}}</div>
+                                {{/models}}
+                            </div>
+                        </div>
+
+                        <!-- 메인 강사 -->
+                        <div class="teacher-box" id="main-teacher">
+                            <b>메인 강사 (1명)</b>
+                        </div>
+
+                        <!-- 보조 강사 -->
+                        <div class="teacher-box" id="sub-teachers">
+                            <b>보조 강사</b>
+                        </div>
+                    </div>
+                </div>
+
+
+                <button type="submit" class="btn btn-primary form-control">과정등록</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let dragged;
+
+    // 드래그 대상 설정
+    document.querySelectorAll('.teacher-item').forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+            dragged = e.target;
+        });
+    });
+
+    ['#all-teachers', '#main-teacher', '#sub-teachers'].forEach(selector => {
+        const box = document.querySelector(selector);
+
+        box.addEventListener('dragover', e => e.preventDefault());
+
+        box.addEventListener('drop', () => {
+            const draggedFrom = dragged.parentElement.id;
+            const mainBox = document.querySelector('#main-teacher');
+            const subBox = document.querySelector('#sub-teachers');
+            const allBox = document.querySelector('#all-teacher-list');
+            const currentMain = mainBox.querySelector('.teacher-item');
+
+            // 중복 방지: 이미 해당 영역에 있는 경우 무시
+            if (selector === '#main-teacher') {
+                if (mainBox.contains(dragged)) return;
+
+                // 기존 메인이 있으면 스왑
+                if (currentMain) {
+                    if (draggedFrom === 'sub-teachers') {
+                        subBox.appendChild(currentMain);
+                        currentMain.style.display = 'block';
+                    } else {
+                        allBox.appendChild(currentMain);
+                        currentMain.style.display = 'block';
+                    }
+                }
+
+                mainBox.innerHTML = '<b>메인 강사 (1명)</b>';
+                mainBox.appendChild(dragged);
+                dragged.style.display = 'block';
+            } else if (selector === '#sub-teachers') {
+                if (subBox.contains(dragged)) return; // 이미 보조에 있으면 무시
+                if (mainBox.contains(dragged)) return; // 메인에 있는 걸 다시 보조로 넣는 건 허용하지 않음
+
+                subBox.appendChild(dragged);
+                dragged.style.display = 'block';
+            } else if (selector === '#all-teachers') {
+                if (allBox.contains(dragged)) return;
+
+                allBox.appendChild(dragged);
+                dragged.style.display = 'block';
+            }
+
+            updateHiddenInputs();
+        });
+    });
+
+    // 폼 전송을 위한 input 값 업데이트
+    function updateHiddenInputs() {
+        const main = document.querySelector('#main-teacher .teacher-item');
+        const subs = document.querySelectorAll('#sub-teachers .teacher-item');
+
+        // 메인 강사 설정
+        document.querySelector('#mainTeacherInput').value = main ? main.dataset.id : '';
+
+        // 이전에 생성된 모든 subTeacherIds input 제거
+        document.querySelectorAll('input[name="subTeacherIds"]').forEach(el => el.remove());
+
+        // 새로 보조강사 input들 추가
+        const form = document.querySelector('form');
+        Array.from(subs).forEach(sub => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'subTeacherIds';
+            input.value = sub.dataset.id;
+            form.appendChild(input);
+        });
+    }
+
+
+    // 전체강사 리스트 필터링 (다른 영역에 있는 강사는 무시)
+    function filterTeachers(keyword) {
+        keyword = keyword.trim().toLowerCase();
+
+        const teacherItems = document.querySelectorAll('#all-teacher-list .teacher-item');
+
+        teacherItems.forEach(item => {
+            const name = item.dataset.name.toLowerCase();
+            item.style.display = name.includes(keyword) ? 'block' : 'none';
+        });
+    }
+</script>
+
+
+{{> layout/footer}}

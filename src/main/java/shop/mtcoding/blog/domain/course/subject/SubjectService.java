@@ -9,6 +9,8 @@ import shop.mtcoding.blog.core.errors.exception.Exception400;
 import shop.mtcoding.blog.core.errors.exception.Exception404;
 import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.CourseRepository;
+import shop.mtcoding.blog.web.course.subject.CourseSubjectRequest;
+import shop.mtcoding.blog.web.course.subject.CourseSubjectResponse;
 import shop.mtcoding.blog.web.exam.ExamResponse;
 
 import java.util.List;
@@ -29,18 +31,18 @@ public class SubjectService {
         return coursePS.getSubjects().stream().map(ExamResponse.SubjectDTO::new).toList();
     }
 
-    public SubjectResponse.PagingDTO 모든교과목목록(Pageable pageable) {
+    public CourseSubjectResponse.PagingDTO 모든교과목목록(Pageable pageable) {
         Page<Subject> paging = subjectRepository.findAll(pageable);
-        return new SubjectResponse.PagingDTO(paging);
+        return new CourseSubjectResponse.PagingDTO(paging);
     }
 
-    public List<SubjectResponse.DTO> 모든교과목목록() {
+    public List<CourseSubjectResponse.DTO> 모든교과목목록() {
         List<Subject> subjectList = subjectRepository.findAll();
-        return subjectList.stream().map(SubjectResponse.DTO::new).toList();
+        return subjectList.stream().map(CourseSubjectResponse.DTO::new).toList();
     }
 
     @Transactional
-    public void 교과목등록(Long courseId, SubjectRequest.SaveDTO reqDTO) {
+    public void 교과목등록(Long courseId, CourseSubjectRequest.SaveDTO reqDTO) {
         Course coursePS = courseRepository.findById(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
 

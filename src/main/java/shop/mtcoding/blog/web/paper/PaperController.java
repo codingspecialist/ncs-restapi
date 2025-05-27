@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.domain.course.subject.paper;
+package shop.mtcoding.blog.web.paper;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import shop.mtcoding.blog.core.utils.ApiUtil;
-import shop.mtcoding.blog.domain.course.subject.SubjectResponse;
 import shop.mtcoding.blog.domain.course.subject.SubjectService;
+import shop.mtcoding.blog.domain.course.subject.paper.PaperService;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionDBResponse;
+import shop.mtcoding.blog.web.course.subject.CourseSubjectResponse;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class PaperController {
 
     @GetMapping("/api/teacher/paper/save-form")
     public String getList(Model model) {
-        List<SubjectResponse.DTO> respDTO = subjectService.모든교과목목록();
+        List<CourseSubjectResponse.DTO> respDTO = subjectService.모든교과목목록();
         model.addAttribute("models", respDTO);
         return "paper/save-form";
     }

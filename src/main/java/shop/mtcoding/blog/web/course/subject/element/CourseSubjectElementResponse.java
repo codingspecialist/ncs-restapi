@@ -1,11 +1,12 @@
-package shop.mtcoding.blog.domain.course.subject.element;
+package shop.mtcoding.blog.web.course.subject.element;
 
 import lombok.Data;
 import shop.mtcoding.blog.domain.course.subject.Subject;
+import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 
 import java.util.List;
 
-public class SubjectElementResponse {
+public class CourseSubjectElementResponse {
 
     @Data
     public static class ListDTO {

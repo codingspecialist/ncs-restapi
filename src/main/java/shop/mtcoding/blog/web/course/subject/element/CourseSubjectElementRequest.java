@@ -1,9 +1,10 @@
-package shop.mtcoding.blog.domain.course.subject.element;
+package shop.mtcoding.blog.web.course.subject.element;
 
 import lombok.Data;
 import shop.mtcoding.blog.domain.course.subject.Subject;
+import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 
-public class SubjectElementRequest {
+public class CourseSubjectElementRequest {
 
     @Data
     public static class SaveDTO {

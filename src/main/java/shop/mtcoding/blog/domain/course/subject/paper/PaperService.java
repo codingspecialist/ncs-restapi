@@ -18,6 +18,8 @@ import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionQueryRepo
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
 import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOptionRepository;
+import shop.mtcoding.blog.web.paper.PaperRequest;
+import shop.mtcoding.blog.web.paper.PaperResponse;
 
 import java.util.List;
 

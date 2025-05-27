@@ -1,13 +1,14 @@
-package shop.mtcoding.blog.domain.course.subject;
+package shop.mtcoding.blog.web.course.subject;
 
 import lombok.Data;
 import org.springframework.data.domain.Page;
+import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class SubjectResponse {
+public class CourseSubjectResponse {
 
     @Data
     public static class DTO {

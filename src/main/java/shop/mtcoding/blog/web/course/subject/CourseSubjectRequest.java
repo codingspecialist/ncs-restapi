@@ -1,11 +1,12 @@
-package shop.mtcoding.blog.domain.course.subject;
+package shop.mtcoding.blog.web.course.subject;
 
 import lombok.Data;
 import shop.mtcoding.blog.domain.course.Course;
+import shop.mtcoding.blog.domain.course.subject.Subject;
 
 import java.time.LocalDate;
 
-public class SubjectRequest {
+public class CourseSubjectRequest {
 
     @Data
     public static class SaveDTO {

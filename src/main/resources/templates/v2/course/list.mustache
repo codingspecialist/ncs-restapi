@@ -3,7 +3,7 @@
 <div class="container p-5">
 
     <div class="d-flex justify-content-end">
-        <a href="/api/course/save-form" class="btn btn-primary">과정등록</a>
+        <a href="/api/emp/course/save-form" class="btn btn-primary">과정등록</a>
     </div>
 
     <table class="table table-hover">
@@ -24,7 +24,7 @@
         </thead>
         <tbody>
         {{#paging.courses}}
-            <tr class="click-tr" onclick="location.href='/api/course/{{id}}'">
+            <tr class="click-tr" onclick="location.href='/api/emp/course/{{id}}'">
                 <td>{{code}}</td>
                 <td>{{title}}</td>
                 <td>{{round}}</td>

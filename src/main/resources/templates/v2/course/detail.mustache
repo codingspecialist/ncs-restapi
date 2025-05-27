@@ -1,0 +1,134 @@
+{{> layout/header}}
+
+<input type="hidden" id="courseId" value="{{model.courseId}}">
+<input type="hidden" id="tabNum" value="{{tabNum}}">
+
+<div class="container p-5">
+
+    <div class="d-flex justify-content-end">
+        <div>
+            <a id="subject-save-form"
+               href="/api/emp/course/{{model.courseId}}/subject/save-form?courseTitle={{model.courseTitle}}
+            &courseRound={{model.courseRound}}" class="btn
+            btn-primary mr-3">교과목등록</a>
+            <a id="student-save-form"
+               href="/api/emp/course/{{model.courseId}}/student/save-form?courseTitle={{model.courseTitle}}
+            &courseRound={{model.courseRound}}" class="btn
+            btn-primary">학생등록</a>
+        </div>
+    </div>
+
+    <div>
+        과정ID : {{model.courseCode}} <br>
+        과정명 : {{model.courseTitle}} <br>
+        과정회차 : {{model.courseRound}} <br>
+        진행여부 : {{model.courseStatus}} <br>
+    </div>
+
+    <hr>
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="subject-tab" data-bs-toggle="tab" data-bs-target="#subject-tab-pane"
+                    type="button" role="tab" aria-controls="subject-tab-pane" aria-selected="true">해당 과정의 교과목들
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="student-tab" data-bs-toggle="tab" data-bs-target="#student-tab-pane"
+                    type="button" role="tab" aria-controls="student-tab-pane" aria-selected="false">해당 과정의 학생들
+            </button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+
+        <!--교과목 데이터 탭-->
+        <div class="tab-pane fade show active" id="subject-tab-pane" role="tabpanel" aria-labelledby="subject-tab"
+             tabindex="0">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>연번</th>
+                    <th>교과목ID</th>
+                    <th>교과목명</th>
+                    <th>NCS</th>
+                    <th>훈련수준</th>
+                    <th>교과목시간</th>
+                    <th>학습방법</th>
+                    <th>평가방법</th>
+                    <th>시작일</th>
+                    <th>종료일</th>
+                    <th>평가일</th>
+                    <th>재평가일</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#model.subjects}}
+                    <tr class="click-tr" onclick="location.href='/api/teacher/subject/{{subjectId}}/element'">
+                        <td>{{no}}</td>
+                        <td>{{code}}</td>
+                        <td>{{title}}</td>
+                        <td>{{gubun}}</td>
+                        <td>{{grade}}</td>
+                        <td>{{totalTime}}</td>
+                        <td>{{learningWay}}</td>
+                        <td>{{evaluationWay}}</td>
+                        <td>{{startDate}}</td>
+                        <td>{{endDate}}</td>
+                        <td>{{evaluationDate}}</td>
+                        <td>{{revaluationDate}}</td>
+                    </tr>
+                {{/model.subjects}}
+                </tbody>
+            </table>
+        </div>
+
+        <!--학생 데이터 탭-->
+        <div class="tab-pane fade" id="student-tab-pane" role="tabpanel" aria-labelledby="student-tab" tabindex="0">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th style="width: 10%">이름</th>
+                    <th style="width: 7%">생일</th>
+                    <th style="width: 7%">상태</th>
+                    <th style="width: 10%">중탈날짜</th>
+                    <th style="width: 10%">중탈이유</th>
+                    <th style="width: 7%">훈련수준</th>
+                    <th style="width: 7%">인증</th>
+                    <th style="width: 42%">학생총평</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#model.students}}
+                    <tr>
+                        <td>{{name}}</td>
+                        <td>{{birthday}}</td>
+                        <td>{{state}}</td>
+                        <td>{{dropOutDate}}</td>
+                        <td>{{dropOutReason}}</td>
+                        <td>{{grade}}</td>
+                        <td>{{authCode}}</td>
+                        <td style="word-break: break-all">{{comment}}dfdsaegfdsgdsfag44
+                            dfasgfdsagvadfsgdfasgafdg44vfd gfdasgasdgfdasfadsfsad 3rfvfdzvfdgdsafgdsafsad
+                            3fvdsgdsaffgadsgfasdf 3vdgadsgfregsdagdsagsadfdsafasdfadsfasfdsafas
+                        </td>
+                    </tr>
+                {{/model.students}}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    let selectedTabNum = $("#tabNum").val();
+
+    if (selectedTabNum == 0) {
+        $("#subject-tab").click();
+    } else {
+        $("#student-tab").click();
+    }
+</script>
+
+{{> layout/footer}}

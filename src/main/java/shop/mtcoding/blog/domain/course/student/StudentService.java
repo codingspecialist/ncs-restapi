@@ -10,6 +10,8 @@ import shop.mtcoding.blog.core.errors.exception.Exception404;
 import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.CourseRepository;
+import shop.mtcoding.blog.web.course.student.CourseStudentRequest;
+import shop.mtcoding.blog.web.course.student.CourseStudentResponse;
 
 @Slf4j
 @Transactional(readOnly = true)
@@ -19,13 +21,13 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
 
-    public StudentResponse.PagingDTO 모든학생목록(Pageable pageable) {
+    public CourseStudentResponse.PagingDTO 모든학생목록(Pageable pageable) {
         Page<Student> paging = studentRepository.findAll(pageable);
-        return new StudentResponse.PagingDTO(paging);
+        return new CourseStudentResponse.PagingDTO(paging);
     }
 
     @Transactional
-    public void 학생등록(Long courseId, StudentRequest.SaveDTO reqDTO) {
+    public void 학생등록(Long courseId, CourseStudentRequest.SaveDTO reqDTO) {
         // 1. 과정 존재 확인
         Course coursePS = courseRepository.findById(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));

@@ -10,4 +10,7 @@ public interface SubjectElementRepository extends JpaRepository<SubjectElement, 
 
     @Query("select se from SubjectElement se where se.subject.id = :subjectId")
     List<SubjectElement> findBySubjectId(@Param("subjectId") Long subjectId);
+
+    @Query("SELECT se.no FROM SubjectElement se WHERE se.subject.id = :subjectId AND se.no IN :nos")
+    List<Integer> findExistingNosBySubjectIdAndNoIn(@Param("subjectId") Long subjectId, @Param("nos") List<Integer> nos);
 }

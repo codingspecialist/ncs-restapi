@@ -17,7 +17,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "subject_element_tb")
+@Table(
+        name = "subject_element_tb",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_subject_no", columnNames = {"subject_id", "no"})
+        }
+)
 public class SubjectElement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

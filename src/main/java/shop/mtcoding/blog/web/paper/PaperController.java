@@ -36,32 +36,32 @@ public class PaperController {
     private final CourseService courseService;
 
     // 1. 시험지관리 - 과정목록
-    @GetMapping("/api/teacher/course-for-paper")
+    @GetMapping("/api/paper-menu/course")
     public String courseList(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         CourseResponse.PagingDTO respDTO = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
         model.addAttribute("paging", respDTO);
 
-        return "v2/paper/course-list";
+        return "v2/papermenu/course-list";
     }
 
 
     // 3. 시험지관리 - 과정목록 - 시험지목록(교과목별) - 수정필요
-    @GetMapping("/api/teacher/course/{courseId}/paper")
+    @GetMapping("/api/paper-menu/course/{courseId}/paper")
     public String list(Model model, @PathVariable("courseId") Long courseId, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         PaperResponse.PagingDTO respDTO = paperService.시험지목록(courseId, pageable);
         model.addAttribute("paging", respDTO);
-        return "v2/paper/list";
+        return "v2/papermenu/list";
     }
 
 
-    @PostMapping("/api/teacher/paper/{paperId}/question/save")
+    @PostMapping("/api/paper-menu/paper/{paperId}/question/save")
     public ResponseEntity<?> questionSave(@RequestBody PaperRequest.QuestionSaveDTO reqDTO) {
         paperService.문제등록(reqDTO);
         return ResponseEntity.ok(new ApiUtil<>(null));
     }
 
-    @GetMapping("/api/teacher/paper/save-form")
+    @GetMapping("/api/paper-menu/paper/save-form")
     public String getList(Model model) {
         List<CourseSubjectResponse.DTO> respDTO = subjectService.모든교과목목록();
         model.addAttribute("models", respDTO);

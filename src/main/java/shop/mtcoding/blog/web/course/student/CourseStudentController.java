@@ -17,17 +17,17 @@ public class CourseStudentController {
     private final HttpSession session;
     private final StudentService studentService;
 
-    @GetMapping("/api/emp/course/{courseId}/student/save-form")
+    @GetMapping("/api/course-menu/course/{courseId}/student/save-form")
     public String studentSaveForm(@PathVariable("courseId") Long courseId, @RequestParam("courseTitle") String courseTitle, @RequestParam("courseRound") String courseRound, Model model) {
         model.addAttribute("courseId", courseId);
         model.addAttribute("courseTitle", courseTitle);
         model.addAttribute("courseRound", courseRound);
-        return "v2/course/student/save-form";
+        return "v2/coursemenu/student/save-form";
     }
 
-    @PostMapping("/api/emp/course/{courseId}/student/save")
+    @PostMapping("/api/course-menu/course/{courseId}/student/save")
     public String studentSave(@PathVariable(value = "courseId") Long courseId, CourseStudentRequest.SaveDTO reqDTO) {
         studentService.학생등록(courseId, reqDTO);
-        return "redirect:/api/emp/course/" + courseId + "?tabNum=1";
+        return "redirect:/api/course-menu/course/" + courseId + "?tabNum=1";
     }
 }

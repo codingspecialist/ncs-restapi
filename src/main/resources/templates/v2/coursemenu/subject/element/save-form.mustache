@@ -39,7 +39,7 @@
         });
 
         try {
-            const response = await fetch(`/api/emp/subject/${subjectId}/element/save`, {
+            const response = await fetch(`/api/course-menu/subject/${subjectId}/element/save`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json; charset=utf-8"
@@ -48,7 +48,7 @@
             });
 
             if (response.ok) {
-                location.href = `/api/emp/subject/${subjectId}/element`;
+                location.href = `/api/course-menu/subject/${subjectId}/element`;
             } else {
                 const errorData = await response.json();
                 alert(errorData.msg);

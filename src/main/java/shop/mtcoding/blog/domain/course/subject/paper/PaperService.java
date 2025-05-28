@@ -34,9 +34,9 @@ public class PaperService {
     private final SubjectElementRepository subjectElementRepository;
     private final SubjectRepository subjectRepository;
 
-    // 전체 시험지 목록
-    public PaperResponse.PagingDTO 시험지목록(Pageable pageable) {
-        Page<Paper> paperPG = paperRepository.findAll(pageable);
+    // 과정별 시험지 목록
+    public PaperResponse.PagingDTO 시험지목록(Long courseId, Pageable pageable) {
+        Page<Paper> paperPG = paperRepository.findAllByCourseId(courseId, pageable);
         return new PaperResponse.PagingDTO(paperPG);
     }
 

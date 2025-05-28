@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import shop.mtcoding.blog.core.utils.ApiUtil;
+import shop.mtcoding.blog.domain.course.CourseService;
 import shop.mtcoding.blog.domain.course.subject.SubjectService;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperService;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionDBResponse;
+import shop.mtcoding.blog.domain.user.User;
+import shop.mtcoding.blog.web.course.CourseResponse;
 import shop.mtcoding.blog.web.course.subject.CourseSubjectResponse;
 
 import java.util.List;
@@ -30,6 +33,27 @@ public class PaperController {
     private final HttpSession session;
     private final PaperService paperService;
     private final SubjectService subjectService;
+    private final CourseService courseService;
+
+    // 1. 시험지관리 - 과정목록
+    @GetMapping("/api/teacher/course-for-paper")
+    public String courseList(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        CourseResponse.PagingDTO respDTO = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
+        model.addAttribute("paging", respDTO);
+
+        return "v2/paper/course-list";
+    }
+
+
+    // 3. 시험지관리 - 과정목록 - 시험지목록(교과목별) - 수정필요
+    @GetMapping("/api/teacher/course/{courseId}/paper")
+    public String list(Model model, @PathVariable("courseId") Long courseId, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
+        PaperResponse.PagingDTO respDTO = paperService.시험지목록(courseId, pageable);
+        model.addAttribute("paging", respDTO);
+        return "v2/paper/list";
+    }
+
 
     @PostMapping("/api/teacher/paper/{paperId}/question/save")
     public ResponseEntity<?> questionSave(@RequestBody PaperRequest.QuestionSaveDTO reqDTO) {
@@ -50,12 +74,6 @@ public class PaperController {
         return "redirect:/api/teacher/paper";
     }
 
-    @GetMapping("/api/teacher/paper")
-    public String list(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
-        PaperResponse.PagingDTO respDTO = paperService.시험지목록(pageable);
-        model.addAttribute("paging", respDTO);
-        return "paper/list";
-    }
 
     @GetMapping("/api/teacher/paper/{paperId}")
     public String detail(@PathVariable(value = "paperId") Long paperId, Model model) {

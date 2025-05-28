@@ -8,11 +8,11 @@
     <div class="d-flex justify-content-end">
         <div>
             <a id="subject-save-form"
-               href="/api/emp/course/{{model.courseId}}/subject/save-form?courseTitle={{model.courseTitle}}
+               href="/api/course-menu/course/{{model.courseId}}/subject/save-form?courseTitle={{model.courseTitle}}
             &courseRound={{model.courseRound}}" class="btn
             btn-primary mr-3">교과목등록</a>
             <a id="student-save-form"
-               href="/api/emp/course/{{model.courseId}}/student/save-form?courseTitle={{model.courseTitle}}
+               href="/api/course-menu/course/{{model.courseId}}/student/save-form?courseTitle={{model.courseTitle}}
             &courseRound={{model.courseRound}}" class="btn
             btn-primary">학생등록</a>
         </div>
@@ -63,7 +63,7 @@
                 </thead>
                 <tbody>
                 {{#model.subjects}}
-                    <tr class="click-tr" onclick="location.href='/api/emp/subject/{{subjectId}}/element'">
+                    <tr class="click-tr" onclick="location.href='/api/course-menu/subject/{{subjectId}}/element'">
                         <td>{{no}}</td>
                         <td>{{code}}</td>
                         <td>{{title}}</td>

@@ -5,7 +5,7 @@ import shop.mtcoding.blog.domain.course.subject.Subject;
 
 import java.util.List;
 
-public class CourseFlow {
+public class CourseContainer {
     public record Detail(Course course, List<Subject> subjects, List<Student> students) {
     }
 

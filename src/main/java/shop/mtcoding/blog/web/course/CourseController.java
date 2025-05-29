@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import shop.mtcoding.blog.domain.course.Course;
-import shop.mtcoding.blog.domain.course.CourseFlow;
+import shop.mtcoding.blog.domain.course.CourseContainer;
 import shop.mtcoding.blog.domain.course.CourseService;
 import shop.mtcoding.blog.domain.user.User;
+import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.domain.user.teacher.TeacherService;
-import shop.mtcoding.blog.web.user.teacher.TeacherResponse;
 
 import java.util.List;
 
@@ -33,8 +33,8 @@ public class CourseController {
     public String list(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         User sessionUser = (User) session.getAttribute("sessionUser");
 
-        Page<Course> result = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
-        CourseResponse.ListDTO respDTO = new CourseResponse.ListDTO(result);
+        Page<Course> en = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
+        CourseResponse.ListDTO respDTO = new CourseResponse.ListDTO(en);
         model.addAttribute("paging", respDTO);
 
         return "v2/coursemenu/list";
@@ -42,7 +42,8 @@ public class CourseController {
 
     @GetMapping("/api/course-menu/course/save-form")
     public String saveForm(Model model) {
-        List<TeacherResponse.DTO> respDTOs = teacherService.강사목록();
+        List<Teacher> ens = teacherService.강사목록();
+        List<CourseResponse.TeacherDTO> respDTOs = ens.stream().map(CourseResponse.TeacherDTO::new).toList();
         model.addAttribute("models", respDTOs);
         return "v2/coursemenu/save-form";
     }
@@ -56,8 +57,8 @@ public class CourseController {
 
     @GetMapping("/api/course-menu/course/{courseId}")
     public String detail(@PathVariable(value = "courseId") Long courseId, @RequestParam(value = "tabNum", required = false, defaultValue = "0") Integer tabNum, Model model) {
-        CourseFlow.Detail result = courseService.과정상세(courseId);
-        CourseResponse.DetailDTO respDTO = new CourseResponse.DetailDTO(result.course(), result.subjects(), result.students());
+        CourseContainer.Detail cn = courseService.과정상세(courseId);
+        CourseResponse.DetailDTO respDTO = new CourseResponse.DetailDTO(cn.course(), cn.subjects(), cn.students());
         model.addAttribute("model", respDTO);
 
         // 과정 상세보기에서 무슨 학생등록 버튼 클릭하면 리다이렉션되면, 탭번호가 1, 교과목등록이면 탭번호 0

@@ -69,12 +69,12 @@ public class CourseService {
         return courseRepository.findAllByTeacherId(teacherId, pageable);
     }
 
-    public CourseFlow.Detail 과정상세(Long courseId) {
+    public CourseContainer.Detail 과정상세(Long courseId) {
         Course coursePS = courseRepository.findById(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
 
         List<Subject> subjectListPS = subjectRepository.findByCourseId(coursePS.getId());
         List<Student> studentListPS = studentRepository.findByCourseId(coursePS.getId());
-        return new CourseFlow.Detail(coursePS, subjectListPS, studentListPS);
+        return new CourseContainer.Detail(coursePS, subjectListPS, studentListPS);
     }
 }

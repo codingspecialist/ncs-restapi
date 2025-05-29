@@ -6,6 +6,7 @@ import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.student.Student;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
+import shop.mtcoding.blog.domain.user.teacher.Teacher;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -161,6 +162,26 @@ public class CourseResponse {
                 this.endDate = subject.getEndDate();
                 this.courseId = subject.getCourse().getId();
             }
+        }
+    }
+
+    @Data
+    public static class TeacherDTO {
+        private Long id;
+        private Long userId;
+        private String username;
+        private String sign;
+        private String name;
+
+        public TeacherDTO(Teacher teacher) {
+            this.id = teacher.getId();
+            this.userId = teacher.getUser().getId();
+            this.username = teacher.getUser().getUsername();
+            String key = teacher.getUser().getUsername().length() > 2
+                    ? username.substring(0, 2) + "**"
+                    : username + "**";
+            this.sign = teacher.getSign();
+            this.name = teacher.getName() + "(" + key + ")";
         }
     }
 }

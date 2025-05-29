@@ -13,33 +13,7 @@ import java.util.List;
 public class CourseResponse {
 
     @Data
-    public static class SelectedV2DTO {
-        private Long currentCourseId;
-        private List<CourseDTO> courses;
-
-        public SelectedV2DTO(Long currentCourseId, List<Course> courses) {
-            this.currentCourseId = currentCourseId == null ? 0 : currentCourseId;
-            this.courses = courses.stream().map(course -> new CourseDTO(course, this.currentCourseId)).toList();
-        }
-
-        @Data
-        public static class CourseDTO {
-            private Long courseId;
-            private String title;
-            private Integer round;
-            private Boolean isSelected;
-
-            public CourseDTO(Course course, Long currentCourseId) {
-                this.courseId = course.getId();
-                this.title = course.getTitle();
-                this.round = course.getRound();
-                this.isSelected = course.getId().equals(currentCourseId) ? true : false;
-            }
-        }
-    }
-
-    @Data
-    public static class PagingDTO {
+    public static class ListDTO {
         private Integer totalPage; // 전체 페이지 수
         private Integer pageSize; // 페이지 별 아이템 개수
         private Integer pageNumber; // 현재 페이지 번호
@@ -47,7 +21,7 @@ public class CourseResponse {
         private Boolean isLast; // 마지막 페이지 여부
         private List<DTO> courses;
 
-        public PagingDTO(Page<Course> paging) {
+        public ListDTO(Page<Course> paging) {
             this.totalPage = paging.getTotalPages();
             this.pageSize = paging.getSize();
             this.pageNumber = paging.getNumber();

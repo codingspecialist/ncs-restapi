@@ -17,7 +17,6 @@ import shop.mtcoding.blog.domain.course.subject.SubjectRepository;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
 import shop.mtcoding.blog.web.course.CourseRequest;
-import shop.mtcoding.blog.web.course.CourseResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,17 +65,16 @@ public class CourseService {
         courseTeacherRepository.saveAll(subTeachers);
     }
 
-    public CourseResponse.PagingDTO 과정목록(Long teacherId, Pageable pageable) {
-        Page<Course> paging = courseRepository.findAllByTeacherId(teacherId, pageable);
-        return new CourseResponse.PagingDTO(paging);
+    public Page<Course> 과정목록(Long teacherId, Pageable pageable) {
+        return courseRepository.findAllByTeacherId(teacherId, pageable);
     }
 
-    public CourseResponse.DetailDTO 과정상세(Long courseId) {
+    public CourseFlow.Detail 과정상세(Long courseId) {
         Course coursePS = courseRepository.findById(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
 
         List<Subject> subjectListPS = subjectRepository.findByCourseId(coursePS.getId());
         List<Student> studentListPS = studentRepository.findByCourseId(coursePS.getId());
-        return new CourseResponse.DetailDTO(coursePS, subjectListPS, studentListPS);
+        return new CourseFlow.Detail(coursePS, subjectListPS, studentListPS);
     }
 }

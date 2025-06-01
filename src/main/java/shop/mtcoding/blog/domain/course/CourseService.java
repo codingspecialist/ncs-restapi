@@ -65,8 +65,9 @@ public class CourseService {
         courseTeacherRepository.saveAll(subTeachers);
     }
 
-    public Page<Course> 과정목록(Long teacherId, Pageable pageable) {
-        return courseRepository.findAllByTeacherId(teacherId, pageable);
+    public CourseContainer.list 과정목록(Long teacherId, Pageable pageable) {
+        Page<Course> coursePG = courseRepository.findAllByTeacherId(teacherId, pageable);
+        return new CourseContainer.list(coursePG);
     }
 
     public CourseContainer.Detail 과정상세(Long courseId) {

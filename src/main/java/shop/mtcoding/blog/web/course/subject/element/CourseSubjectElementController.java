@@ -24,13 +24,13 @@ public class CourseSubjectElementController {
     public String list(@PathVariable(value = "subjectId") Long subjectId, Model model) {
         CourseSubjectElementResponse.ListDTO respDTO = subjectElementService.교과목요소목록(subjectId);
         model.addAttribute("model", respDTO);
-        return "v2/coursemenu/subject/element/list";
+        return "v2/course/subject/element/list";
     }
 
     @GetMapping("/api/course-menu/subject/{subjectId}/element/save-form")
     public String saveForm(@PathVariable(value = "subjectId") Long subjectId, Model model) {
         model.addAttribute("subjectId", subjectId);
-        return "v2/coursemenu/subject/element/save-form";
+        return "v2/course/subject/element/save-form";
     }
 
     @PostMapping("/api/course-menu/subject/{subjectId}/element/save")

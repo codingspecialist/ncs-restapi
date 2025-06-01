@@ -1,3 +1,12 @@
+### 1. 메뉴설계
+
+- 과정관리 (course-menu)
+- 시험지관리 (paper-menu)
+- 시험관리 (exam-menu)
+- 문서관리 (document-menu)
+- 시험응시 (exam-start)
+- 시험결과 (exam-result)
+
 ### 3. URL 설계 변경
 
 | 부분        | 의미                 | 설명                       |

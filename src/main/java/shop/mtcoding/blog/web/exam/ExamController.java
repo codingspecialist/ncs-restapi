@@ -2,7 +2,6 @@ package shop.mtcoding.blog.web.exam;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog.core.utils.ApiUtil;
-import shop.mtcoding.blog.domain.course.Course;
+import shop.mtcoding.blog.domain.course.CourseContainer;
 import shop.mtcoding.blog.domain.course.CourseService;
 import shop.mtcoding.blog.domain.course.exam.ExamRequest;
 import shop.mtcoding.blog.domain.course.exam.ExamService;
@@ -64,8 +63,8 @@ public class ExamController {
     @GetMapping("/api/teacher/exam/course")
     public String course(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        Page<Course> result = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
-        CourseResponse.ListDTO respDTO = new CourseResponse.ListDTO(result);
+        CourseContainer.list cn = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
+        CourseResponse.ListDTO respDTO = new CourseResponse.ListDTO(cn.coursePG());
         model.addAttribute("paging", respDTO);
         return "course/exam/teacher-course-list";
     }

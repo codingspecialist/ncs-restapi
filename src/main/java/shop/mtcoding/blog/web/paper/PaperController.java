@@ -2,7 +2,6 @@ package shop.mtcoding.blog.web.paper;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -11,13 +10,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog.core.utils.ApiUtil;
-import shop.mtcoding.blog.domain.course.Course;
+import shop.mtcoding.blog.domain.course.CourseContainer;
 import shop.mtcoding.blog.domain.course.CourseService;
 import shop.mtcoding.blog.domain.course.subject.SubjectService;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperService;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionDBResponse;
 import shop.mtcoding.blog.domain.user.User;
-import shop.mtcoding.blog.web.course.CourseResponse;
 import shop.mtcoding.blog.web.course.subject.CourseSubjectResponse;
 import shop.mtcoding.blog.web.exam.ExamResponse;
 
@@ -39,11 +37,11 @@ public class PaperController {
     @GetMapping("/api/paper-menu/course")
     public String courseList(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        Page<Course> result = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
-        CourseResponse.ListDTO respDTO = new CourseResponse.ListDTO(result);
+        CourseContainer.list cn = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
+        PaperResponse.CourseListDTO respDTO = new PaperResponse.CourseListDTO(cn.coursePG());
         model.addAttribute("paging", respDTO);
 
-        return "v2/papermenu/course-list";
+        return "v2/paper/course-list";
     }
 
     // 2. 시험지관리 - 교과목목록
@@ -60,7 +58,7 @@ public class PaperController {
     public String list(Model model, @PathVariable("courseId") Long courseId, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         PaperResponse.ListDTO respDTO = paperService.시험지목록(courseId, pageable);
         model.addAttribute("paging", respDTO);
-        return "v2/papermenu/list";
+        return "v2/paper/list";
     }
 
 

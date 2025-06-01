@@ -37,7 +37,7 @@ spring:
         format_sql: true
         default_batch_fetch_size: 10
     defer-datasource-initialization: true
-    open-in-view: false
+    open-in-view: true
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: false

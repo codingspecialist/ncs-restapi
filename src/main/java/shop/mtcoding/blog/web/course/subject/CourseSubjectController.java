@@ -22,7 +22,7 @@ public class CourseSubjectController {
     public String list(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         CourseSubjectResponse.PagingDTO respDTO = subjectService.모든교과목목록(pageable);
         model.addAttribute("paging", respDTO);
-        return "v2/coursemenu/subject/list";
+        return "v2/course/subject/list";
     }
 
     @GetMapping("/api/course-menu/course/{courseId}/subject/save-form")
@@ -30,7 +30,7 @@ public class CourseSubjectController {
         model.addAttribute("courseId", courseId);
         model.addAttribute("courseTitle", courseTitle);
         model.addAttribute("courseRound", courseRound);
-        return "v2/coursemenu/subject/save-form";
+        return "v2/course/subject/save-form";
     }
 
     @PostMapping("/api/course-menu/course/{courseId}/subject/save")

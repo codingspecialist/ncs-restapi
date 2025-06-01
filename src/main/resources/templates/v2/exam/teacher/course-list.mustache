@@ -8,8 +8,6 @@
             <th>과정ID</th>
             <th>과정명</th>
             <th>회차</th>
-            <th>수준</th>
-            <th>목표</th>
             <th>훈련시간</th>
             <th>훈련일수</th>
             <th>개강일</th>
@@ -21,17 +19,15 @@
         <tbody>
         {{#paging.courses}}
             <tr class="click-tr" onclick="location.href='/api/teacher/exam/subject?courseId={{id}}'">
-                <td>{{code}}</td>
-                <td>{{title}}</td>
-                <td>{{round}}</td>
-                <td>{{level}}</td>
-                <td>{{purpose}}</td>
-                <td>{{totalTime}}</td>
-                <td>{{totalDay}}</td>
-                <td>{{startDate}}</td>
-                <td>{{endDate}}</td>
-                <td>{{teacherName}}</td>
-                <td>{{courseStatus}}</td>
+            <td>{{code}}</td>
+            <td>{{title}}</td>
+            <td>{{round}}</td>
+            <td>{{totalTime}}</td>
+            <td>{{totalDay}}</td>
+            <td>{{startDate}}</td>
+            <td>{{endDate}}</td>
+            <td>{{teacherName}}</td>
+            <td>{{courseStatus}}</td>
             </tr>
         {{/paging.courses}}
         </tbody>

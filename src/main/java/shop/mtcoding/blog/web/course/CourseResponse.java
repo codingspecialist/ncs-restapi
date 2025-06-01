@@ -39,8 +39,6 @@ public class CourseResponse {
             private Integer totalTime;
             private Integer totalDay;
             private Integer round;
-            private Integer level;
-            private String purpose;
             private LocalDate startDate;
             private LocalDate endDate;
             private String teacherName;
@@ -53,8 +51,6 @@ public class CourseResponse {
                 this.totalTime = course.getTotalTime();
                 this.totalDay = course.getTotalDay();
                 this.round = course.getRound();
-                this.level = course.getLevel();
-                this.purpose = course.getPurpose();
                 this.startDate = course.getStartDate();
                 this.endDate = course.getEndDate();
                 this.teacherName = course.getMainTeacherName();
@@ -68,6 +64,7 @@ public class CourseResponse {
         private Long courseId;
         private String courseCode;
         private String courseTitle;
+        private String coursePurpose;
         private Integer courseRound;
         private String courseStatus;
 
@@ -78,6 +75,7 @@ public class CourseResponse {
             this.courseId = course.getId();
             this.courseCode = course.getCode();
             this.courseTitle = course.getTitle();
+            this.coursePurpose = course.getPurpose();
             this.courseRound = course.getRound();
             this.courseStatus = course.getCourseStatus().getValue();
             this.subjects = subjects.stream().map(SubjectDTO::new).toList();

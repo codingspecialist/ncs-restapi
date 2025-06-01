@@ -3,6 +3,7 @@ package shop.mtcoding.blog.web.paper;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 import shop.mtcoding.blog.domain.course.Course;
+import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
@@ -39,8 +40,6 @@ public class PaperResponse {
             private Integer totalTime;
             private Integer totalDay;
             private Integer round;
-            private Integer level;
-            private String purpose;
             private LocalDate startDate;
             private LocalDate endDate;
             private String teacherName;
@@ -53,13 +52,60 @@ public class PaperResponse {
                 this.totalTime = course.getTotalTime();
                 this.totalDay = course.getTotalDay();
                 this.round = course.getRound();
-                this.level = course.getLevel();
-                this.purpose = course.getPurpose();
                 this.startDate = course.getStartDate();
                 this.endDate = course.getEndDate();
                 this.teacherName = course.getMainTeacherName();
                 this.courseStatus = course.getCourseStatus().getValue();
             }
+        }
+    }
+
+    @Data
+    public static class SubjectDTO {
+        private Long subjectId;
+        private String code; // 능력단위 코드
+        private String title;
+        private String purpose;
+        private String gubun;
+        private Integer grade;
+        private Integer totalTime;
+        private Integer no; // 과정에서 몇번째로 시작하는 교과목인지에 대한 연번
+        private String learningWay; // 학습 방법
+        private String evaluationWay; // 평가 방법
+        private String evaluationDate; // 평가일
+        private String revaluationDate; // 재평가일
+        private LocalDate startDate; // 교과목 시작 날짜
+        private LocalDate endDate; // 교과목 종료 날짜
+        private Long courseId; // 과정 PK
+        private String courseTitle;
+        private Integer courseRound;
+
+        public SubjectDTO(Subject subject) {
+            Paper paper = subject.getPapers().stream().filter(p -> p.getIsReEvaluation() == false).findFirst().orElse(null);
+            Paper rePaper = subject.getPapers().stream().filter(p -> p.getIsReEvaluation() == true).findFirst().orElse(null);
+
+            this.subjectId = subject.getId();
+            this.code = subject.getCode();
+            this.title = subject.getTitle();
+            this.purpose = subject.getPurpose();
+            this.gubun = subject.getGubun();
+            this.grade = subject.getGrade();
+            this.totalTime = subject.getTotalTime();
+            this.no = subject.getNo();
+            this.learningWay = subject.getLearningWay();
+            this.evaluationWay = paper.getEvaluationWay();
+            this.evaluationDate = paper.getEvaluationDate().toString();
+
+            if (rePaper != null) {
+                this.revaluationDate = rePaper.getEvaluationDate().toString();
+            } else {
+                this.revaluationDate = "시험지없음";
+            }
+            this.startDate = subject.getStartDate();
+            this.endDate = subject.getEndDate();
+            this.courseId = subject.getCourse().getId();
+            this.courseTitle = subject.getCourse().getTitle();
+            this.courseRound = subject.getCourse().getRound();
         }
     }
 

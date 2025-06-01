@@ -10,14 +10,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import shop.mtcoding.blog.domain.course.CourseContainer;
 import shop.mtcoding.blog.domain.course.CourseService;
+import shop.mtcoding.blog.domain.course.subject.SubjectService;
 import shop.mtcoding.blog.domain.user.User;
-import shop.mtcoding.blog.web.course.CourseResponse;
 
 @RequiredArgsConstructor
 @Controller
 public class TeacherExamController {
 
     private final CourseService courseService;
+    private final SubjectService subjectService;
     private final HttpSession session;
 
     @GetMapping("/api/exam-menu/course")
@@ -25,9 +26,11 @@ public class TeacherExamController {
         User sessionUser = (User) session.getAttribute("sessionUser");
 
         CourseContainer.list cn = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
-        CourseResponse.ListDTO respDTO = new CourseResponse.ListDTO(cn.coursePG());
+        TeacherExamResponse.CourseListDTO respDTO = new TeacherExamResponse.CourseListDTO(cn.coursePG());
         model.addAttribute("paging", respDTO);
 
         return "v2/exam/teacher/course-list";
     }
+
+
 }

@@ -35,8 +35,6 @@ public class TeacherExamResponse {
             private Integer totalTime;
             private Integer totalDay;
             private Integer round;
-            private Integer level;
-            private String purpose;
             private LocalDate startDate;
             private LocalDate endDate;
             private String teacherName;
@@ -49,8 +47,6 @@ public class TeacherExamResponse {
                 this.totalTime = course.getTotalTime();
                 this.totalDay = course.getTotalDay();
                 this.round = course.getRound();
-                this.level = course.getLevel();
-                this.purpose = course.getPurpose();
                 this.startDate = course.getStartDate();
                 this.endDate = course.getEndDate();
                 this.teacherName = course.getMainTeacherName();

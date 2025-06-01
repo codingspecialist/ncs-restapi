@@ -10,6 +10,9 @@ import java.util.List;
 
 public interface PaperRepository extends JpaRepository<Paper, Long> {
 
+    @Query("SELECT p FROM Paper p WHERE p.subject.id = :subjectId")
+    Page<Paper> findAllBySubjectId(@Param("subjectId") Long subjectId, Pageable pageable);
+
     @Query("SELECT p FROM Paper p WHERE p.subject.course.id = :courseId")
     Page<Paper> findAllByCourseId(@Param("courseId") Long courseId, Pageable pageable);
 

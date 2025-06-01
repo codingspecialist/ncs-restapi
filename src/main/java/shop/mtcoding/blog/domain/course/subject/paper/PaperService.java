@@ -34,8 +34,15 @@ public class PaperService {
     private final SubjectElementRepository subjectElementRepository;
     private final SubjectRepository subjectRepository;
 
+    // 교과목별 시험지 목록
+    public PaperResponse.ListDTO 교과목별시험지목록(Long subjectId, Pageable pageable) {
+        Page<Paper> paperPG = paperRepository.findAllBySubjectId(subjectId, pageable);
+        return new PaperResponse.ListDTO(paperPG);
+    }
+
+
     // 과정별 시험지 목록
-    public PaperResponse.ListDTO 시험지목록(Long courseId, Pageable pageable) {
+    public PaperResponse.ListDTO 과정별시험지목록(Long courseId, Pageable pageable) {
         Page<Paper> paperPG = paperRepository.findAllByCourseId(courseId, pageable);
         return new PaperResponse.ListDTO(paperPG);
     }

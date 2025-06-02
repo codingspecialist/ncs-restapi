@@ -1,0 +1,41 @@
+{{> layout/header}}
+
+<div class="container p-5">
+    <div>
+        시험일 : {{model.evaluationDate}} <br>
+        시험장소 : {{model.loc}} <br>
+        교과목 : {{model.subjectTitle}} <br>
+    </div>
+
+    <hr>
+
+    <div class="d-flex justify-content-end">
+        <a href="/api/teacher/paper/{{model.paperId}}/question" class="btn btn-primary">문제등록</a>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>항목</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#model.questions}}
+            <tr>
+                <td>{{no}}</td>
+                <td>{{title}}</td>
+                <td>
+                    {{#options}}
+                        {{no}} {{content}} <input type="radio" name="answer-{{questionId}}" {{#isRight}}checked{{/isRight}}> <br>
+                    {{/options}}
+                </td>
+            </tr>
+        {{/model.questions}}
+        </tbody>
+    </table>
+
+</div>
+
+
+{{> layout/footer}}

@@ -36,7 +36,7 @@ public class PaperController {
     private final SubjectService subjectService;
     private final CourseService courseService;
 
-    // 1. 시험지관리 - 과정목록
+    // 1. 시험지관리 - 과정목록 (완)
     @GetMapping("/api/paper-menu/course")
     public String courseList(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         User sessionUser = (User) session.getAttribute("sessionUser");
@@ -47,7 +47,7 @@ public class PaperController {
         return "v2/paper/course-list";
     }
 
-    // 2. 시험지관리 - 교과목목록
+    // 2. 시험지관리 - 교과목목록 (페이징필요)
     @GetMapping("/api/paper-menu/course/{courseId}/subject")
     public String subject(@PathVariable("courseId") Long courseId, Model model) {
         List<ExamResponse.SubjectDTO> respDTO = subjectService.과정별교과목(courseId);
@@ -55,12 +55,20 @@ public class PaperController {
         return "v2/paper/subject-list";
     }
 
-    // 3. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) - 수정필요
+    // 3. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) (완)
     @GetMapping("/api/paper-menu/subject/{subjectId}/paper")
     public String list(Model model, @PathVariable("subjectId") Long subjectId, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         PaperResponse.ListDTO respDTO = paperService.교과목별시험지목록(subjectId, pageable);
         model.addAttribute("paging", respDTO);
         return "v2/paper/list";
+    }
+
+    // 3. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) - 시험지상세
+    @GetMapping("/api/paper-menu/paper/{paperId}")
+    public String detail(@PathVariable(value = "paperId") Long paperId, Model model) {
+        PaperResponse.QuestionListDTO respDTO = paperService.시험지상세(paperId);
+        model.addAttribute("model", respDTO);
+        return "v2/paper/detail";
     }
 
 
@@ -83,13 +91,6 @@ public class PaperController {
         return "redirect:/api/teacher/paper";
     }
 
-
-    @GetMapping("/api/teacher/paper/{paperId}")
-    public String detail(@PathVariable(value = "paperId") Long paperId, Model model) {
-        PaperResponse.QuestionListDTO respDTO = paperService.문제목록(paperId);
-        model.addAttribute("model", respDTO);
-        return "paper/detail";
-    }
 
     @GetMapping("/api/teacher/paper/{paperId}/question")
     public String questionSaveForm(@PathVariable(name = "paperId") Long paperId, Model model) {

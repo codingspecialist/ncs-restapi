@@ -40,11 +40,17 @@ public class PaperService {
         return new PaperResponse.ListDTO(paperPG);
     }
 
+    // 시험지 상세
+    public PaperResponse.QuestionListDTO 시험지상세(Long paperId) {
+        Paper paperPS = paperRepository.findById(paperId)
+                .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
-    // 과정별 시험지 목록
-    public PaperResponse.ListDTO 과정별시험지목록(Long courseId, Pageable pageable) {
-        Page<Paper> paperPG = paperRepository.findAllByCourseId(courseId, pageable);
-        return new PaperResponse.ListDTO(paperPG);
+        List<SubjectElement> subjectElementListPS =
+                subjectElementRepository.findBySubjectId(paperPS.getSubject().getId());
+
+
+        List<Question> questionListPS = questionRepository.findByPaperId(paperId);
+        return new PaperResponse.QuestionListDTO(paperPS, subjectElementListPS, questionListPS);
     }
 
     public PaperResponse.QuestionListDTO 문제목록(Long paperId) {
@@ -57,6 +63,12 @@ public class PaperService {
 
         List<Question> questionListPS = questionRepository.findByPaperId(paperId);
         return new PaperResponse.QuestionListDTO(paperPS, subjectElementListPS, questionListPS);
+    }
+
+    // 과정별 시험지 목록
+    public PaperResponse.ListDTO 과정별시험지목록(Long courseId, Pageable pageable) {
+        Page<Paper> paperPG = paperRepository.findAllByCourseId(courseId, pageable);
+        return new PaperResponse.ListDTO(paperPG);
     }
 
     @Transactional

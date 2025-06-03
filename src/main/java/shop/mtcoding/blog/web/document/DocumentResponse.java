@@ -179,7 +179,7 @@ public class DocumentResponse {
             this.courseStartDate = subject.getCourse().getStartDate().toString();
             this.courseEndDate = MyUtil.localDateToString(subject.getCourse().getEndDate());
             this.subjectTitle = subject.getTitle();
-            this.subjectEvaluationWay = paper.getEvaluationWay();
+            this.subjectEvaluationWay = paper.getEvaluationWay().toKorean();
             this.subjectTeacherName = subject.getTeacherName();
             this.subjectEvaluationDate = MyUtil.localDateToString(paper.getEvaluationDate());
             this.loc = "3호";
@@ -246,7 +246,7 @@ public class DocumentResponse {
             this.loc = "3호";
             this.subjectTitle = paper.getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
-            this.questionCount = paper.getCount();
+            this.questionCount = paper.getQuestionCount();
             this.teacherSign = teacher.getSign();
             this.grade = paper.getSubject().getGrade();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
@@ -327,7 +327,7 @@ public class DocumentResponse {
             this.subjectTitle = exam.getPaper().getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
             this.answers = exam.getExamAnswers().stream().map(AnswerDTO::new).toList();
-            this.questionCount = exam.getPaper().getCount();
+            this.questionCount = exam.getPaper().getQuestionCount();
             this.examState = exam.getExamState();
             this.reExamReason = exam.getReExamReason();
             this.examPassState = exam.getPassState();

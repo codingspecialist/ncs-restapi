@@ -115,7 +115,7 @@ public class CourseResponse {
             private String code; // 능력단위 코드
             private String title;
             private String purpose;
-            private String gubun;
+            private String ncsType;
             private Integer grade;
             private Integer totalTime;
             private Integer no; // 과정에서 몇번째로 시작하는 교과목인지에 대한 연번
@@ -127,26 +127,28 @@ public class CourseResponse {
             private LocalDate endDate; // 교과목 종료 날짜
             private Long courseId; // 과정 PK
 
-            // TODO : 재평가일 떄문에 터질수있음
+
             public SubjectDTO(Subject subject) {
-                Paper paper = subject.getPapers().stream().filter(p -> p.getIsReEvaluation() == false).findFirst().orElse(null);
-                Paper rePaper = subject.getPapers().stream().filter(p -> p.getIsReEvaluation() == true).findFirst().orElse(null);
+                Paper paper = subject.getPapers().stream().filter(p -> !p.isReEvaluation()).findFirst().orElse(null);
+                Paper rePaper = subject.getPapers().stream().filter(Paper::isReEvaluation).findFirst().orElse(null);
 
                 this.subjectId = subject.getId();
                 this.code = subject.getCode();
                 this.title = subject.getTitle();
                 this.purpose = subject.getPurpose();
-                this.gubun = subject.getGubun();
+                this.ncsType = subject.getNcsType().toKorean();
                 this.grade = subject.getGrade();
                 this.totalTime = subject.getTotalTime();
                 this.no = subject.getNo();
-                this.learningWay = subject.getLearningWay();
+                this.learningWay = subject.getLearningWay().toKorean();
 
                 if (paper == null) {
                     this.evaluationWay = "시험지없음";
                     this.evaluationDate = "시험지없음";
                 } else {
-                    this.evaluationWay = paper.getEvaluationWay();
+                    this.evaluationWay = paper.getEvaluationWay() != null
+                            ? paper.getEvaluationWay().toKorean()
+                            : "시험지없음";
                     this.evaluationDate = paper.getEvaluationDate().toString();
                 }
 

@@ -14,28 +14,28 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 1. 시험지는 순수해야 한다. 연관관계를 맺지 말자.
- * 2. 시험이 연관관계를 가져야 한다.
- */
 @NoArgsConstructor
 @Getter
 @Entity
 @Table(name = "paper_tb")
 public class Paper {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String evaluationWay; // 평가방법 (서술형, 혼합형, 포트폴리오) enum 변경필요
+    @Enumerated(EnumType.STRING)
+    private EvaluationWay evaluationWay; // 평가 방법
+
     private LocalDate evaluationDate; // 평가일
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Subject subject;
 
-    private Integer count; // 문항수
-    private String paperState; // 본평가, 재평가
-    private Boolean isReEvaluation;
+    private Integer questionCount; // 문항 수
+
+    @Enumerated(EnumType.STRING)
+    private PaperType paperType; // 본평가, 재평가
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -54,16 +54,19 @@ public class Paper {
         this.questions.add(question);
     }
 
+    public boolean isReEvaluation() {
+        return paperType.isReEvaluation();
+    }
 
     @Builder
-    public Paper(Long id, String evaluationWay, LocalDate evaluationDate, Subject subject, Integer count, String paperState, Boolean isReEvaluation, LocalDateTime createdAt) {
+    public Paper(Long id, EvaluationWay evaluationWay, LocalDate evaluationDate,
+                 Subject subject, Integer questionCount, PaperType paperType, LocalDateTime createdAt) {
         this.id = id;
         this.evaluationWay = evaluationWay;
         this.evaluationDate = evaluationDate;
         this.subject = subject;
-        this.count = count;
-        this.paperState = paperState;
-        this.isReEvaluation = paperState.equals("재평가");
+        this.questionCount = questionCount;
+        this.paperType = paperType;
         this.createdAt = createdAt;
     }
 }

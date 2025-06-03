@@ -8,7 +8,7 @@
             <form id="save-form" action="/api/paper-menu/subject/{{subjectId}}/paper/save" method="post">
                 <hr>
                 <div class="mb-3">
-                    <select class="form-control" name="paperState" required>
+                    <select class="form-control" name="paperType" required>
                         <option value="본평가">본평가</option>
                         <option value="재평가">재평가</option>
                     </select>
@@ -17,7 +17,7 @@
                 <hr>
 
                 <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="문항수" name="count" required>
+                    <input type="text" class="form-control" placeholder="문항수" name="questionCount" required>
                 </div>
 
                 <div class="mb-3">

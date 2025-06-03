@@ -3,14 +3,15 @@ package shop.mtcoding.blog.domain.course.exam;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import shop.mtcoding.blog.domain.course.subject.paper.PaperType;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ExamRepository extends JpaRepository<Exam, Long> {
 
-    @Query("select ex from Exam ex left join fetch ex.paper p left join fetch p.subject sb where p.isReEvaluation = :isReEvaluation and sb.id = :subjectId")
-    List<Exam> findBySubjectIdAndEvaludationType(Boolean isReEvaluation, Long subjectId); // isReEvaluation = 본평가, 재평가
+    @Query("select ex from Exam ex left join fetch ex.paper p left join fetch p.subject sb where sb.id = :subjectId and p.paperType = :paperType")
+    List<Exam> findBySubjectIdAndEvaluationWay(Long subjectId, PaperType paperType);
 
     @Query("select ex from Exam ex where ex.paper.subject.id = :subjectId and ex.student.id = :studentId and ex.isUse = :isUse")
     Optional<Exam> findBySubjectIdAndStudentIdAndIsNotUse(@Param("subjectId") Long subjectId, @Param("studentId") Long studentId, @Param("isUse") Boolean isUse);

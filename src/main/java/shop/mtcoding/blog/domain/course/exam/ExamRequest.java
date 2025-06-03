@@ -91,7 +91,7 @@ public class ExamRequest {
                     .passState(passState)
                     .score(score)
                     .grade(grade)
-                    .examState(paper.getPaperState())
+                    .examState(paper.getPaperType().toKorean())
                     .reExamReason(reExamReason)
                     .build();
         }

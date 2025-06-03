@@ -10,7 +10,6 @@ import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswerRepository;
 import shop.mtcoding.blog.domain.course.student.Student;
 import shop.mtcoding.blog.domain.course.student.StudentRepository;
-import shop.mtcoding.blog.domain.course.subject.SubjectRepository;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElementRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
@@ -19,7 +18,6 @@ import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionRepository;
 import shop.mtcoding.blog.domain.user.User;
 import shop.mtcoding.blog.domain.user.UserEnum;
-import shop.mtcoding.blog.domain.user.UserRepository;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
 import shop.mtcoding.blog.web.exam.ExamResponse;
@@ -35,8 +33,6 @@ public class ExamService {
     private final ExamAnswerRepository examAnswerRepository;
     private final PaperRepository paperRepository;
     private final StudentRepository studentRepository;
-    private final UserRepository userRepository;
-    private final SubjectRepository subjectRepository;
     private final SubjectElementRepository elementRepository;
     private final QuestionRepository questionRepository;
     private final TeacherRepository teacherRepository;
@@ -61,7 +57,7 @@ public class ExamService {
                 .student(student)
                 .paper(paper)
                 .teacherName(paper.getSubject().getTeacherName())
-                .examState(paper.getPaperState()) // 본평가 or 재평가
+                .examState(paper.getPaperType().toKorean()) // 본평가 or 재평가
                 .reExamReason("결석")
                 .teacherComment("결석")
                 .score(0.0)
@@ -94,7 +90,7 @@ public class ExamService {
         double score = examAnswers.stream().mapToInt(value -> value.getIsCorrect() ? value.getQuestion().getPoint() : 0).sum();
 
         // 5. 재평가지로 시험쳤으면 10%
-        if (examPS.getPaper().getIsReEvaluation() == true) {
+        if (examPS.getPaper().isReEvaluation()) {
             score = score * 0.9;
         }
 
@@ -189,7 +185,7 @@ public class ExamService {
 
         // 3. 재평가 허용 대상 subjectId 추출
         Set<Long> eligibleRetestSubjectIds = myExams.stream()
-                .filter(exam -> exam.getPaper().getPaperState().equals("본평가"))
+                .filter(exam -> !exam.getPaper().isReEvaluation())
                 .filter(exam -> {
                     boolean lowScore = exam.getScore() != null && exam.getScore() < 60;
                     boolean badReason = "미통과".equals(exam.getReExamReason()) || "결석".equals(exam.getReExamReason());
@@ -201,9 +197,9 @@ public class ExamService {
         // 4. 시험지 필터링
         List<Paper> filteredPapers = allPapers.stream()
                 .filter(paper -> {
-                    if (paper.getPaperState().equals("본평가")) {
+                    if (!paper.isReEvaluation()) {
                         return true; // 본평가는 항상 노출
-                    } else if (paper.getPaperState().equals("재평가")) {
+                    } else if (paper.isReEvaluation()) {
                         Long subjectId = paper.getSubject().getId();
                         return eligibleRetestSubjectIds.contains(subjectId); // 조건 충족 시에만 노출
                     }
@@ -229,7 +225,7 @@ public class ExamService {
 
         // 2. 재평가인데, 이전 시험(Exam)이 있으면 이전 시험 isNotUse로 변경
         // 재평가를 10번 해도, 모든 이전 재평가, 본평가는 isNotUse가 true가 됨
-        if (paper.getPaperState().equals("재평가")) {
+        if (paper.isReEvaluation()) {
             Optional<Exam> examOP = examRepository.findBySubjectIdAndStudentIdAndIsNotUse(paper.getSubject().getId(), student.getId(), true);
 
             if (examOP.isPresent()) {
@@ -239,7 +235,7 @@ public class ExamService {
         }
 
 
-        Exam exam = reqDTO.toEntity(paper, student, paper.getPaperState(), 0.0, 0, "");
+        Exam exam = reqDTO.toEntity(paper, student, paper.getPaperType().toKorean(), 0.0, 0, "");
         Exam examPS = examRepository.save(exam);
 
         // 2. 정답지 가져오기
@@ -261,7 +257,7 @@ public class ExamService {
         double score = examAnswerList.stream().mapToInt(value -> value.getIsCorrect() ? value.getQuestion().getPoint() : 0).sum();
 
         // 5. 재평가지로 시험쳤으면 10%
-        if (paper.getPaperState().equals("재평가")) {
+        if (paper.isReEvaluation()) {
             score = score * 0.9;
         }
 
@@ -323,7 +319,7 @@ public class ExamService {
 
         // 2. 본평가 시험지만 추출
         Paper mainPaper = paperList.stream()
-                .filter(p -> "본평가".equals(p.getPaperState()))
+                .filter(p -> !p.isReEvaluation())
                 .findFirst()
                 .orElseThrow(() -> new Exception404("본평가 시험지가 없습니다."));
 

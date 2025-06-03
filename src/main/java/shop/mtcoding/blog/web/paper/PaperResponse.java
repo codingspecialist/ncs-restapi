@@ -66,7 +66,7 @@ public class PaperResponse {
         private String code; // 능력단위 코드
         private String title;
         private String purpose;
-        private String gubun;
+        private String ncsType;
         private Integer grade;
         private Integer totalTime;
         private Integer no; // 과정에서 몇번째로 시작하는 교과목인지에 대한 연번
@@ -81,32 +81,38 @@ public class PaperResponse {
         private Integer courseRound;
 
         public SubjectDTO(Subject subject) {
-            Paper paper = subject.getPapers().stream().filter(p -> p.getIsReEvaluation() == false).findFirst().orElse(null);
-            Paper rePaper = subject.getPapers().stream().filter(p -> p.getIsReEvaluation() == true).findFirst().orElse(null);
+            Paper paper = subject.getPapers().stream().filter(p -> !p.isReEvaluation()).findFirst().orElse(null);
+            Paper rePaper = subject.getPapers().stream().filter(Paper::isReEvaluation).findFirst().orElse(null);
 
             this.subjectId = subject.getId();
             this.code = subject.getCode();
             this.title = subject.getTitle();
             this.purpose = subject.getPurpose();
-            this.gubun = subject.getGubun();
+            this.ncsType = subject.getNcsType().toKorean(); // ✅ enum 변경
             this.grade = subject.getGrade();
             this.totalTime = subject.getTotalTime();
             this.no = subject.getNo();
-            this.learningWay = subject.getLearningWay();
-            this.evaluationWay = paper.getEvaluationWay();
-            this.evaluationDate = paper.getEvaluationDate().toString();
+            this.learningWay = subject.getLearningWay().toKorean(); // ✅ enum 변경
 
-            if (rePaper != null) {
-                this.revaluationDate = rePaper.getEvaluationDate().toString();
+            if (paper != null) {
+                this.evaluationWay = paper.getEvaluationWay() != null ? paper.getEvaluationWay().toKorean() : "시험지없음"; // ✅ enum 변경
+                this.evaluationDate = paper.getEvaluationDate() != null ? paper.getEvaluationDate().toString() : "시험지없음";
             } else {
-                this.revaluationDate = "시험지없음";
+                this.evaluationWay = "시험지없음";
+                this.evaluationDate = "시험지없음";
             }
+
+            this.revaluationDate = (rePaper != null && rePaper.getEvaluationDate() != null)
+                    ? rePaper.getEvaluationDate().toString()
+                    : "시험지없음";
+
             this.startDate = subject.getStartDate();
             this.endDate = subject.getEndDate();
             this.courseId = subject.getCourse().getId();
             this.courseTitle = subject.getCourse().getTitle();
             this.courseRound = subject.getCourse().getRound();
         }
+
     }
 
 
@@ -181,13 +187,12 @@ public class PaperResponse {
         @Data
         class PaperDTO {
             private Long paperId;
-
             private String courseTitle;
             private Integer courseRound;
             private Long subjectId;
             private String subjectTitle; // 교과목명
-            private Integer count; // 문항수
-            private String paperState;
+            private Integer questionCount; // 문항수
+            private String paperType;
 
             public PaperDTO(Paper paper) {
                 this.paperId = paper.getId();
@@ -195,8 +200,8 @@ public class PaperResponse {
                 this.courseRound = paper.getSubject().getCourse().getRound();
                 this.subjectId = paper.getSubject().getId();
                 this.subjectTitle = paper.getSubject().getTitle();
-                this.count = paper.getCount();
-                this.paperState = paper.getPaperState();
+                this.questionCount = paper.getQuestionCount();
+                this.paperType = paper.getPaperType().toKorean();
             }
         }
     }

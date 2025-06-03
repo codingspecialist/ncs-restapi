@@ -2,6 +2,8 @@ package shop.mtcoding.blog.web.course.subject;
 
 import lombok.Data;
 import shop.mtcoding.blog.domain.course.Course;
+import shop.mtcoding.blog.domain.course.subject.LearningWay;
+import shop.mtcoding.blog.domain.course.subject.NcsType;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 
 import java.time.LocalDate;
@@ -11,16 +13,16 @@ public class CourseSubjectRequest {
     @Data
     public static class SaveDTO {
         private String teacherName;
-        private String code; // 교과목ID
-        private String title; // 교과목명
-        private String purpose; // 교과목목표
-        private String gubun; // NCS, 비NCS
-        private Integer grade; // 수준
-        private Integer totalTime; // 능력단위 시간
-        private Integer no; // 과정에서 몇번째로 시작하는 교과목인지에 대한 연번
-        private String learningWay; // 학습 방법
-        private LocalDate startDate; // 교과목 시작일
-        private LocalDate endDate; // 교과목 종료일
+        private String code;         // 교과목 ID
+        private String title;        // 교과목명
+        private String purpose;      // 교과목 목표
+        private String ncsType;      // "NCS", "비NCS"
+        private Integer grade;       // 수준
+        private Integer totalTime;   // 능력단위 시간
+        private Integer no;          // 순번
+        private String learningWay;  // "이론", "실습", "이론+실습"
+        private LocalDate startDate;
+        private LocalDate endDate;
 
         public Subject toEntity(Course course) {
             return Subject.builder()
@@ -28,15 +30,16 @@ public class CourseSubjectRequest {
                     .code(code)
                     .title(title)
                     .purpose(purpose)
-                    .gubun(gubun)
+                    .ncsType(NcsType.fromKorean(ncsType))         // ✅ enum으로 변환
                     .grade(grade)
                     .totalTime(totalTime)
                     .no(no)
-                    .learningWay(learningWay)
+                    .learningWay(LearningWay.fromKorean(learningWay))   // ✅ enum으로 변환
                     .startDate(startDate)
                     .endDate(endDate)
                     .course(course)
                     .build();
         }
     }
+
 }

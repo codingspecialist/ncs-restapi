@@ -47,13 +47,13 @@ insert into course_teacher_tb(course_id, created_at, role, teacher_id)
 values (1, now(), 'MAIN', 1);
 
 
-insert into subject_tb(teacher_name, code, course_id, start_date, end_date, grade, gubun, learning_way, no, purpose,
+insert into subject_tb(teacher_name, code, course_id, start_date, end_date, grade, ncs_type, learning_way, no, purpose,
                        title, total_time, created_at)
-values ('최주호', 'S2001', 1, '2024-06-01', '2024-06-07', 3, 'NCS', '실습', 1,
+values ('최주호', 'S2001', 1, '2024-06-01', '2024-06-07', 3, 'NCS', 'MIXED', 1,
         '객체지향을 학습하는 능력이다', '자바', 50, now());
-insert into subject_tb(teacher_name, code, course_id, start_date, end_date, grade, gubun, learning_way, no, purpose,
+insert into subject_tb(teacher_name, code, course_id, start_date, end_date, grade, ncs_type, learning_way, no, purpose,
                        title, total_time, created_at)
-values ('최주호', 'S2002', 1, '2024-06-08', '2024-06-13', 3, 'NCS', '실습', 2,
+values ('최주호', 'S2002', 1, '2024-06-08', '2024-06-13', 3, 'NCS', 'MIXED', 2,
         'HTTP를 학습하는 능력이다', '스프링부트', 50, now());
 
 
@@ -83,12 +83,12 @@ values (now(), 4, 2, '리플렉션');
 insert into subject_element_tb(created_at, no, subject_id, subtitle)
 values (now(), 5, 2, '컨트롤러');
 
-insert into paper_tb(subject_id, created_at, count, paper_state, evaluation_date, evaluation_way, is_re_evaluation)
-values (1, now(), 2, '본평가', '2024-06-07', '서술형시험', false);
-insert into paper_tb(subject_id, created_at, count, paper_state, evaluation_date, evaluation_way, is_re_evaluation)
-values (2, now(), 5, '본평가', '2024-06-13', '서술형시험', false);
-insert into paper_tb(subject_id, created_at, count, paper_state, evaluation_date, evaluation_way, is_re_evaluation)
-values (1, now(), 2, '재평가', '2024-06-08', '서술형시험', true);
+insert into paper_tb(subject_id, created_at, question_count, paper_type, evaluation_date, evaluation_way)
+values (1, now(), 2, 'ORIGINAL', '2024-06-07', 'DESCRIPTIVE');
+insert into paper_tb(subject_id, created_at, question_count, paper_type, evaluation_date, evaluation_way)
+values (2, now(), 5, 'ORIGINAL', '2024-06-13', 'DESCRIPTIVE');
+insert into paper_tb(subject_id, created_at, question_count, paper_type, evaluation_date, evaluation_way)
+values (1, now(), 2, 'RETEST', '2024-06-08', 'DESCRIPTIVE');
 
 insert into question_tb(no, title, point, answer_number, paper_id, created_at, subject_element_id, question_purpose,
                         question_fail)

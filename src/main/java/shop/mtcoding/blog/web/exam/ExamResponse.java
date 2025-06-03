@@ -20,13 +20,13 @@ public class ExamResponse {
     @Data
     public static class SubjectDTO {
         private Long subjectId;
+        private Integer no; // 과정에서 몇번째로 시작하는 교과목인지에 대한 연번
         private String code; // 능력단위 코드
         private String title;
         private String purpose;
-        private String gubun;
+        private String ncsType;
         private Integer grade;
         private Integer totalTime;
-        private Integer no; // 과정에서 몇번째로 시작하는 교과목인지에 대한 연번
         private String learningWay; // 학습 방법
         private String evaluationWay; // 평가 방법
         private String evaluationDate; // 평가일
@@ -38,19 +38,19 @@ public class ExamResponse {
         private Integer courseRound;
 
         public SubjectDTO(Subject subject) {
-            Paper paper = subject.getPapers().stream().filter(p -> p.getIsReEvaluation() == false).findFirst().orElse(null);
-            Paper rePaper = subject.getPapers().stream().filter(p -> p.getIsReEvaluation() == true).findFirst().orElse(null);
+            Paper paper = subject.getPapers().stream().filter(p -> !p.isReEvaluation()).findFirst().orElse(null);
+            Paper rePaper = subject.getPapers().stream().filter(p -> p.isReEvaluation()).findFirst().orElse(null);
 
             this.subjectId = subject.getId();
             this.code = subject.getCode();
             this.title = subject.getTitle();
             this.purpose = subject.getPurpose();
-            this.gubun = subject.getGubun();
+            this.ncsType = subject.getNcsType().toKorean();
             this.grade = subject.getGrade();
             this.totalTime = subject.getTotalTime();
             this.no = subject.getNo();
-            this.learningWay = subject.getLearningWay();
-            this.evaluationWay = paper.getEvaluationWay();
+            this.learningWay = subject.getLearningWay().toKorean();
+            this.evaluationWay = paper.getEvaluationWay().toKorean();
             this.evaluationDate = paper.getEvaluationDate().toString();
 
             if (rePaper != null) {
@@ -104,7 +104,7 @@ public class ExamResponse {
             this.subjectTitle = exam.getPaper().getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
             this.answers = exam.getExamAnswers().stream().map(AnswerDTO::new).toList();
-            this.questionCount = exam.getPaper().getCount();
+            this.questionCount = exam.getPaper().getQuestionCount();
             this.examState = exam.getExamState();
             this.reExamReason = exam.getReExamReason();
             this.examPassState = exam.getPassState();
@@ -296,8 +296,8 @@ public class ExamResponse {
             private Integer courseRound;
             private Long subjectId;
             private String subjectTitle; // 교과목명
-            private Integer count; // 문항수
-            private String paperState;
+            private Integer questionCount; // 문항수
+            private String paperType;
             private String teacherName;
             private Boolean isAttendance; // 시험 응시 이력이 있음?
 
@@ -308,8 +308,8 @@ public class ExamResponse {
                 this.courseRound = paper.getSubject().getCourse().getRound();
                 this.subjectId = paper.getSubject().getId();
                 this.subjectTitle = paper.getSubject().getTitle();
-                this.count = paper.getCount();
-                this.paperState = paper.getPaperState();
+                this.questionCount = paper.getQuestionCount();
+                this.paperType = paper.getPaperType().toKorean();
                 this.teacherName = paper.getSubject().getTeacherName();
                 this.isAttendance = isAttendance;
             }

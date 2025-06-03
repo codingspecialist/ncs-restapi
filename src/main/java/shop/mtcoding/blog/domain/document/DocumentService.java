@@ -14,6 +14,7 @@ import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElementRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperRepository;
+import shop.mtcoding.blog.domain.course.subject.paper.PaperType;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionRepository;
 import shop.mtcoding.blog.domain.user.UserRepository;
@@ -38,8 +39,8 @@ public class DocumentService {
     private final ExamRepository examRepository;
 
     public DocumentResponse.No5DTO no5(Long courseId, Long subjectId) {
-        List<Exam> examList = examRepository.findBySubjectIdAndEvaludationType(false, subjectId); // 본평가들
-        List<Exam> reExamList = examRepository.findBySubjectIdAndEvaludationType(true, subjectId); // 재평가들
+        List<Exam> examList = examRepository.findBySubjectIdAndEvaluationWay(subjectId, PaperType.ORIGINAL); // 본평가들
+        List<Exam> reExamList = examRepository.findBySubjectIdAndEvaluationWay(subjectId, PaperType.RETEST); // 재평가들
 
         Teacher teacherPS = teacherRepository.findByName(examList.get(0).getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 선생님이 존재하지 않아요"));
@@ -48,7 +49,7 @@ public class DocumentService {
     }
 
     public DocumentResponse.No2DTO no2(Long courseId, Long subjectId) {
-        Paper paperPS = paperRepository.findBySubjectIdAndPaperState(subjectId, false).get(0);
+        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL).get(0);
         List<Question> questionList = questionRepository.findByPaperId(paperPS.getId());
 
         return new DocumentResponse.No2DTO(paperPS.getSubject(), questionList);
@@ -83,7 +84,7 @@ public class DocumentService {
     }
 
     public DocumentResponse.No3DTO no3(Long courseId, Long subjectId) {
-        Paper paperPS = paperRepository.findBySubjectIdAndPaperState(subjectId, false).get(0);
+        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL).get(0);
         List<Question> questionListPS = questionRepository.findByPaperId(paperPS.getId());
 
         List<SubjectElement> subjectElementListPS =
@@ -115,7 +116,7 @@ public class DocumentService {
                 .orElseThrow(() -> new Exception404("해당 선생님이 존재하지 않아요"));
 
 
-        Paper paperPS = paperRepository.findBySubjectIdAndPaperState(subjectId, false).get(0);
+        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL).get(0);
         List<Question> questionListPS = questionRepository.findByPaperId(paperPS.getId());
         return new DocumentResponse.No1DTO(subjectPS, questionListPS, teacherPS.getSign(), paperPS);
     }

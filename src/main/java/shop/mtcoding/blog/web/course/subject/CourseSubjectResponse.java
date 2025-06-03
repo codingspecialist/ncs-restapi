@@ -47,19 +47,17 @@ public class CourseSubjectResponse {
         @Data
         class SubjectDTO {
             private Long subjectId;
+            private Integer no; // 과정에서 몇번째로 시작하는 교과목인지에 대한 연번
             private String code; // 능력단위 코드
             private String title;
             private String purpose;
-            private String gubun;
+            private String ncsType;
             private Integer grade;
             private Integer totalTime;
-            private Integer no; // 과정에서 몇번째로 시작하는 교과목인지에 대한 연번
             private String learningWay; // 학습 방법
             private String evaluationWay; // 평가 방법
             private LocalDate evaluationDate; // 평가일
             private LocalDate revaluationDate; // 재평가일
-            private LocalDate evaluationScheduleDate; // 평가 예정일
-            private LocalDate revaluationScheduleDate; // 재평가 예정일
             private LocalDate startDate; // 교과목 시작 날짜
             private LocalDate endDate; // 교과목 종료 날짜
             private Long courseId; // 과정 PK
@@ -67,18 +65,17 @@ public class CourseSubjectResponse {
             private Integer courseRound;
 
             public SubjectDTO(Subject subject) {
-                Paper paper = subject.getPapers().stream().filter(p -> p.getIsReEvaluation() == false).findFirst().orElse(null);
+                Paper paper = subject.getPapers().stream().filter(p -> p.isReEvaluation()).findFirst().orElse(null);
                 this.subjectId = subject.getId();
                 this.code = subject.getCode();
                 this.title = subject.getTitle();
                 this.purpose = subject.getPurpose();
-                this.gubun = subject.getGubun();
+                this.ncsType = subject.getNcsType().toKorean();
                 this.grade = subject.getGrade();
                 this.totalTime = subject.getTotalTime();
                 this.no = subject.getNo();
-                this.learningWay = subject.getLearningWay();
-                // TODO : 재평가일 때문에 터질수 있음
-                this.evaluationWay = paper.getEvaluationWay();
+                this.learningWay = subject.getLearningWay().toKorean();
+                this.evaluationWay = paper.getEvaluationWay().toKorean();
                 this.evaluationDate = paper.getEvaluationDate();
                 this.startDate = subject.getStartDate();
                 this.endDate = subject.getEndDate();

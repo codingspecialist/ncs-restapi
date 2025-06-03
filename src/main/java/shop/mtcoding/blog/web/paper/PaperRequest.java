@@ -56,7 +56,6 @@ public class PaperRequest {
 
     @Data
     public static class SaveDTO {
-        private Long subjectId;
         private Integer count;
         private String paperState; // 평가 // 재평가
         private LocalDate evaluationDate;

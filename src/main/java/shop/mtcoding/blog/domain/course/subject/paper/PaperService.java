@@ -53,6 +53,14 @@ public class PaperService {
         return new PaperResponse.QuestionListDTO(paperPS, subjectElementListPS, questionListPS);
     }
 
+    // 시험지등록
+    @Transactional
+    public void 시험지등록(Long subjectId, PaperRequest.SaveDTO reqDTO) {
+        Subject subjectPS = subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new Exception404("해당 교과목을 찾을 수 없어요"));
+        paperRepository.save(reqDTO.toEntity(subjectPS));
+    }
+
     public PaperResponse.QuestionListDTO 문제목록(Long paperId) {
         Paper paperPS = paperRepository.findById(paperId)
                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
@@ -71,12 +79,6 @@ public class PaperService {
         return new PaperResponse.ListDTO(paperPG);
     }
 
-    @Transactional
-    public void 시험지등록(PaperRequest.SaveDTO reqDTO) {
-        Subject subjectPS = subjectRepository.findById(reqDTO.getSubjectId())
-                .orElseThrow(() -> new Exception404("해당 교과목을 찾을 수 없어요"));
-        paperRepository.save(reqDTO.toEntity(subjectPS));
-    }
 
     @Transactional
     public void 문제등록(PaperRequest.QuestionSaveDTO reqDTO) {

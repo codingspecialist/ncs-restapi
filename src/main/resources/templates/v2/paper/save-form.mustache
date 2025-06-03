@@ -1,0 +1,37 @@
+{{> layout/header}}
+
+<div class="container p-5">
+
+    <div class="card">
+        <div class="card-header"><b>시험지를 등록 해주세요</b></div>
+        <div class="card-body">
+            <form id="save-form" action="/api/paper-menu/subject/{{subjectId}}/paper/save" method="post">
+                <hr>
+                <div class="mb-3">
+                    <select class="form-control" name="paperState" required>
+                        <option value="본평가">본평가</option>
+                        <option value="재평가">재평가</option>
+                    </select>
+                </div>
+
+                <hr>
+
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="문항수" name="count" required>
+                </div>
+
+                <div class="mb-3">
+                    <label>평가일</label>
+                    <input type="date" class="form-control" placeholder="평가일" name="evaluationDate" value="2024-05-10">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="평가방법" name="evaluationWay" value="서술형시험">
+                </div>
+
+                <button type="submit" class="btn btn-primary form-control">시험지등록</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{> layout/footer}}

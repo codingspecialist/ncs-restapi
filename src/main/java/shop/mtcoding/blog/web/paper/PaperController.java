@@ -19,7 +19,6 @@ import shop.mtcoding.blog.domain.course.subject.SubjectService;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperService;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionDBResponse;
 import shop.mtcoding.blog.domain.user.User;
-import shop.mtcoding.blog.web.course.subject.CourseSubjectResponse;
 import shop.mtcoding.blog.web.exam.ExamResponse;
 
 import java.util.List;
@@ -63,32 +62,32 @@ public class PaperController {
         return "v2/paper/list";
     }
 
-    // 3. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) - 시험지상세
+    // 4-1. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) - 시험지등록
+    @GetMapping("/api/paper-menu/subject/{subjectId}/paper/save-form")
+    public String saveForm(@PathVariable("subjectId") Long subjectId, Model model) {
+        model.addAttribute("subjectId", subjectId);
+        return "v2/paper/save-form";
+    }
+
+    // 4-2. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) - 시험지상세
     @GetMapping("/api/paper-menu/paper/{paperId}")
-    public String detail(@PathVariable(value = "paperId") Long paperId, Model model) {
+    public String detail(@PathVariable("paperId") Long paperId, Model model) {
         PaperResponse.QuestionListDTO respDTO = paperService.시험지상세(paperId);
         model.addAttribute("model", respDTO);
         return "v2/paper/detail";
     }
 
+    // 5. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록 - 시험지등록(교과목별)
+    @PostMapping("/api/paper-menu/subject/{subjectId}/paper/save")
+    public String save(@PathVariable("subjectId") Long subjectId, PaperRequest.SaveDTO reqDTO) {
+        paperService.시험지등록(subjectId, reqDTO);
+        return "redirect:/api/paper-menu/subject/" + subjectId + "/paper";
+    }
 
     @PostMapping("/api/paper-menu/paper/{paperId}/question/save")
     public ResponseEntity<?> questionSave(@RequestBody PaperRequest.QuestionSaveDTO reqDTO) {
         paperService.문제등록(reqDTO);
         return ResponseEntity.ok(new ApiUtil<>(null));
-    }
-
-    @GetMapping("/api/paper-menu/paper/save-form")
-    public String getList(Model model) {
-        List<CourseSubjectResponse.DTO> respDTO = subjectService.모든교과목목록();
-        model.addAttribute("models", respDTO);
-        return "paper/save-form";
-    }
-
-    @PostMapping("/api/teacher/paper/save")
-    public String save(PaperRequest.SaveDTO reqDTO) {
-        paperService.시험지등록(reqDTO);
-        return "redirect:/api/teacher/paper";
     }
 
 

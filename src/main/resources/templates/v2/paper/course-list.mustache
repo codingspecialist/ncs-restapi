@@ -17,7 +17,7 @@
         </tr>
         </thead>
         <tbody>
-        {{#paging.courses}}
+        {{#model.courses}}
             <tr class="click-tr" onclick="location.href='/api/paper-menu/course/{{id}}/subject'">
                 <td>{{code}}</td>
                 <td>{{title}}</td>
@@ -29,7 +29,7 @@
                 <td>{{teacherName}}</td>
                 <td>{{courseStatus}}</td>
             </tr>
-        {{/paging.courses}}
+        {{/model.courses}}
         </tbody>
     </table>
 

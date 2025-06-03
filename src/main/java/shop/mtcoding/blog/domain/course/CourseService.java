@@ -65,17 +65,17 @@ public class CourseService {
         courseTeacherRepository.saveAll(subTeachers);
     }
 
-    public CourseContainer.list 과정목록(Long teacherId, Pageable pageable) {
+    public CourseModel.Items 과정목록(Long teacherId, Pageable pageable) {
         Page<Course> coursePG = courseRepository.findAllByTeacherId(teacherId, pageable);
-        return new CourseContainer.list(coursePG);
+        return new CourseModel.Items(coursePG);
     }
 
-    public CourseContainer.Detail 과정상세(Long courseId) {
+    public CourseModel.Detail 과정상세(Long courseId) {
         Course coursePS = courseRepository.findById(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
 
         List<Subject> subjectListPS = subjectRepository.findByCourseId(coursePS.getId());
         List<Student> studentListPS = studentRepository.findByCourseId(coursePS.getId());
-        return new CourseContainer.Detail(coursePS, subjectListPS, studentListPS);
+        return new CourseModel.Detail(coursePS, subjectListPS, studentListPS);
     }
 }

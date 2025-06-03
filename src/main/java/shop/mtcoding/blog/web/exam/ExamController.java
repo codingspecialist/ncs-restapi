@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog.core.utils.ApiUtil;
-import shop.mtcoding.blog.domain.course.CourseContainer;
+import shop.mtcoding.blog.domain.course.CourseModel;
 import shop.mtcoding.blog.domain.course.CourseService;
 import shop.mtcoding.blog.domain.course.exam.ExamRequest;
 import shop.mtcoding.blog.domain.course.exam.ExamService;
@@ -63,9 +63,9 @@ public class ExamController {
     @GetMapping("/api/teacher/exam/course")
     public String course(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        CourseContainer.list cn = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
-        CourseResponse.ListDTO respDTO = new CourseResponse.ListDTO(cn.coursePG());
-        model.addAttribute("paging", respDTO);
+        CourseModel.Items items = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
+        CourseResponse.ListDTO respDTO = new CourseResponse.ListDTO(items.coursePG());
+        model.addAttribute("model", respDTO);
         return "course/exam/teacher-course-list";
     }
 

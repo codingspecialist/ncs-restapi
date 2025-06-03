@@ -45,7 +45,7 @@ public class CourseStudentResponse {
                 this.studentId = student.getId();
                 this.name = student.getName();
                 this.birthday = student.getBirthday();
-                this.state = student.getState().getValue();
+                this.state = student.getStudentStatus().toKorean();
                 this.dropOutDate = student.getDropOutDate() == null ? "" : student.getDropOutDate().toString();
                 this.dropOutReason = student.getDropOutReason() == null ? "" : student.getDropOutReason();
                 this.comment = student.getComment() == null ? "" : student.getComment();

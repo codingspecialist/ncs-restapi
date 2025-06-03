@@ -10,7 +10,7 @@
     <hr>
 
     <div class="d-flex justify-content-end">
-        <a href="/api/teacher/paper/{{model.paperId}}/question" class="btn btn-primary">문제등록</a>
+        <a href="/api/paper-menu/paper/{{model.paperId}}/question/save-form" class="btn btn-primary">문제등록</a>
     </div>
     <table class="table table-hover">
         <thead>
@@ -27,7 +27,8 @@
                 <td>{{title}}</td>
                 <td>
                     {{#options}}
-                        {{no}} {{content}} <input type="radio" name="answer-{{questionId}}" {{#isRight}}checked{{/isRight}}> <br>
+                        {{no}} {{content}} <input type="radio" name="answer-{{questionId}}"
+                                                  {{#isRight}}checked{{/isRight}}> <br>
                     {{/options}}
                 </td>
             </tr>

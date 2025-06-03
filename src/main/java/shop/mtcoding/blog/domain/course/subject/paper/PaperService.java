@@ -13,13 +13,11 @@ import shop.mtcoding.blog.domain.course.subject.SubjectRepository;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElementRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
-import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionDBResponse;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionQueryRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
 import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOptionRepository;
 import shop.mtcoding.blog.web.paper.PaperRequest;
-import shop.mtcoding.blog.web.paper.PaperResponse;
 
 import java.util.List;
 
@@ -35,13 +33,13 @@ public class PaperService {
     private final SubjectRepository subjectRepository;
 
     // 교과목별 시험지 목록
-    public PaperResponse.ListDTO 교과목별시험지목록(Long subjectId, Pageable pageable) {
+    public PaperModel.Items 교과목별시험지목록(Long subjectId, Pageable pageable) {
         Page<Paper> paperPG = paperRepository.findAllBySubjectId(subjectId, pageable);
-        return new PaperResponse.ListDTO(paperPG);
+        return new PaperModel.Items(paperPG);
     }
 
     // 시험지 상세
-    public PaperResponse.QuestionListDTO 시험지상세(Long paperId) {
+    public PaperModel.Detail 시험지상세(Long paperId) {
         Paper paperPS = paperRepository.findById(paperId)
                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
@@ -50,7 +48,7 @@ public class PaperService {
 
 
         List<Question> questionListPS = questionRepository.findByPaperId(paperId);
-        return new PaperResponse.QuestionListDTO(paperPS, subjectElementListPS, questionListPS);
+        return new PaperModel.Detail(paperPS, subjectElementListPS, questionListPS);
     }
 
     // 시험지등록
@@ -59,24 +57,6 @@ public class PaperService {
         Subject subjectPS = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new Exception404("해당 교과목을 찾을 수 없어요"));
         paperRepository.save(reqDTO.toEntity(subjectPS));
-    }
-
-    public PaperResponse.QuestionListDTO 문제목록(Long paperId) {
-        Paper paperPS = paperRepository.findById(paperId)
-                .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
-
-        List<SubjectElement> subjectElementListPS =
-                subjectElementRepository.findBySubjectId(paperPS.getSubject().getId());
-
-
-        List<Question> questionListPS = questionRepository.findByPaperId(paperId);
-        return new PaperResponse.QuestionListDTO(paperPS, subjectElementListPS, questionListPS);
-    }
-
-    // 과정별 시험지 목록
-    public PaperResponse.ListDTO 과정별시험지목록(Long courseId, Pageable pageable) {
-        Page<Paper> paperPG = paperRepository.findAllByCourseId(courseId, pageable);
-        return new PaperResponse.ListDTO(paperPG);
     }
 
 
@@ -107,17 +87,34 @@ public class PaperService {
         questionOptionRepository.saveAll(optionList);
     }
 
-    public QuestionDBResponse.ExpectedNextDTO 다음예상문제(Long paperId) {
+    public PaperModel.NextQuestion 다음문제준비(Long paperId) {
         Paper paperPS = paperRepository.findById(paperId)
                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
 
         List<SubjectElement> elementListPS = subjectElementRepository.findBySubjectId(paperPS.getSubject().getId());
 
-        QuestionDBResponse.ExpectedNextDTO respDTO = questionQueryRepository.findStatisticsByPaperId(paperId);
+        PaperModel.NextQuestion nextQuestion = questionQueryRepository.findStatisticsByPaperId(paperId)
+                .withElements(elementListPS);
 
-        respDTO.setElements(elementListPS);
-
-        return respDTO;
+        return nextQuestion;
     }
+
+//    public PaperResponse.QuestionListDTO 문제목록(Long paperId) {
+//        Paper paperPS = paperRepository.findById(paperId)
+//                .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
+//
+//        List<SubjectElement> subjectElementListPS =
+//                subjectElementRepository.findBySubjectId(paperPS.getSubject().getId());
+//
+//
+//        List<Question> questionListPS = questionRepository.findByPaperId(paperId);
+//        return new PaperResponse.QuestionListDTO(paperPS, subjectElementListPS, questionListPS);
+//    }
+//
+//    // 과정별 시험지 목록
+//    public PaperResponse.ListDTO 과정별시험지목록(Long courseId, Pageable pageable) {
+//        Page<Paper> paperPG = paperRepository.findAllByCourseId(courseId, pageable);
+//        return new PaperResponse.ListDTO(paperPG);
+//    }
 }

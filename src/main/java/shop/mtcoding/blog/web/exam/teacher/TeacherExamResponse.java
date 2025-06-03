@@ -50,7 +50,7 @@ public class TeacherExamResponse {
                 this.startDate = course.getStartDate();
                 this.endDate = course.getEndDate();
                 this.teacherName = course.getMainTeacherName();
-                this.courseStatus = course.getCourseStatus().getValue();
+                this.courseStatus = course.getCourseStatus().toKorean();
             }
         }
     }

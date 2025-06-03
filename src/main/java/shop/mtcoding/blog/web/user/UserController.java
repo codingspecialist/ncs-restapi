@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import shop.mtcoding.blog.core.errors.exception.api.ApiException401;
 import shop.mtcoding.blog.core.utils.ApiUtil;
 import shop.mtcoding.blog.domain.user.User;
-import shop.mtcoding.blog.domain.user.UserEnum;
 import shop.mtcoding.blog.domain.user.UserService;
+import shop.mtcoding.blog.domain.user.UserType;
 
 
 @RequiredArgsConstructor
@@ -34,7 +34,7 @@ public class UserController {
 
     @PostMapping("/join")
     public String join(UserRequest.JoinDTO reqDTO) {
-        if (UserEnum.valueOf(reqDTO.getRole()) == UserEnum.STUDENT) {
+        if (UserType.valueOf(reqDTO.getRole()) == UserType.STUDENT) {
             System.out.println("--------------------------------학생회원가입 시작");
             User userPS = userService.학생회원가입(reqDTO);
             System.out.println("--------------------------------학생회원가입 끝");
@@ -52,7 +52,7 @@ public class UserController {
     @PutMapping("/sign")
     public ResponseEntity<?> teacherSign(@RequestBody UserRequest.TeacherSignDTO reqDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        if (!UserEnum.TEACHER.equals(sessionUser.getRole())) throw new ApiException401("당신은 강사가 아니에요");
+        if (!UserType.TEACHER.equals(sessionUser.getRole())) throw new ApiException401("당신은 강사가 아니에요");
         User userPS = userService.강사사인저장(reqDTO, sessionUser);
 
         // 세션 동기화 (user - teacher(sign))
@@ -72,7 +72,7 @@ public class UserController {
         User userPS = userService.로그인(reqDTO);
         session.setAttribute("sessionUser", userPS);
 
-        if (UserEnum.STUDENT.equals(userPS.getRole())) {
+        if (UserType.STUDENT.equals(userPS.getRole())) {
             session.setAttribute("isStudent", true);
             return "redirect:/api/student/exam";
         } else {

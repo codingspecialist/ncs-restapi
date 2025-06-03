@@ -2,7 +2,7 @@ package shop.mtcoding.blog.web.user;
 
 import lombok.Data;
 import shop.mtcoding.blog.domain.user.User;
-import shop.mtcoding.blog.domain.user.UserEnum;
+import shop.mtcoding.blog.domain.user.UserType;
 
 public class UserRequest {
 
@@ -26,7 +26,7 @@ public class UserRequest {
                     .username(username)
                     .password(password)
                     .email(email)
-                    .role(UserEnum.valueOf(role))
+                    .role(UserType.valueOf(role))
                     .build();
         }
     }

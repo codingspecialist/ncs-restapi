@@ -17,7 +17,7 @@ import shop.mtcoding.blog.domain.course.subject.paper.PaperRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionRepository;
 import shop.mtcoding.blog.domain.user.User;
-import shop.mtcoding.blog.domain.user.UserEnum;
+import shop.mtcoding.blog.domain.user.UserType;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
 import shop.mtcoding.blog.web.exam.ExamResponse;
@@ -41,7 +41,7 @@ public class ExamService {
     @Transactional
     public void 결석입력(ExamRequest.AbsentDTO reqDTO, User sessionUser) {
         // 1. 유저가 선생님인지 검증
-        if (UserEnum.STUDENT.equals(sessionUser.getRole())) {
+        if (UserType.STUDENT.equals(sessionUser.getRole())) {
             throw new Exception403("권한이 없습니다.");
         }
 

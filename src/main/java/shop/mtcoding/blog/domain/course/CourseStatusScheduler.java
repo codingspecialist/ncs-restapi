@@ -23,7 +23,7 @@ public class CourseStatusScheduler {
         List<Course> courses = courseRepository.findAllNotFinished();
 
         for (Course course : courses) {
-            CourseEnum courseStatus = MyUtil.courseStatusUpdate(course.getStartDate(), course.getEndDate());
+            CourseStatus courseStatus = MyUtil.courseStatusUpdate(course.getStartDate(), course.getEndDate());
             course.setCourseStatus(courseStatus);
         }
     }

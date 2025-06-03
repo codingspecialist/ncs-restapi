@@ -3,7 +3,7 @@ package shop.mtcoding.blog.web.course.student;
 import lombok.Data;
 import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.student.Student;
-import shop.mtcoding.blog.domain.course.student.StudentEnum;
+import shop.mtcoding.blog.domain.course.student.StudentStatus;
 
 public class CourseStudentRequest {
 
@@ -15,7 +15,7 @@ public class CourseStudentRequest {
         public Student toEntity(Course course, String authCode) {
             return Student.builder()
                     .birthday(birthday)
-                    .state(StudentEnum.ENROLLED)
+                    .studentStatus(StudentStatus.ENROLLED)
                     .name(name)
                     .course(course)
                     .authCode(authCode)

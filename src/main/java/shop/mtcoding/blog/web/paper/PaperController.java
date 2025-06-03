@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import shop.mtcoding.blog.core.utils.ApiUtil;
-import shop.mtcoding.blog.domain.course.CourseContainer;
+import shop.mtcoding.blog.domain.course.CourseModel;
 import shop.mtcoding.blog.domain.course.CourseService;
 import shop.mtcoding.blog.domain.course.subject.SubjectService;
+import shop.mtcoding.blog.domain.course.subject.paper.PaperModel;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperService;
-import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionDBResponse;
 import shop.mtcoding.blog.domain.user.User;
 import shop.mtcoding.blog.web.exam.ExamResponse;
 
@@ -39,9 +39,9 @@ public class PaperController {
     @GetMapping("/api/paper-menu/course")
     public String courseList(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        CourseContainer.list cn = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
-        PaperResponse.CourseListDTO respDTO = new PaperResponse.CourseListDTO(cn.coursePG());
-        model.addAttribute("paging", respDTO);
+        CourseModel.Items items = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
+        PaperResponse.CourseListDTO respDTO = new PaperResponse.CourseListDTO(items.coursePG());
+        model.addAttribute("model", respDTO);
 
         return "v2/paper/course-list";
     }
@@ -57,12 +57,13 @@ public class PaperController {
     // 3. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) (완)
     @GetMapping("/api/paper-menu/subject/{subjectId}/paper")
     public String list(Model model, @PathVariable("subjectId") Long subjectId, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
-        PaperResponse.ListDTO respDTO = paperService.교과목별시험지목록(subjectId, pageable);
-        model.addAttribute("paging", respDTO);
+        PaperModel.Items items = paperService.교과목별시험지목록(subjectId, pageable);
+        PaperResponse.ListDTO respDTO = new PaperResponse.ListDTO(items.paperPG());
+        model.addAttribute("model", respDTO);
         return "v2/paper/list";
     }
 
-    // 4-1. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) - 시험지등록
+    // 4-1. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) - 시험지등록 폼
     @GetMapping("/api/paper-menu/subject/{subjectId}/paper/save-form")
     public String saveForm(@PathVariable("subjectId") Long subjectId, Model model) {
         model.addAttribute("subjectId", subjectId);
@@ -72,18 +73,28 @@ public class PaperController {
     // 4-2. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) - 시험지상세
     @GetMapping("/api/paper-menu/paper/{paperId}")
     public String detail(@PathVariable("paperId") Long paperId, Model model) {
-        PaperResponse.QuestionListDTO respDTO = paperService.시험지상세(paperId);
+        PaperModel.Detail detail = paperService.시험지상세(paperId);
+        PaperResponse.QuestionListDTO respDTO = new PaperResponse.QuestionListDTO(detail.paper(), detail.subjectElements(), detail.questions());
         model.addAttribute("model", respDTO);
         return "v2/paper/detail";
     }
 
-    // 5. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록 - 시험지등록(교과목별)
+    // 5. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) - 시험지등록(교과목별)
     @PostMapping("/api/paper-menu/subject/{subjectId}/paper/save")
     public String save(@PathVariable("subjectId") Long subjectId, PaperRequest.SaveDTO reqDTO) {
         paperService.시험지등록(subjectId, reqDTO);
         return "redirect:/api/paper-menu/subject/" + subjectId + "/paper";
     }
 
+    // 6. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록 - 시험지상세 - 문제등록 폼
+    @GetMapping("/api/paper-menu/paper/{paperId}/question/save-form")
+    public String questionSaveForm(@PathVariable(name = "paperId") Long paperId, Model model) {
+        PaperModel.NextQuestion nextQuestion = paperService.다음문제준비(paperId);
+        model.addAttribute("model", nextQuestion);
+        return "v2/paper/question/save-form";
+    }
+
+    // 7. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록 - 시험지상세 - 문제등록
     @PostMapping("/api/paper-menu/paper/{paperId}/question/save")
     public ResponseEntity<?> questionSave(@RequestBody PaperRequest.QuestionSaveDTO reqDTO) {
         paperService.문제등록(reqDTO);
@@ -91,13 +102,4 @@ public class PaperController {
     }
 
 
-    @GetMapping("/api/teacher/paper/{paperId}/question")
-    public String questionSaveForm(@PathVariable(name = "paperId") Long paperId, Model model) {
-        QuestionDBResponse.ExpectedNextDTO respDTO = paperService.다음예상문제(paperId);
-        model.addAttribute("expectNo", respDTO.getExpectNo());
-        model.addAttribute("expectPoint", respDTO.getExpectPoint());
-        model.addAttribute("paperId", paperId);
-        model.addAttribute("elements", respDTO.getElements());
-        return "paper/question/save-form";
-    }
 }

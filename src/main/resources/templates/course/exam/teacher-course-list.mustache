@@ -19,21 +19,21 @@
         </tr>
         </thead>
         <tbody>
-        {{#paging.courses}}
+        {{#model.courses}}
             <tr class="click-tr" onclick="location.href='/api/teacher/exam/subject?courseId={{id}}'">
-                <td>{{code}}</td>
-                <td>{{title}}</td>
-                <td>{{round}}</td>
-                <td>{{level}}</td>
-                <td>{{purpose}}</td>
-                <td>{{totalTime}}</td>
-                <td>{{totalDay}}</td>
-                <td>{{startDate}}</td>
-                <td>{{endDate}}</td>
-                <td>{{teacherName}}</td>
-                <td>{{courseStatus}}</td>
+            <td>{{code}}</td>
+            <td>{{title}}</td>
+            <td>{{round}}</td>
+            <td>{{level}}</td>
+            <td>{{purpose}}</td>
+            <td>{{totalTime}}</td>
+            <td>{{totalDay}}</td>
+            <td>{{startDate}}</td>
+            <td>{{endDate}}</td>
+            <td>{{teacherName}}</td>
+            <td>{{courseStatus}}</td>
             </tr>
-        {{/paging.courses}}
+        {{/model.courses}}
         </tbody>
     </table>
 

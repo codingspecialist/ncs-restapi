@@ -2,6 +2,7 @@ package shop.mtcoding.blog.web.paper;
 
 import lombok.Data;
 import org.springframework.data.domain.Page;
+import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
@@ -55,7 +56,7 @@ public class PaperResponse {
                 this.startDate = course.getStartDate();
                 this.endDate = course.getEndDate();
                 this.teacherName = course.getMainTeacherName();
-                this.courseStatus = course.getCourseStatus().getValue();
+                this.courseStatus = course.getCourseStatus().toKorean();
             }
         }
     }
@@ -186,6 +187,7 @@ public class PaperResponse {
 
         @Data
         class PaperDTO {
+
             private Long paperId;
             private String courseTitle;
             private Integer courseRound;
@@ -193,6 +195,7 @@ public class PaperResponse {
             private String subjectTitle; // 교과목명
             private Integer questionCount; // 문항수
             private String paperType;
+            private String evaluationDate;
 
             public PaperDTO(Paper paper) {
                 this.paperId = paper.getId();
@@ -202,6 +205,7 @@ public class PaperResponse {
                 this.subjectTitle = paper.getSubject().getTitle();
                 this.questionCount = paper.getQuestionCount();
                 this.paperType = paper.getPaperType().toKorean();
+                this.evaluationDate = MyUtil.localDateToString(paper.getEvaluationDate());
             }
         }
     }

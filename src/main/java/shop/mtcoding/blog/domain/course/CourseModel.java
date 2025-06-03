@@ -6,11 +6,11 @@ import shop.mtcoding.blog.domain.course.subject.Subject;
 
 import java.util.List;
 
-public class CourseContainer {
+public class CourseModel {
     public record Detail(Course course, List<Subject> subjects, List<Student> students) {
     }
 
-    public record list(Page<Course> coursePG) {
+    public record Items(Page<Course> coursePG) {
     }
 
 }

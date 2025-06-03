@@ -59,17 +59,17 @@ public class PaperRequest {
     @Data
     public static class SaveDTO {
         private Integer questionCount;
-        private String paperType; // 본평가 / 재평가
+        private PaperType paperType; // 본평가 / 재평가
         private LocalDate evaluationDate;
-        private String evaluationType; // 서술형 / 혼합형 / 포트폴리오
+        private EvaluationWay evaluationWay; // 서술형 / 혼합형 / 포트폴리오
 
         public Paper toEntity(Subject subject) {
             return Paper.builder()
                     .subject(subject)
                     .questionCount(questionCount)
-                    .paperType(PaperType.fromKorean(paperType))
+                    .paperType(paperType)
                     .evaluationDate(evaluationDate)
-                    .evaluationWay(EvaluationWay.fromKorean(evaluationType))
+                    .evaluationWay(evaluationWay)
                     .build();
         }
     }

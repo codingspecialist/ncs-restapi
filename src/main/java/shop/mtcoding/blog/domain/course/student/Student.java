@@ -33,7 +33,7 @@ public class Student {
     private String comment; // 학생 모든 교과목에 대한 총평
     private Integer grade; // 학생 모든 교과목에 대한 수준 1,2,3,4,5
     @Enumerated(EnumType.STRING)
-    private StudentEnum state; // 취업, 중도탈락, 미이수, 이수, 재학중
+    private StudentStatus studentStatus; // 취업, 중도탈락, 미이수, 이수, 재학중
 
     @Column(unique = true)
     private String authCode; // 학생 인증 코드
@@ -53,7 +53,7 @@ public class Student {
     }
 
     @Builder
-    public Student(Long id, User user, String name, Course course, String birthday, LocalDate dropOutDate, String dropOutReason, String comment, Integer grade, StudentEnum state, String authCode, Boolean isVerified, LocalDateTime createdAt) {
+    public Student(Long id, User user, String name, Course course, String birthday, LocalDate dropOutDate, String dropOutReason, String comment, Integer grade, StudentStatus studentStatus, String authCode, Boolean isVerified, LocalDateTime createdAt) {
         this.id = id;
         this.user = user;
         this.name = name;
@@ -63,7 +63,7 @@ public class Student {
         this.dropOutReason = dropOutReason;
         this.comment = comment;
         this.grade = grade;
-        this.state = state;
+        this.studentStatus = studentStatus;
         this.authCode = authCode;
         this.isVerified = isVerified;
         this.createdAt = createdAt;

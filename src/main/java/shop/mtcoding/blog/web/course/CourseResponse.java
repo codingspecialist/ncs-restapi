@@ -54,7 +54,7 @@ public class CourseResponse {
                 this.startDate = course.getStartDate();
                 this.endDate = course.getEndDate();
                 this.teacherName = course.getMainTeacherName();
-                this.courseStatus = course.getCourseStatus().getValue();
+                this.courseStatus = course.getCourseStatus().toKorean();
             }
         }
     }
@@ -77,7 +77,7 @@ public class CourseResponse {
             this.courseTitle = course.getTitle();
             this.coursePurpose = course.getPurpose();
             this.courseRound = course.getRound();
-            this.courseStatus = course.getCourseStatus().getValue();
+            this.courseStatus = course.getCourseStatus().toKorean();
             this.subjects = subjects.stream().map(SubjectDTO::new).toList();
             this.students = students.stream().map(StudentDTO::new).toList();
         }
@@ -87,7 +87,7 @@ public class CourseResponse {
             private Long studentId;
             private String name; // 학생 번호는 이름순으로 해서 rownum 뽑자
             private String birthday;
-            private String state; // 취업, 중도탈락, 미이수, 이수, 재학중
+            private String studentStatus; // 취업, 중도탈락, 미이수, 이수, 재학중
             private String dropOutDate; // 중탈 날짜
             private String dropOutReason; // 중탈 이유
             private String comment; // 학생 모든 교과목에 대한 총평
@@ -99,7 +99,7 @@ public class CourseResponse {
                 this.studentId = student.getId();
                 this.name = student.getName();
                 this.birthday = student.getBirthday();
-                this.state = student.getState().getValue();
+                this.studentStatus = student.getStudentStatus().toKorean();
                 this.dropOutDate = student.getDropOutDate() == null ? "" : student.getDropOutDate().toString();
                 this.dropOutReason = student.getDropOutReason() == null ? "" : student.getDropOutReason();
                 this.comment = student.getComment() == null ? "" : student.getComment();

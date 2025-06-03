@@ -37,7 +37,7 @@ public class Course {
     private LocalDate endDate; // 년월일
     private String mainTeacherName; // 메인훈련교사 이름 (courseTeachers 중에 메인강사)
     @Enumerated(EnumType.STRING)
-    private CourseEnum courseStatus; // 과정진행전, 과정진행중, 과정종료 (기본값은 과정진행전이다 - 숫자로는 0번)
+    private CourseStatus courseStatus; // 과정진행전, 과정진행중, 과정종료 (기본값은 과정진행전이다 - 숫자로는 0번)
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CourseTeacher> courseTeachers = new ArrayList<>();
@@ -56,7 +56,7 @@ public class Course {
     private LocalDateTime createdAt;
 
     @Builder
-    public Course(Long id, String title, String code, Integer level, String purpose, Integer totalTime, Integer totalDay, Integer round, LocalDate startDate, LocalDate endDate, String mainTeacherName, CourseEnum courseStatus, LocalDateTime createdAt) {
+    public Course(Long id, String title, String code, Integer level, String purpose, Integer totalTime, Integer totalDay, Integer round, LocalDate startDate, LocalDate endDate, String mainTeacherName, CourseStatus courseStatus, LocalDateTime createdAt) {
         this.id = id;
         this.title = title;
         this.code = code;
@@ -72,7 +72,7 @@ public class Course {
         this.createdAt = createdAt;
     }
 
-    public void setCourseStatus(CourseEnum courseStatus) {
+    public void setCourseStatus(CourseStatus courseStatus) {
         this.courseStatus = courseStatus;
     }
 }

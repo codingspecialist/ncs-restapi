@@ -57,13 +57,13 @@ values ('최주호', 'S2002', 1, '2024-06-08', '2024-06-13', 3, 'NCS', 'MIXED', 
         'HTTP를 학습하는 능력이다', '스프링부트', 50, now());
 
 
-insert into student_tb(user_id, name, birthday, auth_code, course_id, created_at, state, is_verified)
+insert into student_tb(user_id, name, birthday, auth_code, course_id, created_at, student_status, is_verified)
 values (2, '코스', '100000', null, 1, now(), 'ENROLLED', true);
-insert into student_tb(user_id, name, birthday, auth_code, course_id, created_at, state, is_verified)
+insert into student_tb(user_id, name, birthday, auth_code, course_id, created_at, student_status, is_verified)
 values (3, '러브', '200000', null, 1, now(), 'ENROLLED', true);
-insert into student_tb(user_id, name, birthday, auth_code, course_id, created_at, state, is_verified)
+insert into student_tb(user_id, name, birthday, auth_code, course_id, created_at, student_status, is_verified)
 values (4, '하하', '300000', null, 1, now(), 'ENROLLED', true);
-insert into student_tb(user_id, name, birthday, auth_code, course_id, created_at, state, is_verified)
+insert into student_tb(user_id, name, birthday, auth_code, course_id, created_at, student_status, is_verified)
 values (5, '테스트', '400000', null, 1, now(), 'ENROLLED', true);
 
 

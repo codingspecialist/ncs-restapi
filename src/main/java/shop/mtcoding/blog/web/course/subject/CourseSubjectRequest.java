@@ -16,11 +16,11 @@ public class CourseSubjectRequest {
         private String code;         // 교과목 ID
         private String title;        // 교과목명
         private String purpose;      // 교과목 목표
-        private String ncsType;      // "NCS", "비NCS"
+        private NcsType ncsType;      // "NCS", "비NCS"
         private Integer grade;       // 수준
         private Integer totalTime;   // 능력단위 시간
         private Integer no;          // 순번
-        private String learningWay;  // "이론", "실습", "이론+실습"
+        private LearningWay learningWay;  // "이론", "실습", "이론+실습"
         private LocalDate startDate;
         private LocalDate endDate;
 
@@ -30,11 +30,11 @@ public class CourseSubjectRequest {
                     .code(code)
                     .title(title)
                     .purpose(purpose)
-                    .ncsType(NcsType.fromKorean(ncsType))         // ✅ enum으로 변환
+                    .ncsType(ncsType)         // ✅ enum으로 변환
                     .grade(grade)
                     .totalTime(totalTime)
                     .no(no)
-                    .learningWay(LearningWay.fromKorean(learningWay))   // ✅ enum으로 변환
+                    .learningWay(learningWay)   // ✅ enum으로 변환
                     .startDate(startDate)
                     .endDate(endDate)
                     .course(course)

@@ -3,7 +3,7 @@ package shop.mtcoding.blog.web.course;
 import lombok.Data;
 import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.Course;
-import shop.mtcoding.blog.domain.course.CourseEnum;
+import shop.mtcoding.blog.domain.course.CourseStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,7 +26,7 @@ public class CourseRequest {
 
         public Course toEntity(String mainTeacherName) {
 
-            CourseEnum courseStatus = MyUtil.courseStatusUpdate(startDate, endDate);
+            CourseStatus courseStatus = MyUtil.courseStatusUpdate(startDate, endDate);
 
             return Course.builder()
                     .code(code)

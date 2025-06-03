@@ -50,14 +50,18 @@ public class ExamResponse {
             this.totalTime = subject.getTotalTime();
             this.no = subject.getNo();
             this.learningWay = subject.getLearningWay().toKorean();
-            this.evaluationWay = paper.getEvaluationWay().toKorean();
-            this.evaluationDate = paper.getEvaluationDate().toString();
-
-            if (rePaper != null) {
-                this.revaluationDate = rePaper.getEvaluationDate().toString();
+            if (paper != null) {
+                this.evaluationWay = paper.getEvaluationWay() != null ? paper.getEvaluationWay().toKorean() : "시험지없음"; // ✅ enum 변경
+                this.evaluationDate = paper.getEvaluationDate() != null ? paper.getEvaluationDate().toString() : "시험지없음";
             } else {
-                this.revaluationDate = "시험지없음";
+                this.evaluationWay = "시험지없음";
+                this.evaluationDate = "시험지없음";
             }
+
+            this.revaluationDate = (rePaper != null && rePaper.getEvaluationDate() != null)
+                    ? rePaper.getEvaluationDate().toString()
+                    : "시험지없음";
+            
             this.startDate = subject.getStartDate();
             this.endDate = subject.getEndDate();
             this.courseId = subject.getCourse().getId();

@@ -1,0 +1,44 @@
+{{> layout/header}}
+
+<div class="container p-5">
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>연번</th>
+            <th>교과목ID</th>
+            <th>교과목명</th>
+            <th>NCS</th>
+            <th>훈련수준</th>
+            <th>교과목시간</th>
+            <th>학습방법</th>
+            <th>평가방법</th>
+            <th>시작일</th>
+            <th>종료일</th>
+            <th>평가일</th>
+            <th>재평가일</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#models}}
+            <tr class="click-tr" onclick="location.href='/api/exam-menu/subject/{{subjectId}}/exam'">
+                <td>{{no}}</td>
+                <td>{{code}}</td>
+                <td>{{title}}</td>
+                <td>{{ncsType}}</td>
+                <td>{{grade}}</td>
+                <td>{{totalTime}}</td>
+                <td>{{learningWay}}</td>
+                <td>{{evaluationWay}}</td>
+                <td>{{startDate}}</td>
+                <td>{{endDate}}</td>
+                <td>{{evaluationDate}}</td>
+                <td>{{revaluationDate}}</td>
+            </tr>
+        {{/models}}
+        </tbody>
+    </table>
+
+</div>
+
+{{> layout/footer}}

@@ -21,7 +21,6 @@ public class ExamRequest {
 
     @Data
     public static class UpdateDTO {
-        private Long examId;
         private String teacherComment;
         private List<AnswerDTO> answers;
 
@@ -35,7 +34,7 @@ public class ExamRequest {
                 if (selectedOptionNo == null) throw new ApiException400("모든 문제에 대한 답안을 제출해야 됩니다");
 
                 boolean isCollect;
-                if (question.getAnswerNumber() == selectedOptionNo) {
+                if (question.getAnswerNumber().equals(selectedOptionNo)) {
                     isCollect = true;
                 } else {
                     isCollect = false;

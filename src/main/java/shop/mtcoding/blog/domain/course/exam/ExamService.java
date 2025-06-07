@@ -52,28 +52,18 @@ public class ExamService {
         Paper paper = paperRepository.findById(reqDTO.getPaperId())
                 .orElseThrow(() -> new Exception404("시험지를 찾을 수 없습니다."));
 
-        // 3. Exam 생성
-        Exam exam = Exam.builder()
-                .student(student)
-                .paper(paper)
-                .teacherName(paper.getSubject().getTeacherName())
-                .examState(paper.getPaperType().toKorean()) // 본평가 or 재평가
-                .reExamReason("결석")
-                .teacherComment("결석")
-                .score(0.0)
-                .passState("미통과")
-                .isUse(true)
-                .grade(1)
-                .build();
+        // 3. 결석 시험 생성
+        Exam exam = Exam.createAbsentExam(student, paper);
 
+        // 4. 저장
         examRepository.save(exam);
     }
 
 
     // 총평 수정하면서, 결과 점수도 같이 수정한다.
     @Transactional
-    public void 총평남기기(ExamRequest.UpdateDTO reqDTO) {
-        Exam examPS = examRepository.findById(reqDTO.getExamId())
+    public void 총평남기기(Long examId, ExamRequest.UpdateDTO reqDTO) {
+        Exam examPS = examRepository.findById(examId)
                 .orElseThrow(() -> new Exception404("응시한 시험이 존재하지 않아요"));
 
         List<ExamAnswer> examAnswers = examPS.getExamAnswers();

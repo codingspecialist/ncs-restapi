@@ -107,6 +107,21 @@ public class Exam {
         this.isUse = false;
     }
 
+    public static Exam createAbsentExam(Student student, Paper paper) {
+        return Exam.builder()
+                .student(student)
+                .paper(paper)
+                .teacherName(paper.getSubject().getTeacherName())
+                .examState(paper.getPaperType().toKorean()) // 본평가 or 재평가
+                .reExamReason("결석")
+                .teacherComment("결석")
+                .score(0.0)
+                .passState("미통과")
+                .isUse(true)
+                .grade(1)
+                .build();
+    }
+
     @Builder
     public Exam(Boolean isUse, Long id, Student student, String teacherName, Paper paper, String examState, String reExamReason, String passState, Double score, Integer grade, String studentSign, String teacherComment, LocalDateTime commentUpdatedAt, LocalDateTime createdAt) {
         this.id = id;

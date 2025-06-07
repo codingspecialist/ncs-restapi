@@ -1,0 +1,99 @@
+{{> layout/header}}
+
+
+<div class="container p-5">
+    <h3>통과하지 못한 본평가 시험입니다.</h3>
+
+
+    <div class="card mb-3">
+        <div class="card-header">
+            <div class="d-flex justify-content-between">
+                <div>
+                    시험일 : {{model.evaluationDate}} <br>
+                    시험장소 : {{model.loc}} <br>
+                    교과목 : {{model.subjectTitle}} <br>
+                    훈련교사 : {{model.teacherName}} <br>
+                    훈련생 : {{model.studentName}} <br>
+                    문항수 : {{model.questionCount}} <br>
+                    총점 : {{model.score}} <br>
+                    수준 : {{model.grade}} <br>
+                    통과여부 : {{model.examPassState}} <br>
+                    평가유형 : {{model.examState}} <br>
+                </div>
+                <div>
+                    <div class="d-flex">
+                        <table class="sign-table">
+                            <tr>
+                                <td class="sign-header">훈련교사</td>
+                                <td class="sign-header">훈련생</td>
+                            </tr>
+                            <tr>
+                                <td class="sign-box">
+                                    <img class="sign-fit" src="{{model.teacherSign}}">
+                                </td>
+                                <td class="sign-box">
+                                    {{#model.isStudentSign}}
+                                        <img class="sign-fit" src="{{model.studentSign}}">
+                                    {{/model.isStudentSign}}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div>
+                {{#model.subjectElements}}
+                    <div><i>{{.}}</i></div>
+                {{/model.subjectElements}}
+            </div>
+        </div>
+    </div>
+
+    <form>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>문제점수</th>
+                <th>항목</th>
+                <th>정답번호</th>
+                <th>채점</th>
+            </tr>
+            </thead>
+            <tbody class="exam-body">
+            {{#model.answers}}
+
+                <tr>
+                    <input type="hidden" class="answerId" value="{{answerId}}">
+                    <td>{{no}}</td>
+                    <td>{{title}}</td>
+                    <td>{{point}}점</td>
+                    <td>
+                        {{#options}}
+                            {{no}} {{content}} <input type="radio" value="{{no}}" class="optionNo"
+                                                      name="question-{{questionId}}"
+                                                      {{#isSelect}}checked{{/isSelect}} disabled><br>
+                        {{/options}}
+                    </td>
+                    <td>정답 {{answerNumber}}</td>
+                    <td>{{studentPoint}}점</td>
+                </tr>
+            {{/model.answers}}
+            </tbody>
+        </table>
+        <div class="card">
+            <div class="card-header">총평</div>
+            <div class="card-body">
+                <textarea id="teacherComment" class="form-control bg-light text-muted"
+                          readonly>{{model.teacherComment}}</textarea>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+
+{{> layout/footer}}

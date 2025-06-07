@@ -1,0 +1,73 @@
+{{> layout/header}}
+
+<div class="container p-5">
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>연번</th>
+            <th>학생명</th>
+            <th>교과목</th>
+            <th>시험유형</th>
+            <th>훈련강사</th>
+            <th>점수</th>
+            <th>수준</th>
+            <th>통과여부/이유</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#models}}
+            <tr class="click-tr">
+                <td>{{studentNo}}</td>
+                <td>{{studentName}}</td>
+                <td>{{subjectTitle}}</td>
+                <td>{{examState}}</td>
+                <td>{{teacherName}}</td>
+                <td>{{examScore}}</td>
+                <td>{{grade}}</td>
+                <td>{{examPassState}}{{reExamReason}}</td>
+                {{#isNotStart}}
+                    <td>
+                        <form>
+                            <input type="hidden" id="studentId" value="{{studentId}}">
+                            <input type="hidden" id="paperId" value="{{paperId}}">
+                            <button class="btn btn-outline-danger" type="button" onclick="absent()">결석처리</button>
+                        </form>
+                    </td>
+                {{/isNotStart}}
+                {{^isNotStart}}
+                    <td>
+                        <a class="btn btn-outline-primary" href="/api/exam-menu/exam/{{examId}}">상세보기</a>
+                    </td>
+                {{/isNotStart}}
+            </tr>
+        {{/models}}
+        </tbody>
+    </table>
+
+</div>
+
+<script>
+    async function absent() {
+        let requestBody = {
+            studentId: document.querySelector("#studentId").value,
+            paperId: document.querySelector("#paperId").value
+        };
+        console.log(requestBody);
+
+        let response = await fetch("/api/exam-menu/exam/absent", {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            location.reload();
+        }
+    }
+</script>
+
+{{> layout/footer}}

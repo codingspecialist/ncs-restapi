@@ -18,16 +18,16 @@
         </thead>
         <tbody>
         {{#model.courses}}
-            <tr class="click-tr" onclick="location.href='/api/teacher/exam/subject?courseId={{id}}'">
-            <td>{{code}}</td>
-            <td>{{title}}</td>
-            <td>{{round}}</td>
-            <td>{{totalTime}}</td>
-            <td>{{totalDay}}</td>
-            <td>{{startDate}}</td>
-            <td>{{endDate}}</td>
-            <td>{{teacherName}}</td>
-            <td>{{courseStatus}}</td>
+            <tr class="click-tr" onclick="location.href='/api/exam-menu/course/{{id}}/subject'">
+                <td>{{code}}</td>
+                <td>{{title}}</td>
+                <td>{{round}}</td>
+                <td>{{totalTime}}</td>
+                <td>{{totalDay}}</td>
+                <td>{{startDate}}</td>
+                <td>{{endDate}}</td>
+                <td>{{teacherName}}</td>
+                <td>{{courseStatus}}</td>
             </tr>
         {{/model.courses}}
         </tbody>

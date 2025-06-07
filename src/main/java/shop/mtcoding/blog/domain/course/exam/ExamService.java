@@ -91,7 +91,7 @@ public class ExamService {
         examPS.updateTeacherComment(reqDTO.getTeacherComment());
     }
 
-    public ExamResponse.ResultDetailDTO 시험친결과상세보기(Long examId) {
+    public ExamResponse.ResultDetailDTO 시험결과상세(Long examId) {
         // 1. 시험 결과 찾기
         Exam examPS = examRepository.findById(examId)
                 .orElseThrow(() -> new Exception404("시험친 기록이 없어요"));
@@ -145,7 +145,7 @@ public class ExamService {
         return new ExamResponse.ResultDetailDTO(examPS, subjectElementListPS, teacher, null, null, null, null);
     }
 
-    public ExamResponse.StartDTO 시험응시(User sessionUser, Long paperId) {
+    public ExamResponse.StartDTO 시험지(User sessionUser, Long paperId) {
         Paper paperPS = paperRepository.findById(paperId)
                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
@@ -163,7 +163,7 @@ public class ExamService {
         return new ExamResponse.StartDTO(paperPS, studentName, subjectElementListPS, questionListPS);
     }
 
-    public ExamResponse.MyPaperListDTO 나의시험목록(User sessionUser) {
+    public ExamResponse.MyPaperListDTO 시험지목록(User sessionUser) {
         Long courseId = sessionUser.getStudent().getCourse().getId();
         Long studentId = sessionUser.getStudent().getId();
 
@@ -206,7 +206,7 @@ public class ExamService {
 
 
     @Transactional
-    public void 시험결과저장(ExamRequest.SaveDTO reqDTO, User sessionUser) {
+    public void 시험응시(ExamRequest.SaveDTO reqDTO, User sessionUser) {
         // 1. Exam 저장
         Paper paper = paperRepository.findById(reqDTO.getPaperId())
                 .orElseThrow(() -> new Exception404("시험지를 찾을 수 없어요"));
@@ -294,7 +294,7 @@ public class ExamService {
 
 
     // 교과목 연번으로 정렬
-    public List<ExamResponse.ResultDTO> 학생별시험결과(User sessionUser) {
+    public List<ExamResponse.ResultDTO> 시험결과목록(User sessionUser) {
         if (sessionUser.getStudent() == null) throw new Exception403("당신은 학생이 아니에요 : 관리자에게 문의하세요");
         List<Exam> examListPS = examRepository.findByStudentId(sessionUser.getStudent().getId());
 

@@ -57,7 +57,7 @@ public class TeacherExamController {
 
     @GetMapping("/api/exam-menu/exam/{examId}")
     public String teacherResultDetail(@PathVariable(value = "examId") Long examId, Model model) {
-        ExamResponse.ResultDetailDTO respDTO = examService.시험친결과상세보기(examId);
+        ExamResponse.ResultDetailDTO respDTO = examService.시험결과상세(examId);
         model.addAttribute("model", respDTO);
         return "v2/exam/detail";
     }

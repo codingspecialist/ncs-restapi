@@ -74,7 +74,7 @@ public class UserController {
 
         if (UserType.STUDENT.equals(userPS.getRole())) {
             session.setAttribute("isStudent", true);
-            return "redirect:/api/student/exam";
+            return "redirect:/api/student/paper";
         } else {
             session.setAttribute("isStudent", false);
             return "redirect:/api/course-menu/course";

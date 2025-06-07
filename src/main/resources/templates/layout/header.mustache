@@ -20,7 +20,7 @@
 
         {{#sessionUser}}
             {{#isStudent}}
-                <a class="navbar-brand" href="/api/student/exam">Ncs</a>
+                <a class="navbar-brand" href="/api/student/paper">Ncs</a>
             {{/isStudent}}
             {{^isStudent}}
                 <a class="navbar-brand" href="/api/course-menu/course">Ncs</a>
@@ -41,10 +41,10 @@
                 {{#sessionUser}}
                     {{#isStudent}}
                         <li class="nav-item">
-                            <a class="nav-link" href="/api/student/exam">시험응시</a>
+                            <a class="nav-link" href="/api/student/paper">시험지</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/api/student/exam/result">시험결과</a>
+                            <a class="nav-link" href="/api/student/exam">시험결과</a>
                         </li>
                     {{/isStudent}}
                     {{^isStudent}}

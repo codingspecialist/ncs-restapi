@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.web.exam.teacher;
+package shop.mtcoding.blog.web.exam;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +15,6 @@ import shop.mtcoding.blog.domain.course.CourseService;
 import shop.mtcoding.blog.domain.course.exam.ExamService;
 import shop.mtcoding.blog.domain.course.subject.SubjectService;
 import shop.mtcoding.blog.domain.user.User;
-import shop.mtcoding.blog.web.exam.ExamRequest;
-import shop.mtcoding.blog.web.exam.ExamResponse;
 
 import java.util.List;
 
@@ -42,14 +40,14 @@ public class TeacherExamController {
 
     @GetMapping("/api/exam-menu/course/{courseId}/subject")
     public String subject(@PathVariable("courseId") Long courseId, Model model) {
-        List<ExamResponse.SubjectDTO> respDTO = subjectService.과정별교과목(courseId);
+        List<TeacherExamResponse.SubjectDTO> respDTO = subjectService.과정별교과목(courseId);
         model.addAttribute("models", respDTO);
         return "v2/exam/subject-list";
     }
 
     @GetMapping("/api/exam-menu/subject/{subjectId}/exam")
     public String teacherResult(Model model, @PathVariable("subjectId") Long subjectId) {
-        List<ExamResponse.ResultDTO> respDTO = examService.강사_교과목별시험결과(subjectId);
+        List<TeacherExamResponse.ResultDTO> respDTO = examService.강사_교과목별시험결과(subjectId);
         model.addAttribute("models", respDTO);
         return "v2/exam/list";
     }
@@ -57,21 +55,21 @@ public class TeacherExamController {
 
     @GetMapping("/api/exam-menu/exam/{examId}")
     public String teacherResultDetail(@PathVariable(value = "examId") Long examId, Model model) {
-        ExamResponse.ResultDetailDTO respDTO = examService.강사_시험결과상세(examId);
+        TeacherExamResponse.ResultDetailDTO respDTO = examService.강사_시험결과상세(examId);
         model.addAttribute("model", respDTO);
         return "v2/exam/detail";
     }
 
     // 시험을 치지 않아도 Exam은 만들어져야 한다.
     @PostMapping("/api/exam-menu/exam/absent")
-    public ResponseEntity<?> 결석입력(@RequestBody ExamRequest.AbsentDTO reqDTO) {
+    public ResponseEntity<?> 결석입력(@RequestBody TeacherExamRequest.AbsentDTO reqDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         examService.강사_결석입력(reqDTO, sessionUser);
         return ResponseEntity.ok(new ApiUtil<>(null));
     }
 
     @PutMapping("/api/exam-menu/exam/{examId}")
-    public ResponseEntity<?> update(@PathVariable("examId") Long examId, @RequestBody ExamRequest.UpdateDTO reqDTO) {
+    public ResponseEntity<?> update(@PathVariable("examId") Long examId, @RequestBody TeacherExamRequest.UpdateDTO reqDTO) {
         examService.강사_총평남기기(examId, reqDTO);
         return ResponseEntity.ok(new ApiUtil<>(null));
     }
@@ -79,7 +77,7 @@ public class TeacherExamController {
     @GetMapping("/api/exam-menu/exam/{examId}/notpass")
     public String teacherResultDetailNotPass(@PathVariable(value = "examId") Long examId, Model model) {
 
-        ExamResponse.ResultDetailDTO respDTO = examService.강사_미이수시험결과상세(examId);
+        TeacherExamResponse.ResultDetailDTO respDTO = examService.강사_미이수시험결과상세(examId);
         model.addAttribute("model", respDTO);
         return "v2/exam/detail-notpass";
     }

@@ -20,8 +20,11 @@ import shop.mtcoding.blog.domain.user.User;
 import shop.mtcoding.blog.domain.user.UserType;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
-import shop.mtcoding.blog.web.exam.ExamRequest;
-import shop.mtcoding.blog.web.exam.ExamResponse;
+import shop.mtcoding.blog.web.exam.ExamModel;
+import shop.mtcoding.blog.web.exam.TeacherExamRequest;
+import shop.mtcoding.blog.web.exam.TeacherExamResponse;
+import shop.mtcoding.blog.web.student.StudentExamRequest;
+import shop.mtcoding.blog.web.student.StudentExamResponse;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,7 +41,7 @@ public class ExamService {
     private final QuestionRepository questionRepository;
     private final TeacherRepository teacherRepository;
 
-    public ExamResponse.MyPaperListDTO 학생_응시가능한시험지목록(User sessionUser) {
+    public StudentExamResponse.MyPaperListDTO 학생_응시가능한시험지목록(User sessionUser) {
         Long courseId = sessionUser.getStudent().getCourse().getId();
         Long studentId = sessionUser.getStudent().getId();
 
@@ -76,10 +79,10 @@ public class ExamService {
         Map<Long, Boolean> attendanceMap = new HashMap<>();
         myExams.forEach(exam -> attendanceMap.put(exam.getPaper().getId(), true));
 
-        return new ExamResponse.MyPaperListDTO(studentId, filteredPapers, attendanceMap);
+        return new StudentExamResponse.MyPaperListDTO(studentId, filteredPapers, attendanceMap);
     }
 
-    public ExamResponse.StartDTO 학생_시험시작정보(User sessionUser, Long paperId) {
+    public StudentExamResponse.StartDTO 학생_시험시작정보(User sessionUser, Long paperId) {
         Paper paperPS = paperRepository.findById(paperId)
                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
@@ -94,11 +97,11 @@ public class ExamService {
         List<Question> questionListPS = questionRepository.findByPaperId(paperId);
 
         // 시험일, 시험장소, 교과목명, 훈련교사명, 학생명, 문항수, 평가요소(elements), 시험문제들(문항점수포함)
-        return new ExamResponse.StartDTO(paperPS, studentName, subjectElementListPS, questionListPS);
+        return new StudentExamResponse.StartDTO(paperPS, studentName, subjectElementListPS, questionListPS);
     }
 
     @Transactional
-    public void 학생_시험응시(ExamRequest.SaveDTO reqDTO, User sessionUser) {
+    public void 학생_시험응시(StudentExamRequest.SaveDTO reqDTO, User sessionUser) {
         // 1. Exam 저장
         Paper paper = paperRepository.findById(reqDTO.getPaperId())
                 .orElseThrow(() -> new Exception404("시험지를 찾을 수 없어요"));
@@ -184,24 +187,27 @@ public class ExamService {
         examAnswerRepository.saveAll(examAnswerList);
     }
 
-    public List<ExamResponse.ResultDTO> 학생_시험결과목록(User sessionUser) {
+    public List<StudentExamResponse.ResultDTO> 학생_시험결과목록(User sessionUser) {
         if (sessionUser.getStudent() == null) throw new Exception403("당신은 학생이 아니에요 : 관리자에게 문의하세요");
         List<Exam> examListPS = examRepository.findByStudentId(sessionUser.getStudent().getId());
 
-        return examListPS.stream().map(ExamResponse.ResultDTO::new).toList();
+        return examListPS.stream().map(StudentExamResponse.ResultDTO::new).toList();
     }
 
     // 👨‍🎓 학생용: 네비게이션 정보 제거
-    public ExamResponse.ResultDetailDTO 학생_시험결과상세(Long examId) {
-        ExamResponse.ResultDetailDTO dto = examResultDetail(examId);
-        dto.setPrevExamId(null);
-        dto.setNextExamId(null);
-        dto.setOriginExamId(null);
-        return dto;
+    public StudentExamResponse.ResultDetailDTO 학생_시험결과상세(Long examId) {
+        ExamModel.ResultDetail resultDetail = examResultDetail(examId);
+
+        StudentExamResponse.ResultDetailDTO respDTO = new StudentExamResponse.ResultDetailDTO(
+                resultDetail.exam(),
+                resultDetail.subjectElements(),
+                resultDetail.teacher()
+        );
+        return respDTO;
     }
 
     @Transactional
-    public void 학생_사인저장(ExamRequest.StudentSignDTO reqDTO) {
+    public void 학생_사인저장(StudentExamRequest.SignDTO reqDTO) {
         Exam examPS = examRepository.findById(reqDTO.getExamId())
                 .orElseThrow(() -> new Exception404("응시한 시험이 존재하지 않아요"));
 
@@ -210,13 +216,39 @@ public class ExamService {
 
 
     // 👨‍🏫 강사용: 모든 정보 포함
-    public ExamResponse.ResultDetailDTO 강사_시험결과상세(Long examId) {
-        return examResultDetail(examId);
+    public TeacherExamResponse.ResultDetailDTO 강사_시험결과상세(Long examId) {
+        ExamModel.ResultDetail resultDetail = examResultDetail(examId);
+
+        TeacherExamResponse.ResultDetailDTO respDTO = new TeacherExamResponse.ResultDetailDTO(
+                resultDetail.exam(),
+                resultDetail.subjectElements(),
+                resultDetail.teacher(),
+                resultDetail.prevExamId(),
+                resultDetail.nextExamId(),
+                resultDetail.currentIndex(),
+                resultDetail.originExamId()
+        );
+
+        return respDTO;
     }
 
+    public TeacherExamResponse.ResultDetailDTO 강사_미이수시험결과상세(Long examId) {
+        Exam examPS = examRepository.findById(examId)
+                .orElseThrow(() -> new Exception404("응시한 시험이 존재하지 않아요"));
+
+        Long subjectId = examPS.getPaper().getSubject().getId();
+
+        List<SubjectElement> subjectElementListPS =
+                elementRepository.findBySubjectId(subjectId);
+
+        Teacher teacher = teacherRepository.findByName(examPS.getTeacherName())
+                .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
+
+        return new TeacherExamResponse.ResultDetailDTO(examPS, subjectElementListPS, teacher);
+    }
 
     // ✅ 공통 로직 (비공개)
-    private ExamResponse.ResultDetailDTO examResultDetail(Long examId) {
+    private ExamModel.ResultDetail examResultDetail(Long examId) {
         // 1. 시험 결과 찾기
         Exam examPS = examRepository.findById(examId)
                 .orElseThrow(() -> new Exception404("시험친 기록이 없어요"));
@@ -252,7 +284,7 @@ public class ExamService {
             originExamId = reExamPS.getId();
         }
 
-        return new ExamResponse.ResultDetailDTO(
+        return new ExamModel.ResultDetail(
                 examPS,
                 subjectElementList,
                 teacher,
@@ -265,7 +297,7 @@ public class ExamService {
 
 
     @Transactional
-    public void 강사_결석입력(ExamRequest.AbsentDTO reqDTO, User sessionUser) {
+    public void 강사_결석입력(TeacherExamRequest.AbsentDTO reqDTO, User sessionUser) {
         // 1. 유저가 선생님인지 검증
         if (UserType.STUDENT.equals(sessionUser.getRole())) {
             throw new Exception403("권한이 없습니다.");
@@ -288,7 +320,7 @@ public class ExamService {
 
     // 총평 수정하면서, 결과 점수도 같이 수정한다.
     @Transactional
-    public void 강사_총평남기기(Long examId, ExamRequest.UpdateDTO reqDTO) {
+    public void 강사_총평남기기(Long examId, TeacherExamRequest.UpdateDTO reqDTO) {
         Exam examPS = examRepository.findById(examId)
                 .orElseThrow(() -> new Exception404("응시한 시험이 존재하지 않아요"));
 
@@ -317,22 +349,8 @@ public class ExamService {
         examPS.updateTeacherComment(reqDTO.getTeacherComment());
     }
 
-    public ExamResponse.ResultDetailDTO 강사_미이수시험결과상세(Long examId) {
-        Exam examPS = examRepository.findById(examId)
-                .orElseThrow(() -> new Exception404("응시한 시험이 존재하지 않아요"));
 
-        Long subjectId = examPS.getPaper().getSubject().getId();
-
-        List<SubjectElement> subjectElementListPS =
-                elementRepository.findBySubjectId(subjectId);
-
-        Teacher teacher = teacherRepository.findByName(examPS.getTeacherName())
-                .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
-
-        return new ExamResponse.ResultDetailDTO(examPS, subjectElementListPS, teacher, null, null, null, null);
-    }
-
-    public List<ExamResponse.ResultDTO> 강사_교과목별시험결과(Long subjectId) {
+    public List<TeacherExamResponse.ResultDTO> 강사_교과목별시험결과(Long subjectId) {
         // 1. 시험지 목록 가져오기
         List<Paper> paperList = paperRepository.findBySubjectId(subjectId);
         if (paperList.isEmpty()) return List.of();
@@ -350,7 +368,7 @@ public class ExamService {
         // 4. 해당 과목의 모든 시험 응시 기록
         List<Exam> allExams = examRepository.findBySubjectId(subjectId);
 
-        List<ExamResponse.ResultDTO> resultList = new ArrayList<>();
+        List<TeacherExamResponse.ResultDTO> resultList = new ArrayList<>();
 
         for (Student student : students) {
             // 4-1. 그 학생이 응시한 시험 (isUse=true인 것)
@@ -360,14 +378,14 @@ public class ExamService {
                     .findFirst();
 
             if (activeExamOP.isPresent()) {
-                resultList.add(new ExamResponse.ResultDTO(activeExamOP.get()));
+                resultList.add(new TeacherExamResponse.ResultDTO(activeExamOP.get()));
             } else {
-                resultList.add(ExamResponse.ResultDTO.ofAbsent(mainPaper, student));
+                resultList.add(TeacherExamResponse.ResultDTO.ofAbsent(mainPaper, student));
             }
 
         }
 
-        resultList.sort(Comparator.comparing(ExamResponse.ResultDTO::getStudentNo));
+        resultList.sort(Comparator.comparing(TeacherExamResponse.ResultDTO::getStudentNo));
         return resultList;
     }
 

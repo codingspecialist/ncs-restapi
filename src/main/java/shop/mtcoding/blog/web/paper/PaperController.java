@@ -19,7 +19,7 @@ import shop.mtcoding.blog.domain.course.subject.SubjectService;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperModel;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperService;
 import shop.mtcoding.blog.domain.user.User;
-import shop.mtcoding.blog.web.exam.ExamResponse;
+import shop.mtcoding.blog.web.exam.TeacherExamResponse;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class PaperController {
     // 2. 시험지관리 - 교과목목록 (페이징필요)
     @GetMapping("/api/paper-menu/course/{courseId}/subject")
     public String subject(@PathVariable("courseId") Long courseId, Model model) {
-        List<ExamResponse.SubjectDTO> respDTO = subjectService.과정별교과목(courseId);
+        List<TeacherExamResponse.SubjectDTO> respDTO = subjectService.과정별교과목(courseId);
         model.addAttribute("models", respDTO);
         return "v2/paper/subject-list";
     }

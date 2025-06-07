@@ -11,7 +11,7 @@ import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.CourseRepository;
 import shop.mtcoding.blog.web.course.subject.CourseSubjectRequest;
 import shop.mtcoding.blog.web.course.subject.CourseSubjectResponse;
-import shop.mtcoding.blog.web.exam.ExamResponse;
+import shop.mtcoding.blog.web.exam.TeacherExamResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,11 +24,11 @@ public class SubjectService {
     private final CourseRepository courseRepository;
 
     // Query 수정 완료
-    public List<ExamResponse.SubjectDTO> 과정별교과목(Long courseId) {
+    public List<TeacherExamResponse.SubjectDTO> 과정별교과목(Long courseId) {
         Course coursePS = courseRepository.findByIdWithSubject(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
 
-        return coursePS.getSubjects().stream().map(ExamResponse.SubjectDTO::new).toList();
+        return coursePS.getSubjects().stream().map(TeacherExamResponse.SubjectDTO::new).toList();
     }
 
     public CourseSubjectResponse.PagingDTO 모든교과목목록(Pageable pageable) {

@@ -1,7 +1,8 @@
-package shop.mtcoding.blog.domain.course.exam;
+package shop.mtcoding.blog.web.exam;
 
 import lombok.Data;
 import shop.mtcoding.blog.core.errors.exception.api.ApiException400;
+import shop.mtcoding.blog.domain.course.exam.Exam;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.student.Student;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;

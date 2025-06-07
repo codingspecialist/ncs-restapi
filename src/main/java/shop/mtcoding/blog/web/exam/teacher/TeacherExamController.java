@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog.core.utils.ApiUtil;
 import shop.mtcoding.blog.domain.course.CourseModel;
 import shop.mtcoding.blog.domain.course.CourseService;
-import shop.mtcoding.blog.domain.course.exam.ExamRequest;
 import shop.mtcoding.blog.domain.course.exam.ExamService;
 import shop.mtcoding.blog.domain.course.subject.SubjectService;
 import shop.mtcoding.blog.domain.user.User;
+import shop.mtcoding.blog.web.exam.ExamRequest;
 import shop.mtcoding.blog.web.exam.ExamResponse;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public class TeacherExamController {
 
     @GetMapping("/api/exam-menu/subject/{subjectId}/exam")
     public String teacherResult(Model model, @PathVariable("subjectId") Long subjectId) {
-        List<ExamResponse.ResultDTO> respDTO = examService.교과목별시험결과(subjectId);
+        List<ExamResponse.ResultDTO> respDTO = examService.강사_교과목별시험결과(subjectId);
         model.addAttribute("models", respDTO);
         return "v2/exam/list";
     }
@@ -57,7 +57,7 @@ public class TeacherExamController {
 
     @GetMapping("/api/exam-menu/exam/{examId}")
     public String teacherResultDetail(@PathVariable(value = "examId") Long examId, Model model) {
-        ExamResponse.ResultDetailDTO respDTO = examService.시험결과상세(examId);
+        ExamResponse.ResultDetailDTO respDTO = examService.강사_시험결과상세(examId);
         model.addAttribute("model", respDTO);
         return "v2/exam/detail";
     }
@@ -66,20 +66,20 @@ public class TeacherExamController {
     @PostMapping("/api/exam-menu/exam/absent")
     public ResponseEntity<?> 결석입력(@RequestBody ExamRequest.AbsentDTO reqDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        examService.결석입력(reqDTO, sessionUser);
+        examService.강사_결석입력(reqDTO, sessionUser);
         return ResponseEntity.ok(new ApiUtil<>(null));
     }
 
     @PutMapping("/api/exam-menu/exam/{examId}")
     public ResponseEntity<?> update(@PathVariable("examId") Long examId, @RequestBody ExamRequest.UpdateDTO reqDTO) {
-        examService.총평남기기(examId, reqDTO);
+        examService.강사_총평남기기(examId, reqDTO);
         return ResponseEntity.ok(new ApiUtil<>(null));
     }
 
     @GetMapping("/api/exam-menu/exam/{examId}/notpass")
     public String teacherResultDetailNotPass(@PathVariable(value = "examId") Long examId, Model model) {
 
-        ExamResponse.ResultDetailDTO respDTO = examService.미이수시험친결과상세보기(examId);
+        ExamResponse.ResultDetailDTO respDTO = examService.강사_미이수시험결과상세(examId);
         model.addAttribute("model", respDTO);
         return "v2/exam/detail-notpass";
     }

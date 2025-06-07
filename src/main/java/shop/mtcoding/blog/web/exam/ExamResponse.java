@@ -3,6 +3,7 @@ package shop.mtcoding.blog.web.exam;
 import lombok.Data;
 import shop.mtcoding.blog.domain.course.exam.Exam;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
+import shop.mtcoding.blog.domain.course.student.Student;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
@@ -61,7 +62,7 @@ public class ExamResponse {
             this.revaluationDate = (rePaper != null && rePaper.getEvaluationDate() != null)
                     ? rePaper.getEvaluationDate().toString()
                     : "시험지없음";
-            
+
             this.startDate = subject.getStartDate();
             this.endDate = subject.getEndDate();
             this.courseId = subject.getCourse().getId();
@@ -192,7 +193,7 @@ public class ExamResponse {
         private Boolean isNotStart;
         private Long studentId;
 
-        public ResultDTO() {
+        private ResultDTO() {
         }
 
         public ResultDTO(Exam exam) {
@@ -217,6 +218,29 @@ public class ExamResponse {
             this.grade = exam.getGrade();
             this.isUse = exam.getIsUse();
             this.isAbsent = exam.getReExamReason().equals("결석");
+        }
+
+        public static ResultDTO ofAbsent(Paper mainPaper, Student student) {
+            ResultDTO dto = new ResultDTO();
+            dto.setExamId(0L);
+            dto.setPaperId(mainPaper.getId());
+            dto.setStudentNo(99); // 미지정
+            dto.setSubjectNo(mainPaper.getSubject().getNo());
+            dto.setCourseNameAndRound(student.getCourse().getTitle() + "/" + student.getCourse().getRound() + "회차");
+            dto.setSubjectTitle(mainPaper.getSubject().getTitle());
+            dto.setExamState("본평가");
+            dto.setStudentName(student.getName());
+            dto.setTeacherName(mainPaper.getSubject().getTeacherName());
+            dto.setExamScore(0.0);
+            dto.setExamPassState("미응시");
+            dto.setReExamReason("");
+            dto.setIsNotPass(true);
+            dto.setGrade(0);
+            dto.setIsUse(false);
+            dto.setIsNotStart(true);
+            dto.setStudentId(student.getId());
+            dto.setIsAbsent(true);
+            return dto;
         }
     }
 

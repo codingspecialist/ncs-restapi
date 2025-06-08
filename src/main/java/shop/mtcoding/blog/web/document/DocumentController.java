@@ -52,7 +52,7 @@ public class DocumentController {
         return "document/no5";
     }
 
-    @GetMapping("/api/teacher/document/course")
+    @GetMapping("/api/document-menu/course")
     public String course(Model model) {
 
         List<DocumentResponse.CourseDTO> respDTOs = documentService.과정목록();

@@ -17,6 +17,9 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Query("SELECT ct.course FROM CourseTeacher ct WHERE ct.teacher.id = :teacherId")
     Page<Course> findAllByTeacherId(@Param("teacherId") Long teacherId, Pageable pageable);
 
+    @Query("SELECT ct.course FROM CourseTeacher ct WHERE ct.teacher.id = :teacherId")
+    List<Course> findAllByTeacherId(@Param("teacherId") Long teacherId);
+
     @Query("SELECT c FROM Course c WHERE c.courseStatus <> 'FINISHED'")
     List<Course> findAllNotFinished();
 }

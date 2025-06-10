@@ -17,6 +17,7 @@ import shop.mtcoding.blog.domain.course.subject.paper.PaperRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperType;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionRepository;
+import shop.mtcoding.blog.domain.user.User;
 import shop.mtcoding.blog.domain.user.UserRepository;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
@@ -38,7 +39,7 @@ public class DocumentService {
     private final SubjectElementRepository elementRepository;
     private final ExamRepository examRepository;
 
-    public DocumentResponse.No5DTO no5(Long courseId, Long subjectId) {
+    public DocumentResponse.No5DTO no5(Long subjectId) {
         List<Exam> examList = examRepository.findBySubjectIdAndEvaluationWay(subjectId, PaperType.ORIGINAL); // 본평가들
         List<Exam> reExamList = examRepository.findBySubjectIdAndEvaluationWay(subjectId, PaperType.RETEST); // 재평가들
 
@@ -48,14 +49,14 @@ public class DocumentService {
         return new DocumentResponse.No5DTO(examList, reExamList, teacherPS);
     }
 
-    public DocumentResponse.No2DTO no2(Long courseId, Long subjectId) {
+    public DocumentResponse.No2DTO no2(Long subjectId) {
         Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL).get(0);
         List<Question> questionList = questionRepository.findByPaperId(paperPS.getId());
 
         return new DocumentResponse.No2DTO(paperPS.getSubject(), questionList);
     }
 
-    public DocumentResponse.No4DTO no4(Long courseId, Long subjectId, Integer currentIndex) {
+    public DocumentResponse.No4DTO no4(Long subjectId, Integer currentIndex) {
         // 1. 본평가, 재평가중에 사용중인 평가들을 학생 이름순으로 조회 (가이름0, 나이름1, 다이름2)
         List<Exam> examListPS = examRepository.findBySubjectIdAndIsUseOrderByStudentNameAsc(subjectId);
 
@@ -83,7 +84,7 @@ public class DocumentService {
 
     }
 
-    public DocumentResponse.No3DTO no3(Long courseId, Long subjectId) {
+    public DocumentResponse.No3DTO no3(Long subjectId) {
         Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL).get(0);
         List<Question> questionListPS = questionRepository.findByPaperId(paperPS.getId());
 
@@ -96,8 +97,8 @@ public class DocumentService {
         return new DocumentResponse.No3DTO(paperPS, subjectElementListPS, questionListPS, teacher);
     }
 
-    public List<DocumentResponse.CourseDTO> 과정목록() {
-        List<Course> courseListPS = courseRepository.findAll();
+    public List<DocumentResponse.CourseDTO> 과정목록(User sessionUser) {
+        List<Course> courseListPS = courseRepository.findAllByTeacherId(sessionUser.getTeacher().getId());
         return courseListPS.stream().map(DocumentResponse.CourseDTO::new).toList();
     }
 

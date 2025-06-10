@@ -1,0 +1,69 @@
+{{> layout/header}}
+
+<style>
+    .page-title {
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 2rem;
+    }
+</style>
+
+<div class="container p-5">
+
+    <div class="page-title">
+        <h1>평가지</h1>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header">
+            <div>
+                시험일 : {{model.evaluationDate}} <br>
+                시험장소 : {{model.loc}} <br>
+                교과목 : {{model.subjectTitle}} <br>
+                훈련교사 : {{model.teacherName}} <br>
+                문항수 : {{model.questionCount}} <br>
+            </div>
+        </div>
+        <div class="card-body">
+            <div>
+                {{#model.subjectElements}}
+                    <div><i>{{.}}</i></div>
+                {{/model.subjectElements}}
+            </div>
+        </div>
+    </div>
+
+    <form>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>점수</th>
+                <th>항목</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#model.questions}}
+
+                <tr>
+                    <input type="hidden" class="questionNo" value="{{no}}">
+                    <td>{{no}}</td>
+                    <td>{{title}}</td>
+                    <td>{{point}}</td>
+                    <td>
+                        {{#options}}
+                            {{no}} {{content}} <input type="radio" class="optionNo" name="question-{{questionId}}"
+                                                      value="{{no}}" disabled><br>
+                        {{/options}}
+                    </td>
+                </tr>
+            {{/model.questions}}
+            </tbody>
+        </table>
+
+    </form>
+</div>
+
+{{> layout/footer}}

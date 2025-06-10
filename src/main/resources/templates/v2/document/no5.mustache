@@ -1,0 +1,154 @@
+{{> layout/header}}
+
+<style>
+    .table th,
+    .table td {
+        padding: 0.5rem;
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+    }
+
+    .subject-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .content-section {
+        margin-top: 2rem;
+        padding: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+    }
+
+    .list-item {
+        margin-bottom: 0.5rem;
+    }
+</style>
+</head>
+
+<body>
+<div class="container mt-5">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <td colspan="7">
+                <div class="d-flex justify-content-center align-items-center px-5 py-3"
+                     style="border-bottom: 1px solid #ccc;">
+                    <div class="text-start">
+                        <h1 class="text-center" style="letter-spacing: 2rem; font-weight: bold;">기 안 용 지</h1>
+                        <div class="text-center mt-2">(전화번호 : 051-912-1000)</div>
+                    </div>
+                    <div class="text-end" style="margin-left: 50px;">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="report">
+                            <label class="form-check-label" for="report">품의</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="proposal" checked>
+                            <label class="form-check-label" for="proposal">보고</label>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th style="width: 15%;">기안부서</th>
+            <td style="width: 22%;">{{model.draftingTeam}}</td>
+            <td rowspan="5" style="width: 3%;">결재</td>
+            <td style="width: 15%;"></td>
+            <th style="width: 15%;">담 당</th>
+            <th style="width: 15%;">팀 장</th>
+            <th style="width: 15%;">원 장</th>
+        </tr>
+        <tr>
+            <th>문서번호</th>
+            <td>{{model.docNumber}}</td>
+
+            <td rowspan="4"></td>
+            <td rowspan="4"></td>
+            <td rowspan="4"></td>
+            <td rowspan="4"></td>
+        </tr>
+        <tr>
+            <th>작성일자</th>
+            <td>{{model.writingDate}}</td>
+
+        </tr>
+        <tr>
+            <th>처리요망</th>
+            <td>{{model.requestDate}}</td>
+
+
+        </tr>
+        <tr>
+            <th>보존기간</th>
+            <td>{{model.retentionPeriod}}</td>
+
+
+        </tr>
+        <tr>
+            <th>작성자</th>
+            <td>
+                <span class="content">
+                {{model.author}} <span class="signature">(인)</span>
+                <img src="{{model.sign}}" class="signature-img" alt="signature">
+                </span>
+            </td>
+
+            <td rowspan="2"></td>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <th>수 신<br>
+                경 유<br>
+                참 조
+            </th>
+            <td>내부결재</td>
+
+            <td colspan="4"></td>
+
+        </tr>
+        <tr>
+            <th>제목</th>
+            <td colspan="6">{{model.title}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="content-section">
+        <h6 class="mb-3">- 아 래 -</h6>
+        <div>
+            <h6 class="mb-2"><strong>1. 교육훈련생 평가 실시보고</strong></h6>
+            <ul class="list-unstyled">
+                <li class="list-item">가. 훈련과정 : {{model.ga}}</li>
+                <li class="list-item">나. 훈련기간 : {{model.na}}</li>
+                <li class="list-item">다. 정기평가(평가구분) : {{model.da}}</li>
+                <li class="list-item">라. 담당교사 : {{model.ra}}</li>
+                <li class="list-item">마. 평가일시 : {{model.ma}}</li>
+                <li class="list-item">바. 평가인원 : {{model.ba}}</li>
+                <li class="list-item">사. 재평가인원 : {{model.sa}}</li>
+                <li class="list-item">아. 평가결과 조치 : {{model.ah}}</li>
+                <li class="list-item">자. 재평가 시기 : {{model.ja}}.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <p><strong>* 첨부 - 평가결과보고서, 실시증빙, 훈련생개별평가(평가채점표, 평가물)</strong></p>
+        <p>평가결과 일체 및 원본 데이터 제출 완료.</p>
+    </div>
+
+    <div class="text-end mt-4">
+        <p>끝.</p>
+    </div>
+</div>
+
+{{> layout/footer}}

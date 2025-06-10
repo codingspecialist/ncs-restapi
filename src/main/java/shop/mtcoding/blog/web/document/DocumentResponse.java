@@ -53,7 +53,7 @@ public class DocumentResponse {
             this.title = paper.getSubject().getCourse().getTitle() + " 평가 실시보고";
             this.ga = paper.getSubject().getCourse().getTitle();
             this.na = paper.getSubject().getCourse().getStartDate() + " ~ " + paper.getSubject().getCourse().getEndDate() + " (" + paper.getSubject().getCourse().getTotalTime() + "시간)";
-            this.da = paper.getSubject().getTitle() + " (" + paper.getEvaluationWay() + ")";
+            this.da = paper.getSubject().getTitle() + " (" + paper.getEvaluationWay().toKorean() + ")";
             this.ra = paper.getSubject().getTeacherName();
             this.ma = paper.getEvaluationDate().toString();
 

@@ -1,6 +1,5 @@
-package shop.mtcoding.blog.web.exam;
+package shop.mtcoding.blog.domain.course.exam;
 
-import shop.mtcoding.blog.domain.course.exam.Exam;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 

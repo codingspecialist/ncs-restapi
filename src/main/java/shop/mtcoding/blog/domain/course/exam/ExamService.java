@@ -87,13 +87,13 @@ public class ExamService {
 
 
         List<SubjectElement> subjectElementListPS =
-                elementRepository.findBySubjectId(paperPS.getSubject().getId());
+                elementRepository.findAllBySubjectId(paperPS.getSubject().getId());
 
         Student studentPS = studentRepository.findByUserId(sessionUser.getId());
 
         String studentName = studentPS.getName();
 
-        List<Question> questionListPS = questionRepository.findByPaperId(paperId);
+        List<Question> questionListPS = questionRepository.findAllByPaperId(paperId);
 
         // 시험일, 시험장소, 교과목명, 훈련교사명, 학생명, 문항수, 평가요소(elements), 시험문제들(문항점수포함)
         return new StudentExamResponse.StartDTO(paperPS, studentName, subjectElementListPS, questionListPS);
@@ -110,7 +110,7 @@ public class ExamService {
         // 2. 재평가인데, 이전 시험(Exam)이 있으면 이전 시험 isNotUse로 변경
         // 재평가를 10번 해도, 모든 이전 재평가, 본평가는 isNotUse가 true가 됨
         if (paper.isReEvaluation()) {
-            Optional<Exam> examOP = examRepository.findBySubjectIdAndStudentIdAndIsNotUse(paper.getSubject().getId(), student.getId(), true);
+            Optional<Exam> examOP = examRepository.findBySubjectIdAndStudentIdAndIsUse(paper.getSubject().getId(), student.getId(), true);
 
             if (examOP.isPresent()) {
                 // 1. 새로운 평가가 저장되면, 기존 사용중인 평가를 사용안함으로 변경
@@ -123,7 +123,7 @@ public class ExamService {
         Exam examPS = examRepository.save(exam);
 
         // 2. 정답지 가져오기
-        List<Question> questionList = questionRepository.findByPaperId(reqDTO.getPaperId());
+        List<Question> questionList = questionRepository.findAllByPaperId(reqDTO.getPaperId());
 
         // 3. ExamAnswer 컬렉션 저장 (채점하기)
         List<ExamAnswer> examAnswerList = new ArrayList<>();
@@ -238,7 +238,7 @@ public class ExamService {
         Long subjectId = examPS.getPaper().getSubject().getId();
 
         List<SubjectElement> subjectElementListPS =
-                elementRepository.findBySubjectId(subjectId);
+                elementRepository.findAllBySubjectId(subjectId);
 
         Teacher teacher = teacherRepository.findByName(examPS.getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
@@ -270,7 +270,7 @@ public class ExamService {
         }
 
         // 4. 교과목 요소와 선생님 사인 조회
-        List<SubjectElement> subjectElementList = elementRepository.findBySubjectId(subjectId);
+        List<SubjectElement> subjectElementList = elementRepository.findAllBySubjectId(subjectId);
         Teacher teacher = teacherRepository.findByName(examPS.getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
 
@@ -278,7 +278,7 @@ public class ExamService {
         Long originExamId = null;
         Long studentId = examPS.getStudent().getId();
         if (examPS.getExamState().equals("재평가")) {
-            Exam reExamPS = examRepository.findBySubjectIdAndStudentIdAndIsNotUse(subjectId, studentId, false)
+            Exam reExamPS = examRepository.findBySubjectIdAndStudentIdAndIsUse(subjectId, studentId, false)
                     .orElseThrow(() -> new Exception500("재평가 본평가 저장 프로세스 오류 : 관리자 문의"));
             originExamId = reExamPS.getId();
         }
@@ -365,7 +365,7 @@ public class ExamService {
         List<Student> students = studentRepository.findAllByCourseId(courseId);
 
         // 4. 해당 과목의 모든 시험 응시 기록
-        List<Exam> allExams = examRepository.findBySubjectId(subjectId);
+        List<Exam> allExams = examRepository.findAllBySubjectId(subjectId);
 
         List<ExamResponse.ResultDTO> resultList = new ArrayList<>();
 

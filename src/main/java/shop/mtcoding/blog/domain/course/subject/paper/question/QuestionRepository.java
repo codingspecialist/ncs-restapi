@@ -12,5 +12,5 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     // select max(no)+1 expectNo, (select 100/count from paper_tb where id = 1) expectPoint from question_tb where paper_id = 1;
 
     @Query("select q from Question q join fetch q.questionOptions op where q.paper.id = :paperId")
-    List<Question> findByPaperId(@Param("paperId") Long paperId);
+    List<Question> findAllByPaperId(@Param("paperId") Long paperId);
 }

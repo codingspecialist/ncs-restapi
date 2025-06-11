@@ -63,7 +63,6 @@ public class StudentExamController {
 
     @PutMapping("/api/student/exam/sign")
     public ResponseEntity<?> sign(@RequestBody StudentExamRequest.SignDTO reqDTO) {
-        User sessionUser = (User) session.getAttribute("sessionUser");
         examService.학생_사인저장(reqDTO);
         return ResponseEntity.ok(new ApiUtil<>(null));
     }

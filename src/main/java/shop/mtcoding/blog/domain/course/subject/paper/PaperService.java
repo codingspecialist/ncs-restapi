@@ -3,6 +3,7 @@ package shop.mtcoding.blog.domain.course.subject.paper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.mtcoding.blog.core.errors.exception.Exception400;
 import shop.mtcoding.blog.core.errors.exception.Exception404;
 import shop.mtcoding.blog.core.errors.exception.api.ApiException400;
 import shop.mtcoding.blog.core.errors.exception.api.ApiException404;
@@ -42,18 +43,26 @@ public class PaperService {
                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
         List<SubjectElement> subjectElementListPS =
-                subjectElementRepository.findBySubjectId(paperPS.getSubject().getId());
+                subjectElementRepository.findAllBySubjectId(paperPS.getSubject().getId());
 
 
-        List<Question> questionListPS = questionRepository.findByPaperId(paperId);
+        List<Question> questionListPS = questionRepository.findAllByPaperId(paperId);
         return new PaperModel.Detail(paperPS, subjectElementListPS, questionListPS);
     }
 
-    // 시험지등록
     @Transactional
     public void 시험지등록(Long subjectId, PaperRequest.SaveDTO reqDTO) {
         Subject subjectPS = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new Exception404("해당 교과목을 찾을 수 없어요"));
+
+        // ORIGINAL 유형이면 해당 교과목에 이미 존재하는지 확인
+        if (reqDTO.getPaperType() == PaperType.ORIGINAL) {
+            boolean exists = paperRepository.existsBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL);
+            if (exists) {
+                throw new Exception400("해당 교과목에는 이미 본평가(ORIGINAL) 시험지가 존재합니다.");
+            }
+        }
+
         paperRepository.save(reqDTO.toEntity(subjectPS));
     }
 
@@ -64,7 +73,7 @@ public class PaperService {
                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
         // 번호 유니크 계산
-        List<Question> questionListPS = questionRepository.findByPaperId(reqDTO.getPaperId());
+        List<Question> questionListPS = questionRepository.findAllByPaperId(reqDTO.getPaperId());
         questionListPS.forEach(question -> {
             if (question.getNo() == reqDTO.getQuestionNo()) {
                 throw new ApiException400("동일한 문제 번호를 등록할 수 없어요");
@@ -90,7 +99,7 @@ public class PaperService {
                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
 
-        List<SubjectElement> elementListPS = subjectElementRepository.findBySubjectId(paperPS.getSubject().getId());
+        List<SubjectElement> elementListPS = subjectElementRepository.findAllBySubjectId(paperPS.getSubject().getId());
 
         PaperModel.NextQuestion nextQuestion = questionQueryRepository.findStatisticsByPaperId(paperId)
                 .withElements(elementListPS);

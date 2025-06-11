@@ -20,10 +20,8 @@ import shop.mtcoding.blog.domain.course.subject.paper.PaperType;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionRepository;
 import shop.mtcoding.blog.domain.user.User;
-import shop.mtcoding.blog.domain.user.UserRepository;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
-import shop.mtcoding.blog.web.document.DocumentResponse;
 
 import java.util.List;
 
@@ -36,91 +34,68 @@ public class DocumentService {
     private final SubjectRepository subjectRepository;
     private final QuestionRepository questionRepository;
     private final PaperRepository paperRepository;
-    private final UserRepository userRepository;
     private final TeacherRepository teacherRepository;
     private final SubjectElementRepository elementRepository;
     private final ExamRepository examRepository;
 
-    public DocumentResponse.No5DTO no5(Long subjectId) {
-        List<Exam> examList = examRepository.findBySubjectIdAndEvaluationWay(subjectId, PaperType.ORIGINAL); // 본평가들
-        List<Exam> reExamList = examRepository.findBySubjectIdAndEvaluationWay(subjectId, PaperType.RETEST); // 재평가들
+    public DocumentModel.CourseSlice 과정목록(User sessionUser, Pageable pageable) {
+        Page<Course> coursePagePS = courseRepository.findAllByTeacherId(sessionUser.getTeacher().getId(), pageable);
+        return new DocumentModel.CourseSlice(coursePagePS);
+    }
 
-        Teacher teacherPS = teacherRepository.findByName(examList.get(0).getTeacherName())
+    public DocumentModel.SubjectItems 교과목목록(Long courseId) {
+        List<Subject> subjectListPS = subjectRepository.findAllByCourseId(courseId);
+        return new DocumentModel.SubjectItems(subjectListPS);
+    }
+
+    public DocumentModel.No1 no1(Long subjectId) {
+        Subject subjectPS = subjectRepository.findById(subjectId).orElseThrow(() -> new Exception404("해당 교과목이 없어요"));
+        Teacher teacherPS = teacherRepository.findByName(subjectPS.getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 선생님이 존재하지 않아요"));
-
-        return new DocumentResponse.No5DTO(examList, reExamList, teacherPS);
+        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
+                .orElseThrow(() -> new Exception404("해당 교과목의 본평가 시험지를 찾을 수 없습니다."));
+        List<Question> questionListPS = questionRepository.findAllByPaperId(paperPS.getId());
+        return new DocumentModel.No1(subjectPS, questionListPS, teacherPS, paperPS);
     }
 
-    public DocumentResponse.No2DTO no2(Long subjectId) {
-        Paper paperPS = paperRepository.findAllBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL).get(0);
-        List<Question> questionList = questionRepository.findByPaperId(paperPS.getId());
-
-        return new DocumentResponse.No2DTO(paperPS.getSubject(), questionList);
+    public DocumentModel.No2 no2(Long subjectId) {
+        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
+                .orElseThrow(() -> new Exception404("해당 교과목의 본평가 시험지를 찾을 수 없습니다."));
+        List<Question> questionListPS = questionRepository.findAllByPaperId(paperPS.getId());
+        return new DocumentModel.No2(paperPS.getSubject(), questionListPS);
     }
 
-    public DocumentResponse.No4DTO no4(Long subjectId, Integer currentIndex) {
-        // 1. 본평가, 재평가중에 사용중인 평가들을 학생 이름순으로 조회 (가이름0, 나이름1, 다이름2)
+    public DocumentModel.No3 no3(Long subjectId) {
+        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
+                .orElseThrow(() -> new Exception404("해당 교과목의 본평가 시험지를 찾을 수 없습니다."));
+        List<Question> questionListPS = questionRepository.findAllByPaperId(paperPS.getId());
+        List<SubjectElement> elementListPS = elementRepository.findAllBySubjectId(subjectId);
+        Teacher teacherPS = teacherRepository.findByName(paperPS.getSubject().getTeacherName())
+                .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
+        return new DocumentModel.No3(paperPS, elementListPS, questionListPS, teacherPS);
+    }
+
+    public DocumentModel.No4 no4(Long subjectId, Integer currentIndex) {
         List<Exam> examListPS = examRepository.findBySubjectIdAndIsUseOrderByStudentNameAsc(subjectId);
-
-        // 2. 가이름 먼저 가져옴
         Exam examPS = examListPS.get(currentIndex);
         if (examPS == null) throw new Exception404("시험친 기록이 없어요");
 
-        // 3. 이전 인덱스, 다음 인덱스 존재유무 확인
-        Integer prevIndex = currentIndex - 1;
-        Integer nextIndex = currentIndex + 1;
+        Integer prevIndex = currentIndex > 0 ? currentIndex - 1 : null;
+        Integer nextIndex = currentIndex < examListPS.size() - 1 ? currentIndex + 1 : null;
 
-        if (prevIndex < 0) prevIndex = null;
-        if (nextIndex >= examListPS.size()) nextIndex = null;
-
-        // 4. 교과목 요소 찾기
-        List<SubjectElement> subjectElementListPS =
-                elementRepository.findBySubjectId(subjectId);
-
-        // 5. 선생님 사인 찾기
-        Teacher teacher = teacherRepository.findByName(examPS.getTeacherName())
+        List<SubjectElement> elementListPS = elementRepository.findAllBySubjectId(subjectId);
+        Teacher teacherPS = teacherRepository.findByName(examPS.getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
 
-
-        return new DocumentResponse.No4DTO(examPS, subjectElementListPS, teacher, prevIndex, nextIndex, currentIndex);
-
+        return new DocumentModel.No4(examPS, elementListPS, teacherPS, prevIndex, nextIndex, currentIndex);
     }
 
-    public DocumentResponse.No3DTO no3(Long subjectId) {
-        Paper paperPS = paperRepository.findAllBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL).get(0);
-        List<Question> questionListPS = questionRepository.findByPaperId(paperPS.getId());
-
-        List<SubjectElement> subjectElementListPS =
-                elementRepository.findBySubjectId(subjectId);
-
-        Teacher teacher = teacherRepository.findByName(paperPS.getSubject().getTeacherName())
-                .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
-
-        return new DocumentResponse.No3DTO(paperPS, subjectElementListPS, questionListPS, teacher);
-    }
-
-    public List<DocumentResponse.CourseDTO> 과정목록(User sessionUser, Pageable pageable) {
-        Page<Course> coursePG = courseRepository.findAllByTeacherId(sessionUser.getTeacher().getId(), pageable);
-        return coursePG.getContent().stream().map(DocumentResponse.CourseDTO::new).toList();
-    }
-
-    public List<DocumentResponse.SubjectDTO> 교과목목록(Long courseId) {
-        List<Subject> subjectListPS = subjectRepository.findAllByCourseId(courseId);
-        return subjectListPS.stream().map(DocumentResponse.SubjectDTO::new).toList();
-    }
-
-    public DocumentResponse.No1DTO no1(Long subjectId) {
-        Subject subjectPS = subjectRepository.findById(subjectId).orElseThrow(
-                () -> new Exception404("해당 교과목이 없어요")
-        );
-
-
-        Teacher teacherPS = teacherRepository.findByName(subjectPS.getTeacherName())
+    public DocumentModel.No5 no5(Long subjectId) {
+        List<Exam> examListPS = examRepository.findAllBySubjectIdAndEvaluationWay(subjectId, PaperType.ORIGINAL);
+        List<Exam> reExamListPS = examRepository.findAllBySubjectIdAndEvaluationWay(subjectId, PaperType.RETEST);
+        Teacher teacherPS = teacherRepository.findByName(examListPS.get(0).getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 선생님이 존재하지 않아요"));
-
-        // TODO : 교과목별 시험지가 여러개 일 수 있다.
-        Paper paperPS = paperRepository.findAllBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL).get(0);
-        List<Question> questionListPS = questionRepository.findByPaperId(paperPS.getId());
-        return new DocumentResponse.No1DTO(subjectPS, questionListPS, teacherPS.getSign(), paperPS);
+        return new DocumentModel.No5(examListPS, reExamListPS, teacherPS);
     }
+
 }

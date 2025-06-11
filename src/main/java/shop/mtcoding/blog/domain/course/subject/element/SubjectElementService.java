@@ -25,7 +25,7 @@ public class SubjectElementService {
         Subject subjectPS = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new Exception404("해당 교과목을 찾을 수 없습니다"));
 
-        List<SubjectElement> subjectElementListPS = subjectElementRepository.findBySubjectId(subjectId);
+        List<SubjectElement> subjectElementListPS = subjectElementRepository.findAllBySubjectId(subjectId);
         return new SubjectElementModel.Items(subjectPS, subjectElementListPS);
     }
 
@@ -40,7 +40,7 @@ public class SubjectElementService {
                 .map(CourseElementRequest.SaveDTO::getNo)
                 .toList();
 
-        List<Integer> existingNos = subjectElementRepository.findExistingNosBySubjectIdAndNoIn(subjectId, requestedNos);
+        List<Integer> existingNos = subjectElementRepository.findNosBySubjectIdAndNoIn(subjectId, requestedNos);
 
         if (!existingNos.isEmpty()) {
             throw new ApiException400("이미 존재하는 순번: " + new HashSet<>(existingNos));

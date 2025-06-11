@@ -1,8 +1,6 @@
 package shop.mtcoding.blog.domain.course.subject.paper;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog.core.errors.exception.Exception404;
@@ -33,9 +31,9 @@ public class PaperService {
     private final SubjectRepository subjectRepository;
 
     // 교과목별 시험지 목록
-    public PaperModel.Items 교과목별시험지목록(Long subjectId, Pageable pageable) {
-        Page<Paper> paperPG = paperRepository.findAllBySubjectId(subjectId, pageable);
-        return new PaperModel.Items(paperPG);
+    public PaperModel.Items 교과목별시험지목록(Long subjectId) {
+        List<Paper> papers = paperRepository.findAllBySubjectId(subjectId);
+        return new PaperModel.Items(papers);
     }
 
     // 시험지 상세

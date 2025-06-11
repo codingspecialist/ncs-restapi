@@ -6,7 +6,7 @@ import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 
 import java.util.List;
 
-public class CourseSubjectElementResponse {
+public class CourseElementResponse {
 
     @Data
     public static class ListDTO {

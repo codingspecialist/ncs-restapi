@@ -75,8 +75,8 @@ public class CourseService {
         Course coursePS = courseRepository.findById(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
 
-        List<Subject> subjectListPS = subjectRepository.findByCourseId(coursePS.getId());
-        List<Student> studentListPS = studentRepository.findByCourseId(coursePS.getId());
+        List<Subject> subjectListPS = subjectRepository.findAllByCourseId(coursePS.getId());
+        List<Student> studentListPS = studentRepository.findAllByCourseId(coursePS.getId());
         return new CourseModel.Detail(coursePS, subjectListPS, studentListPS);
     }
 }

@@ -17,7 +17,7 @@
         </tr>
         </thead>
         <tbody>
-        {{#model.papers}}
+        {{#models}}
             <tr class="click-tr" onclick="location.href='/api/paper-menu/paper/{{paperId}}'">
                 <th>{{paperType}}</th>
                 <td>{{subjectTitle}}</td>
@@ -25,7 +25,7 @@
                 <td>{{courseTitle}}/{{courseRound}}회차</td>
                 <td>{{evaluationDate}}</td>
             </tr>
-        {{/model.papers}}
+        {{/models}}
         </tbody>
     </table>
 

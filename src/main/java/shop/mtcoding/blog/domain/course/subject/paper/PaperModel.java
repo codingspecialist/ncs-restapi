@@ -1,6 +1,5 @@
 package shop.mtcoding.blog.domain.course.subject.paper;
 
-import org.springframework.data.domain.Page;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 
@@ -8,9 +7,9 @@ import java.util.List;
 
 
 public class PaperModel {
-    public record Items(Page<Paper> paperPG) {
+    public record Items(List<Paper> papers) {
     }
-
+ 
     public record Detail(Paper paper, List<SubjectElement> subjectElements, List<Question> questions) {
     }
 

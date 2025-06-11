@@ -4,7 +4,7 @@ import lombok.Data;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 
-public class CourseSubjectElementRequest {
+public class CourseElementRequest {
 
     @Data
     public static class SaveDTO {

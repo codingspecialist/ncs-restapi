@@ -8,8 +8,7 @@ import shop.mtcoding.blog.core.errors.exception.api.ApiException400;
 import shop.mtcoding.blog.core.errors.exception.api.ApiException404;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.SubjectRepository;
-import shop.mtcoding.blog.web.course.subject.element.CourseSubjectElementRequest;
-import shop.mtcoding.blog.web.course.subject.element.CourseSubjectElementResponse;
+import shop.mtcoding.blog.web.course.subject.element.CourseElementRequest;
 
 import java.util.HashSet;
 import java.util.List;
@@ -21,24 +20,24 @@ public class SubjectElementService {
     private final SubjectRepository subjectRepository;
     private final SubjectElementRepository subjectElementRepository;
 
-    public CourseSubjectElementResponse.ListDTO 교과목요소목록(Long subjectId) {
+    public SubjectElementModel.Items 교과목요소목록(Long subjectId) {
 
         Subject subjectPS = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new Exception404("해당 교과목을 찾을 수 없습니다"));
 
         List<SubjectElement> subjectElementListPS = subjectElementRepository.findBySubjectId(subjectId);
-        return new CourseSubjectElementResponse.ListDTO(subjectPS, subjectElementListPS);
+        return new SubjectElementModel.Items(subjectPS, subjectElementListPS);
     }
 
     @Transactional
-    public void 교과목요소전체등록(Long subjectId, List<CourseSubjectElementRequest.SaveDTO> reqDTOs) {
+    public void 교과목요소전체등록(Long subjectId, List<CourseElementRequest.SaveDTO> reqDTOs) {
         // 1. 교과목 존재확인
         Subject subjectPS = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new ApiException404("해당 교과목을 찾을 수 없습니다"));
 
         // 2. 중복 순번 조회 (한 번의 쿼리로!)
         List<Integer> requestedNos = reqDTOs.stream()
-                .map(CourseSubjectElementRequest.SaveDTO::getNo)
+                .map(CourseElementRequest.SaveDTO::getNo)
                 .toList();
 
         List<Integer> existingNos = subjectElementRepository.findExistingNosBySubjectIdAndNoIn(subjectId, requestedNos);

@@ -20,7 +20,7 @@ public class SubjectService {
     private final CourseRepository courseRepository;
 
     public SubjectModel.Items 과정별교과목(Long courseId) {
-        List<Subject> subjects = subjectRepository.findByCourseId(courseId);
+        List<Subject> subjects = subjectRepository.findAllByCourseId(courseId);
         return new SubjectModel.Items(subjects);
     }
 
@@ -29,7 +29,7 @@ public class SubjectService {
         Course coursePS = courseRepository.findById(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
 
-        List<Subject> subjectListPS = subjectRepository.findByCourseId(coursePS.getId());
+        List<Subject> subjectListPS = subjectRepository.findAllByCourseId(coursePS.getId());
 
         Boolean isSameNo = subjectListPS.stream().anyMatch(subject -> subject.getNo().equals(reqDTO.getNo()));
 

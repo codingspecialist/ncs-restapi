@@ -45,7 +45,7 @@ public class ExamService {
         Long studentId = sessionUser.getStudent().getId();
 
         // 1. 과정 내 모든 시험지 가져오기
-        List<Paper> allPapers = paperRepository.findByCourseId(courseId);
+        List<Paper> allPapers = paperRepository.findAllByCourseId(courseId);
 
         // 2. 해당 학생이 응시한 모든 시험
         List<Exam> myExams = examRepository.findByStudentId(studentId);
@@ -351,7 +351,7 @@ public class ExamService {
 
     public List<ExamResponse.ResultDTO> 강사_교과목별시험결과(Long subjectId) {
         // 1. 시험지 목록 가져오기
-        List<Paper> paperList = paperRepository.findBySubjectId(subjectId);
+        List<Paper> paperList = paperRepository.findAllBySubjectId(subjectId);
         if (paperList.isEmpty()) return List.of();
 
         // 2. 본평가 시험지만 추출
@@ -362,7 +362,7 @@ public class ExamService {
 
         // 3. 과정에 속한 수강생 모두 조회
         Long courseId = mainPaper.getSubject().getCourse().getId();
-        List<Student> students = studentRepository.findByCourseId(courseId);
+        List<Student> students = studentRepository.findAllByCourseId(courseId);
 
         // 4. 해당 과목의 모든 시험 응시 기록
         List<Exam> allExams = examRepository.findBySubjectId(subjectId);

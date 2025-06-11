@@ -2,8 +2,6 @@ package shop.mtcoding.blog.domain.course.student;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog.core.errors.exception.Exception404;
@@ -11,7 +9,6 @@ import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.CourseRepository;
 import shop.mtcoding.blog.web.course.student.CourseStudentRequest;
-import shop.mtcoding.blog.web.course.student.CourseStudentResponse;
 
 @Slf4j
 @Transactional(readOnly = true)
@@ -20,11 +17,6 @@ import shop.mtcoding.blog.web.course.student.CourseStudentResponse;
 public class StudentService {
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
-
-    public CourseStudentResponse.PagingDTO 모든학생목록(Pageable pageable) {
-        Page<Student> paging = studentRepository.findAll(pageable);
-        return new CourseStudentResponse.PagingDTO(paging);
-    }
 
     @Transactional
     public void 학생등록(Long courseId, CourseStudentRequest.SaveDTO reqDTO) {

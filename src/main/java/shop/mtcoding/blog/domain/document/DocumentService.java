@@ -52,7 +52,7 @@ public class DocumentService {
     }
 
     public DocumentResponse.No2DTO no2(Long subjectId) {
-        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL).get(0);
+        Paper paperPS = paperRepository.findAllBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL).get(0);
         List<Question> questionList = questionRepository.findByPaperId(paperPS.getId());
 
         return new DocumentResponse.No2DTO(paperPS.getSubject(), questionList);
@@ -87,7 +87,7 @@ public class DocumentService {
     }
 
     public DocumentResponse.No3DTO no3(Long subjectId) {
-        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL).get(0);
+        Paper paperPS = paperRepository.findAllBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL).get(0);
         List<Question> questionListPS = questionRepository.findByPaperId(paperPS.getId());
 
         List<SubjectElement> subjectElementListPS =
@@ -105,7 +105,7 @@ public class DocumentService {
     }
 
     public List<DocumentResponse.SubjectDTO> 교과목목록(Long courseId) {
-        List<Subject> subjectListPS = subjectRepository.findByCourseId(courseId);
+        List<Subject> subjectListPS = subjectRepository.findAllByCourseId(courseId);
         return subjectListPS.stream().map(DocumentResponse.SubjectDTO::new).toList();
     }
 
@@ -118,8 +118,8 @@ public class DocumentService {
         Teacher teacherPS = teacherRepository.findByName(subjectPS.getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 선생님이 존재하지 않아요"));
 
-
-        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL).get(0);
+        // TODO : 교과목별 시험지가 여러개 일 수 있다.
+        Paper paperPS = paperRepository.findAllBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL).get(0);
         List<Question> questionListPS = questionRepository.findByPaperId(paperPS.getId());
         return new DocumentResponse.No1DTO(subjectPS, questionListPS, teacherPS.getSign(), paperPS);
     }

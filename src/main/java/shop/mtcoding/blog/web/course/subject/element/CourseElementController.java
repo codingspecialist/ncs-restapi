@@ -10,19 +10,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import shop.mtcoding.blog.core.utils.ApiUtil;
+import shop.mtcoding.blog.domain.course.subject.element.SubjectElementModel;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElementService;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
-public class CourseSubjectElementController {
+public class CourseElementController {
     private final HttpSession session;
     private final SubjectElementService subjectElementService;
 
     @GetMapping("/api/course-menu/subject/{subjectId}/element")
     public String list(@PathVariable(value = "subjectId") Long subjectId, Model model) {
-        CourseSubjectElementResponse.ListDTO respDTO = subjectElementService.교과목요소목록(subjectId);
+        SubjectElementModel.Items items = subjectElementService.교과목요소목록(subjectId);
+        CourseElementResponse.ListDTO respDTO = new CourseElementResponse.ListDTO(items.subject(), items.subjectElements());
         model.addAttribute("model", respDTO);
         return "course/subject/element/list";
     }
@@ -34,7 +36,7 @@ public class CourseSubjectElementController {
     }
 
     @PostMapping("/api/course-menu/subject/{subjectId}/element/save")
-    public ResponseEntity<?> save(@PathVariable(value = "subjectId") Long subjectId, @RequestBody List<CourseSubjectElementRequest.SaveDTO> reqDTOs) {
+    public ResponseEntity<?> save(@PathVariable(value = "subjectId") Long subjectId, @RequestBody List<CourseElementRequest.SaveDTO> reqDTOs) {
         subjectElementService.교과목요소전체등록(subjectId, reqDTOs);
         return ResponseEntity.ok(new ApiUtil<>(null));
     }

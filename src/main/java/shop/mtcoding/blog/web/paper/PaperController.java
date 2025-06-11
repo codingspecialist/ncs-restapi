@@ -57,10 +57,10 @@ public class PaperController {
 
     // 3. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) (완)
     @GetMapping("/api/paper-menu/subject/{subjectId}/paper")
-    public String list(Model model, @PathVariable("subjectId") Long subjectId, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
-        PaperModel.Items items = paperService.교과목별시험지목록(subjectId, pageable);
-        PaperResponse.ListDTO respDTO = new PaperResponse.ListDTO(items.paperPG());
-        model.addAttribute("model", respDTO);
+    public String list(Model model, @PathVariable("subjectId") Long subjectId) {
+        PaperModel.Items items = paperService.교과목별시험지목록(subjectId);
+        List<PaperResponse.DTO> respDTO = items.papers().stream().map(PaperResponse.DTO::new).toList();
+        model.addAttribute("models", respDTO);
         return "paper/list";
     }
 

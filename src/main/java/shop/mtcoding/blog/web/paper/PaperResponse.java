@@ -166,45 +166,26 @@ public class PaperResponse {
 
 
     @Data
-    public static class ListDTO {
-        private Integer totalPage; // 전체 페이지 수
-        private Integer pageSize; // 페이지 별 아이템 개수
-        private Integer pageNumber; // 현재 페이지 번호
-        private Boolean isFirst; // 첫번째 페이지 여부
-        private Boolean isLast; // 마지막 페이지 여부
-        private List<PaperDTO> papers;
+    public static class DTO {
 
-        public ListDTO(Page<Paper> paging) {
-            this.totalPage = paging.getTotalPages();
-            this.pageSize = paging.getSize();
-            this.pageNumber = paging.getNumber();
-            this.isFirst = paging.isFirst();
-            this.isLast = paging.isLast();
-            this.papers = paging.getContent().stream().map(PaperDTO::new).toList();
-        }
+        private Long paperId;
+        private String courseTitle;
+        private Integer courseRound;
+        private Long subjectId;
+        private String subjectTitle; // 교과목명
+        private Integer questionCount; // 문항수
+        private String paperType;
+        private String evaluationDate;
 
-        @Data
-        class PaperDTO {
-
-            private Long paperId;
-            private String courseTitle;
-            private Integer courseRound;
-            private Long subjectId;
-            private String subjectTitle; // 교과목명
-            private Integer questionCount; // 문항수
-            private String paperType;
-            private String evaluationDate;
-
-            public PaperDTO(Paper paper) {
-                this.paperId = paper.getId();
-                this.courseTitle = paper.getSubject().getCourse().getTitle();
-                this.courseRound = paper.getSubject().getCourse().getRound();
-                this.subjectId = paper.getSubject().getId();
-                this.subjectTitle = paper.getSubject().getTitle();
-                this.questionCount = paper.getQuestionCount();
-                this.paperType = paper.getPaperType().toKorean();
-                this.evaluationDate = MyUtil.localDateToString(paper.getEvaluationDate());
-            }
+        public DTO(Paper paper) {
+            this.paperId = paper.getId();
+            this.courseTitle = paper.getSubject().getCourse().getTitle();
+            this.courseRound = paper.getSubject().getCourse().getRound();
+            this.subjectId = paper.getSubject().getId();
+            this.subjectTitle = paper.getSubject().getTitle();
+            this.questionCount = paper.getQuestionCount();
+            this.paperType = paper.getPaperType().toKorean();
+            this.evaluationDate = MyUtil.localDateToString(paper.getEvaluationDate());
         }
     }
 }

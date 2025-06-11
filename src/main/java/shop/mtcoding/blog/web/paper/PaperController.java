@@ -43,7 +43,7 @@ public class PaperController {
         PaperResponse.CourseListDTO respDTO = new PaperResponse.CourseListDTO(items.coursePG());
         model.addAttribute("model", respDTO);
 
-        return "v2/paper/course-list";
+        return "paper/course-list";
     }
 
     // 2. 시험지관리 - 교과목목록 (페이징필요)
@@ -51,7 +51,7 @@ public class PaperController {
     public String subject(@PathVariable("courseId") Long courseId, Model model) {
         List<TeacherExamResponse.SubjectDTO> respDTO = subjectService.과정별교과목(courseId);
         model.addAttribute("models", respDTO);
-        return "v2/paper/subject-list";
+        return "paper/subject-list";
     }
 
     // 3. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) (완)
@@ -60,14 +60,14 @@ public class PaperController {
         PaperModel.Items items = paperService.교과목별시험지목록(subjectId, pageable);
         PaperResponse.ListDTO respDTO = new PaperResponse.ListDTO(items.paperPG());
         model.addAttribute("model", respDTO);
-        return "v2/paper/list";
+        return "paper/list";
     }
 
     // 4-1. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) - 시험지등록 폼
     @GetMapping("/api/paper-menu/subject/{subjectId}/paper/save-form")
     public String saveForm(@PathVariable("subjectId") Long subjectId, Model model) {
         model.addAttribute("subjectId", subjectId);
-        return "v2/paper/save-form";
+        return "paper/save-form";
     }
 
     // 4-2. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) - 시험지상세
@@ -76,7 +76,7 @@ public class PaperController {
         PaperModel.Detail detail = paperService.시험지상세(paperId);
         PaperResponse.QuestionListDTO respDTO = new PaperResponse.QuestionListDTO(detail.paper(), detail.subjectElements(), detail.questions());
         model.addAttribute("model", respDTO);
-        return "v2/paper/detail";
+        return "paper/detail";
     }
 
     // 5. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) - 시험지등록(교과목별)
@@ -91,7 +91,7 @@ public class PaperController {
     public String questionSaveForm(@PathVariable(name = "paperId") Long paperId, Model model) {
         PaperModel.NextQuestion nextQuestion = paperService.다음문제준비(paperId);
         model.addAttribute("model", nextQuestion);
-        return "v2/paper/question/save-form";
+        return "paper/question/save-form";
     }
 
     // 7. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록 - 시험지상세 - 문제등록

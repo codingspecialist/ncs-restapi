@@ -28,35 +28,35 @@
 </div>
 <script>
 
-    function saveElement() {
-        let subjectId = $("#subjectId").val();
-        let subjectElements = [];
+    async function saveElement() {
+        const subjectId = document.querySelector("#subjectId").value;
+        const items = document.querySelectorAll("#element-input-box .subject-element-item");
 
-        let items = $("#element-input-box .subject-element-item");
+        const subjectElements = Array.from(items).map((element) => {
+            const no = element.querySelector(".no").value;
+            const subtitle = element.querySelector(".subtitle").value;
+            return {no, subtitle};
+        });
 
-        items.each(function (index, element) {
-            let no = $(element).find(".no:first").val();
-            let subtitle = $(element).find(".subtitle:first").val();
+        try {
+            const response = await fetch(`/api/course-menu/subject/${subjectId}/element/save`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8"
+                },
+                body: JSON.stringify(subjectElements)
+            });
 
-            let subjectElement = {
-                no: no,
-                subtitle: subtitle
+            if (response.ok) {
+                location.href = `/api/course-menu/subject/${subjectId}/element`;
+            } else {
+                const errorData = await response.json();
+                alert(errorData.msg);
             }
-            subjectElements.push(subjectElement);
-        });
-
-        console.log(subjectElements);
-
-        $.ajax({
-            url: `/api/teacher/subject/${subjectId}/element/save`,
-            method: "post",
-            data: JSON.stringify(subjectElements),
-            contentType: "application/json; charset=utf-8"
-        }).done((res) => {
-            location.href = `/api/teacher/subject/${subjectId}/element`;
-        }).fail((res) => {
-            console.log(res.responseJSON.msg);
-        });
+        } catch (error) {
+            alert("서버 요청 중 오류가 발생했습니다.");
+            console.error(error);
+        }
     }
 
 

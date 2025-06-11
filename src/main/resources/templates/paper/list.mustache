@@ -3,29 +3,29 @@
 <div class="container p-5">
 
     <div class="d-flex justify-content-end">
-        <a href="/api/teacher/paper/save-form" class="btn btn-primary">시험지등록</a>
+        <a href="/api/paper-menu/subject/{{subjectId}}/paper/save-form" class="btn btn-primary">시험지등록</a>
     </div>
 
     <table class="table table-hover">
         <thead>
         <tr>
-            <th>번호</th>
+            <th>시험유형</th>
             <th>교과목</th>
             <th>문항수</th>
-            <th>시험유형</th>
             <th>과정명/회차</th>
+            <th>평가일</th>
         </tr>
         </thead>
         <tbody>
-        {{#paging.papers}}
-            <tr class="click-tr" onclick="location.href='/api/teacher/paper/{{paperId}}'">
-                <td>{{paperId}}</td>
+        {{#model.papers}}
+            <tr class="click-tr" onclick="location.href='/api/paper-menu/paper/{{paperId}}'">
+                <th>{{paperType}}</th>
                 <td>{{subjectTitle}}</td>
-                <td>{{count}}</td>
-                <td>{{paperState}}</td>
+                <td>{{questionCount}}</td>
                 <td>{{courseTitle}}/{{courseRound}}회차</td>
+                <td>{{evaluationDate}}</td>
             </tr>
-        {{/paging.papers}}
+        {{/model.papers}}
         </tbody>
     </table>
 

@@ -2,16 +2,18 @@
 
 <div class="container p-5">
 
+    <div>이 자리에 과정에 대한 전체 결과표 볼 수 있어야 한다</div>
+
     <table class="table table-hover">
         <thead>
         <tr>
             <th>번호</th>
-            <th>과정명/회차</th>
+            <th>교과목명</th>
         </tr>
         </thead>
         <tbody>
         {{#models}}
-            <tr class="click-tr" onclick="location.href='/api/teacher/document/course/{{courseId}}/subject/{{subjectId}}'">
+            <tr class="click-tr" onclick="location.href='/api/document-menu/subject/{{subjectId}}'">
                 <td>{{subjectNo}}</td>
                 <td>{{subjectTitle}}</td>
             </tr>

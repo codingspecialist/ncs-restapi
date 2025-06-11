@@ -7,20 +7,24 @@
         font-weight: bold;
         margin-bottom: 2rem;
     }
+
+    input[type="radio"]:checked {
+        accent-color: #007bff; /* 부트스트랩 primary 색상 */
+    }
 </style>
 
 <div class="container p-5">
     <ul class="pagination d-flex justify-content-end">
         {{#model.prevIndex}}
             <li class="page-item"><a class="page-link"
-                                     href="/api/teacher/document/course/{{model.courseId}}/subject/{{model.subjectId}}/no4?currentIndex={{model.prevIndex}}
+                                     href="/api/document-menu/subject/{{model.subjectId}}/no4?currentIndex={{model.prevIndex}}
                 ">이전학생</a>
             </li>
         {{/model.prevIndex}}
 
         {{#model.nextIndex}}
             <li class="page-item"><a class="page-link"
-                                     href="/api/teacher/document/course/{{model.courseId}}/subject/{{model.subjectId}}/no4?currentIndex={{model.nextIndex}}
+                                     href="/api/document-menu/subject/{{model.subjectId}}/no4?currentIndex={{model.nextIndex}}
                 ">다음학생</a>
             </li>
         {{/model.nextIndex}}

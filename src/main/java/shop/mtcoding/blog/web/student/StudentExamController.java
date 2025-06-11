@@ -25,7 +25,7 @@ public class StudentExamController {
 
         StudentExamResponse.MyPaperListDTO respDTO = examService.학생_응시가능한시험지목록(sessionUser);
         model.addAttribute("model", respDTO);
-        return "v2/student/paper/list";
+        return "student/paper/list";
     }
 
     @GetMapping("/api/student/paper/{paperId}/start")
@@ -33,7 +33,7 @@ public class StudentExamController {
         User sessionUser = (User) session.getAttribute("sessionUser");
         StudentExamResponse.StartDTO respDTO = examService.학생_시험시작정보(sessionUser, paperId);
         model.addAttribute("model", respDTO);
-        return "v2/student/paper/start";
+        return "student/paper/start";
     }
 
     @PostMapping("/api/student/exam")
@@ -49,7 +49,7 @@ public class StudentExamController {
         User sessionUser = (User) session.getAttribute("sessionUser");
         List<StudentExamResponse.ResultDTO> respDTO = examService.학생_시험결과목록(sessionUser);
         model.addAttribute("models", respDTO);
-        return "v2/student/exam-result/list";
+        return "student/exam-result/list";
     }
 
     @GetMapping("/api/student/exam/{examId}")
@@ -57,7 +57,7 @@ public class StudentExamController {
         StudentExamResponse.ResultDetailDTO respDTO = examService.학생_시험결과상세(examId);
 
         model.addAttribute("model", respDTO);
-        return "v2/student/exam-result/detail";
+        return "student/exam-result/detail";
     }
 
 

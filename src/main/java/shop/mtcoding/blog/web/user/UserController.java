@@ -24,12 +24,12 @@ public class UserController {
 
     @GetMapping("/join-form")
     public String joinForm() {
-        return "v2/user/join-form";
+        return "user/join-form";
     }
 
     @GetMapping("/login-form")
     public String loginForm() {
-        return "v2/user/login-form";
+        return "user/login-form";
     }
 
     @PostMapping("/join")
@@ -64,7 +64,7 @@ public class UserController {
     public String teacherSignForm() {
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null) return "redirect:/login-form";
-        return "v2/user/sign-form";
+        return "user/sign-form";
     }
 
     @PostMapping("/login")

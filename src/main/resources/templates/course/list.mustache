@@ -3,7 +3,7 @@
 <div class="container p-5">
 
     <div class="d-flex justify-content-end">
-        <a href="/api/course/save-form" class="btn btn-primary">과정등록</a>
+        <a href="/api/course-menu/course/save-form" class="btn btn-primary">과정등록</a>
     </div>
 
     <table class="table table-hover">
@@ -12,35 +12,28 @@
             <th>과정ID</th>
             <th>과정명</th>
             <th>회차</th>
-            <th>수준</th>
-            <th>목표</th>
             <th>훈련시간</th>
             <th>훈련일수</th>
             <th>개강일</th>
             <th>수료일</th>
-            <th>담임교사</th>
+            <th>훈련교사</th>
             <th>진행상태</th>
-            <th></th>
         </tr>
         </thead>
         <tbody>
-        {{#paging.courses}}
-            <tr class="click-tr" onclick="location.href='/api/course/{{id}}'">
-                <td style="width: 6%">{{code}}</td>
-                <td style="width: 15%">{{title}}</td>
-                <td style="width: 4%">{{round}}</td>
-                <td style="width: 4%">{{level}}</td>
-                <td style="width: 15%">{{purpose}}</td>
-                <td style="width: 8%">{{totalTime}}</td>
-                <td style="width: 8%">{{totalDay}}</td>
-                <td style="width: 8%">{{startDate}}</td>
-                <td style="width: 8%">{{endDate}}</td>
-                <td style="width: 8%">{{teacherName}}</td>
-                <td style="width: 8%">{{courseStatus}}</td>
-                <td style="width: 8%"><a href="/api/course/{{id}}/update-form" class="btn btn-outline-warning">수정</a>
-                </td>
+        {{#model.courses}}
+            <tr class="click-tr" onclick="location.href='/api/course-menu/course/{{id}}'">
+                <td>{{code}}</td>
+                <td>{{title}}</td>
+                <td>{{round}}</td>
+                <td>{{totalTime}}</td>
+                <td>{{totalDay}}</td>
+                <td>{{startDate}}</td>
+                <td>{{endDate}}</td>
+                <td>{{teacherName}}</td>
+                <td>{{courseStatus}}</td>
             </tr>
-        {{/paging.courses}}
+        {{/model.courses}}
         </tbody>
     </table>
 

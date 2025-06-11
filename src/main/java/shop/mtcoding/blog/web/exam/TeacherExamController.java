@@ -35,21 +35,21 @@ public class TeacherExamController {
         TeacherExamResponse.CourseListDTO respDTO = new TeacherExamResponse.CourseListDTO(items.coursePG());
         model.addAttribute("model", respDTO);
 
-        return "v2/exam/course-list";
+        return "exam/course-list";
     }
 
     @GetMapping("/api/exam-menu/course/{courseId}/subject")
     public String subject(@PathVariable("courseId") Long courseId, Model model) {
         List<TeacherExamResponse.SubjectDTO> respDTO = subjectService.과정별교과목(courseId);
         model.addAttribute("models", respDTO);
-        return "v2/exam/subject-list";
+        return "exam/subject-list";
     }
 
     @GetMapping("/api/exam-menu/subject/{subjectId}/exam")
     public String teacherResult(Model model, @PathVariable("subjectId") Long subjectId) {
         List<TeacherExamResponse.ResultDTO> respDTO = examService.강사_교과목별시험결과(subjectId);
         model.addAttribute("models", respDTO);
-        return "v2/exam/list";
+        return "exam/list";
     }
 
 
@@ -57,7 +57,7 @@ public class TeacherExamController {
     public String teacherResultDetail(@PathVariable(value = "examId") Long examId, Model model) {
         TeacherExamResponse.ResultDetailDTO respDTO = examService.강사_시험결과상세(examId);
         model.addAttribute("model", respDTO);
-        return "v2/exam/detail";
+        return "exam/detail";
     }
 
     // 시험을 치지 않아도 Exam은 만들어져야 한다.
@@ -79,6 +79,6 @@ public class TeacherExamController {
 
         TeacherExamResponse.ResultDetailDTO respDTO = examService.강사_미이수시험결과상세(examId);
         model.addAttribute("model", respDTO);
-        return "v2/exam/detail-notpass";
+        return "exam/detail-notpass";
     }
 }

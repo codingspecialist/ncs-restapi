@@ -23,28 +23,28 @@ public class DocumentController {
     public String no1(@PathVariable("subjectId") Long subjectId, Model model) {
         DocumentResponse.No1DTO respDTO = documentService.no1(subjectId);
         model.addAttribute("model", respDTO);
-        return "v2/document/no1";
+        return "document/no1";
     }
 
     @GetMapping("/api/document-menu/subject/{subjectId}/no2")
     public String no2(@PathVariable("subjectId") Long subjectId, Model model) {
         DocumentResponse.No2DTO respDTO = documentService.no2(subjectId);
         model.addAttribute("model", respDTO);
-        return "v2/document/no2";
+        return "document/no2";
     }
 
     @GetMapping("/api/document-menu/subject/{subjectId}/no3")
     public String no3(@PathVariable("subjectId") Long subjectId, Model model) {
         DocumentResponse.No3DTO respDTO = documentService.no3(subjectId);
         model.addAttribute("model", respDTO);
-        return "v2/document/no3";
+        return "document/no3";
     }
 
     @GetMapping("/api/document-menu/subject/{subjectId}/no4")
     public String no4(@PathVariable("subjectId") Long subjectId, Model model, @RequestParam(value = "currentIndex", defaultValue = "0") Integer currentIndex) {
         DocumentResponse.No4DTO respDTO = documentService.no4(subjectId, currentIndex);
         model.addAttribute("model", respDTO);
-        return "v2/document/no4";
+        return "document/no4";
     }
 
 
@@ -52,7 +52,7 @@ public class DocumentController {
     public String no5(@PathVariable("subjectId") Long subjectId, Model model) {
         DocumentResponse.No5DTO respDTO = documentService.no5(subjectId);
         model.addAttribute("model", respDTO);
-        return "v2/document/no5";
+        return "document/no5";
     }
 
     @GetMapping("/api/document-menu/course")
@@ -60,7 +60,7 @@ public class DocumentController {
         User sessionUser = (User) session.getAttribute("sessionUser");
         List<DocumentResponse.CourseDTO> respDTOs = documentService.과정목록(sessionUser);
         model.addAttribute("models", respDTOs);
-        return "v2/document/course-list";
+        return "document/course-list";
     }
 
     @GetMapping("/api/document-menu/course/{courseId}/subject")
@@ -68,12 +68,12 @@ public class DocumentController {
 
         List<DocumentResponse.SubjectDTO> respDTOs = documentService.교과목목록(courseId);
         model.addAttribute("models", respDTOs);
-        return "v2/document/subject-list";
+        return "document/subject-list";
     }
 
     @GetMapping("/api/document-menu/subject/{subjectId}")
     public String subjectDetail(@PathVariable("subjectId") Long subjectId, Model model) {
         model.addAttribute("subjectId", subjectId);
-        return "v2/document/document-list";
+        return "document/document-list";
     }
 }

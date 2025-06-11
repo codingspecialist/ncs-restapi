@@ -6,7 +6,7 @@
         <div class="card-header"><b>{{courseTitle}}/{{courseRound}}회차</b></div>
 
         <div class="card-body">
-            <form id="save-form" action="/api/course/{{courseId}}/student/save" method="post">
+            <form id="save-form" action="/api/course-menu/course/{{courseId}}/student/save" method="post">
                 <div class="mb-3">
                     <input type="text" class="form-control" placeholder="학생명" name="name" value="보스">
                 </div>
@@ -18,23 +18,5 @@
         </div>
     </div>
 </div>
-
-<!--<script>-->
-<!--    let currentCourseId = $("#select-option").val();-->
-<!--    $("#select-option").change(() => {-->
-<!--        currentCourseId = $("#select-option").val();-->
-<!--        $("#save-form").prop("action", `/api/course/${currentCourseId}/student/save`);-->
-<!--    });-->
-
-<!--    $("#select-option").css("color", "blue");-->
-
-<!--    $("#save-form").submit(function (event) {-->
-<!--        const selectedVal = $("#select-option").val();-->
-<!--        if (selectedVal === "0") {-->
-<!--            alert("과정을 선택해주세요.");-->
-<!--            event.preventDefault(); // 제출 막기-->
-<!--        }-->
-<!--    });-->
-<!--</script>-->
 
 {{> layout/footer}}

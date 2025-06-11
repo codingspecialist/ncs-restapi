@@ -35,7 +35,7 @@ public class CourseController {
         CourseResponse.ListDTO respDTO = new CourseResponse.ListDTO(items.coursePG());
         model.addAttribute("model", respDTO);
 
-        return "v2/course/list";
+        return "course/list";
     }
 
     @GetMapping("/api/course-menu/course/save-form")
@@ -43,7 +43,7 @@ public class CourseController {
         TeacherModel.Items items = teacherService.강사목록();
         List<CourseResponse.TeacherDTO> respDTOs = items.teachers().stream().map(CourseResponse.TeacherDTO::new).toList();
         model.addAttribute("models", respDTOs);
-        return "v2/course/save-form";
+        return "course/save-form";
     }
 
 
@@ -61,7 +61,7 @@ public class CourseController {
 
         // 과정 상세보기에서 무슨 학생등록 버튼 클릭하면 리다이렉션되면, 탭번호가 1, 교과목등록이면 탭번호 0
         model.addAttribute("tabNum", tabNum);
-        return "v2/course/detail";
+        return "course/detail";
     }
 
 }

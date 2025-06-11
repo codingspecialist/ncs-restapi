@@ -22,7 +22,7 @@ public class CourseStudentController {
         model.addAttribute("courseId", courseId);
         model.addAttribute("courseTitle", courseTitle);
         model.addAttribute("courseRound", courseRound);
-        return "v2/course/student/save-form";
+        return "course/student/save-form";
     }
 
     @PostMapping("/api/course-menu/course/{courseId}/student/save")

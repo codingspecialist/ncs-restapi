@@ -1,5 +1,5 @@
 {{> layout/header}}
-<input type="hidden" id="paperId" value="{{paperId}}">
+<input type="hidden" id="paperId" value="{{model.paperId}}">
 
 <div class="container p-5">
     <form>
@@ -7,21 +7,22 @@
             <div class="card-header">
                 <select class="form-select" id="elementId">
                     <option value="0">능력단위 요소를 선택해주세요 (필수)</option>
-                    {{#elements}}
+                    {{#model.elements}}
                         <option value="{{elementId}}">{{subtitle}}</option>
-                    {{/elements}}
+                    {{/model.elements}}
                 </select>
             </div>
             <div class="card-header">
                 <div><b>문제 번호를 입력해주세요</b></div>
                 <div class="mt-1">
-                    <input type="text" class="form-control" placeholder="문제번호" value="{{expectNo}}" id="questionNo">
+                    <input type="text" class="form-control" placeholder="문제번호" value="{{model.expectNo}}"
+                           id="questionNo">
                 </div>
             </div>
             <div class="card-header">
                 <div><b>문제 점수를 입력해주세요</b></div>
                 <div class="mt-1">
-                    <input type="text" class="form-control" placeholder="문제점수" value="{{expectPoint}}"
+                    <input type="text" class="form-control" placeholder="문제점수" value="{{model.expectPoint}}"
                            id="questionPoint">
                 </div>
             </div>
@@ -30,6 +31,14 @@
                 <div><b>문제 제목을 입력해주세요</b></div>
                 <div class="mt-1">
                     <input type="text" class="form-control" placeholder="문제제목" value="" id="questionTitle">
+                </div>
+            </div>
+            <div class="card-header">
+                <div><b>다음 지문을 읽고, 이런 부분 필요하면 아래와 같은 부분 추가할 수 있게 하기!!</b></div>
+                <div class="mt-1">
+                    <div>
+                        <img class="ex-img" src="/img/ex.png">
+                    </div>
                 </div>
             </div>
             <div class="card-header">
@@ -130,13 +139,13 @@
         });
 
         $.ajax({
-            url: `/api/teacher/paper/${paperId}/question/save`,
+            url: `/api/paper-menu/paper/${paperId}/question/save`,
             method: "post",
             data: JSON.stringify(requestBody),
             contentType: "application/json; charset=utf-8"
         }).done((res) => {
             console.log(res);
-            location.href = "/api/teacher/paper/" + paperId;
+            location.href = "/api/paper-menu/paper/" + paperId;
         }).fail((res) => {
             alert(res.responseJSON.msg);
             console.log(res.responseJSON.msg);

@@ -1,6 +1,8 @@
 package shop.mtcoding.blog.domain.document;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog.core.errors.exception.Exception404;
@@ -97,9 +99,9 @@ public class DocumentService {
         return new DocumentResponse.No3DTO(paperPS, subjectElementListPS, questionListPS, teacher);
     }
 
-    public List<DocumentResponse.CourseDTO> 과정목록(User sessionUser) {
-        List<Course> courseListPS = courseRepository.findAllByTeacherId(sessionUser.getTeacher().getId());
-        return courseListPS.stream().map(DocumentResponse.CourseDTO::new).toList();
+    public List<DocumentResponse.CourseDTO> 과정목록(User sessionUser, Pageable pageable) {
+        Page<Course> coursePG = courseRepository.findAllByTeacherId(sessionUser.getTeacher().getId(), pageable);
+        return coursePG.getContent().stream().map(DocumentResponse.CourseDTO::new).toList();
     }
 
     public List<DocumentResponse.SubjectDTO> 교과목목록(Long courseId) {

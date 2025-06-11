@@ -98,6 +98,7 @@
                 <!-- 강사 드래그 앤 드롭 영역 -->
                 <div class="teacher-dnd-section">
                     <input type="hidden" name="mainTeacherId" id="mainTeacherInput">
+                    <input type="hidden" name="mainTeacherName" id="mainTeacherNameInput">
                     <input type="hidden" name="subTeacherIds" id="subTeacherInput">
                     <div class="teacher-box-container">
                         <!-- 전체 강사 목록 -->
@@ -109,7 +110,7 @@
                             <div id="all-teacher-list" class="all-teacher-list">
                                 {{#models}}
                                     <div class="teacher-item" draggable="true" data-id="{{id}}"
-                                         data-name="{{name}}">{{name}}</div>
+                                         data-name="{{teacherName}}">{{nameAndUsername}}</div>
                                 {{/models}}
                             </div>
                         </div>
@@ -197,6 +198,7 @@
 
         // 메인 강사 설정
         document.querySelector('#mainTeacherInput').value = main ? main.dataset.id : '';
+        document.querySelector('#mainTeacherNameInput').value = main ? main.dataset.name : '';  // ← 메인강사 이름
 
         // 이전에 생성된 모든 subTeacherIds input 제거
         document.querySelectorAll('input[name="subTeacherIds"]').forEach(el => el.remove());
@@ -220,8 +222,8 @@
         const teacherItems = document.querySelectorAll('#all-teacher-list .teacher-item');
 
         teacherItems.forEach(item => {
-            const name = item.dataset.name.toLowerCase();
-            item.style.display = name.includes(keyword) ? 'block' : 'none';
+            const teacherName = item.dataset.name.toLowerCase();
+            item.style.display = teacherName.includes(keyword) ? 'block' : 'none';
         });
     }
 </script>

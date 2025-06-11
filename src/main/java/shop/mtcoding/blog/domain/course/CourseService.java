@@ -16,9 +16,7 @@ import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.SubjectRepository;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
-import shop.mtcoding.blog.web.course.CourseRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Transactional(readOnly = true)
@@ -31,18 +29,18 @@ public class CourseService {
     private final TeacherRepository teacherRepository;
     private final CourseTeacherRepository courseTeacherRepository;
 
-    // 쿼리 리팩토링 완료!!
     @Transactional
-    public void 과정등록(CourseRequest.SaveDTO reqDTO) {
-        // 1. 과정 등록 (메인강사 이름 전달)
-        Long mainTeacherId = reqDTO.getMainTeacherId();
+    public void 과정등록(Course course, Long mainTeacherId, List<Long> subTeacherIds) {
+        // 1. 메인강사 확인
         if (mainTeacherId == null) throw new Exception400("메인강사는 필수로 등록되어야 합니다");
-        Teacher teacherPS = teacherRepository.findById(reqDTO.getMainTeacherId())
+
+        Teacher teacherPS = teacherRepository.findById(mainTeacherId)
                 .orElseThrow(() -> new Exception404("메인강사를 찾을 수 없습니다"));
 
-        Course coursePS = courseRepository.save(reqDTO.toEntity(teacherPS.getName()));
+        // 2. 과정 저장 (teacherName 설정 후 저장)
+        Course coursePS = courseRepository.save(course);
 
-        // 2. 과정별 강사 등록 (메인강사)
+        // 3. 메인강사 등록
         CourseTeacher mainTeacher = CourseTeacher.builder()
                 .role(CourseTeacherEnum.MAIN)
                 .course(coursePS)
@@ -50,24 +48,21 @@ public class CourseService {
                 .build();
         courseTeacherRepository.save(mainTeacher);
 
-        // 3. 과정별 강사들 등록 (보조강사들)
-        List<CourseTeacher> subTeachers = new ArrayList<>();
-        List<Long> subTeacherIds = reqDTO.getSubTeacherIds() == null ? new ArrayList<>() : reqDTO.getSubTeacherIds();
-
-        subTeacherIds.forEach(subTeacherId -> {
-            CourseTeacher subTeacher = CourseTeacher.builder()
-                    .role(CourseTeacherEnum.SUB)
-                    .course(coursePS)
-                    .teacher(Teacher.builder().id(subTeacherId).build())
-                    .build();
-            subTeachers.add(subTeacher);
-        });
+        // 4. 보조강사 등록
+        List<Long> finalSubTeacherIds = subTeacherIds != null ? subTeacherIds : List.of();
+        List<CourseTeacher> subTeachers = finalSubTeacherIds.stream()
+                .map(subTeacherId -> CourseTeacher.builder()
+                        .role(CourseTeacherEnum.SUB)
+                        .course(coursePS)
+                        .teacher(Teacher.builder().id(subTeacherId).build())
+                        .build())
+                .toList();
         courseTeacherRepository.saveAll(subTeachers);
     }
 
-    public CourseModel.Items 과정목록(Long teacherId, Pageable pageable) {
+    public CourseModel.Slice 과정목록(Long teacherId, Pageable pageable) {
         Page<Course> coursePG = courseRepository.findAllByTeacherId(teacherId, pageable);
-        return new CourseModel.Items(coursePG);
+        return new CourseModel.Slice(coursePG);
     }
 
     public CourseModel.Detail 과정상세(Long courseId) {

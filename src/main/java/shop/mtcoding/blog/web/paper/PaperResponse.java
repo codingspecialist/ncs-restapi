@@ -64,13 +64,13 @@ public class PaperResponse {
     @Data
     public static class SubjectDTO {
         private Long subjectId;
+        private Integer no; // 과정에서 몇번째로 시작하는 교과목인지에 대한 연번
         private String code; // 능력단위 코드
         private String title;
         private String purpose;
         private String ncsType;
         private Integer grade;
         private Integer totalTime;
-        private Integer no; // 과정에서 몇번째로 시작하는 교과목인지에 대한 연번
         private String learningWay; // 학습 방법
         private String evaluationWay; // 평가 방법
         private String evaluationDate; // 평가일
@@ -83,18 +83,17 @@ public class PaperResponse {
 
         public SubjectDTO(Subject subject) {
             Paper paper = subject.getPapers().stream().filter(p -> !p.isReEvaluation()).findFirst().orElse(null);
-            Paper rePaper = subject.getPapers().stream().filter(Paper::isReEvaluation).findFirst().orElse(null);
+            Paper rePaper = subject.getPapers().stream().filter(p -> p.isReEvaluation()).findFirst().orElse(null);
 
             this.subjectId = subject.getId();
             this.code = subject.getCode();
             this.title = subject.getTitle();
             this.purpose = subject.getPurpose();
-            this.ncsType = subject.getNcsType().toKorean(); // ✅ enum 변경
+            this.ncsType = subject.getNcsType().toKorean();
             this.grade = subject.getGrade();
             this.totalTime = subject.getTotalTime();
             this.no = subject.getNo();
-            this.learningWay = subject.getLearningWay().toKorean(); // ✅ enum 변경
-
+            this.learningWay = subject.getLearningWay().toKorean();
             if (paper != null) {
                 this.evaluationWay = paper.getEvaluationWay() != null ? paper.getEvaluationWay().toKorean() : "시험지없음"; // ✅ enum 변경
                 this.evaluationDate = paper.getEvaluationDate() != null ? paper.getEvaluationDate().toString() : "시험지없음";
@@ -113,7 +112,6 @@ public class PaperResponse {
             this.courseTitle = subject.getCourse().getTitle();
             this.courseRound = subject.getCourse().getRound();
         }
-
     }
 
 

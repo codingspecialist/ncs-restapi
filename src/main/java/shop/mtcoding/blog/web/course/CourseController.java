@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.CourseModel;
 import shop.mtcoding.blog.domain.course.CourseService;
 import shop.mtcoding.blog.domain.user.User;
@@ -31,8 +32,8 @@ public class CourseController {
     public String items(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         User sessionUser = (User) session.getAttribute("sessionUser");
 
-        CourseModel.Items items = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
-        CourseResponse.ListDTO respDTO = new CourseResponse.ListDTO(items.coursePG());
+        CourseModel.Slice slice = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
+        CourseResponse.ListDTO respDTO = new CourseResponse.ListDTO(slice.coursePG());
         model.addAttribute("model", respDTO);
 
         return "course/list";
@@ -49,7 +50,8 @@ public class CourseController {
 
     @PostMapping("/api/course-menu/course/save")
     public String save(CourseRequest.SaveDTO reqDTO) {
-        courseService.과정등록(reqDTO);
+        Course course = reqDTO.toEntity();
+        courseService.과정등록(course, reqDTO.getMainTeacherId(), reqDTO.getSubTeacherIds());
         return "redirect:/api/course-menu/course";
     }
 

@@ -55,6 +55,7 @@ public class Course {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+
     @Builder
     public Course(Long id, String title, String code, Integer level, String purpose, Integer totalTime, Integer totalDay, Integer round, LocalDate startDate, LocalDate endDate, String mainTeacherName, CourseStatus courseStatus, LocalDateTime createdAt) {
         this.id = id;

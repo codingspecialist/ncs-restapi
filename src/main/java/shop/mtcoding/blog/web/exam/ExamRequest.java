@@ -7,7 +7,7 @@ import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 
 import java.util.List;
 
-public class TeacherExamRequest {
+public class ExamRequest {
 
     @Data
     public static class UpdateDTO {

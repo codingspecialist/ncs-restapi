@@ -10,7 +10,7 @@ public class CourseModel {
     public record Detail(Course course, List<Subject> subjects, List<Student> students) {
     }
 
-    public record Items(Page<Course> coursePG) {
+    public record Slice(Page<Course> coursePG) {
     }
 
 }

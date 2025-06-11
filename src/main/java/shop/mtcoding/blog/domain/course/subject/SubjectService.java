@@ -1,8 +1,6 @@
 package shop.mtcoding.blog.domain.course.subject;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog.core.errors.exception.Exception400;
@@ -10,8 +8,6 @@ import shop.mtcoding.blog.core.errors.exception.Exception404;
 import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.CourseRepository;
 import shop.mtcoding.blog.web.course.subject.CourseSubjectRequest;
-import shop.mtcoding.blog.web.course.subject.CourseSubjectResponse;
-import shop.mtcoding.blog.web.exam.TeacherExamResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,22 +19,9 @@ public class SubjectService {
     private final SubjectRepository subjectRepository;
     private final CourseRepository courseRepository;
 
-    // Query 수정 완료
-    public List<TeacherExamResponse.SubjectDTO> 과정별교과목(Long courseId) {
-        Course coursePS = courseRepository.findByIdWithSubject(courseId)
-                .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
-
-        return coursePS.getSubjects().stream().map(TeacherExamResponse.SubjectDTO::new).toList();
-    }
-
-    public CourseSubjectResponse.PagingDTO 모든교과목목록(Pageable pageable) {
-        Page<Subject> paging = subjectRepository.findAll(pageable);
-        return new CourseSubjectResponse.PagingDTO(paging);
-    }
-
-    public List<CourseSubjectResponse.DTO> 모든교과목목록() {
-        List<Subject> subjectList = subjectRepository.findAll();
-        return subjectList.stream().map(CourseSubjectResponse.DTO::new).toList();
+    public SubjectModel.Items 과정별교과목(Long courseId) {
+        List<Subject> subjects = subjectRepository.findByCourseId(courseId);
+        return new SubjectModel.Items(subjects);
     }
 
     @Transactional

@@ -1,9 +1,6 @@
 package shop.mtcoding.blog.web.course.subject;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,13 +14,6 @@ import shop.mtcoding.blog.domain.course.subject.SubjectService;
 public class CourseSubjectController {
 
     private final SubjectService subjectService;
-
-    @GetMapping("/api/course-menu/course/subject")
-    public String list(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
-        CourseSubjectResponse.PagingDTO respDTO = subjectService.모든교과목목록(pageable);
-        model.addAttribute("paging", respDTO);
-        return "course/subject/list";
-    }
 
     @GetMapping("/api/course-menu/course/{courseId}/subject/save-form")
     public String saveForm(@PathVariable("courseId") Long courseId, @RequestParam("courseTitle") String courseTitle, @RequestParam("courseRound") String courseRound, Model model) {

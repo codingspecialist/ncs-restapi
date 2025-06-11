@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import shop.mtcoding.blog.core.utils.ApiUtil;
 import shop.mtcoding.blog.domain.course.CourseModel;
 import shop.mtcoding.blog.domain.course.CourseService;
+import shop.mtcoding.blog.domain.course.subject.SubjectModel;
 import shop.mtcoding.blog.domain.course.subject.SubjectService;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperModel;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperService;
 import shop.mtcoding.blog.domain.user.User;
-import shop.mtcoding.blog.web.exam.TeacherExamResponse;
 
 import java.util.List;
 
@@ -39,8 +39,8 @@ public class PaperController {
     @GetMapping("/api/paper-menu/course")
     public String courseList(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        CourseModel.Items items = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
-        PaperResponse.CourseListDTO respDTO = new PaperResponse.CourseListDTO(items.coursePG());
+        CourseModel.Slice slice = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
+        PaperResponse.CourseListDTO respDTO = new PaperResponse.CourseListDTO(slice.coursePG());
         model.addAttribute("model", respDTO);
 
         return "paper/course-list";
@@ -49,7 +49,8 @@ public class PaperController {
     // 2. 시험지관리 - 교과목목록 (페이징필요)
     @GetMapping("/api/paper-menu/course/{courseId}/subject")
     public String subject(@PathVariable("courseId") Long courseId, Model model) {
-        List<TeacherExamResponse.SubjectDTO> respDTO = subjectService.과정별교과목(courseId);
+        SubjectModel.Items items = subjectService.과정별교과목(courseId);
+        List<PaperResponse.SubjectDTO> respDTO = items.subjects().stream().map(PaperResponse.SubjectDTO::new).toList();
         model.addAttribute("models", respDTO);
         return "paper/subject-list";
     }

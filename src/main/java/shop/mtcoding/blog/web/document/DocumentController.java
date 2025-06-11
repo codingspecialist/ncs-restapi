@@ -2,6 +2,9 @@ package shop.mtcoding.blog.web.document;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,9 +59,9 @@ public class DocumentController {
     }
 
     @GetMapping("/api/document-menu/course")
-    public String course(Model model) {
+    public String course(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        List<DocumentResponse.CourseDTO> respDTOs = documentService.과정목록(sessionUser);
+        List<DocumentResponse.CourseDTO> respDTOs = documentService.과정목록(sessionUser, pageable);
         model.addAttribute("models", respDTOs);
         return "document/course-list";
     }

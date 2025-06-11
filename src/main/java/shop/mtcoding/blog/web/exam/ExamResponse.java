@@ -15,7 +15,7 @@ import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import java.time.LocalDate;
 import java.util.List;
 
-public class TeacherExamResponse {
+public class ExamResponse {
 
     @Data
     public static class CourseListDTO {
@@ -167,8 +167,8 @@ public class TeacherExamResponse {
             this.isAbsent = exam.getReExamReason().equals("결석");
         }
 
-        public static TeacherExamResponse.ResultDTO ofAbsent(Paper mainPaper, Student student) {
-            TeacherExamResponse.ResultDTO dto = new ResultDTO();
+        public static ExamResponse.ResultDTO ofAbsent(Paper mainPaper, Student student) {
+            ExamResponse.ResultDTO dto = new ResultDTO();
             dto.setExamId(0L);
             dto.setPaperId(mainPaper.getId());
             dto.setStudentNo(99); // 미지정

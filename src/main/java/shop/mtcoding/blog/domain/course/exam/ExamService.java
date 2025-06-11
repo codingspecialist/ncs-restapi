@@ -20,8 +20,8 @@ import shop.mtcoding.blog.domain.user.User;
 import shop.mtcoding.blog.domain.user.UserType;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
-import shop.mtcoding.blog.web.exam.TeacherExamRequest;
-import shop.mtcoding.blog.web.exam.TeacherExamResponse;
+import shop.mtcoding.blog.web.exam.ExamRequest;
+import shop.mtcoding.blog.web.exam.ExamResponse;
 import shop.mtcoding.blog.web.student.StudentExamRequest;
 import shop.mtcoding.blog.web.student.StudentExamResponse;
 
@@ -215,10 +215,10 @@ public class ExamService {
 
 
     // 👨‍🏫 강사용: 모든 정보 포함
-    public TeacherExamResponse.ResultDetailDTO 강사_시험결과상세(Long examId) {
+    public ExamResponse.ResultDetailDTO 강사_시험결과상세(Long examId) {
         ExamModel.ResultDetail resultDetail = examResultDetail(examId);
 
-        TeacherExamResponse.ResultDetailDTO respDTO = new TeacherExamResponse.ResultDetailDTO(
+        ExamResponse.ResultDetailDTO respDTO = new ExamResponse.ResultDetailDTO(
                 resultDetail.exam(),
                 resultDetail.subjectElements(),
                 resultDetail.teacher(),
@@ -231,7 +231,7 @@ public class ExamService {
         return respDTO;
     }
 
-    public TeacherExamResponse.ResultDetailDTO 강사_미이수시험결과상세(Long examId) {
+    public ExamResponse.ResultDetailDTO 강사_미이수시험결과상세(Long examId) {
         Exam examPS = examRepository.findById(examId)
                 .orElseThrow(() -> new Exception404("응시한 시험이 존재하지 않아요"));
 
@@ -243,7 +243,7 @@ public class ExamService {
         Teacher teacher = teacherRepository.findByName(examPS.getTeacherName())
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
 
-        return new TeacherExamResponse.ResultDetailDTO(examPS, subjectElementListPS, teacher);
+        return new ExamResponse.ResultDetailDTO(examPS, subjectElementListPS, teacher);
     }
 
     // ✅ 공통 로직 (비공개)
@@ -296,7 +296,7 @@ public class ExamService {
 
 
     @Transactional
-    public void 강사_결석입력(TeacherExamRequest.AbsentDTO reqDTO, User sessionUser) {
+    public void 강사_결석입력(ExamRequest.AbsentDTO reqDTO, User sessionUser) {
         // 1. 유저가 선생님인지 검증
         if (UserType.STUDENT.equals(sessionUser.getRole())) {
             throw new Exception403("권한이 없습니다.");
@@ -319,7 +319,7 @@ public class ExamService {
 
     // 총평 수정하면서, 결과 점수도 같이 수정한다.
     @Transactional
-    public void 강사_총평남기기(Long examId, TeacherExamRequest.UpdateDTO reqDTO) {
+    public void 강사_총평남기기(Long examId, ExamRequest.UpdateDTO reqDTO) {
         Exam examPS = examRepository.findById(examId)
                 .orElseThrow(() -> new Exception404("응시한 시험이 존재하지 않아요"));
 
@@ -349,7 +349,7 @@ public class ExamService {
     }
 
 
-    public List<TeacherExamResponse.ResultDTO> 강사_교과목별시험결과(Long subjectId) {
+    public List<ExamResponse.ResultDTO> 강사_교과목별시험결과(Long subjectId) {
         // 1. 시험지 목록 가져오기
         List<Paper> paperList = paperRepository.findBySubjectId(subjectId);
         if (paperList.isEmpty()) return List.of();
@@ -367,7 +367,7 @@ public class ExamService {
         // 4. 해당 과목의 모든 시험 응시 기록
         List<Exam> allExams = examRepository.findBySubjectId(subjectId);
 
-        List<TeacherExamResponse.ResultDTO> resultList = new ArrayList<>();
+        List<ExamResponse.ResultDTO> resultList = new ArrayList<>();
 
         for (Student student : students) {
             // 4-1. 그 학생이 응시한 시험 (isUse=true인 것)
@@ -377,14 +377,14 @@ public class ExamService {
                     .findFirst();
 
             if (activeExamOP.isPresent()) {
-                resultList.add(new TeacherExamResponse.ResultDTO(activeExamOP.get()));
+                resultList.add(new ExamResponse.ResultDTO(activeExamOP.get()));
             } else {
-                resultList.add(TeacherExamResponse.ResultDTO.ofAbsent(mainPaper, student));
+                resultList.add(ExamResponse.ResultDTO.ofAbsent(mainPaper, student));
             }
 
         }
 
-        resultList.sort(Comparator.comparing(TeacherExamResponse.ResultDTO::getStudentNo));
+        resultList.sort(Comparator.comparing(ExamResponse.ResultDTO::getStudentNo));
         return resultList;
     }
 

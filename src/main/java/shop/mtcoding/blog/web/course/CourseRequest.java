@@ -23,8 +23,9 @@ public class CourseRequest {
         private LocalDate endDate;
         private Long mainTeacherId;         // 메인 강사 1명
         private List<Long> subTeacherIds;   // 보조 강사 여러 명
+        private String mainTeacherName;
 
-        public Course toEntity(String mainTeacherName) {
+        public Course toEntity() {
 
             CourseStatus courseStatus = MyUtil.courseStatusUpdate(startDate, endDate);
 
@@ -38,8 +39,8 @@ public class CourseRequest {
                     .round(round)
                     .startDate(startDate)
                     .endDate(endDate)
-                    .courseStatus(courseStatus)
                     .mainTeacherName(mainTeacherName)
+                    .courseStatus(courseStatus)
                     .build();
         }
     }

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.CourseModel;
 import shop.mtcoding.blog.domain.course.CourseService;
 import shop.mtcoding.blog.domain.user.User;
@@ -50,8 +49,7 @@ public class CourseController {
 
     @PostMapping("/api/course-menu/course/save")
     public String save(CourseRequest.SaveDTO reqDTO) {
-        Course course = reqDTO.toEntity();
-        courseService.과정등록(course, reqDTO.getMainTeacherId(), reqDTO.getSubTeacherIds());
+        courseService.과정등록(reqDTO);
         return "redirect:/api/course-menu/course";
     }
 

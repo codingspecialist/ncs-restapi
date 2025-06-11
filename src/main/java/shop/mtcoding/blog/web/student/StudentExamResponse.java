@@ -214,7 +214,6 @@ public class StudentExamResponse {
         private String studentSign;
         private Boolean isStudentSign;
         private Boolean isAbsent;
-        private Long originExamId;
 
         public ResultDetailDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher) {
             this.examId = exam.getId();

@@ -23,7 +23,8 @@ public class StudentExamController {
     public String studentPaperList(Model model) {
         User sessionUser = (User) session.getAttribute("sessionUser");
 
-        StudentExamResponse.MyPaperListDTO respDTO = examService.학생_응시가능한시험지목록(sessionUser);
+        var modelData = examService.학생_응시가능한시험지목록(sessionUser);
+        var respDTO = new StudentExamResponse.MyPaperListDTO(modelData.studentId(), modelData.papers(), modelData.attendanceMap());
         model.addAttribute("model", respDTO);
         return "student/paper/list";
     }
@@ -31,7 +32,8 @@ public class StudentExamController {
     @GetMapping("/api/student/paper/{paperId}/start")
     public String studentExamStartInfo(@PathVariable("paperId") Long paperId, Model model) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        StudentExamResponse.StartDTO respDTO = examService.학생_시험시작정보(sessionUser, paperId);
+        var modelData = examService.학생_시험시작정보(sessionUser, paperId);
+        var respDTO = new StudentExamResponse.StartDTO(modelData.paperPS(), modelData.studentName(), modelData.subjectElementListPS(), modelData.questionListPS());
         model.addAttribute("model", respDTO);
         return "student/paper/start";
     }
@@ -54,7 +56,8 @@ public class StudentExamController {
 
     @GetMapping("/api/student/exam/{examId}")
     public String studentExamResultDetail(@PathVariable(value = "examId") Long examId, Model model) {
-        StudentExamResponse.ResultDetailDTO respDTO = examService.학생_시험결과상세(examId);
+        var modelData = examService.학생_시험결과상세(examId);
+        var respDTO = new StudentExamResponse.ResultDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher());
 
         model.addAttribute("model", respDTO);
         return "student/exam-result/detail";

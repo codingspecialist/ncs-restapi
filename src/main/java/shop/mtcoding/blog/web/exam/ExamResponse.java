@@ -212,10 +212,10 @@ public class ExamResponse {
         private String teacherSign;
         private String studentSign;
         private Boolean isStudentSign;
+        private Boolean isAbsent;
         private Integer studentNo;
         private Long prevExamId; // 해당 교과목에 이전 학생 id
         private Long nextExamId; // 해당 교과목에 다음 학생 id
-        private Boolean isAbsent;
         private Long originExamId;
 
         public ResultDetailDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher, Long prevExamId, Long nextExamId, Integer currentIndex, Long originExamId) {

@@ -57,7 +57,8 @@ public class ExamController {
 
     @GetMapping("/api/exam-menu/exam/{examId}")
     public String teacherResultDetail(@PathVariable(value = "examId") Long examId, Model model) {
-        ExamResponse.ResultDetailDTO respDTO = examService.강사_시험결과상세(examId);
+        var modelData = examService.강사_시험결과상세(examId);
+        var respDTO = new ExamResponse.ResultDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher(), modelData.prevExamId(), modelData.nextExamId(), modelData.currentIndex(), modelData.originExamId());
         model.addAttribute("model", respDTO);
         return "exam/detail";
     }
@@ -76,10 +77,11 @@ public class ExamController {
         return ResponseEntity.ok(new ApiUtil<>(null));
     }
 
-    @GetMapping("/api/exam-menu/exam/{examId}/notpass")
-    public String teacherResultDetailNotPass(@PathVariable(value = "examId") Long examId, Model model) {
+    @GetMapping("/api/exam-menu/exam/{notPassExamId}/notpass")
+    public String teacherResultDetailNotPass(@PathVariable(value = "notPassExamId") Long notPassExamId, Model model) {
 
-        ExamResponse.ResultDetailDTO respDTO = examService.강사_미이수시험결과상세(examId);
+        var modelData = examService.강사_시험결과상세(notPassExamId);
+        var respDTO = new ExamResponse.ResultDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher(), null, null, null, null);
         model.addAttribute("model", respDTO);
         return "exam/detail-notpass";
     }

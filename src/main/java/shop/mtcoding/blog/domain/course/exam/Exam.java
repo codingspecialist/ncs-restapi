@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.student.Student;
+import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 
 import java.time.LocalDateTime;
@@ -31,6 +32,9 @@ public class Exam {
 
     // 시험 담당 강사
     private String teacherName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Subject subject;
 
     // 시험지
     @ManyToOne(fetch = FetchType.LAZY)
@@ -111,6 +115,7 @@ public class Exam {
         return Exam.builder()
                 .student(student)
                 .paper(paper)
+                .subject(paper.getSubject())
                 .teacherName(paper.getSubject().getTeacherName())
                 .examState(paper.getPaperType().toKorean()) // 본평가 or 재평가
                 .reExamReason("결석")
@@ -123,10 +128,14 @@ public class Exam {
     }
 
     @Builder
-    public Exam(Boolean isUse, Long id, Student student, String teacherName, Paper paper, String examState, String reExamReason, String passState, Double score, Integer grade, String studentSign, String teacherComment, LocalDateTime commentUpdatedAt, LocalDateTime createdAt) {
+    public Exam(Boolean isUse, Long id, Student student, String teacherName, Subject subject,
+                Paper paper, String examState, String reExamReason, String passState,
+                Double score, Integer grade, String studentSign, String teacherComment,
+                LocalDateTime commentUpdatedAt, LocalDateTime createdAt) {
         this.id = id;
         this.student = student;
         this.teacherName = teacherName;
+        this.subject = subject;
         this.paper = paper;
         this.examState = examState;
         this.reExamReason = reExamReason;

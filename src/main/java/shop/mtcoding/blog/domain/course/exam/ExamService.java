@@ -23,7 +23,6 @@ import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
 import shop.mtcoding.blog.web.exam.ExamRequest;
 import shop.mtcoding.blog.web.exam.ExamResponse;
 import shop.mtcoding.blog.web.student.StudentExamRequest;
-import shop.mtcoding.blog.web.student.StudentExamResponse;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,13 +39,6 @@ public class ExamService {
     private final QuestionRepository questionRepository;
     private final TeacherRepository teacherRepository;
 
-
-    public List<StudentExamResponse.ResultDTO> 학생_시험결과목록(User sessionUser) {
-        if (sessionUser.getStudent() == null) throw new Exception403("당신은 학생이 아니에요 : 관리자에게 문의하세요");
-        List<Exam> examListPS = examRepository.findByStudentId(sessionUser.getStudent().getId());
-
-        return examListPS.stream().map(StudentExamResponse.ResultDTO::new).toList();
-    }
 
     public List<ExamResponse.ResultDTO> 강사_교과목별시험결과(Long subjectId) {
         // 1. 시험지 목록 가져오기
@@ -85,6 +77,13 @@ public class ExamService {
 
         resultList.sort(Comparator.comparing(ExamResponse.ResultDTO::getStudentNo));
         return resultList;
+    }
+
+    public ExamModel.ExamItems 학생_시험결과목록(User sessionUser) {
+        if (sessionUser.getStudent() == null) throw new Exception403("당신은 학생이 아니에요 : 관리자에게 문의하세요");
+        List<Exam> examListPS = examRepository.findByStudentId(sessionUser.getStudent().getId());
+
+        return new ExamModel.ExamItems(examListPS);
     }
 
     public ExamModel.PaperItems 학생_응시가능한시험지목록(User sessionUser) {
@@ -284,7 +283,7 @@ public class ExamService {
     }
 
     public ExamModel.ResultDetail 학생_시험결과상세(Long examId) {
-        return examResultDetail(examId);
+        return _examResultDetail(examId);
     }
 
     @Transactional
@@ -296,11 +295,10 @@ public class ExamService {
     }
 
     public ExamModel.ResultDetail 강사_시험결과상세(Long examId) {
-        return examResultDetail(examId);
+        return _examResultDetail(examId);
     }
 
-    // ✅ 공통 로직 (비공개) ---------------------------------------------------
-    private ExamModel.ResultDetail examResultDetail(Long examId) {
+    private ExamModel.ResultDetail _examResultDetail(Long examId) {
         // 1. 시험 결과 찾기
         Exam examPS = examRepository.findById(examId)
                 .orElseThrow(() -> new Exception404("시험친 기록이 없어요"));

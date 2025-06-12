@@ -10,8 +10,6 @@ import shop.mtcoding.blog.core.utils.ApiUtil;
 import shop.mtcoding.blog.domain.course.exam.ExamService;
 import shop.mtcoding.blog.domain.user.User;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @Controller
 public class StudentExamController {
@@ -49,8 +47,10 @@ public class StudentExamController {
     @GetMapping("/api/student/exam")
     public String studentExamResultList(Model model) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        List<StudentExamResponse.ResultDTO> respDTO = examService.학생_시험결과목록(sessionUser);
-        model.addAttribute("models", respDTO);
+
+        var modelData = examService.학생_시험결과목록(sessionUser);
+        var respDTOs = modelData.exams().stream().map(StudentExamResponse.ResultDTO::new).toList();
+        model.addAttribute("models", respDTOs);
         return "student/exam-result/list";
     }
 

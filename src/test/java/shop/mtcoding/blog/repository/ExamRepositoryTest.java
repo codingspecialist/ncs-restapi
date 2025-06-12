@@ -12,11 +12,11 @@ public class ExamRepositoryTest {
     private ExamRepository examRepository;
 
     @Test
-    public void findByOrigin_test() {
+    public void findValidExamsBySubjectId_test() {
         // given
 
         // when
-        //examRepository.findByOrigin(1L,2L);
+        examRepository.findValidExamsBySubjectId(1L);
 
         // then
     }

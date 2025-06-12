@@ -19,4 +19,7 @@ public class ExamModel {
 
     public record PaperItems(Long studentId, List<Paper> papers, Map<Long, Boolean> attendanceMap) {
     }
+
+    public record ExamItems(List<Exam> exams) {
+    }
 }

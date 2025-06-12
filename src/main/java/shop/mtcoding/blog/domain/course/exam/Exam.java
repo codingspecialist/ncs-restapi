@@ -46,7 +46,7 @@ public class Exam {
     // 점수 통계낼때나, 보여줄때 재평가가 있으면 재평가로 보여줘야 한다.
     // 재평가는 통과할 때까지 다시 친다.
 
-    private String examState; // 본평가, 재평가
+    private String examState; // 본평가, 재평가 (paperType)
     private String reExamReason; // 결석 or 미통과(60점미만) - 재평가이유
 
     private String passState; // 통과, 미통과, 결석

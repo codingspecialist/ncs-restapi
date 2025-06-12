@@ -14,6 +14,7 @@ import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElementRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperRepository;
+import shop.mtcoding.blog.domain.course.subject.paper.PaperType;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionRepository;
 import shop.mtcoding.blog.domain.user.User;
@@ -21,7 +22,6 @@ import shop.mtcoding.blog.domain.user.UserType;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
 import shop.mtcoding.blog.web.exam.ExamRequest;
-import shop.mtcoding.blog.web.exam.ExamResponse;
 import shop.mtcoding.blog.web.student.StudentExamRequest;
 
 import java.util.*;
@@ -38,45 +38,34 @@ public class ExamService {
     private final SubjectElementRepository elementRepository;
     private final QuestionRepository questionRepository;
     private final TeacherRepository teacherRepository;
+    private final ExamQueryRepository examQueryRepository;
 
 
-    public List<ExamResponse.ResultDTO> 강사_교과목별시험결과(Long subjectId) {
-        // 1. 시험지 목록 가져오기
-        List<Paper> paperList = paperRepository.findAllBySubjectId(subjectId);
-        if (paperList.isEmpty()) return List.of();
+    public List<ExamModel.Result> 강사_교과목별시험결과(Long subjectId) {
+        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
+                .orElseThrow(() -> new Exception404("본평가 시험지가 존재하지 않아요"));
 
-        // 2. 본평가 시험지만 추출
-        Paper mainPaper = paperList.stream()
-                .filter(p -> !p.isReEvaluation())
-                .findFirst()
-                .orElseThrow(() -> new Exception404("본평가 시험지가 없습니다."));
+        List<ExamModel.Result> rawList = examQueryRepository.findExamResult(subjectId);
 
-        // 3. 과정에 속한 수강생 모두 조회
-        Long courseId = mainPaper.getSubject().getCourse().getId();
-        List<Student> students = studentRepository.findAllByCourseId(courseId);
+        List<ExamModel.Result> modelData = rawList.stream()
+                .map(r -> r.examId() == null ?
+                        new ExamModel.Result(
+                                0L,
+                                r.studentName(),
+                                paperPS.getSubject().getTitle(),
+                                "본평가",
+                                paperPS.getSubject().getTeacherName(),
+                                0.0,
+                                1,
+                                "미응시",
+                                "",
+                                r.studentId(),
+                                paperPS.getId(),
+                                true)
+                        : r
+                ).toList();
 
-        // 4. 해당 과목의 모든 시험 응시 기록
-        List<Exam> allExams = examRepository.findAllBySubjectId(subjectId);
-
-        List<ExamResponse.ResultDTO> resultList = new ArrayList<>();
-
-        for (Student student : students) {
-            // 4-1. 그 학생이 응시한 시험 (isUse=true인 것)
-            Optional<Exam> activeExamOP = allExams.stream()
-                    .filter(e -> e.getStudent().getId().equals(student.getId()))
-                    .filter(Exam::getIsUse)
-                    .findFirst();
-
-            if (activeExamOP.isPresent()) {
-                resultList.add(new ExamResponse.ResultDTO(activeExamOP.get()));
-            } else {
-                resultList.add(ExamResponse.ResultDTO.ofAbsent(mainPaper, student));
-            }
-
-        }
-
-        resultList.sort(Comparator.comparing(ExamResponse.ResultDTO::getStudentNo));
-        return resultList;
+        return modelData;
     }
 
     public ExamModel.ExamItems 학생_시험결과목록(User sessionUser) {
@@ -128,7 +117,7 @@ public class ExamService {
     }
 
     @Transactional
-    public void 강사_결석입력(ExamRequest.AbsentDTO reqDTO, User sessionUser) {
+    public void 강사_결석처리(ExamRequest.AbsentDTO reqDTO, User sessionUser) {
         // 1. 유저가 선생님인지 검증
         if (UserType.STUDENT.equals(sessionUser.getRole())) {
             throw new Exception403("권한이 없습니다.");

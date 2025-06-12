@@ -22,4 +22,20 @@ public class ExamModel {
 
     public record ExamItems(List<Exam> exams) {
     }
+
+    public record Result(
+            Long examId,
+            String studentName,
+            String subjectTitle,
+            String examState,
+            String teacherName,
+            Double score,
+            Integer grade,
+            String passState,
+            String reExamReason,
+            Long studentId,
+            Long paperId,
+            Boolean isAbsent
+    ) {
+    }
 }

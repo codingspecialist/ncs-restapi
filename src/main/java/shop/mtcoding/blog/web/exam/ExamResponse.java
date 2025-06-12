@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.exam.Exam;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
-import shop.mtcoding.blog.domain.course.student.Student;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
@@ -117,81 +116,6 @@ public class ExamResponse {
     }
 
     @Data
-    public static class ResultDTO {
-        // 교과목 번호, 교과목 내 시험 순서
-        private Long examId;
-        private Long paperId; // 몇번째 시험지에 몇번 학생? (1,2)
-        private Integer studentNo; // 학생번호 필요 다음 버튼 클릭할때!!
-        private Integer subjectNo;
-        private String courseNameAndRound;
-        private String subjectTitle;
-        private String examState;
-        private String studentName;
-        private String teacherName;
-        private Double examScore;
-        private String examPassState;
-
-        private String reExamReason;
-        private Boolean isAbsent;
-        private Boolean isNotPass;
-        private Integer grade;
-        private Boolean isUse;
-
-        private Boolean isNotStart;
-        private Long studentId;
-
-        private ResultDTO() {
-        }
-
-        public ResultDTO(Exam exam) {
-            this.studentId = exam.getStudent().getId();
-            this.examId = exam.getId();
-            this.paperId = exam.getPaper().getId();
-            this.studentNo = 99;
-            this.subjectNo = exam.getPaper().getSubject().getNo();
-            this.courseNameAndRound = exam.getStudent().getCourse().getTitle() + "/" + exam.getStudent().getCourse().getRound() + "회차";
-            this.subjectTitle = exam.getPaper().getSubject().getTitle();
-            this.examState = exam.getExamState();
-            this.studentName = exam.getStudent().getName();
-            this.teacherName = exam.getTeacherName();
-            this.examScore = exam.getScore();
-            this.examPassState = exam.getPassState();
-            this.isNotPass = exam.getScore() >= 60 ? false : true;
-            if (exam.getReExamReason().equals("")) {
-                this.reExamReason = exam.getReExamReason();
-            } else {
-                this.reExamReason = "/" + exam.getReExamReason();
-            }
-            this.grade = exam.getGrade();
-            this.isUse = exam.getIsUse();
-            this.isAbsent = exam.getReExamReason().equals("결석");
-        }
-
-        public static ExamResponse.ResultDTO ofAbsent(Paper mainPaper, Student student) {
-            ExamResponse.ResultDTO dto = new ResultDTO();
-            dto.setExamId(0L);
-            dto.setPaperId(mainPaper.getId());
-            dto.setStudentNo(99); // 미지정
-            dto.setSubjectNo(mainPaper.getSubject().getNo());
-            dto.setCourseNameAndRound(student.getCourse().getTitle() + "/" + student.getCourse().getRound() + "회차");
-            dto.setSubjectTitle(mainPaper.getSubject().getTitle());
-            dto.setExamState("본평가");
-            dto.setStudentName(student.getName());
-            dto.setTeacherName(mainPaper.getSubject().getTeacherName());
-            dto.setExamScore(0.0);
-            dto.setExamPassState("미응시");
-            dto.setReExamReason("");
-            dto.setIsNotPass(true);
-            dto.setGrade(0);
-            dto.setIsUse(false);
-            dto.setIsNotStart(true);
-            dto.setStudentId(student.getId());
-            dto.setIsAbsent(true);
-            return dto;
-        }
-    }
-
-    @Data
     public static class ResultDetailDTO {
         private Long examId;
         private Long paperId;
@@ -230,7 +154,7 @@ public class ExamResponse {
             this.answers = exam.getExamAnswers().stream().map(AnswerDTO::new).toList();
             this.questionCount = exam.getPaper().getQuestionCount();
             this.examState = exam.getExamState();
-            this.reExamReason = exam.getReExamReason();
+            this.reExamReason = exam.getReExamReason() == null ? "" : exam.getReExamReason();
             this.examPassState = exam.getPassState();
             this.score = exam.getScore();
             this.teacherComment = exam.getTeacherComment();

@@ -49,8 +49,8 @@ public class ExamController {
 
     @GetMapping("/api/exam-menu/subject/{subjectId}/exam")
     public String teacherResult(Model model, @PathVariable("subjectId") Long subjectId) {
-        List<ExamResponse.ResultDTO> respDTO = examService.강사_교과목별시험결과(subjectId);
-        model.addAttribute("models", respDTO);
+        var modelData = examService.강사_교과목별시험결과(subjectId);
+        model.addAttribute("models", modelData);
         return "exam/list";
     }
 
@@ -67,10 +67,10 @@ public class ExamController {
     @PostMapping("/api/exam-menu/exam/absent")
     public ResponseEntity<?> 결석입력(@RequestBody ExamRequest.AbsentDTO reqDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        examService.강사_결석입력(reqDTO, sessionUser);
+        examService.강사_결석처리(reqDTO, sessionUser);
         return ResponseEntity.ok(new ApiUtil<>(null));
     }
-
+ 
     @PutMapping("/api/exam-menu/exam/{examId}")
     public ResponseEntity<?> update(@PathVariable("examId") Long examId, @RequestBody ExamRequest.UpdateDTO reqDTO) {
         examService.강사_총평남기기(examId, reqDTO);

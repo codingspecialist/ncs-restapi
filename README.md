@@ -89,6 +89,15 @@ control+tab 이전 탭 가기
 - [ ] css 파일 분리
 - [ ] js 파일 분리
 
+### KDT PBL 평가 필요
+
+- [ ] Paper, Question(총점수 point), QuestionOption(isRight 삭제하고, point만들어서 점수주기), 평가기준(실패기준이 될수도)도 옵션마다!!
+- [ ] exam_tb (단답형 시험)
+- [ ] evaluation_tb (pbl 평가, 작업형 평가) 두개 따로 분리
+- [ ] subject_tb (프로젝트 교과목)
+- [ ] team_tb, team_member_tb, student_tb(학생1, 학생2, 학생3) 프로젝트1 팀이 만들어지고, team_tb에 맴버로 종속
+- [ ] subject_element_tb (발표요소, 협업요소, 커뮤니케이션요소)
+
 ### 추후 리팩토링 v3
 
 - [ ] 시큐리티 적용

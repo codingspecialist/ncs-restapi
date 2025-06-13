@@ -23,10 +23,10 @@ public class QuestionOption {
     private Long id;
 
     private Integer no; // 시험문제의 4지선답 번호
-    private String content;
+    private String content; // 아이컨텍/인사/말하기 or 사지선답 항목
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Question question;
+    private Question question; // 발표력 or 문제제목 (Question쪽에 타입 필요할듯)
 
     private Boolean isRight; // true 이면 정답
 

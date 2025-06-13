@@ -27,7 +27,7 @@ public class Question {
 
     private Integer no; // 시험지에 종속되는 시험 순서 1, 2, 3
     private String title; // 시험 문제 제목
-    private Integer point; // 시험 문제 점수 10점, 20점
+    private Integer point; // 시험 문제 점수 총점
     private Integer answerNumber; // 4번이 정담
 
     @ManyToOne(fetch = FetchType.LAZY)

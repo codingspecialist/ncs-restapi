@@ -49,7 +49,7 @@ public class Exam {
     private String examState; // 본평가, 재평가 (paperType)
     private String reExamReason; // 결석 or 미통과(60점미만) - 재평가이유
 
-    private String passState; // 통과, 미통과, 결석
+    private String passState; // 통과, 미통과, 결석, 미응시
 
     private Double score; // 시험결과 점수 (재평가라면 10% 감점)
     private Integer grade; // 시험결과 수준

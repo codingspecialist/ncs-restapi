@@ -12,28 +12,35 @@
     </div>
 
     {{#model.questions}}
-        <div class="card mb-4 p-3">
-            <div class="card-body">
-                <!-- 문제 제목 -->
-                <h5 class="card-title">{{no}}. {{title}}</h5>
+        <div class="card mb-4">
+            <div class="card-header fw-bold">
+                {{no}}. {{title}} <!-- 문제 제목 -->
+            </div>
 
+            <div class="card-body p-3">
                 <!-- 지문 이미지 -->
                 {{#stimulusImg}}
-                    <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid mb-3" style="max-height: 200px;">
+                    <div class="mb-3">
+                        <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid" style="max-height: 200px;">
+                    </div>
                 {{/stimulusImg}}
 
-                <!-- 항목 리스트 -->
-                <div>
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                    <tr>
+                        <th style="width: 80px;" class="text-center">점수</th>
+                        <th>평가기준 (루브릭 설명)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
                     {{#options}}
-                        <div class="form-check mb-1 d-flex align-items-center">
-                            <input class="form-check-input me-2" type="radio" name="answer-{{questionId}}"
-                                   {{#isRight}}checked{{/isRight}} disabled>
-                            <label>
-                                {{no}}. {{content}}
-                            </label>
-                        </div>
+                        <tr>
+                            <td class="text-center fw-bold align-middle">{{point}}점</td>
+                            <td>{{rubricItem}}</td>
+                        </tr>
                     {{/options}}
-                </div>
+                    </tbody>
+                </table>
             </div>
         </div>
     {{/model.questions}}

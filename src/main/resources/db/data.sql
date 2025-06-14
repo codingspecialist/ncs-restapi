@@ -95,7 +95,7 @@ insert into subject_element_tb(created_at, no, subject_id, subtitle, subject_ele
 values ('2025-06-14 22:08:32.764959', 2, 3, '주소 설계가 가능하다.', '4가지 http method 규칙에 맞추어 api 설계가 가능하다.');
 
 insert into subject_element_tb(created_at, no, subject_id, subtitle, subject_element_purpose)
-values ('2025-06-14 22:08:32.766494', 3, 3, '인증', 'OAuth2.0 로그인을 할 수 있다.');
+values ('2025-06-14 22:08:32.766494', 3, 3, '커뮤니케이션능력', '커뮤니케이션 능력으로 팀과 협업할 수 있다.');
 
 
 -- 시험지 3개
@@ -105,6 +105,8 @@ insert into paper_tb(subject_id, created_at, question_count, paper_type, evaluat
 values (2, now(), 5, 'ORIGINAL', '2024-06-13', 'MCQ');
 insert into paper_tb(subject_id, created_at, question_count, paper_type, evaluation_date, evaluation_way)
 values (1, now(), 2, 'RETEST', '2024-06-08', 'MCQ');
+insert into paper_tb(subject_id, created_at, question_count, paper_type, evaluation_date, evaluation_way)
+values (3, now(), 1, 'ORIGINAL', '2024-06-08', 'PROJECT');
 
 -- 1번 시험지의 문제 2개 (1,2)
 insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
@@ -130,7 +132,19 @@ values (1, '다음 중 스레드 설명으로 틀린것은?', 3, now(), 1, '/img
 insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
 values (2, '다음 중 소켓 설명으로 틀린것은?', 3, now(), 2, null);
 
--- 1번 시험지의 문제(1)
+-- 4번 시험지의 문제 1개 (10)
+INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_img, title)
+VALUES (1, now(), 4, 10, NULL, '발표력');
+
+-- 4번 시험지의 문제옵션들(1)
+INSERT INTO question_option_tb(no, created_at, point, question_id, rubric_item, content)
+VALUES (1, now(), 4, 10, '손짓, 아이컨택, 또박또박 말함', null),
+       (2, now(), 3, 10, '아이컨택, 제스처만 가능', null),
+       (3, now(), 2, 10, '말하기 불분명 / 시선회피', null),
+       (4, now(), 1, 10, '발표 거부 / 말하지 않음', null);
+
+
+-- 1번 시험지의 문제옵션들(1)
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (1, '반복문이다', 1, now(), 50, '반복문에 대해서 잘 이해하고 있다.');
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
@@ -140,7 +154,7 @@ values (3, '한번만실행할수있다', 1, now(), 0, null);
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (4, '반복되지않는다', 1, now(), 0, null);
 
--- 1번 시험지의 문제(2)
+-- 1번 시험지의 문제옵션들(2)
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (1, '끝이 없는 반복문이다.', 2, now(), 50, '끝이 없는 반복문에 대해서 잘 이해하고 있다.');
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
@@ -150,7 +164,7 @@ values (3, '한번만실행할수있다', 2, now(), 0, null);
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (4, '반복되지않는다', 2, now(), 0, null);
 
--- 2번 시험지의 문제(1)
+-- 2번 시험지의 문제옵션들(1)
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (1, '반복문이다', 3, now(), 20, 'break에 대해서 잘 이해하고 있다.');
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
@@ -160,7 +174,7 @@ values (3, '한번만실행할수있다', 3, now(), 0, null);
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (4, '반복되지않는다', 3, now(), 0, null);
 
--- 2번 시험지의 문제(2)
+-- 2번 시험지의 문제옵션들(2)
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (1, '반복문이다', 4, now(), 20, 'break에 대해서 잘 이해하고 있다.');
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
@@ -170,7 +184,7 @@ values (3, '한번만실행할수있다', 4, now(), 0, null);
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (4, '반복되지않는다', 4, now(), 0, null);
 
--- 2번 시험지의 문제(3)
+-- 2번 시험지의 문제옵션들(3)
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (1, '반복문이다', 5, now(), 20, 'break에 대해서 잘 이해하고 있다.');
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
@@ -180,7 +194,7 @@ values (3, '한번만실행할수있다', 5, now(), 0, null);
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (4, '반복되지않는다', 5, now(), 0, null);
 
--- 2번 시험지의 문제(4)
+-- 2번 시험지의 문제옵션들(4)
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (1, '반복문이다', 6, now(), 20, 'break에 대해서 잘 이해하고 있다.');
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
@@ -190,7 +204,7 @@ values (3, '한번만실행할수있다', 6, now(), 0, null);
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (4, '반복되지않는다', 6, now(), 0, null);
 
--- 2번 시험지의 문제(5)
+-- 2번 시험지의 문제옵션들(5)
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (1, '반복문이다', 7, now(), 20, 'break에 대해서 잘 이해하고 있다.');
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
@@ -200,7 +214,7 @@ values (3, '한번만실행할수있다', 7, now(), 0, null);
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (4, '반복되지않는다', 7, now(), 0, null);
 
--- 3번 시험지의 문제(1)
+-- 3번 시험지의 문제옵션들(1)
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (1, '반복문이다', 8, now(), 50, '반복문은 거시기하다. 이걸 알아야 한다');
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
@@ -210,7 +224,7 @@ values (3, '한번만실행할수있다', 8, now(), 0, null);
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (4, '반복되지않는다', 8, now(), 0, null);
 
--- 3번 시험지의 문제(2)
+-- 3번 시험지의 문제옵션들(2)
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
 values (1, '반복문이다', 9, now(), 50, '반복문은 거시기하다. 이걸 알아야 한다');
 insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)

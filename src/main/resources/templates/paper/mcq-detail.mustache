@@ -16,13 +16,16 @@
             <div class="card-body">
                 <!-- 문제 제목 -->
                 <h5 class="card-title">{{no}}. {{title}}</h5>
+                <div class="badge bg-secondary my-2">배점: {{totalPoint}}점</div>
 
                 <!-- 지문 이미지 -->
                 {{#stimulusImg}}
-                    <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid mb-3" style="max-height: 200px;">
+                    <div>
+                        <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid mb-3" style="max-height: 200px;">
+                    </div>
                 {{/stimulusImg}}
 
-                <!-- 항목 리스트 -->
+                <!-- 객관식 옵션 -->
                 <div>
                     {{#options}}
                         <div class="form-check mb-1 d-flex align-items-center">

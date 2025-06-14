@@ -136,6 +136,7 @@ public class PaperResponse {
             private Integer no;
             private String title;
             private String stimulusImg;
+            private Integer totalPoint; // 객관식 시험일때만!!
             private List<OptionDTO> options;
 
             public QuestionDTO(Question question) {
@@ -143,6 +144,10 @@ public class PaperResponse {
                 this.no = question.getNo();
                 this.title = question.getTitle();
                 this.stimulusImg = question.getStimulusImg();
+                this.totalPoint = question.getQuestionOptions()
+                        .stream()
+                        .mapToInt(o -> o.getPoint())
+                        .sum();
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
             }
 
@@ -151,12 +156,16 @@ public class PaperResponse {
                 private Long optionId;
                 private Integer no;
                 private String content;
+                private String rubricItem;
+                private Integer point;
                 private Boolean isRight;
 
                 public OptionDTO(QuestionOption option) {
                     this.optionId = option.getId();
                     this.no = option.getNo();
                     this.content = option.getContent();
+                    this.rubricItem = option.getRubricItem();
+                    this.point = option.getPoint();
                     this.isRight = option.getPoint() > 0;
                 }
             }

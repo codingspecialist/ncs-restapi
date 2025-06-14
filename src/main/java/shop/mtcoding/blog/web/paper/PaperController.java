@@ -78,7 +78,13 @@ public class PaperController {
         PaperModel.Detail detail = paperService.시험지상세(paperId);
         PaperResponse.QuestionListDTO respDTO = new PaperResponse.QuestionListDTO(detail.paper(), detail.questions());
         model.addAttribute("model", respDTO);
-        return "paper/mcq-detail";
+
+        if (detail.paper().getEvaluationWay() == EvaluationWay.MCQ) {
+            return "paper/mcq-detail";
+        } else {
+            return "paper/rubric-detail";
+        }
+
     }
 
     // 5. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) - 시험지등록(교과목별)

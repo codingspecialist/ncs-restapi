@@ -10,9 +10,11 @@ public class FilterConfig {
 
     @Bean
     public FilterRegistrationBean<CorsFilter> corsFilter() {
-        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter());
-        bean.addUrlPatterns("/reply/*");
-        bean.setOrder(0); // 낮은 번호부터 실행됨.Ø
-        return bean;
+        FilterRegistrationBean<CorsFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new CorsFilter());
+        registrationBean.addUrlPatterns("/*"); // 모든 요청에 적용
+        registrationBean.setOrder(1); // 필터 순서 설정
+        return registrationBean;
     }
+
 }

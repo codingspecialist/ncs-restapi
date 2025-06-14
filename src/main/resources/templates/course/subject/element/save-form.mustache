@@ -18,6 +18,10 @@
                     <div class="mb-3">
                         <input type="text" class="form-control subtitle" placeholder="교과목 요소명" value="오버로딩">
                     </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control subjectElementPurpose" placeholder="교과목 요소 평가기준"
+                               value="여러 메서드를 타입, 매개변수를 변경하여 재사용할 수 있다.">
+                    </div>
                 </div>
             </div>
 
@@ -35,7 +39,8 @@
         const subjectElements = Array.from(items).map((element) => {
             const no = element.querySelector(".no").value;
             const subtitle = element.querySelector(".subtitle").value;
-            return {no, subtitle};
+            const subjectElementPurpose = element.querySelector(".subjectElementPurpose").value;
+            return {no, subtitle, subjectElementPurpose};
         });
 
         try {
@@ -71,6 +76,10 @@
                     </div>
                     <div class="mb-3">
                         <input type="text" class="form-control subtitle" placeholder="교과목 요소명" value="객체지향">
+                    </div>
+                     <div class="mb-3">
+                        <input type="text" class="form-control subjectElementPurpose" placeholder="교과목 요소 평가기준"
+                               value="디자인 패턴을 활용할 수 있다.">
                     </div>
                 </div>`;
     }

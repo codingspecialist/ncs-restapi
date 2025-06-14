@@ -29,7 +29,9 @@ public class SubjectElement {
     private Long id;
 
     private Integer no; // 교과목에서의 순번
-    private String subtitle;
+    private String subtitle; // 교과목 요소
+    // TODO: rubric_test
+    private String subjectElementPurpose; // 교과목 요소 평가기준 (연산자를 사용할 수 있고, 산술연산이 가능하며, 다운캐스팅에 대해서 이해하고 있다)
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Subject subject;
@@ -38,10 +40,11 @@ public class SubjectElement {
     private LocalDateTime createdAt;
 
     @Builder
-    public SubjectElement(Long id, Integer no, String subtitle, Subject subject, LocalDateTime createdAt) {
+    public SubjectElement(Long id, Integer no, String subtitle, String subjectElementPurpose, Subject subject, LocalDateTime createdAt) {
         this.id = id;
         this.no = no;
         this.subtitle = subtitle;
+        this.subjectElementPurpose = subjectElementPurpose;
         this.subject = subject;
         this.createdAt = createdAt;
     }

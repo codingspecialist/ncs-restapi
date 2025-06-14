@@ -24,22 +24,26 @@ public class QuestionOption {
 
     private Integer no; // 시험문제의 4지선답 번호
     private String content; // 아이컨텍/인사/말하기 or 사지선답 항목
+    // TODO: rubric_test
+    private String rubricItem; // 0점일때는 없고, 점수가 있을때만 존재하는 부분
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Question question; // 발표력 or 문제제목 (Question쪽에 타입 필요할듯)
 
-    private Boolean isRight; // true 이면 정답
+    // TODO: rubric_test
+    private Integer point; // 정답이면 점수, 정답 아니면 0점 // 루브릭일때는 모든 옵션에 점수가 있음.
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Builder
-    public QuestionOption(Long id, Integer no, String content, Question question, Boolean isRight, LocalDateTime createdAt) {
+    public QuestionOption(Long id, Integer no, String content, String rubricItem, Question question, Integer point, LocalDateTime createdAt) {
         this.id = id;
         this.no = no;
         this.content = content;
+        this.rubricItem = rubricItem;
         this.question = question;
-        this.isRight = isRight;
+        this.point = point;
         this.createdAt = createdAt;
     }
 }

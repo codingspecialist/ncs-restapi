@@ -10,11 +10,13 @@ public class CourseElementRequest {
     public static class SaveDTO {
         private Integer no;
         private String subtitle;
+        private String subjectElementPurpose;
 
         public SubjectElement toEntity(Subject subject) {
             return SubjectElement.builder()
                     .no(no)
                     .subtitle(subtitle)
+                    .subjectElementPurpose(subjectElementPurpose)
                     .subject(subject)
                     .build();
         }

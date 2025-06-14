@@ -14,25 +14,27 @@ public class CourseElementResponse {
         private String title;
         private String purpose;
 
-        List<SubjectElementDTO> subjectElements;
+        List<ElementDTO> subjectElements;
 
         public ListDTO(Subject subject, List<SubjectElement> subjectElements) {
             this.subjectId = subject.getId();
             this.title = subject.getTitle();
             this.purpose = subject.getPurpose();
-            this.subjectElements = subjectElements.stream().map(SubjectElementDTO::new).toList();
+            this.subjectElements = subjectElements.stream().map(ElementDTO::new).toList();
         }
 
         @Data
-        class SubjectElementDTO {
+        class ElementDTO {
             private Long subjectElementId;
             private Integer no;
             private String subtitle;
+            private String subjectElementPurpose;
 
-            public SubjectElementDTO(SubjectElement subjectElement) {
+            public ElementDTO(SubjectElement subjectElement) {
                 this.subjectElementId = subjectElement.getId();
                 this.no = subjectElement.getNo();
                 this.subtitle = subjectElement.getSubtitle();
+                this.subjectElementPurpose = subjectElement.getSubjectElementPurpose();
             }
         }
     }

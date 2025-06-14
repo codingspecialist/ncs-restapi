@@ -61,7 +61,7 @@ public class PaperController {
         PaperModel.Items items = paperService.교과목별시험지목록(subjectId);
         List<PaperResponse.DTO> respDTO = items.papers().stream().map(PaperResponse.DTO::new).toList();
         model.addAttribute("models", respDTO);
-        return "paper/list";
+        return "paper/paper-list";
     }
 
     // 4-1. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) - 시험지등록 폼

@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.subject.Subject;
-import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
@@ -121,15 +120,13 @@ public class PaperResponse {
         private String evaluationDate; // 평가일 (subject)
         private String loc; // 평가장소 (임시)
         private String subjectTitle; // 교과목 (subject)
-        private List<String> subjectElements;
         private List<QuestionDTO> questions;
 
-        public QuestionListDTO(Paper paper, List<SubjectElement> subjectElements, List<Question> questions) {
+        public QuestionListDTO(Paper paper, List<Question> questions) {
             this.paperId = paper.getId();
             this.evaluationDate = paper.getEvaluationDate().toString();
             this.loc = "3호";
             this.subjectTitle = paper.getSubject().getTitle();
-            this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
         }
 
@@ -158,7 +155,7 @@ public class PaperResponse {
                     this.optionId = option.getId();
                     this.no = option.getNo();
                     this.content = option.getContent();
-                    this.isRight = option.getIsRight();
+                    this.isRight = option.getPoint() > 0;
                 }
             }
         }

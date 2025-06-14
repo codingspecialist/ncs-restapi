@@ -23,12 +23,12 @@ public class ExamRequest {
             public void update(Question question, ExamAnswer answer) {
                 if (selectedOptionNo == null) throw new ApiException400("모든 문제에 대한 답안을 제출해야 됩니다");
 
-                boolean isCollect;
-                if (question.getAnswerNumber().equals(selectedOptionNo)) {
+                boolean isCollect = true;
+/*                if (question.getAnswerNumber().equals(selectedOptionNo)) {
                     isCollect = true;
                 } else {
                     isCollect = false;
-                }
+                }*/
 
                 answer.update(selectedOptionNo, isCollect);
             }

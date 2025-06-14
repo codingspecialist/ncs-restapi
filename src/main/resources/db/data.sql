@@ -83,6 +83,7 @@ values (now(), 4, 2, '리플렉션', '머든지 난 할수 있다. 난 천재니
 insert into subject_element_tb(created_at, no, subject_id, subtitle, subject_element_purpose)
 values (now(), 5, 2, '컨트롤러', '머든지 난 할수 있다. 난 천재니까');
 
+-- 시험지 3개
 insert into paper_tb(subject_id, created_at, question_count, paper_type, evaluation_date, evaluation_way)
 values (1, now(), 2, 'ORIGINAL', '2024-06-07', 'OBJECTIVE');
 insert into paper_tb(subject_id, created_at, question_count, paper_type, evaluation_date, evaluation_way)
@@ -90,109 +91,119 @@ values (2, now(), 5, 'ORIGINAL', '2024-06-13', 'OBJECTIVE');
 insert into paper_tb(subject_id, created_at, question_count, paper_type, evaluation_date, evaluation_way)
 values (1, now(), 2, 'RETEST', '2024-06-08', 'OBJECTIVE');
 
-insert into question_tb(no, title, point, answer_number, paper_id, created_at, subject_element_id)
-values (1, '다음 중 for문 설명으로 틀린것은?', 50, 4, 1, now(), 1);
-insert into question_tb(no, title, point, answer_number, paper_id, created_at, subject_element_id)
-values (2, '다음 중 while문 설명으로 틀린것은?', 50, 4, 1, now(), 2);
+-- 1번 시험지의 문제 2개 (1,2)
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
+values (1, '다음 중 for문 설명으로 틀린것은?', 1, now(), 1, '');
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
+values (2, '다음 중 while문 설명으로 틀린것은?', 1, now(), 2, '');
 
-insert into question_tb(no, title, point, answer_number, paper_id, created_at, subject_element_id)
-values (1, '다음 중 select 설명으로 틀린것은?', 20, 4, 2, now(), 3);
-insert into question_tb(no, title, point, answer_number, paper_id, created_at, subject_element_id)
-values (2, '다음 중 insert 설명으로 틀린것은?', 20, 4, 2, now(), 4);
-insert into question_tb(no, title, point, answer_number, paper_id, created_at, subject_element_id)
-values (3, '다음 중 update 설명으로 틀린것은?', 20, 4, 2, now(), 5);
-insert into question_tb(no, title, point, answer_number, paper_id, created_at, subject_element_id)
-values (4, '다음 중 delete 설명으로 틀린것은?', 20, 4, 2, now(), 6);
-insert into question_tb(no, title, point, answer_number, paper_id, created_at, subject_element_id)
-values (5, '다음 중 dml 설명으로 틀린것은?', 20, 4, 2, now(), 7);
+-- 2번 시험지의 문제 5개 (3,4,5,6,7)
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
+values (1, '다음 중 select 설명으로 틀린것은?', 2, now(), 3, '');
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
+values (2, '다음 중 insert 설명으로 틀린것은?', 2, now(), 4, '');
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
+values (3, '다음 중 update 설명으로 틀린것은?', 2, now(), 5, '');
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
+values (4, '다음 중 delete 설명으로 틀린것은?', 2, now(), 6, '');
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
+values (5, '다음 중 dml 설명으로 틀린것은?', 2, now(), 7, '');
 
-insert into question_tb(no, title, point, answer_number, paper_id, created_at, subject_element_id)
-values (1, '다음 중 스레드 설명으로 틀린것은?', 50, 4, 3, now(), 1);
+-- 3번 시험지의 문제 2개 (8,9)
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
+values (1, '다음 중 스레드 설명으로 틀린것은?', 3, now(), 1, '/img/ex.png');
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
+values (2, '다음 중 소켓 설명으로 틀린것은?', 3, now(), 2, '');
 
-insert into question_tb(no, title, point, answer_number, paper_id, created_at, subject_element_id)
-values (2, '다음 중 소켓 설명으로 틀린것은?', 50, 4, 3, now(), 2);
+-- 1번 시험지의 문제(1)
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (1, '반복문이다', 1, now(), 50, '반복문에 대해서 잘 이해하고 있다.');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (2, '표현식이아니다', 1, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (3, '한번만실행할수있다', 1, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (4, '반복되지않는다', 1, now(), 0, '');
 
+-- 1번 시험지의 문제(2)
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (1, '끝이 없는 반복문이다.', 2, now(), 50, '끝이 없는 반복문에 대해서 잘 이해하고 있다.');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (2, '표현식이아니다', 2, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (3, '한번만실행할수있다', 2, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (4, '반복되지않는다', 2, now(), 0, '');
 
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (1, '반복문이다', 1, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (2, '표현식이아니다', 1, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (3, '한번만실행할수있다', 1, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (4, '반복되지않는다', 1, now(), true);
+-- 2번 시험지의 문제(1)
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (1, '반복문이다', 3, now(), 20, 'break에 대해서 잘 이해하고 있다.');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (2, '표현식이아니다', 3, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (3, '한번만실행할수있다', 3, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (4, '반복되지않는다', 3, now(), 0, '');
 
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (1, '반복문이다', 2, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (2, '표현식이아니다', 2, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (3, '한번만실행할수있다', 2, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (4, '반복되지않는다', 2, now(), true);
+-- 2번 시험지의 문제(2)
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (1, '반복문이다', 4, now(), 20, 'break에 대해서 잘 이해하고 있다.');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (2, '표현식이아니다', 4, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (3, '한번만실행할수있다', 4, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (4, '반복되지않는다', 4, now(), 0, '');
 
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (1, '반복문이다', 3, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (2, '표현식이아니다', 3, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (3, '한번만실행할수있다', 3, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (4, '반복되지않는다', 3, now(), true);
+-- 2번 시험지의 문제(3)
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (1, '반복문이다', 5, now(), 20, 'break에 대해서 잘 이해하고 있다.');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (2, '표현식이아니다', 5, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (3, '한번만실행할수있다', 5, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (4, '반복되지않는다', 5, now(), 0, '');
 
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (1, '반복문이다', 4, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (2, '표현식이아니다', 4, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (3, '한번만실행할수있다', 4, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (4, '반복되지않는다', 4, now(), true);
+-- 2번 시험지의 문제(4)
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (1, '반복문이다', 6, now(), 20, 'break에 대해서 잘 이해하고 있다.');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (2, '표현식이아니다', 6, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (3, '한번만실행할수있다', 6, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (4, '반복되지않는다', 6, now(), 0, '');
 
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (1, '반복문이다', 5, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (2, '표현식이아니다', 5, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (3, '한번만실행할수있다', 5, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (4, '반복되지않는다', 5, now(), true);
+-- 2번 시험지의 문제(5)
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (1, '반복문이다', 7, now(), 20, 'break에 대해서 잘 이해하고 있다.');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (2, '표현식이아니다', 7, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (3, '한번만실행할수있다', 7, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (4, '반복되지않는다', 7, now(), 0, '');
 
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (1, '반복문이다', 6, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (2, '표현식이아니다', 6, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (3, '한번만실행할수있다', 6, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (4, '반복되지않는다', 6, now(), true);
+-- 3번 시험지의 문제(1)
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (1, '반복문이다', 8, now(), 50, '반복문은 거시기하다. 이걸 알아야 한다');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (2, '표현식이아니다', 8, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (3, '한번만실행할수있다', 8, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (4, '반복되지않는다', 8, now(), 0, '');
 
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (1, '반복문이다', 7, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (2, '표현식이아니다', 7, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (3, '한번만실행할수있다', 7, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (4, '반복되지않는다', 7, now(), true);
-
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (1, '반복문이다', 8, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (2, '표현식이아니다', 8, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (3, '한번만실행할수있다', 8, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (4, '반복되지않는다', 8, now(), true);
-
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (1, '반복문이다', 9, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (2, '표현식이아니다', 9, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (3, '한번만실행할수있다', 9, now(), false);
-insert into question_option_tb(no, content, question_id, created_at, is_right)
-values (4, '반복되지않는다', 9, now(), true);
+-- 3번 시험지의 문제(2)
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (1, '반복문이다', 9, now(), 50, '반복문은 거시기하다. 이걸 알아야 한다');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (2, '표현식이아니다', 9, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (3, '한번만실행할수있다', 9, now(), 0, '');
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
+values (4, '반복되지않는다', 9, now(), 0, '');
 
 insert into exam_tb
 (subject_id, is_use, created_at, exam_state, grade, paper_id, pass_state, re_exam_reason, score, student_id,

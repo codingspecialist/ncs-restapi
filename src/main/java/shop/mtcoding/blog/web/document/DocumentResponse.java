@@ -115,13 +115,11 @@ public class DocumentResponse {
         @Data
         class RubricDTO {
             private String subjectElement;
-            private String questionPurpose;
-            private String questionFail;
 
             public RubricDTO(Question question) {
                 this.subjectElement = question.getSubjectElement().getSubtitle();
-                this.questionPurpose = question.getQuestionPurpose();
-                this.questionFail = question.getQuestionFail();
+//                this.questionPurpose = question.getQuestionPurpose();
+//                this.questionFail = question.getQuestionFail();
             }
         }
     }
@@ -205,9 +203,9 @@ public class DocumentResponse {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-                this.point = question.getPoint();
-                this.answerNumber = question.getAnswerNumber();
-                this.questionPurpose = question.getQuestionPurpose();
+//                this.point = question.getPoint();
+//                this.answerNumber = question.getAnswerNumber();
+//                this.questionPurpose = question.getQuestionPurpose();
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
                 ;
             }
@@ -221,7 +219,7 @@ public class DocumentResponse {
                 public OptionDTO(QuestionOption option) {
                     this.no = option.getNo();
                     this.content = option.getContent();
-                    this.isRight = option.getIsRight();
+//                    this.isRight = option.getIsRight();
                 }
             }
         }
@@ -266,9 +264,9 @@ public class DocumentResponse {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-                this.point = question.getPoint();
-                this.answerNumber = question.getAnswerNumber();
-                this.questionPurpose = question.getQuestionPurpose();
+//                this.point = question.getPoint();
+//                this.answerNumber = question.getAnswerNumber();
+//                this.questionPurpose = question.getQuestionPurpose();
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
                 ;
             }
@@ -282,7 +280,7 @@ public class DocumentResponse {
                 public OptionDTO(QuestionOption option) {
                     this.no = option.getNo();
                     this.content = option.getContent();
-                    this.isRight = option.getIsRight();
+//                    this.isRight = option.getIsRight();
                 }
             }
         }
@@ -359,8 +357,8 @@ public class DocumentResponse {
                 this.questionId = answer.getQuestion().getId();
                 this.no = answer.getQuestion().getNo();
                 this.title = answer.getQuestion().getTitle();
-                this.point = answer.getQuestion().getPoint();
-                this.answerNumber = answer.getQuestion().getAnswerNumber();
+//                this.point = answer.getQuestion().getPoint();
+//                this.answerNumber = answer.getQuestion().getAnswerNumber();
                 this.selectedOptionNo = answer.getSelectedOptionNo();
                 this.studentPoint = answer.getIsCorrect() ? point : 0;
                 this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new AnswerDTO.OptionDTO(option, selectedOptionNo)).toList();

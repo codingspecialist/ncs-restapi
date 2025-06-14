@@ -90,14 +90,12 @@ public class StudentExamResponse {
             private Long questionId;
             private Integer no;
             private String title;
-            private Integer point;
             private List<OptionDTO> options;
 
             public QuestionDTO(Question question) {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-                this.point = question.getPoint();
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
             }
 
@@ -255,8 +253,8 @@ public class StudentExamResponse {
                 this.questionId = answer.getQuestion().getId();
                 this.no = answer.getQuestion().getNo();
                 this.title = answer.getQuestion().getTitle();
-                this.point = answer.getQuestion().getPoint();
-                this.answerNumber = answer.getQuestion().getAnswerNumber();
+//                this.point = answer.getQuestion().getPoint();
+//                this.answerNumber = answer.getQuestion().getAnswerNumber();
                 this.selectedOptionNo = answer.getSelectedOptionNo();
                 this.studentPoint = answer.getIsCorrect() ? point : 0;
                 this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new OptionDTO(option, selectedOptionNo)).toList();

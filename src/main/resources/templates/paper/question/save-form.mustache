@@ -1,9 +1,11 @@
 {{> layout/header}}
 <input type="hidden" id="paperId" value="{{model.paperId}}">
+<input type="hidden" id="evaluationWay" value="{{model.evaluationWay}}">
 
 <div class="container p-5">
-    <form>
+    <form id="questionForm" enctype="multipart/form-data">
         <div class="card">
+            <!-- 능력단위 요소 선택 -->
             <div class="card-header">
                 <select class="form-select" id="elementId">
                     <option value="0">능력단위 요소를 선택해주세요 (필수)</option>
@@ -12,164 +14,181 @@
                     {{/model.elements}}
                 </select>
             </div>
+
+            <!-- 문제 번호 -->
             <div class="card-header">
-                <div><b>문제 번호를 입력해주세요</b></div>
-                <div class="mt-1">
-                    <input type="text" class="form-control" placeholder="문제번호" value="{{model.expectNo}}"
-                           id="questionNo">
-                </div>
-            </div>
-            <div class="card-header">
-                <div><b>문제 점수를 입력해주세요</b></div>
-                <div class="mt-1">
-                    <input type="text" class="form-control" placeholder="문제점수" value="{{model.expectPoint}}"
-                           id="questionPoint">
-                </div>
+                <b>문제 번호를 입력해주세요</b>
+                <input type="text" class="form-control mt-1" placeholder="문제번호" value="{{model.expectNo}}"
+                       id="questionNo">
             </div>
 
+            <!-- 문제 제목 -->
             <div class="card-header">
-                <div><b>문제 제목을 입력해주세요</b></div>
-                <div class="mt-1">
-                    <input type="text" class="form-control" placeholder="문제제목" value="" id="questionTitle">
-                </div>
-            </div>
-            <div class="card-header">
-                <div><b>다음 지문을 읽고, 이런 부분 필요하면 아래와 같은 부분 추가할 수 있게 하기!!</b></div>
-                <div class="mt-1">
-                    <div>
-                        <img class="ex-img" src="/img/ex.png">
-                    </div>
-                </div>
-            </div>
-            <div class="card-header">
-                <div><b>문제 옵션을 등록해주세요</b></div>
-
-                <div id="questionBox">
-                    <div class="mt-1 mb-3 pl-2 questionItem">
-                        <input type="hidden" class="form-control optionNo" placeholder="옵션번호" value="1" readonly>
-                        <input type="text" class="form-control optionContent" placeholder="옵션내용" value="" required>
-                        <div class="form-check">
-                            <input class="form-check-input optionRight" type="checkbox" value="1">
-                            <label class="form-check-label">
-                                정답
-                            </label>
-                        </div>
-                    </div>
-                    <div class="mt-1 mb-3 pl-2 questionItem">
-                        <input type="hidden" class="form-control optionNo" placeholder="옵션번호" value="2" readonly>
-                        <input type="text" class="form-control optionContent" placeholder="옵션내용" value="" required>
-                        <div class="form-check">
-                            <input class="form-check-input optionRight" type="checkbox" value="2">
-                            <label class="form-check-label">
-                                정답
-                            </label>
-                        </div>
-                    </div>
-                    <div class="mt-1 mb-3 pl-2 questionItem">
-                        <input type="hidden" class="form-control optionNo" placeholder="옵션번호" value="3" readonly>
-                        <input type="text" class="form-control optionContent" placeholder="옵션내용" value="" required>
-                        <div class="form-check">
-                            <input class="form-check-input optionRight" type="checkbox" value="3">
-                            <label class="form-check-label">
-                                정답
-                            </label>
-                        </div>
-                    </div>
-                    <div class="mt-1 mb-3 pl-2 questionItem">
-                        <input type="hidden" class="form-control optionNo" placeholder="옵션번호" value="4" readonly>
-                        <input type="text" class="form-control optionContent" placeholder="옵션내용" value="" required>
-                        <div class="form-check">
-                            <input class="form-check-input optionRight" type="checkbox" value="4">
-                            <label class="form-check-label">
-                                정답
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
+                <b>문제 제목을 입력해주세요</b>
+                <input type="text" class="form-control mt-1" placeholder="문제 제목" id="questionTitle">
             </div>
 
-            <div class="card-header">
-                <div class="mb-2"><b>평가기준과 실패기준을 입력해주세요. 루브릭 예시를 참고하세요</b></div>
-                <div>
-                    <img class="ex-img" src="/img/rubric.png">
-                </div>
-                <div class="mt-1">
-                    <input type="text" class="form-control" placeholder="평가기준" value="" id="questionPurpose">
-                </div>
-                <div class="mt-1">
-                    <input type="text" class="form-control" placeholder="실패기준" value="" id="questionFail">
-                </div>
+            <!-- 문제 점수 (객관식 전용) -->
+            <div class="card-header" id="questionPointWrapper" style="display:none;">
+                <b>문제 전체 점수를 입력해주세요 (객관식만)</b>
+                <input type="number" class="form-control mt-1" placeholder="문제 점수" id="questionPoint">
             </div>
 
+            <!-- 지문 이미지 -->
+            <div class="card-header">
+                <b>지문 이미지 (선택)</b>
+                <input type="file" class="form-control mt-1" id="stimulusImage">
+            </div>
+
+            <!-- 문제 옵션 -->
+            <div class="card-header">
+                <b>문제 항목을 등록해주세요</b>
+                <div id="questionBox" class="mt-2"></div>
+                <button type="button" class="btn btn-secondary mt-2" onclick="addOption()">옵션 추가</button>
+            </div>
         </div>
 
-        <button type="button" onclick="saveQuestion()" class="btn btn-primary form-control">문제 등록</button>
+        <button type="button" onclick="saveQuestion()" class="btn btn-primary form-control mt-3">문제 등록</button>
     </form>
-
 </div>
 
 <script>
-    let selectedAnswerNumber = 0;
-    let paperId = $("#paperId").val();
-    let elementId = $("#elementId").val();
+    let optionCounter = 1;
 
-    function saveQuestion() {
+    const evalWay = document.getElementById("evaluationWay").value;
+    if (evalWay === "OBJECTIVE") {
+        document.getElementById("questionPointWrapper").style.display = "block";
+    }
 
-        let requestBody = {
-            elementId: $("#elementId").val(),
-            paperId: paperId,
-            questionNo: $("#questionNo").val(),
-            questionTitle: $("#questionTitle").val(),
-            questionPoint: $("#questionPoint").val(),
-            questionPurpose: $("#questionPurpose").val(),
-            questionAnswerNumber: selectedAnswerNumber,
+    function addOption(no = optionCounter) {
+        const box = document.querySelector("#questionBox");
+        const div = document.createElement("div");
+        div.className = "mt-2 mb-3 pl-2 questionItem";
+
+        if (evalWay === "OBJECTIVE") {
+            div.innerHTML = `
+              <input type="hidden" class="form-control optionNo" value="${no}" readonly>
+              <input type="text" class="form-control optionContent" placeholder="옵션내용" required>
+              <label class="mt-1">
+                <input type="checkbox" class="optionCorrect"> 정답
+              </label>
+              <input type="text" class="form-control optionRubric mt-1" placeholder="루브릭 설명 (정답만 입력)" style="display:none;">
+            `;
+        } else {
+            div.innerHTML = `
+              <input type="hidden" class="form-control optionNo" value="${no}" readonly>
+              <input type="text" class="form-control optionContent" placeholder="항목명" required>
+              <input type="number" class="form-control optionPoint mt-1" placeholder="점수 (예: 20)" required>
+              <input type="text" class="form-control optionRubric mt-1" placeholder="루브릭 설명 (필수)">
+            `;
+        }
+
+        box.appendChild(div);
+        optionCounter++;
+    }
+
+    window.onload = () => {
+        addOption();
+    };
+
+    document.addEventListener("change", (e) => {
+        if (e.target.classList.contains("optionCorrect")) {
+            const checkboxes = document.querySelectorAll(".optionCorrect");
+            checkboxes.forEach(cb => {
+                if (cb !== e.target) cb.checked = false;
+                const rubric = cb.closest(".questionItem").querySelector(".optionRubric");
+                if (rubric) rubric.style.display = cb.checked ? "block" : "none";
+                if (!cb.checked && rubric) rubric.value = "";
+            });
+        }
+    });
+
+    async function saveQuestion() {
+        const formData = {
+            elementId: document.getElementById("elementId").value,
+            paperId: document.getElementById("paperId").value,
+            questionNo: document.getElementById("questionNo").value,
+            questionTitle: document.getElementById("questionTitle").value,
+            stimulusFileBase64: "",
             options: []
         };
 
-        let items = $("#questionBox").find(".questionItem");
-        items.each(function (index, element) {
-            let option = {
-                optionNo: $(element).find(".optionNo").val(),
-                optionContent: $(element).find(".optionContent").val(),
-                optionRight: $(element).find(".optionRight").is(':checked')
-            };
-
-            requestBody.options.push(option);
-        });
-
-        $.ajax({
-            url: `/api/paper-menu/paper/${paperId}/question/save`,
-            method: "post",
-            data: JSON.stringify(requestBody),
-            contentType: "application/json; charset=utf-8"
-        }).done((res) => {
-            console.log(res);
-            location.href = "/api/paper-menu/paper/" + paperId;
-        }).fail((res) => {
-            alert(res.responseJSON.msg);
-            console.log(res.responseJSON.msg);
-        });
-    }
-
-
-    // 체크박스 체크 유효성 및 정답 번호 체크
-    let checkList = 0;
-    $("input[type='checkbox']").click(function () {
-        if ($(this).is(':checked')) {
-            selectedAnswerNumber = $(this).val();
-            if (checkList > 0) {
-                alert('정답 체크는 하나만 가능해요');
-                $(this).prop('checked', false);
+        if (evalWay === "OBJECTIVE") {
+            const questionPoint = parseInt(document.getElementById("questionPoint").value || "0");
+            if (isNaN(questionPoint) || questionPoint <= 0) {
+                alert("문제 점수를 입력해주세요.");
                 return;
             }
-            checkList++;
-        } else {
-            selectedAnswerNumber = 0;
-            checkList--;
+            formData.questionPoint = questionPoint;
         }
-        console.log("선택한 정답 : " + selectedAnswerNumber);
-    });
+
+        const fileInput = document.getElementById("stimulusImage");
+        await new Promise((resolve) => {
+            convertFileToBase64(fileInput, (base64) => {
+                formData.stimulusFileBase64 = base64;
+                resolve();
+            });
+        });
+
+        const optionItems = document.querySelectorAll("#questionBox .questionItem");
+        let correctChecked = 0;
+
+        for (const item of optionItems) {
+            const optionContent = item.querySelector(".optionContent").value;
+            const optionNo = item.querySelector(".optionNo").value;
+
+            if (evalWay === "OBJECTIVE") {
+                const isCorrect = item.querySelector(".optionCorrect").checked;
+                const rubricInput = item.querySelector(".optionRubric");
+
+                if (isCorrect) {
+                    correctChecked++;
+                    if (!rubricInput.value.trim()) {
+                        alert("객관식 정답 항목에는 루브릭 설명이 필요합니다.");
+                        return;
+                    }
+                }
+
+                formData.options.push({
+                    optionNo,
+                    optionContent,
+                    optionPoint: isCorrect ? formData.questionPoint : 0,
+                    rubricItem: isCorrect ? rubricInput.value : ""
+                });
+            } else {
+                const optionPoint = item.querySelector(".optionPoint").value;
+                const rubricItem = item.querySelector(".optionRubric").value;
+
+                if (!rubricItem.trim()) {
+                    alert("루브릭 설명은 필수입니다.");
+                    return;
+                }
+
+                formData.options.push({
+                    optionNo,
+                    optionContent,
+                    optionPoint,
+                    rubricItem
+                });
+            }
+        }
+
+        if (evalWay === "OBJECTIVE" && correctChecked !== 1) {
+            alert("객관식은 정확히 하나의 정답만 선택해야 합니다.");
+            return;
+        }
+
+        fetch(`/api/paper-menu/paper/${formData.paperId}/question/save`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(formData)
+        }).then(async res => {
+            if (!res.ok) throw new Error((await res.json()).msg);
+            location.href = `/api/paper-menu/paper/${formData.paperId}`;
+        }).catch(err => {
+            alert(err.message);
+        });
+    }
 </script>
 
 {{> layout/footer}}

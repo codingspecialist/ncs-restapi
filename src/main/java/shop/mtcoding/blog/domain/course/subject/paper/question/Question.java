@@ -27,6 +27,7 @@ public class Question {
 
     private Integer no; // 시험지에 종속되는 시험 순서 1, 2, 3
     private String title; // 시험 문제 제목
+    private String stimulusImg; // 지문 (보기) 이미지
 
     @ManyToOne(fetch = FetchType.LAZY)
     private SubjectElement subjectElement;
@@ -45,10 +46,11 @@ public class Question {
     }
 
     @Builder
-    public Question(Long id, Integer no, String title, SubjectElement subjectElement, Paper paper, LocalDateTime createdAt) {
+    public Question(Long id, Integer no, String title, String stimulusImg, SubjectElement subjectElement, Paper paper, LocalDateTime createdAt) {
         this.id = id;
         this.no = no;
         this.title = title;
+        this.stimulusImg = stimulusImg;
         this.subjectElement = subjectElement;
         this.paper = paper;
         this.createdAt = createdAt;

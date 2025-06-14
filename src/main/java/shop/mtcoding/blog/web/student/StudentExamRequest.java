@@ -26,12 +26,8 @@ public class StudentExamRequest {
             public ExamAnswer toEntity(Question question, Exam exam) {
                 if (selectedOptionNo == null) throw new ApiException400("모든 문제에 대한 답안을 제출해야 됩니다");
 
-                boolean isCollect;
-                if (question.getAnswerNumber() == selectedOptionNo) {
-                    isCollect = true;
-                } else {
-                    isCollect = false;
-                }
+                boolean isCollect = true;
+      
 
                 ExamAnswer examAnswer = ExamAnswer.builder()
                         .exam(exam)

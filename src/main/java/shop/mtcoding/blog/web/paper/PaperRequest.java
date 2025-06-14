@@ -20,22 +20,16 @@ public class PaperRequest {
         private Long paperId;
         private Integer questionNo;
         private String questionTitle;
-        private Integer questionPoint;
-        private Integer questionAnswerNumber;
-        private String questionPurpose;
-        private String questionFail;
-        List<OptionDTO> options;
+        private String stimulusFileBase64; // ← 여기로 base64 받음
+        private List<OptionDTO> options;
 
-        public Question toEntity(Paper paper, SubjectElement subjectElement) {
+        public Question toEntity(Paper paper, SubjectElement element, String imagePath) {
             return Question.builder()
                     .no(questionNo)
                     .title(questionTitle)
-                    .point(questionPoint)
-                    .answerNumber(questionAnswerNumber)
-                    .questionPurpose(questionPurpose)
-                    .questionFail(questionFail)
                     .paper(paper)
-                    .subjectElement(subjectElement)
+                    .subjectElement(element)
+                    .stimulusImg(imagePath) // 저장된 경로
                     .build();
         }
 
@@ -43,13 +37,15 @@ public class PaperRequest {
         public static class OptionDTO {
             private Integer optionNo;
             private String optionContent;
-            private Boolean optionRight;
+            private Integer optionPoint;
+            private String rubricItem;
 
             public QuestionOption toEntity(Question question) {
                 return QuestionOption.builder()
                         .no(optionNo)
                         .content(optionContent)
-                        .isRight(optionRight)
+                        .point(optionPoint)
+                        .rubricItem(rubricItem)
                         .question(question)
                         .build();
             }

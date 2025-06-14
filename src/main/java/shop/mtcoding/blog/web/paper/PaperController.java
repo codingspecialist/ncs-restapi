@@ -75,7 +75,7 @@ public class PaperController {
     @GetMapping("/api/paper-menu/paper/{paperId}")
     public String detail(@PathVariable("paperId") Long paperId, Model model) {
         PaperModel.Detail detail = paperService.시험지상세(paperId);
-        PaperResponse.QuestionListDTO respDTO = new PaperResponse.QuestionListDTO(detail.paper(), detail.subjectElements(), detail.questions());
+        PaperResponse.QuestionListDTO respDTO = new PaperResponse.QuestionListDTO(detail.paper(), detail.questions());
         model.addAttribute("model", respDTO);
         return "paper/detail";
     }

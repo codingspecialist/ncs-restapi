@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog.core.errors.exception.Exception400;
 import shop.mtcoding.blog.core.errors.exception.Exception404;
-import shop.mtcoding.blog.core.errors.exception.api.ApiException400;
 import shop.mtcoding.blog.core.errors.exception.api.ApiException404;
+import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.SubjectRepository;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
@@ -42,12 +42,8 @@ public class PaperService {
         Paper paperPS = paperRepository.findById(paperId)
                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
-        List<SubjectElement> subjectElementListPS =
-                subjectElementRepository.findAllBySubjectId(paperPS.getSubject().getId());
-
-
         List<Question> questionListPS = questionRepository.findAllByPaperId(paperId);
-        return new PaperModel.Detail(paperPS, subjectElementListPS, questionListPS);
+        return new PaperModel.Detail(paperPS, questionListPS);
     }
 
     @Transactional
@@ -66,43 +62,35 @@ public class PaperService {
         paperRepository.save(reqDTO.toEntity(subjectPS));
     }
 
-
     @Transactional
     public void 문제등록(PaperRequest.QuestionSaveDTO reqDTO) {
-        Paper paperPS = paperRepository.findById(reqDTO.getPaperId())
+        Paper paper = paperRepository.findById(reqDTO.getPaperId())
                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
-
-        // 번호 유니크 계산
-        List<Question> questionListPS = questionRepository.findAllByPaperId(reqDTO.getPaperId());
-        questionListPS.forEach(question -> {
-            if (question.getNo() == reqDTO.getQuestionNo()) {
-                throw new ApiException400("동일한 문제 번호를 등록할 수 없어요");
-            }
-        });
-
-        // 총점 계산
-        int prevSum = questionListPS.stream().mapToInt(question -> question.getPoint()).sum();
-        if (prevSum + reqDTO.getQuestionPoint() > 100) {
-            throw new ApiException400("점수 합계가 100점을 넘을 수 없어요");
-        }
 
         SubjectElement subjectElement = subjectElementRepository.findById(reqDTO.getElementId())
                 .orElseThrow(() -> new ApiException404("능력단위 요소가 존재하지 않아요"));
 
-        Question questionPS = questionRepository.save(reqDTO.toEntity(paperPS, subjectElement));
-        List<QuestionOption> optionList = reqDTO.getOptions().stream().map(optionDTO -> optionDTO.toEntity(questionPS)).toList();
-        questionOptionRepository.saveAll(optionList);
+        String imgPath = "";
+        if (reqDTO.getStimulusFileBase64() != null && !reqDTO.getStimulusFileBase64().isBlank()) {
+            imgPath = MyUtil.fileWrite(reqDTO.getStimulusFileBase64());
+        }
+
+        Question question = questionRepository.save(reqDTO.toEntity(paper, subjectElement, imgPath));
+        List<QuestionOption> options = reqDTO.getOptions().stream()
+                .map(opt -> opt.toEntity(question))
+                .toList();
+        questionOptionRepository.saveAll(options);
     }
+
 
     public PaperModel.NextQuestion 다음문제준비(Long paperId) {
         Paper paperPS = paperRepository.findById(paperId)
                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
-
         List<SubjectElement> elementListPS = subjectElementRepository.findAllBySubjectId(paperPS.getSubject().getId());
 
-        PaperModel.NextQuestion nextQuestion = questionQueryRepository.findStatisticsByPaperId(paperId)
-                .withElements(elementListPS);
+        PaperModel.NextQuestion nextQuestion = questionQueryRepository.findNextNo(paperId)
+                .withElements(elementListPS, paperPS);
 
         return nextQuestion;
     }

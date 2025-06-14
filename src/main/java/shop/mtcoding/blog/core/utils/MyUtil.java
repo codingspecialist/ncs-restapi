@@ -1,12 +1,17 @@
 package shop.mtcoding.blog.core.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import shop.mtcoding.blog.core.errors.exception.Exception500;
 import shop.mtcoding.blog.domain.course.CourseStatus;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
+import java.util.UUID;
 
 @Slf4j
 public class MyUtil {
@@ -37,5 +42,28 @@ public class MyUtil {
             log.info("Updating course status - NOT_STARTED");
             return CourseStatus.NOT_STARTED;
         }
+    }
+
+    public static String fileWrite(String imgBase64) {
+        try {
+            // 1. file folder path
+            String folder = "/images/";
+
+            // 1. 파일명 생성
+            UUID uuid = UUID.randomUUID();
+            String mimeType = Base64Util.getMimeType(imgBase64);
+            String imgFilename = folder + uuid + "." + mimeType;
+
+            // 2. base64 -> byte[]
+            byte[] imgBytes = Base64Util.decodeAsBytes(imgBase64);
+
+            // 3. 파일 쓰기
+            Path imgFilePath = Paths.get("." + imgFilename);
+            Files.write(imgFilePath, imgBytes);
+            return imgFilename;
+        } catch (Exception e) {
+            throw new Exception500("이미지 저장 오류 : " + e.getMessage());
+        }
+
     }
 }

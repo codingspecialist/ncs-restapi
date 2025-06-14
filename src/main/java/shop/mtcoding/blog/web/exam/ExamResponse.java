@@ -210,8 +210,8 @@ public class ExamResponse {
                 this.questionId = answer.getQuestion().getId();
                 this.no = answer.getQuestion().getNo();
                 this.title = answer.getQuestion().getTitle();
-                this.point = answer.getQuestion().getPoint();
-                this.answerNumber = answer.getQuestion().getAnswerNumber();
+//                this.point = answer.getQuestion().getPoint();
+//                this.answerNumber = answer.getQuestion().getAnswerNumber();
                 this.selectedOptionNo = answer.getSelectedOptionNo();
                 this.studentPoint = answer.getIsCorrect() ? point : 0;
                 this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new OptionDTO(option, selectedOptionNo)).toList();

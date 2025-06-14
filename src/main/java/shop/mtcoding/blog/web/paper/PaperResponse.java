@@ -135,12 +135,14 @@ public class PaperResponse {
             private Long questionId;
             private Integer no;
             private String title;
+            private String stimulusImg;
             private List<OptionDTO> options;
 
             public QuestionDTO(Question question) {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
+                this.stimulusImg = question.getStimulusImg();
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
             }
 

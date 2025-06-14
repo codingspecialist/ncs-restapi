@@ -1,6 +1,5 @@
 {{> layout/header}}
 <input type="hidden" id="paperId" value="{{model.paperId}}">
-<input type="hidden" id="evaluationWay" value="{{model.evaluationWay}}">
 
 <div class="container p-5">
     <form id="questionForm" enctype="multipart/form-data">
@@ -28,12 +27,6 @@
                 <input type="text" class="form-control mt-1" placeholder="문제 제목" id="questionTitle">
             </div>
 
-            <!-- 문제 점수 (객관식 전용) -->
-            <div class="card-header" id="questionPointWrapper" style="display:none;">
-                <b>문제 전체 점수를 입력해주세요 (객관식만)</b>
-                <input type="number" class="form-control mt-1" placeholder="문제 점수" id="questionPoint">
-            </div>
-
             <!-- 지문 이미지 -->
             <div class="card-header">
                 <b>지문 이미지 (선택)</b>
@@ -55,34 +48,18 @@
 <script>
     let optionCounter = 1;
 
-    const evalWay = document.getElementById("evaluationWay").value;
-    if (evalWay === "OBJECTIVE") {
-        document.getElementById("questionPointWrapper").style.display = "block";
-    }
-
     function addOption(no = optionCounter) {
         const box = document.querySelector("#questionBox");
         const div = document.createElement("div");
         div.className = "mt-2 mb-3 pl-2 questionItem";
-
-        if (evalWay === "OBJECTIVE") {
-            div.innerHTML = `
-              <input type="hidden" class="form-control optionNo" value="${no}" readonly>
-              <input type="text" class="form-control optionContent" placeholder="옵션내용" required>
-              <label class="mt-1">
+        div.innerHTML = `
+            <input type="hidden" class="form-control optionNo" value="${no}" readonly>
+            <input type="text" class="form-control optionContent" placeholder="옵션 내용 (보기)" required>
+            <label class="mt-1">
                 <input type="checkbox" class="optionCorrect"> 정답
-              </label>
-              <input type="text" class="form-control optionRubric mt-1" placeholder="루브릭 설명 (정답만 입력)" style="display:none;">
-            `;
-        } else {
-            div.innerHTML = `
-              <input type="hidden" class="form-control optionNo" value="${no}" readonly>
-              <input type="text" class="form-control optionContent" placeholder="항목명" required>
-              <input type="number" class="form-control optionPoint mt-1" placeholder="점수 (예: 20)" required>
-              <input type="text" class="form-control optionRubric mt-1" placeholder="루브릭 설명 (필수)">
-            `;
-        }
-
+            </label>
+            <input type="text" class="form-control optionRubric mt-1" placeholder="정답 루브릭 설명 (필수)" style="display:none;">
+        `;
         box.appendChild(div);
         optionCounter++;
     }
@@ -95,10 +72,10 @@
         if (e.target.classList.contains("optionCorrect")) {
             const checkboxes = document.querySelectorAll(".optionCorrect");
             checkboxes.forEach(cb => {
-                if (cb !== e.target) cb.checked = false;
                 const rubric = cb.closest(".questionItem").querySelector(".optionRubric");
-                if (rubric) rubric.style.display = cb.checked ? "block" : "none";
-                if (!cb.checked && rubric) rubric.value = "";
+                if (cb !== e.target) cb.checked = false;
+                rubric.style.display = cb.checked ? "block" : "none";
+                if (!cb.checked) rubric.value = "";
             });
         }
     });
@@ -112,15 +89,6 @@
             stimulusFileBase64: "",
             options: []
         };
-
-        if (evalWay === "OBJECTIVE") {
-            const questionPoint = parseInt(document.getElementById("questionPoint").value || "0");
-            if (isNaN(questionPoint) || questionPoint <= 0) {
-                alert("문제 점수를 입력해주세요.");
-                return;
-            }
-            formData.questionPoint = questionPoint;
-        }
 
         const fileInput = document.getElementById("stimulusImage");
         await new Promise((resolve) => {
@@ -136,45 +104,32 @@
         for (const item of optionItems) {
             const optionContent = item.querySelector(".optionContent").value;
             const optionNo = item.querySelector(".optionNo").value;
+            const isCorrect = item.querySelector(".optionCorrect").checked;
+            const rubricItem = item.querySelector(".optionRubric").value;
 
-            if (evalWay === "OBJECTIVE") {
-                const isCorrect = item.querySelector(".optionCorrect").checked;
-                const rubricInput = item.querySelector(".optionRubric");
+            if (!optionContent.trim()) {
+                alert("옵션 내용을 입력해주세요.");
+                return;
+            }
 
-                if (isCorrect) {
-                    correctChecked++;
-                    if (!rubricInput.value.trim()) {
-                        alert("객관식 정답 항목에는 루브릭 설명이 필요합니다.");
-                        return;
-                    }
-                }
-
-                formData.options.push({
-                    optionNo,
-                    optionContent,
-                    optionPoint: isCorrect ? formData.questionPoint : 0,
-                    rubricItem: isCorrect ? rubricInput.value : ""
-                });
-            } else {
-                const optionPoint = item.querySelector(".optionPoint").value;
-                const rubricItem = item.querySelector(".optionRubric").value;
-
+            if (isCorrect) {
+                correctChecked++;
                 if (!rubricItem.trim()) {
-                    alert("루브릭 설명은 필수입니다.");
+                    alert("정답 루브릭 설명은 필수입니다.");
                     return;
                 }
-
-                formData.options.push({
-                    optionNo,
-                    optionContent,
-                    optionPoint,
-                    rubricItem
-                });
             }
+
+            formData.options.push({
+                optionNo,
+                optionContent,
+                optionPoint: isCorrect ? 1 : 0,
+                rubricItem: isCorrect ? rubricItem : ""
+            });
         }
 
-        if (evalWay === "OBJECTIVE" && correctChecked !== 1) {
-            alert("객관식은 정확히 하나의 정답만 선택해야 합니다.");
+        if (correctChecked !== 1) {
+            alert("객관식 문제는 하나의 정답만 선택해야 합니다.");
             return;
         }
 
@@ -188,6 +143,17 @@
         }).catch(err => {
             alert(err.message);
         });
+    }
+
+    function convertFileToBase64(fileInput, callback) {
+        const file = fileInput.files[0];
+        if (!file) {
+            callback("");
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => callback(reader.result);
+        reader.readAsDataURL(file);
     }
 </script>
 

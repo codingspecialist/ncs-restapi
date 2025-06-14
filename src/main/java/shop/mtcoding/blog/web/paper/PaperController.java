@@ -17,6 +17,7 @@ import shop.mtcoding.blog.domain.course.CourseModel;
 import shop.mtcoding.blog.domain.course.CourseService;
 import shop.mtcoding.blog.domain.course.subject.SubjectModel;
 import shop.mtcoding.blog.domain.course.subject.SubjectService;
+import shop.mtcoding.blog.domain.course.subject.paper.EvaluationWay;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperModel;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperService;
 import shop.mtcoding.blog.domain.user.User;
@@ -77,7 +78,7 @@ public class PaperController {
         PaperModel.Detail detail = paperService.시험지상세(paperId);
         PaperResponse.QuestionListDTO respDTO = new PaperResponse.QuestionListDTO(detail.paper(), detail.questions());
         model.addAttribute("model", respDTO);
-        return "paper/detail";
+        return "paper/mcq-detail";
     }
 
     // 5. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) - 시험지등록(교과목별)
@@ -92,7 +93,12 @@ public class PaperController {
     public String questionSaveForm(@PathVariable(name = "paperId") Long paperId, Model model) {
         PaperModel.NextQuestion nextQuestion = paperService.다음문제준비(paperId);
         model.addAttribute("model", nextQuestion);
-        return "paper/question/save-form";
+
+        if (nextQuestion.evaluationWay() == EvaluationWay.MCQ) {
+            return "paper/question/mcq-save-form";
+        } else {
+            return "paper/question/rubric-save-form";
+        }
     }
 
     // 7. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록 - 시험지상세 - 문제등록

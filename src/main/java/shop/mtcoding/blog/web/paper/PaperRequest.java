@@ -11,6 +11,7 @@ import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOp
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public class PaperRequest {
 
@@ -24,12 +25,15 @@ public class PaperRequest {
         private List<OptionDTO> options;
 
         public Question toEntity(Paper paper, SubjectElement element, String imagePath) {
+            String safeImagePath = Optional.ofNullable(imagePath)
+                    .filter(s -> !s.isBlank())
+                    .orElse(null);
             return Question.builder()
                     .no(questionNo)
                     .title(questionTitle)
                     .paper(paper)
                     .subjectElement(element)
-                    .stimulusImg(imagePath) // 저장된 경로
+                    .stimulusImg(safeImagePath) // 저장된 경로
                     .build();
         }
 
@@ -41,11 +45,14 @@ public class PaperRequest {
             private String rubricItem;
 
             public QuestionOption toEntity(Question question) {
+                String safeRubric = Optional.ofNullable(rubricItem)
+                        .filter(s -> !s.isBlank())
+                        .orElse(null);
                 return QuestionOption.builder()
                         .no(optionNo)
                         .content(optionContent)
                         .point(optionPoint)
-                        .rubricItem(rubricItem)
+                        .rubricItem(safeRubric)
                         .question(question)
                         .build();
             }

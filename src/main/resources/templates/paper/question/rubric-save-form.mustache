@@ -1,0 +1,135 @@
+{{> layout/header}}
+<input type="hidden" id="paperId" value="{{model.paperId}}">
+
+<div class="container p-5">
+    <form id="questionForm" enctype="multipart/form-data">
+        <div class="card">
+            <!-- 능력단위 요소 선택 -->
+            <div class="card-header">
+                <select class="form-select" id="elementId">
+                    <option value="0">능력단위 요소를 선택해주세요 (필수)</option>
+                    {{#model.elements}}
+                        <option value="{{elementId}}">{{subtitle}}</option>
+                    {{/model.elements}}
+                </select>
+            </div>
+
+            <!-- 문제 번호 -->
+            <div class="card-header">
+                <b>문제 번호를 입력해주세요</b>
+                <input type="text" class="form-control mt-1" placeholder="문제번호" value="{{model.expectNo}}"
+                       id="questionNo">
+            </div>
+
+            <!-- 문제 제목 -->
+            <div class="card-header">
+                <b>문제 제목을 입력해주세요</b>
+                <input type="text" class="form-control mt-1" placeholder="문제 제목" id="questionTitle">
+            </div>
+
+            <!-- 지문 이미지 -->
+            <div class="card-header">
+                <b>지문 이미지 (선택)</b>
+                <input type="file" class="form-control mt-1" id="stimulusImage">
+            </div>
+
+            <!-- 루브릭 항목 -->
+            <div class="card-header">
+                <b>루브릭 항목을 등록해주세요</b>
+                <div id="questionBox" class="mt-2"></div>
+                <button type="button" class="btn btn-secondary mt-2" onclick="addOption()">루브릭 추가</button>
+            </div>
+        </div>
+
+        <button type="button" onclick="saveQuestion()" class="btn btn-primary form-control mt-3">문제 등록</button>
+    </form>
+</div>
+
+<script>
+    let optionCounter = 1;
+
+    function addOption(no = optionCounter) {
+        const box = document.querySelector("#questionBox");
+        const div = document.createElement("div");
+        div.className = "mt-2 mb-3 pl-2 questionItem";
+        div.innerHTML = `
+            <input type="hidden" class="form-control optionNo" value="${no}" readonly>
+            <input type="text" class="form-control optionRubric mt-1" placeholder="루브릭 평가 항목 (필수)">
+            <input type="number" class="form-control optionPoint mt-1" placeholder="점수 (예: 1~5)" required>
+        `;
+        box.appendChild(div);
+        optionCounter++;
+    }
+
+    window.onload = () => {
+        addOption();
+    };
+
+    async function saveQuestion() {
+        const formData = {
+            elementId: document.getElementById("elementId").value,
+            paperId: document.getElementById("paperId").value,
+            questionNo: document.getElementById("questionNo").value,
+            questionTitle: document.getElementById("questionTitle").value,
+            stimulusFileBase64: "",
+            options: []
+        };
+
+        const fileInput = document.getElementById("stimulusImage");
+        await new Promise((resolve) => {
+            convertFileToBase64(fileInput, (base64) => {
+                formData.stimulusFileBase64 = base64;
+                resolve();
+            });
+        });
+
+        const optionItems = document.querySelectorAll("#questionBox .questionItem");
+
+        for (const item of optionItems) {
+            const optionNo = item.querySelector(".optionNo").value;
+            const optionPoint = parseInt(item.querySelector(".optionPoint").value);
+            const rubricItem = item.querySelector(".optionRubric").value;
+
+            if (isNaN(optionPoint) || optionPoint <= 0) {
+                alert("점수를 정확히 입력해주세요.");
+                return;
+            }
+
+            if (!rubricItem.trim()) {
+                alert("루브릭 설명은 필수입니다.");
+                return;
+            }
+
+            formData.options.push({
+                optionNo,
+                optionContent: "",
+                optionPoint,
+                rubricItem
+            });
+        }
+
+        fetch(`/api/paper-menu/paper/${formData.paperId}/question/save`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(formData)
+        }).then(async res => {
+            if (!res.ok) throw new Error((await res.json()).msg);
+            location.href = `/api/paper-menu/paper/${formData.paperId}`;
+        }).catch(err => {
+            alert(err.message);
+        });
+    }
+
+    function convertFileToBase64(fileInput, callback) {
+        const file = fileInput.files[0];
+        if (!file) {
+            callback("");
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => callback(reader.result);
+        reader.readAsDataURL(file);
+    }
+</script>
+
+{{> layout/footer}}

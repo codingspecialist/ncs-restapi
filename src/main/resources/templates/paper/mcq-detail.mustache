@@ -1,0 +1,42 @@
+{{> layout/header}}
+
+<div class="container p-5">
+    <div class="mb-4">
+        <strong>시험일:</strong> {{model.evaluationDate}} <br>
+        <strong>시험장소:</strong> {{model.loc}} <br>
+        <strong>교과목:</strong> {{model.subjectTitle}} <br>
+    </div>
+
+    <div class="d-flex justify-content-end mb-3">
+        <a href="/api/paper-menu/paper/{{model.paperId}}/question/save-form" class="btn btn-primary">문제등록</a>
+    </div>
+
+    {{#model.questions}}
+        <div class="card mb-4 p-3">
+            <div class="card-body">
+                <!-- 문제 제목 -->
+                <h5 class="card-title">{{no}}. {{title}}</h5>
+
+                <!-- 지문 이미지 -->
+                {{#stimulusImg}}
+                    <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid mb-3" style="max-height: 200px;">
+                {{/stimulusImg}}
+
+                <!-- 항목 리스트 -->
+                <div>
+                    {{#options}}
+                        <div class="form-check mb-1 d-flex align-items-center">
+                            <input class="form-check-input me-2" type="radio" name="answer-{{questionId}}"
+                                   {{#isRight}}checked{{/isRight}} disabled>
+                            <label>
+                                {{no}}. {{content}}
+                            </label>
+                        </div>
+                    {{/options}}
+                </div>
+            </div>
+        </div>
+    {{/model.questions}}
+</div>
+
+{{> layout/footer}}

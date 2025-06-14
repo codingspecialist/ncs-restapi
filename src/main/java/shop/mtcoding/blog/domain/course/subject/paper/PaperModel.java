@@ -13,7 +13,7 @@ public class PaperModel {
     public record Detail(Paper paper, List<Question> questions) {
     }
 
-    public record NextQuestion(Integer expectNo, Long paperId, String evaluationWay, List<Element> elements) {
+    public record NextQuestion(Integer expectNo, Long paperId, EvaluationWay evaluationWay, List<Element> elements) {
         public NextQuestion(Integer expectNo, Long paperId) {
             this(expectNo, paperId, null, List.of());
         }
@@ -22,7 +22,7 @@ public class PaperModel {
             List<Element> converted = subjectElements.stream()
                     .map(e -> new Element(e.getId(), e.getSubtitle()))
                     .toList();
-            return new NextQuestion(expectNo, paperId, paper.getEvaluationWay().toString(), converted);
+            return new NextQuestion(expectNo, paperId, paper.getEvaluationWay(), converted);
         }
 
         record Element(Long elementId, String subtitle) {

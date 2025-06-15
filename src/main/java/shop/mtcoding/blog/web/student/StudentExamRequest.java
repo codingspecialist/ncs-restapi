@@ -26,15 +26,15 @@ public class StudentExamRequest {
             public ExamAnswer toEntity(Question question, Exam exam) {
                 if (selectedOptionNo == null) throw new ApiException400("모든 문제에 대한 답안을 제출해야 됩니다");
 
-                boolean isCollect = true;
-      
+                boolean isRight = true;
+
 
                 ExamAnswer examAnswer = ExamAnswer.builder()
                         .exam(exam)
                         .question(question)
                         .questionNo(questionNo)
                         .selectedOptionNo(selectedOptionNo)
-                        .isCorrect(isCollect)
+                        .isRight(isRight)
                         .build();
 
                 return examAnswer;

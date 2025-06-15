@@ -464,7 +464,7 @@ public class DocumentResponse {
                 this.point = _option.getPoint();
                 this.answerNumber = _option.getNo();
                 this.selectedOptionNo = answer.getSelectedOptionNo();
-                this.studentPoint = answer.getIsCorrect() ? point : 0;
+                this.studentPoint = answer.getEarnedPoint();
                 this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new AnswerDTO.OptionDTO(option, selectedOptionNo)).toList();
             }
 

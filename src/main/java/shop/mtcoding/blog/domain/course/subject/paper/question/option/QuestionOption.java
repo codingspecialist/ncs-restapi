@@ -32,6 +32,7 @@ public class QuestionOption {
 
     // TODO: rubric_test
     private Integer point; // 정답이면 점수, 정답 아니면 0점 // 루브릭일때는 모든 옵션에 점수가 있음.
+    private Boolean isRight; // 점수가 0점이 아니면 다 true
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -44,6 +45,7 @@ public class QuestionOption {
         this.rubricItem = rubricItem;
         this.question = question;
         this.point = point;
+        this.isRight = point > 0;
         this.createdAt = createdAt;
     }
 }

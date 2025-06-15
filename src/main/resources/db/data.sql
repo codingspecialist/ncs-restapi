@@ -141,115 +141,115 @@ INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_i
 VALUES (3, now(), 4, 10, NULL, '커뮤니케이션능력');
 
 -- 4번 시험지의 문제옵션들(1)
-INSERT INTO question_option_tb(no, created_at, point, question_id, rubric_item, content)
-VALUES (1, now(), 5, 10, '요구사항을 능동적으로 분석하고, 백엔드 전반을 효율적으로 구현하며 테스트 및 문서화까지 완료함', null),
-       (2, now(), 4, 10, '요구사항에 맞춰 백엔드 로직을 구현하고, 테스트까지 수행함', null),
-       (3, now(), 3, 10, '백엔드 기능을 일부 구현하였으나, 예외 처리나 테스트가 부족함', null),
-       (4, now(), 2, 10, '기능 구현은 시도했으나 미완성 상태로 동작하지 않음', null),
-       (5, now(), 1, 10, '기능 구현을 거의 하지 못했거나 시도하지 않음', null);
-INSERT INTO question_option_tb(no, created_at, point, question_id, rubric_item, content)
-VALUES (1, now(), 5, 11, '서비스 전반에 걸쳐 RESTful 원칙에 따라 직관적이고 확장 가능한 주소 체계를 완성도 높게 설계함', null),
-       (2, now(), 4, 11, 'RESTful 규칙에 따라 의미 있는 주소 체계를 설계함', null),
-       (3, now(), 3, 11, '기본적인 URL 구성은 했으나 RESTful하지 않거나 일관성이 부족함', null),
-       (4, now(), 2, 11, '주소 체계가 혼란스럽고 기능에 따라 구분이 어려움', null),
-       (5, now(), 1, 11, '주소 설계를 거의 하지 못했거나 의미 없는 주소 사용', null);
-INSERT INTO question_option_tb(no, created_at, point, question_id, rubric_item, content)
-VALUES (1, now(), 5, 12, '발음이 명확하고 목소리가 또렷하며, 적절한 손짓과 시선 처리로 청중과 활발히 소통함', null),
-       (2, now(), 4, 12, '손짓, 아이컨택, 또박또박 말함', null),
-       (3, now(), 3, 12, '아이컨택, 제스처만 가능', null),
-       (4, now(), 2, 12, '말하기 불분명 / 시선회피', null),
-       (5, now(), 1, 12, '발표 거부 / 말하지 않음', null);
+INSERT INTO question_option_tb(no, created_at, point, question_id, rubric_item, content, is_right)
+VALUES (1, now(), 5, 10, '요구사항을 능동적으로 분석하고, 백엔드 전반을 효율적으로 구현하며 테스트 및 문서화까지 완료함', null, true),
+       (2, now(), 4, 10, '요구사항에 맞춰 백엔드 로직을 구현하고, 테스트까지 수행함', null, true),
+       (3, now(), 3, 10, '백엔드 기능을 일부 구현하였으나, 예외 처리나 테스트가 부족함', null, true),
+       (4, now(), 2, 10, '기능 구현은 시도했으나 미완성 상태로 동작하지 않음', null, true),
+       (5, now(), 1, 10, '기능 구현을 거의 하지 못했거나 시도하지 않음', null, true);
+INSERT INTO question_option_tb(no, created_at, point, question_id, rubric_item, content, is_right)
+VALUES (1, now(), 5, 11, '서비스 전반에 걸쳐 RESTful 원칙에 따라 직관적이고 확장 가능한 주소 체계를 완성도 높게 설계함', null, true),
+       (2, now(), 4, 11, 'RESTful 규칙에 따라 의미 있는 주소 체계를 설계함', null, true),
+       (3, now(), 3, 11, '기본적인 URL 구성은 했으나 RESTful하지 않거나 일관성이 부족함', null, true),
+       (4, now(), 2, 11, '주소 체계가 혼란스럽고 기능에 따라 구분이 어려움', null, true),
+       (5, now(), 1, 11, '주소 설계를 거의 하지 못했거나 의미 없는 주소 사용', null, true);
+INSERT INTO question_option_tb(no, created_at, point, question_id, rubric_item, content, is_right)
+VALUES (1, now(), 5, 12, '발음이 명확하고 목소리가 또렷하며, 적절한 손짓과 시선 처리로 청중과 활발히 소통함', null, true),
+       (2, now(), 4, 12, '손짓, 아이컨택, 또박또박 말함', null, true),
+       (3, now(), 3, 12, '아이컨택, 제스처만 가능', null, true),
+       (4, now(), 2, 12, '말하기 불분명 / 시선회피', null, true),
+       (5, now(), 1, 12, '발표 거부 / 말하지 않음', null, true);
 
 
 -- 1번 시험지의 문제옵션들(1)
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (1, '반복문이다', 1, now(), 50, '반복문에 대해서 잘 이해하고 있다.');
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (2, '표현식이아니다', 1, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (3, '한번만실행할수있다', 1, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (4, '반복되지않는다', 1, now(), 0, null);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (1, '반복문이다', 1, now(), 50, '반복문에 대해서 잘 이해하고 있다.', true);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (2, '표현식이아니다', 1, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (3, '한번만실행할수있다', 1, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (4, '반복되지않는다', 1, now(), 0, null, false);
 
 -- 1번 시험지의 문제옵션들(2)
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (1, '끝이 없는 반복문이다.', 2, now(), 50, '끝이 없는 반복문에 대해서 잘 이해하고 있다.');
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (2, '표현식이아니다', 2, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (3, '한번만실행할수있다', 2, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (4, '반복되지않는다', 2, now(), 0, null);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (1, '끝이 없는 반복문이다.', 2, now(), 50, '끝이 없는 반복문에 대해서 잘 이해하고 있다.', true);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (2, '표현식이아니다', 2, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (3, '한번만실행할수있다', 2, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (4, '반복되지않는다', 2, now(), 0, null, false);
 
 -- 2번 시험지의 문제옵션들(1)
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (1, '반복문이다', 3, now(), 20, 'break에 대해서 잘 이해하고 있다.');
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (2, '표현식이아니다', 3, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (3, '한번만실행할수있다', 3, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (4, '반복되지않는다', 3, now(), 0, null);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (1, '반복문이다', 3, now(), 20, 'break에 대해서 잘 이해하고 있다.', true);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (2, '표현식이아니다', 3, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (3, '한번만실행할수있다', 3, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (4, '반복되지않는다', 3, now(), 0, null, false);
 
 -- 2번 시험지의 문제옵션들(2)
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (1, '반복문이다', 4, now(), 20, 'break에 대해서 잘 이해하고 있다.');
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (2, '표현식이아니다', 4, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (3, '한번만실행할수있다', 4, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (4, '반복되지않는다', 4, now(), 0, null);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (1, '반복문이다', 4, now(), 20, 'break에 대해서 잘 이해하고 있다.', true);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (2, '표현식이아니다', 4, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (3, '한번만실행할수있다', 4, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (4, '반복되지않는다', 4, now(), 0, null, false);
 
 -- 2번 시험지의 문제옵션들(3)
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (1, '반복문이다', 5, now(), 20, 'break에 대해서 잘 이해하고 있다.');
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (2, '표현식이아니다', 5, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (3, '한번만실행할수있다', 5, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (4, '반복되지않는다', 5, now(), 0, null);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (1, '반복문이다', 5, now(), 20, 'break에 대해서 잘 이해하고 있다.', true);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (2, '표현식이아니다', 5, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (3, '한번만실행할수있다', 5, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (4, '반복되지않는다', 5, now(), 0, null, false);
 
 -- 2번 시험지의 문제옵션들(4)
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (1, '반복문이다', 6, now(), 20, 'break에 대해서 잘 이해하고 있다.');
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (2, '표현식이아니다', 6, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (3, '한번만실행할수있다', 6, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (4, '반복되지않는다', 6, now(), 0, null);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (1, '반복문이다', 6, now(), 20, 'break에 대해서 잘 이해하고 있다.', true);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (2, '표현식이아니다', 6, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (3, '한번만실행할수있다', 6, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (4, '반복되지않는다', 6, now(), 0, null, false);
 
 -- 2번 시험지의 문제옵션들(5)
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (1, '반복문이다', 7, now(), 20, 'break에 대해서 잘 이해하고 있다.');
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (2, '표현식이아니다', 7, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (3, '한번만실행할수있다', 7, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (4, '반복되지않는다', 7, now(), 0, null);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (1, '반복문이다', 7, now(), 20, 'break에 대해서 잘 이해하고 있다.', true);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (2, '표현식이아니다', 7, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (3, '한번만실행할수있다', 7, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (4, '반복되지않는다', 7, now(), 0, null, false);
 
 -- 3번 시험지의 문제옵션들(1)
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (1, '반복문이다', 8, now(), 50, '반복문은 거시기하다. 이걸 알아야 한다');
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (2, '표현식이아니다', 8, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (3, '한번만실행할수있다', 8, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (4, '반복되지않는다', 8, now(), 0, null);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (1, '반복문이다', 8, now(), 50, '반복문은 거시기하다. 이걸 알아야 한다', true);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (2, '표현식이아니다', 8, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (3, '한번만실행할수있다', 8, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (4, '반복되지않는다', 8, now(), 0, null, false);
 
 -- 3번 시험지의 문제옵션들(2)
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (1, '반복문이다', 9, now(), 50, '반복문은 거시기하다. 이걸 알아야 한다');
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (2, '표현식이아니다', 9, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (3, '한번만실행할수있다', 9, now(), 0, null);
-insert into question_option_tb(no, content, question_id, created_at, point, rubric_item)
-values (4, '반복되지않는다', 9, now(), 0, null);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (1, '반복문이다', 9, now(), 50, '반복문은 거시기하다. 이걸 알아야 한다', true);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (2, '표현식이아니다', 9, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (3, '한번만실행할수있다', 9, now(), 0, null, false);
+insert into question_option_tb(no, content, question_id, created_at, point, rubric_item, is_right)
+values (4, '반복되지않는다', 9, now(), 0, null, false);
 
 insert into exam_tb
 (subject_id, is_use, created_at, exam_state, grade, paper_id, pass_state, re_exam_reason, score, student_id,
@@ -287,47 +287,47 @@ values (1, true, now(), '재평가', 5, 3, '통과', '', 90, 1, '재평가를 �
 
 
 insert into exam_answer_tb
-(exam_id, is_correct, question_id, question_no, selected_option_no, created_at)
-values (1, true, 1, 1, 1, now());
+(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
+values (1, true, 1, 1, 1, now(), 50);
 insert into exam_answer_tb
-(exam_id, is_correct, question_id, question_no, selected_option_no, created_at)
-values (1, false, 2, 2, 4, now());
+(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
+values (1, false, 2, 2, 4, now(), 0);
 
 insert into exam_answer_tb
-(exam_id, is_correct, question_id, question_no, selected_option_no, created_at)
-values (2, false, 1, 1, 4, now());
+(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
+values (2, false, 1, 1, 4, now(), 0);
 insert into exam_answer_tb
-(exam_id, is_correct, question_id, question_no, selected_option_no, created_at)
-values (2, true, 2, 2, 1, now());
+(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
+values (2, true, 2, 2, 1, now(), 50);
 
 insert into exam_answer_tb
-(exam_id, is_correct, question_id, question_no, selected_option_no, created_at)
-values (3, true, 1, 1, 1, now());
+(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
+values (3, true, 1, 1, 1, now(), 50);
 insert into exam_answer_tb
-(exam_id, is_correct, question_id, question_no, selected_option_no, created_at)
-values (3, true, 2, 2, 1, now());
+(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
+values (3, true, 2, 2, 1, now(), 50);
 
 
 insert into exam_answer_tb
-(exam_id, is_correct, question_id, question_no, selected_option_no, created_at)
-values (4, true, 3, 1, 1, now());
+(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
+values (4, true, 3, 1, 1, now(), 20);
 insert into exam_answer_tb
-(exam_id, is_correct, question_id, question_no, selected_option_no, created_at)
-values (4, true, 4, 2, 1, now());
+(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
+values (4, true, 4, 2, 1, now(), 20);
 insert into exam_answer_tb
-(exam_id, is_correct, question_id, question_no, selected_option_no, created_at)
-values (4, true, 5, 3, 1, now());
+(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
+values (4, true, 5, 3, 1, now(), 20);
 insert into exam_answer_tb
-(exam_id, is_correct, question_id, question_no, selected_option_no, created_at)
-values (4, true, 6, 4, 1, now());
+(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
+values (4, true, 6, 4, 1, now(), 20);
 insert into exam_answer_tb
-(exam_id, is_correct, question_id, question_no, selected_option_no, created_at)
-values (4, false, 7, 5, 4, now());
+(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
+values (4, false, 7, 5, 4, now(), 0);
 
 -- 5번
 insert into exam_answer_tb
-(exam_id, is_correct, question_id, question_no, selected_option_no, created_at)
-values (5, true, 8, 1, 1, now());
+(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
+values (5, true, 8, 1, 1, now(), 50);
 insert into exam_answer_tb
-(exam_id, is_correct, question_id, question_no, selected_option_no, created_at)
-values (5, true, 9, 2, 1, now());
+(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
+values (5, true, 9, 2, 1, now(), 50);

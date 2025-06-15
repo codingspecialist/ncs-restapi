@@ -153,8 +153,20 @@ public class ExamService {
         });
 
         // 4. 시험점수, 수준, 통과여부 업데이트 하기
-        //double score = examAnswers.stream().mapToInt(value -> value.getIsCorrect() ? value.getQuestion().getPoint() : 0).sum();
-        double score = 100;
+        double score = examAnswers.stream()
+                .mapToInt(value -> {
+                    if (value.getIsRight()) {
+                        return value.getQuestion()
+                                .getQuestionOptions()
+                                .stream()
+                                .mapToInt(option -> option.getPoint())
+                                .max()
+                                .orElse(0); // 옵션이 없을 경우 0
+                    } else {
+                        return 0;
+                    }
+                })
+                .sum();
 
         // 5. 재평가지로 시험쳤으면 10%
         if (examPS.getPaper().isReEvaluation()) {
@@ -241,7 +253,7 @@ public class ExamService {
         String teacherBadComment = "";
 
         for (ExamAnswer examAnswer : examAnswerList) {
-            if (examAnswer.getIsCorrect()) {
+            if (examAnswer.getIsRight()) {
                 teacherGoodComment += examAnswer.getQuestion().getSubjectElement().getSubtitle() + ", ";
             } else {
                 teacherBadComment += examAnswer.getQuestion().getSubjectElement().getSubtitle() + ", ";

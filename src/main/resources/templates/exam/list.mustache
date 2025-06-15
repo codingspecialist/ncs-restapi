@@ -27,11 +27,9 @@
                 <td>{{passState}} {{reExamReason}}</td>
                 {{#isAbsent}}
                     <td>
-                        <form>
-                            <input type="hidden" id="studentId" value="{{studentId}}">
-                            <input type="hidden" id="paperId" value="{{paperId}}">
-                            <button class="btn btn-outline-danger" type="button" onclick="absent()">결석처리</button>
-                        </form>
+                        <button class="btn btn-outline-danger" type="button"
+                                onclick="absent({{studentId}}, {{paperId}})">결석처리
+                        </button>
                     </td>
                 {{/isAbsent}}
                 {{^isAbsent}}
@@ -47,10 +45,10 @@
 </div>
 
 <script>
-    async function absent() {
+    async function absent(studentId, paperId) {
         let requestBody = {
-            studentId: document.querySelector("#studentId").value,
-            paperId: document.querySelector("#paperId").value
+            studentId: studentId,
+            paperId: paperId
         };
         console.log(requestBody);
 

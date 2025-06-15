@@ -170,29 +170,6 @@ public class ExamResponse {
             this.originExamId = originExamId;
         }
 
-        // 미이수 결과 보기
-        public ResultDetailDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher) {
-            this.examId = exam.getId();
-            this.paperId = exam.getPaper().getId();
-            this.studentName = exam.getStudent().getName();
-            this.teacherName = exam.getTeacherName();
-            this.evaluationDate = exam.getPaper().getEvaluationDate().toString();
-            this.loc = "3호";
-            this.subjectTitle = exam.getPaper().getSubject().getTitle();
-            this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
-            this.answers = exam.getExamAnswers().stream().map(AnswerDTO::new).toList();
-            this.questionCount = exam.getPaper().getQuestionCount();
-            this.examState = exam.getExamState();
-            this.reExamReason = exam.getReExamReason();
-            this.examPassState = exam.getPassState();
-            this.score = exam.getScore();
-            this.teacherComment = exam.getTeacherComment();
-            this.grade = exam.getGrade();
-            this.teacherSign = teacher.getSign();
-            this.studentSign = exam.getStudentSign();
-            this.isStudentSign = exam.getStudentSign() == null ? false : true;
-            this.isAbsent = exam.getReExamReason().equals("결석");
-        }
 
         @Data
         class AnswerDTO {
@@ -211,6 +188,8 @@ public class ExamResponse {
                 this.questionId = answer.getQuestion().getId();
                 this.no = answer.getQuestion().getNo();
                 this.title = answer.getQuestion().getTitle();
+
+                // 객관식일때는, isRight인것의 점수를 가져오면 되는데, 객관식이 아닐때는, 정답이 여러개일수 있기 때문에 가장 높은점수를 가져와야 해서 아래 코드 필수임
                 QuestionOption _option = answer.getQuestion().getQuestionOptions().stream()
                         .max(Comparator.comparingInt(QuestionOption::getPoint))
                         .orElse(null);
@@ -218,7 +197,7 @@ public class ExamResponse {
                 this.totalPoint = _option.getPoint();
                 this.answerNumber = _option.getNo();
                 this.selectedOptionNo = answer.getSelectedOptionNo();
-                this.studentPoint = answer.getIsCorrect() ? totalPoint : 0;
+                this.studentPoint = answer.getEarnedPoint();
                 this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new OptionDTO(option, selectedOptionNo)).toList();
             }
 
@@ -233,7 +212,7 @@ public class ExamResponse {
                     this.optionId = option.getId();
                     this.no = option.getNo();
                     this.content = option.getContent();
-                    this.isSelect = no == selectedOptionNo ? true : false;
+                    this.isSelect = no.equals(selectedOptionNo);
                 }
             }
         }

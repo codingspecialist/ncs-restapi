@@ -169,7 +169,8 @@
         }).done((res) => {
             if (nextExamId) {
                 alert("총평 저장 완료");
-                location.href = `/api/exam-menu/exam/${nextExamId}`;
+                //location.href = `/api/exam-menu/exam/${nextExamId}`;
+                location.reload();
             } else {
                 alert("총평 저장 완료 - 마지막페이지입니다");
                 location.reload();

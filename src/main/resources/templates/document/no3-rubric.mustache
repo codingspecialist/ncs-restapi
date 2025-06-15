@@ -1,0 +1,77 @@
+{{> layout/header}}
+
+<style>
+    .page-title {
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 2rem;
+    }
+</style>
+
+<div class="container p-5">
+
+    <div class="page-title">
+        <h1>평가지</h1>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header">
+            <div>
+                시험일 : {{model.evaluationDate}} <br>
+                시험장소 : {{model.loc}} <br>
+                교과목 : {{model.subjectTitle}} <br>
+                훈련교사 : {{model.teacherName}} <br>
+                문항수 : {{model.questionCount}} <br>
+            </div>
+        </div>
+        <div class="card-body">
+            <div>
+                {{#model.subjectElements}}
+                    <div><i>{{.}}</i></div>
+                {{/model.subjectElements}}
+            </div>
+        </div>
+    </div>
+
+    <div>
+        PBL 과제 계획서 필요함<br>
+        프로젝트 절차 안내서 필요함
+    </div>
+
+    {{#model.questions}}
+        <div class="card mb-4">
+            <div class="card-header fw-bold">
+                {{no}}. {{title}} <!-- 문제 제목 -->
+            </div>
+
+            <div class="card-body p-3">
+                <!-- 지문 이미지 -->
+                {{#stimulusImg}}
+                    <div class="mb-3">
+                        <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid" style="max-height: 200px;">
+                    </div>
+                {{/stimulusImg}}
+
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                    <tr>
+                        <th style="width: 80px;" class="text-center">점수</th>
+                        <th>평가기준 (루브릭 설명)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#options}}
+                        <tr>
+                            <td class="text-center fw-bold align-middle">{{point}}점</td>
+                            <td>{{rubricItem}}</td>
+                        </tr>
+                    {{/options}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {{/model.questions}}
+</div>
+
+{{> layout/footer}}

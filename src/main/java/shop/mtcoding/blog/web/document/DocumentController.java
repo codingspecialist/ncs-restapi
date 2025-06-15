@@ -1,7 +1,6 @@
 package shop.mtcoding.blog.web.document;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -65,8 +64,6 @@ public class DocumentController {
     public String no2(@PathVariable("subjectId") Long subjectId, Model model) throws JsonProcessingException {
         var modelData = documentService.no2(subjectId);
         var respDTO = new DocumentResponse.No2DTO(modelData.subject(), modelData.questions());
-        String test = new ObjectMapper().writeValueAsString(respDTO);
-        System.out.println(test);
         model.addAttribute("model", respDTO);
         return "document/no2";
     }
@@ -74,9 +71,16 @@ public class DocumentController {
     @GetMapping("/api/document-menu/subject/{subjectId}/no3")
     public String no3(@PathVariable("subjectId") Long subjectId, Model model) {
         var modelData = documentService.no3(subjectId);
-        var respDTO = new DocumentResponse.No3DTO(modelData.paper(), modelData.elements(), modelData.questions(), modelData.teacher());
-        model.addAttribute("model", respDTO);
-        return "document/no3";
+
+        if (modelData.paper().getEvaluationWay() == EvaluationWay.MCQ) {
+            var respDTO = new DocumentResponse.No3DTO(modelData.paper(), modelData.elements(), modelData.questions(), modelData.teacher());
+            model.addAttribute("model", respDTO);
+            return "document/no3-mcq";
+        } else {
+            var respDTO = new DocumentResponse.No3DTO(modelData.paper(), modelData.elements(), modelData.questions(), modelData.teacher());
+            model.addAttribute("model", respDTO);
+            return "document/no3-rubric";
+        }
     }
 
     @GetMapping("/api/document-menu/subject/{subjectId}/no4")

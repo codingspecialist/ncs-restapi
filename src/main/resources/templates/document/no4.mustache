@@ -81,47 +81,54 @@
         </div>
     </div>
 
-    <form>
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th>번호</th>
-                <th>제목</th>
-                <th>문제점수</th>
-                <th>항목</th>
-                <th>정답번호</th>
-                <th>채점</th>
-            </tr>
-            </thead>
-            <tbody class="exam-body">
-            {{#model.answers}}
-
-                <tr>
-                    <input type="hidden" class="answerId" value="{{answerId}}">
-                    <td>{{no}}</td>
-                    <td>{{title}}</td>
-                    <td>{{point}}점</td>
-                    <td>
-                        {{#options}}
-                            {{no}} {{content}} <input type="radio" value="{{no}}" class="optionNo"
-                                                      name="question-{{questionId}}"
-                                                      {{#isSelect}}checked{{/isSelect}} disabled><br>
-                        {{/options}}
-                    </td>
-                    <td>정답 {{answerNumber}}</td>
-                    <td>{{studentPoint}}점</td>
-                </tr>
-            {{/model.answers}}
-            </tbody>
-        </table>
-        <div class="card">
-            <div class="card-header">총평</div>
+    {{#model.answers}}
+        <div class="card mb-4 p-3 position-relative exam-body">
+            <input type="hidden" class="answerId" value="{{answerId}}">
             <div class="card-body">
-                <textarea id="teacherComment" class="form-control bg-light" readonly>{{model.teacherComment}}</textarea>
+                <div class="d-flex justify-content-between">
+                    <!-- 문제 제목 -->
+                    <h5 class="card-title">{{no}}. {{title}}</h5>
+
+                    <!-- 정답 및 채점 점수 -->
+                    <div class="text-end">
+                        <small class="text-muted">정답: {{answerNumber}}번</small><br>
+                        <small class="text-muted">점수: {{studentPoint}}점</small>
+                    </div>
+                </div>
+
+                <div class="badge bg-secondary my-2">배점: {{totalPoint}}점</div>
+
+                <!-- 지문 이미지 -->
+                {{#stimulusImg}}
+                    <div>
+                        <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid mb-3" style="max-height: 200px;">
+                    </div>
+                {{/stimulusImg}}
+
+                <!-- 객관식 옵션 -->
+                <div>
+                    {{#options}}
+                        <div class="form-check mb-1 d-flex align-items-center">
+                            <input class="form-check-input me-2 optionNo" type="radio"
+                                   name="question-{{questionId}}"
+                                   value="{{no}}"
+                                   {{#isSelect}}checked{{/isSelect}}>
+                            <label>{{no}}. {{content}}</label>
+                        </div>
+                    {{/options}}
+                </div>
             </div>
         </div>
+    {{/model.answers}}
 
-    </form>
+
+    <div class="card">
+        <div class="card-header">총평</div>
+        <div class="card-body">
+            <textarea id="teacherComment" class="form-control bg-light" readonly>{{model.teacherComment}}</textarea>
+        </div>
+    </div>
+
 </div>
 
 

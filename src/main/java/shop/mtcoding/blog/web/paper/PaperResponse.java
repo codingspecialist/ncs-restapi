@@ -136,7 +136,7 @@ public class PaperResponse {
             private Integer no;
             private String title;
             private String stimulusImg;
-            private Integer totalPoint; // 객관식 시험일때만!!
+            private Integer totalPoint; // 배점
             private List<OptionDTO> options;
 
             public QuestionDTO(Question question) {
@@ -147,7 +147,8 @@ public class PaperResponse {
                 this.totalPoint = question.getQuestionOptions()
                         .stream()
                         .mapToInt(o -> o.getPoint())
-                        .sum();
+                        .max()
+                        .orElse(0);
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
             }
 

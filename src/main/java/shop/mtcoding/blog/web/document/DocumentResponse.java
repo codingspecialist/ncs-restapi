@@ -15,7 +15,6 @@ import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DocumentResponse {
 
@@ -350,38 +349,39 @@ public class DocumentResponse {
             private Long questionId;
             private Integer no;
             private String title;
-            private Integer point;
-            private Integer answerNumber;
-            private String questionPurpose;
+            private String stimulusImg;
+            private Integer totalPoint; // 배점
             private List<OptionDTO> options;
 
             public QuestionDTO(Question question) {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-                QuestionOption _option = question.getQuestionOptions().stream()
-                        .max(Comparator.comparingInt(QuestionOption::getPoint))
-                        .orElse(null);
-                this.point = _option.getPoint();
-                this.answerNumber = _option.getNo();
-                this.questionPurpose = question.getQuestionOptions().stream()
-                        .filter(option -> option.getPoint() > 0)
-                        .map(QuestionOption::getRubricItem)
-                        .collect(Collectors.joining(", "));
-                this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
-                ;
+                this.stimulusImg = question.getStimulusImg();
+                this.totalPoint = question.getQuestionOptions()
+                        .stream()
+                        .mapToInt(o -> o.getPoint())
+                        .max()
+                        .orElse(0);
+                this.options = question.getQuestionOptions().stream().map(QuestionDTO.OptionDTO::new).toList();
             }
 
             @Data
             class OptionDTO {
+                private Long optionId;
                 private Integer no;
                 private String content;
+                private String rubricItem;
+                private Integer point;
                 private Boolean isRight;
 
                 public OptionDTO(QuestionOption option) {
+                    this.optionId = option.getId();
                     this.no = option.getNo();
                     this.content = option.getContent();
-                    this.isRight = option.getPoint() > 0 ? true : false;
+                    this.rubricItem = option.getRubricItem();
+                    this.point = option.getPoint();
+                    this.isRight = option.getPoint() > 0;
                 }
             }
         }
@@ -447,7 +447,7 @@ public class DocumentResponse {
             private Long questionId;
             private Integer no;
             private String title;
-            private Integer point;
+            private Integer totalPoint; // 배점
             private Integer answerNumber; // 정답 번호
             private Integer selectedOptionNo; // 학생 선택 번호
             private Integer studentPoint;
@@ -461,7 +461,7 @@ public class DocumentResponse {
                 QuestionOption _option = answer.getQuestion().getQuestionOptions().stream()
                         .max(Comparator.comparingInt(QuestionOption::getPoint))
                         .orElse(null);
-                this.point = _option.getPoint();
+                this.totalPoint = _option.getPoint();
                 this.answerNumber = _option.getNo();
                 this.selectedOptionNo = answer.getSelectedOptionNo();
                 this.studentPoint = answer.getEarnedPoint();

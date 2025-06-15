@@ -1,5 +1,7 @@
 package shop.mtcoding.blog.web.document;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import shop.mtcoding.blog.domain.course.subject.paper.EvaluationWay;
 import shop.mtcoding.blog.domain.document.DocumentService;
 import shop.mtcoding.blog.domain.user.User;
 
@@ -46,15 +49,24 @@ public class DocumentController {
     @GetMapping("/api/document-menu/subject/{subjectId}/no1")
     public String no1(@PathVariable("subjectId") Long subjectId, Model model) {
         var modelData = documentService.no1(subjectId);
-        var respDTO = new DocumentResponse.No1DTO(modelData.subject(), modelData.questions(), modelData.teacher().getSign(), modelData.paper());
-        model.addAttribute("model", respDTO);
+
+        if (modelData.paper().getEvaluationWay() == EvaluationWay.MCQ) {
+            var respDTO = new DocumentResponse.No1McqDTO(modelData.subject(), modelData.questions(), modelData.teacher().getSign(), modelData.paper());
+            model.addAttribute("model", respDTO);
+        } else {
+            var respDTO = new DocumentResponse.No1RubricDTO(modelData.subject(), modelData.questions(), modelData.teacher().getSign(), modelData.paper());
+            model.addAttribute("model", respDTO);
+        }
+
         return "document/no1";
     }
 
     @GetMapping("/api/document-menu/subject/{subjectId}/no2")
-    public String no2(@PathVariable("subjectId") Long subjectId, Model model) {
+    public String no2(@PathVariable("subjectId") Long subjectId, Model model) throws JsonProcessingException {
         var modelData = documentService.no2(subjectId);
         var respDTO = new DocumentResponse.No2DTO(modelData.subject(), modelData.questions());
+        String test = new ObjectMapper().writeValueAsString(respDTO);
+        System.out.println(test);
         model.addAttribute("model", respDTO);
         return "document/no2";
     }

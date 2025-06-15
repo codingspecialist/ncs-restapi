@@ -1,6 +1,24 @@
 {{> layout/header}}
 
+<style>
+    .text-end {
+        font-size: 0.85rem;
+        line-height: 1.2;
+    }
 
+    .card .card-title {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+    }
+
+    .form-check label {
+        margin-bottom: 0;
+    }
+</style>
 
 <div class="container p-5">
     {{#model.originExamId}}
@@ -10,19 +28,15 @@
         <hr>
     {{/model.originExamId}}
 
-
     <ul class="pagination d-flex justify-content-end">
         {{#model.prevExamId}}
-            <li class="page-item"><a class="page-link" href="/api/exam-menu/exam/{{model.prevExamId}}">이전학생</a>
-            </li>
+            <li class="page-item"><a class="page-link" href="/api/exam-menu/exam/{{model.prevExamId}}">이전학생</a></li>
         {{/model.prevExamId}}
 
         {{#model.nextExamId}}
-            <li class="page-item"><a class="page-link" href="/api/exam-menu/exam/{{model.nextExamId}}">다음학생</a>
-            </li>
+            <li class="page-item"><a class="page-link" href="/api/exam-menu/exam/{{model.nextExamId}}">다음학생</a></li>
             <input type="hidden" value="{{model.nextExamId}}" id="nextExamId">
         {{/model.nextExamId}}
-
     </ul>
 
     <div class="card mb-3">
@@ -72,84 +86,80 @@
         </div>
     </div>
 
-    <form>
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th>번호</th>
-                <th>제목</th>
-                <th>문제점수</th>
-                <th>항목</th>
-                <th>정답번호</th>
-                <th>채점</th>
-            </tr>
-            </thead>
-            <tbody class="exam-body">
-            {{#model.answers}}
 
-                <tr>
-                    <input type="hidden" class="answerId" value="{{answerId}}">
-                    <td>{{no}}</td>
-                    <td>{{title}}</td>
-                    <td>{{point}}점</td>
-                    <td>
-                        {{#options}}
-                            {{no}} {{content}} <input type="radio" value="{{no}}" class="optionNo"
-                                                      name="question-{{questionId}}"
-                                                      {{#isSelect}}checked{{/isSelect}}><br>
-                        {{/options}}
-                    </td>
-                    <td>정답 {{answerNumber}}</td>
-                    <td>{{studentPoint}}점</td>
-                </tr>
-            {{/model.answers}}
-            </tbody>
-        </table>
-        <div class="card">
-            <div class="card-header">총평</div>
+    {{#model.answers}}
+        <div class="card mb-4 p-3 position-relative exam-body">
+            <input type="hidden" class="answerId" value="{{answerId}}">
             <div class="card-body">
-                <textarea id="teacherComment" class="form-control">{{model.teacherComment}}</textarea>
+                <div class="d-flex justify-content-between">
+                    <!-- 문제 제목 -->
+                    <h5 class="card-title">{{no}}. {{title}}</h5>
 
-            </div>
-            <div class="card-footer d-flex justify-content-end">
-                <button type="button" class="btn btn-primary" onclick="sendAnswer({{model.examId}})">총평저장</button>
+                    <!-- 정답 및 채점 점수 -->
+                    <div class="text-end">
+                        <small class="text-muted">정답: {{answerNumber}}번</small><br>
+                        <small class="text-muted">점수: {{studentPoint}}점</small>
+                    </div>
+                </div>
+
+                <div class="badge bg-secondary my-2">배점: {{totalPoint}}점</div>
+
+                <!-- 지문 이미지 -->
+                {{#stimulusImg}}
+                    <div>
+                        <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid mb-3" style="max-height: 200px;">
+                    </div>
+                {{/stimulusImg}}
+
+                <!-- 객관식 옵션 -->
+                <div>
+                    {{#options}}
+                        <div class="form-check mb-1 d-flex align-items-center">
+                            <input class="form-check-input me-2 optionNo" type="radio"
+                                   name="question-{{questionId}}"
+                                   value="{{no}}"
+                                   {{#isSelect}}checked{{/isSelect}}>
+                            <label>{{no}}. {{content}}</label>
+                        </div>
+                    {{/options}}
+                </div>
             </div>
         </div>
+    {{/model.answers}}
 
-    </form>
+    <div class="card">
+        <div class="card-header">총평</div>
+        <div class="card-body">
+            <textarea id="teacherComment" class="form-control">{{model.teacherComment}}</textarea>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="button" class="btn btn-primary" onclick="sendAnswer({{model.examId}})">총평저장</button>
+        </div>
+    </div>
+
 </div>
 
-
 <script>
-
     function sendAnswer(examId) {
-
         let nextExamId = $("#nextExamId").val();
-        console.log("nextExamId", nextExamId);
 
         let requestBody = {
             teacherComment: $("#teacherComment").val(),
             answers: []
         };
-        let items = $(".exam-body > tr");
 
+        $(".exam-body").each(function () {
+            const answerId = $(this).find(".answerId").val();
+            const selectedOptionNo = $(this).find(".optionNo:checked").val();
 
-        items.each(function (index, element) {
-            console.log(element);
-            let answerId = $(element).find(".answerId:first").val();
-            let selectedOptionNo = $(element).find(".optionNo:checked").val();
-            // console.log("문제번호", questionNo);
-            // console.log("정답번호", selectedOptionNo);
+            // 선택된 항목이 없을 경우 이 문제는 건너뛰기
+            if (!selectedOptionNo) return;
 
-            let answer = {
+            requestBody.answers.push({
                 answerId: Number(answerId),
-                selectedOptionNo: Number(selectedOptionNo),
-            };
-
-            requestBody.answers.push(answer);
+                selectedOptionNo: Number(selectedOptionNo)
+            });
         });
-
-        console.log(JSON.stringify(requestBody));
 
         $.ajax({
             url: `/api/exam-menu/exam/${examId}`,
@@ -157,7 +167,7 @@
             data: JSON.stringify(requestBody),
             contentType: "application/json; charset=utf-8"
         }).done((res) => {
-            if (nextExamId !== undefined) {
+            if (nextExamId) {
                 alert("총평 저장 완료");
                 location.href = `/api/exam-menu/exam/${nextExamId}`;
             } else {
@@ -165,10 +175,9 @@
                 location.reload();
             }
         }).fail((res) => {
-            alert(res.responseJSON.msg);
+            alert(res.responseJSON?.msg || "저장 중 오류가 발생했습니다.");
         });
     }
-
 
 </script>
 

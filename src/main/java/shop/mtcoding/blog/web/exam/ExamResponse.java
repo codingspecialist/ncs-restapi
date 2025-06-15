@@ -200,7 +200,7 @@ public class ExamResponse {
             private Long questionId;
             private Integer no;
             private String title;
-            private Integer point;
+            private Integer totalPoint;
             private Integer answerNumber; // 정답 번호
             private Integer selectedOptionNo; // 학생 선택 번호
             private Integer studentPoint;
@@ -215,10 +215,10 @@ public class ExamResponse {
                         .max(Comparator.comparingInt(QuestionOption::getPoint))
                         .orElse(null);
 
-                this.point = _option.getPoint();
+                this.totalPoint = _option.getPoint();
                 this.answerNumber = _option.getNo();
                 this.selectedOptionNo = answer.getSelectedOptionNo();
-                this.studentPoint = answer.getIsCorrect() ? point : 0;
+                this.studentPoint = answer.getIsCorrect() ? totalPoint : 0;
                 this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new OptionDTO(option, selectedOptionNo)).toList();
             }
 

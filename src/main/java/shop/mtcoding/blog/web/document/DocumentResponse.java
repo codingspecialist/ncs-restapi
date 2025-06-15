@@ -13,7 +13,9 @@ import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOp
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DocumentResponse {
 
@@ -101,25 +103,40 @@ public class DocumentResponse {
         private String subjectPurpose; // 훈련목표
         private String subjectTitle; // 교과목명
         private List<String> subjectElements; // 세부내용들
-        private RubricDTO rubricFirst;
-        private List<RubricDTO> rubrics;
+        private List<Integer> menus;
+        private List<QuestionDTO> questions;
 
         public No2DTO(Subject subject, List<Question> questions) {
             this.subjectPurpose = subject.getPurpose();
             this.subjectTitle = subject.getTitle();
             this.subjectElements = subject.getElements().stream().map(subjectElement -> subjectElement.getSubtitle()).toList();
-            this.rubricFirst = new RubricDTO(questions.get(0));
-            this.rubrics = questions.stream().skip(1).map(question -> new RubricDTO(question)).toList();
+            this.menus = questions.get(0).getQuestionOptions().stream()
+                    .filter(option -> option.getRubricItem() != null)
+                    .map(QuestionOption::getPoint).toList();
+            this.questions = questions.stream().map(question -> new QuestionDTO(question)).toList();
         }
 
         @Data
-        class RubricDTO {
-            private String subjectElement;
+        class QuestionDTO {
+            private String subjectElementPurpose;
+            private List<RubricDTO> rubricItems;
 
-            public RubricDTO(Question question) {
-                this.subjectElement = question.getSubjectElement().getSubtitle();
-//                this.questionPurpose = question.getQuestionPurpose();
-//                this.questionFail = question.getQuestionFail();
+            public QuestionDTO(Question question) {
+                this.subjectElementPurpose = question.getSubjectElement().getSubjectElementPurpose();
+                this.rubricItems = question.getQuestionOptions().stream()
+                        .filter(option -> option.getRubricItem() != null)
+                        .map(RubricDTO::new).toList();
+            }
+
+            @Data
+            class RubricDTO {
+                private String rubricItem;
+                private Integer point;
+
+                public RubricDTO(QuestionOption option) {
+                    this.rubricItem = option.getRubricItem();
+                    this.point = option.getPoint();
+                }
             }
         }
     }
@@ -153,7 +170,7 @@ public class DocumentResponse {
     }
 
     @Data
-    public static class No1DTO {
+    public static class No1RubricDTO {
         private String courseTitle;
         private Integer courseRound;
         private String courseStartDate;
@@ -171,7 +188,7 @@ public class DocumentResponse {
         private String sign;
 
         // 교과목 조회, 교과목의 본평가 시험지로 출제된 문제 목록 조회
-        public No1DTO(Subject subject, List<Question> questions, String sign, Paper paper) {
+        public No1RubricDTO(Subject subject, List<Question> questions, String sign, Paper paper) {
             this.courseTitle = subject.getCourse().getTitle();
             this.courseRound = subject.getCourse().getRound();
             this.courseStartDate = subject.getCourse().getStartDate().toString();
@@ -203,11 +220,89 @@ public class DocumentResponse {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-//                this.point = question.getPoint();
-//                this.answerNumber = question.getAnswerNumber();
-//                this.questionPurpose = question.getQuestionPurpose();
+                QuestionOption _option = question.getQuestionOptions().stream()
+                        .max(Comparator.comparingInt(QuestionOption::getPoint))
+                        .orElse(null);
+                this.point = _option.getPoint();
+                this.answerNumber = _option.getNo();
+                this.questionPurpose = question.getSubjectElement().getSubjectElementPurpose();
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
-                ;
+            }
+
+            @Data
+            class OptionDTO {
+                private Integer no;
+                private String content;
+                private Boolean isRight;
+
+                public OptionDTO(QuestionOption option) {
+                    this.no = option.getNo();
+                    this.content = option.getRubricItem();
+                    this.isRight = option.getPoint().equals(point);
+                }
+            }
+        }
+    }
+
+
+    @Data
+    public static class No1McqDTO {
+        private String courseTitle;
+        private Integer courseRound;
+        private String courseStartDate;
+        private String courseEndDate;
+        private String subjectTitle;
+        private String subjectEvaluationWay;
+        private String subjectTeacherName;
+        private String subjectEvaluationDate; // 채점일시 == 평가일시 == 제출기한
+        private String loc;
+        private List<String> subjectElements;
+        private String submitWay; // 제출방법 : 온라인
+        private List<String> examRates; // 평가 배점 (1차, 2차), 결시자는 2차 평가와 같다.
+        private String equipment; // 평가환경 장비
+        private List<QuestionDTO> questions;
+        private String sign;
+
+        // 교과목 조회, 교과목의 본평가 시험지로 출제된 문제 목록 조회
+        public No1McqDTO(Subject subject, List<Question> questions, String sign, Paper paper) {
+            this.courseTitle = subject.getCourse().getTitle();
+            this.courseRound = subject.getCourse().getRound();
+            this.courseStartDate = subject.getCourse().getStartDate().toString();
+            this.courseEndDate = MyUtil.localDateToString(subject.getCourse().getEndDate());
+            this.subjectTitle = subject.getTitle();
+            this.subjectEvaluationWay = paper.getEvaluationWay().toKorean();
+            this.subjectTeacherName = subject.getTeacherName();
+            this.subjectEvaluationDate = MyUtil.localDateToString(paper.getEvaluationDate());
+            this.loc = "3호";
+            this.subjectElements = subject.getElements().stream().map(subjectElement -> subjectElement.getSubtitle()).toList();
+            this.submitWay = "온라인 제출";
+            this.examRates = Arrays.asList("본평가 배점 : 평가점수 X 100%", "재평가 배점 : 평가점수 X 90%", "결시자 배점 : 평가점수 X 90%");
+            this.equipment = "인터넷이 설치되어 있는 PC";
+            this.questions = questions.stream().map(QuestionDTO::new).toList();
+            this.sign = sign;
+        }
+
+        @Data
+        class QuestionDTO {
+            private Long questionId;
+            private Integer no;
+            private String title;
+            private Integer point;
+            private Integer answerNumber;
+            private String questionPurpose;
+            private List<OptionDTO> options;
+
+            public QuestionDTO(Question question) {
+                this.questionId = question.getId();
+                this.no = question.getNo();
+                this.title = question.getTitle();
+                QuestionOption _option = question.getQuestionOptions().stream()
+                        .max(Comparator.comparingInt(QuestionOption::getPoint))
+                        .orElse(null);
+                this.point = _option.getPoint();
+                this.answerNumber = _option.getNo();
+                this.questionPurpose = question.getSubjectElement().getSubjectElementPurpose();
+                this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
             }
 
             @Data
@@ -219,7 +314,7 @@ public class DocumentResponse {
                 public OptionDTO(QuestionOption option) {
                     this.no = option.getNo();
                     this.content = option.getContent();
-//                    this.isRight = option.getIsRight();
+                    this.isRight = option.getPoint() > 0 ? true : false; // 객관식일때만 의미가 있음
                 }
             }
         }
@@ -264,9 +359,15 @@ public class DocumentResponse {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-//                this.point = question.getPoint();
-//                this.answerNumber = question.getAnswerNumber();
-//                this.questionPurpose = question.getQuestionPurpose();
+                QuestionOption _option = question.getQuestionOptions().stream()
+                        .max(Comparator.comparingInt(QuestionOption::getPoint))
+                        .orElse(null);
+                this.point = _option.getPoint();
+                this.answerNumber = _option.getNo();
+                this.questionPurpose = question.getQuestionOptions().stream()
+                        .filter(option -> option.getPoint() > 0)
+                        .map(QuestionOption::getRubricItem)
+                        .collect(Collectors.joining(", "));
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
                 ;
             }
@@ -280,7 +381,7 @@ public class DocumentResponse {
                 public OptionDTO(QuestionOption option) {
                     this.no = option.getNo();
                     this.content = option.getContent();
-//                    this.isRight = option.getIsRight();
+                    this.isRight = option.getPoint() > 0 ? true : false;
                 }
             }
         }
@@ -357,8 +458,11 @@ public class DocumentResponse {
                 this.questionId = answer.getQuestion().getId();
                 this.no = answer.getQuestion().getNo();
                 this.title = answer.getQuestion().getTitle();
-//                this.point = answer.getQuestion().getPoint();
-//                this.answerNumber = answer.getQuestion().getAnswerNumber();
+                QuestionOption _option = answer.getQuestion().getQuestionOptions().stream()
+                        .max(Comparator.comparingInt(QuestionOption::getPoint))
+                        .orElse(null);
+                this.point = _option.getPoint();
+                this.answerNumber = _option.getNo();
                 this.selectedOptionNo = answer.getSelectedOptionNo();
                 this.studentPoint = answer.getIsCorrect() ? point : 0;
                 this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new AnswerDTO.OptionDTO(option, selectedOptionNo)).toList();

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog.core.errors.exception.Exception400;
 import shop.mtcoding.blog.core.errors.exception.Exception404;
-import shop.mtcoding.blog.core.errors.exception.api.ApiException404;
 import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.SubjectRepository;
@@ -80,13 +79,63 @@ public class PaperService {
                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
         SubjectElement subjectElement = subjectElementRepository.findById(reqDTO.getElementId())
-                .orElseThrow(() -> new ApiException404("능력단위 요소가 존재하지 않아요"));
+                .orElseThrow(() -> new Exception404("능력단위 요소가 존재하지 않아요"));
 
-        String imgPath = "";
-        if (reqDTO.getStimulusFileBase64() != null && !reqDTO.getStimulusFileBase64().isBlank()) {
-            imgPath = MyUtil.fileWrite(reqDTO.getStimulusFileBase64());
+        EvaluationWay evalWay = paper.getEvaluationWay();
+
+        // 공통 유효성 검사
+        if (reqDTO.getQuestionNo() == null || reqDTO.getQuestionNo() <= 0) {
+            throw new Exception400("문제 번호는 필수입니다.");
+        }
+        if (reqDTO.getQuestionTitle() == null || reqDTO.getQuestionTitle().isBlank()) {
+            throw new Exception400("문제 제목은 필수입니다.");
         }
 
+        String imgPath = null;
+
+        // ✅ 객관식일 때
+        if (evalWay == EvaluationWay.MCQ) {
+            // 이미지 처리 (선택)
+            if (reqDTO.getStimulusFileBase64() != null && !reqDTO.getStimulusFileBase64().isBlank()) {
+                imgPath = MyUtil.fileWrite(reqDTO.getStimulusFileBase64());
+            }
+
+            // 정답은 반드시 하나
+            long correctCount = reqDTO.getOptions().stream()
+                    .filter(opt -> opt.getOptionPoint() != null && opt.getOptionPoint() == 1)
+                    .count();
+
+            if (correctCount != 1) {
+                throw new Exception400("객관식 문제는 정답이 반드시 1개여야 합니다.");
+            }
+
+            // 정답에는 루브릭 설명 필수
+            for (var opt : reqDTO.getOptions()) {
+                if (opt.getOptionPoint() != null && opt.getOptionPoint() == 1) {
+                    if (opt.getRubricItem() == null || opt.getRubricItem().isBlank()) {
+                        throw new Exception400("정답의 루브릭 설명은 필수입니다.");
+                    }
+                }
+            }
+        }
+        // ✅ 서술형/작업형/프로젝트형일 때
+        else {
+            if (reqDTO.getScenario() == null || reqDTO.getScenario().isBlank()) {
+                throw new Exception400("문제 시나리오는 필수입니다.");
+            }
+
+            // 옵션마다 루브릭과 점수 체크
+            for (var opt : reqDTO.getOptions()) {
+                if (opt.getRubricItem() == null || opt.getRubricItem().isBlank()) {
+                    throw new Exception400("루브릭 항목 설명은 필수입니다.");
+                }
+                if (opt.getOptionPoint() == null || opt.getOptionPoint() <= 0) {
+                    throw new Exception400("루브릭 점수는 1 이상이어야 합니다.");
+                }
+            }
+        }
+
+        // 저장
         Question question = questionRepository.save(reqDTO.toEntity(paper, subjectElement, imgPath));
         List<QuestionOption> options = reqDTO.getOptions().stream()
                 .map(opt -> opt.toEntity(question))

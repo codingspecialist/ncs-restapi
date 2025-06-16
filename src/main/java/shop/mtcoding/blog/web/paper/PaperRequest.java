@@ -14,26 +14,32 @@ import java.util.List;
 import java.util.Optional;
 
 public class PaperRequest {
-
+    
     @Data
-    public static class QuestionSaveDTO {
+    public class QuestionSaveDTO {
         private Long elementId;
         private Long paperId;
         private Integer questionNo;
         private String questionTitle;
-        private String stimulusFileBase64; // ← 여기로 base64 받음
+
+        // 객관식일 경우 사용
+        private String stimulusFileBase64;
+
+        // 서술형일 경우 사용
+        private String scenario;
+        private String scenarioLink;
+
         private List<OptionDTO> options;
 
         public Question toEntity(Paper paper, SubjectElement element, String imagePath) {
-            String safeImagePath = Optional.ofNullable(imagePath)
-                    .filter(s -> !s.isBlank())
-                    .orElse(null);
             return Question.builder()
                     .no(questionNo)
                     .title(questionTitle)
+                    .stimulusImg(Optional.ofNullable(imagePath).filter(s -> !s.isBlank()).orElse(null))
+                    .scenario(Optional.ofNullable(scenario).filter(s -> !s.isBlank()).orElse(null))
+                    .scenarioLink(Optional.ofNullable(scenarioLink).filter(s -> !s.isBlank()).orElse(null))
                     .paper(paper)
                     .subjectElement(element)
-                    .stimulusImg(safeImagePath) // 저장된 경로
                     .build();
         }
 
@@ -45,14 +51,11 @@ public class PaperRequest {
             private String rubricItem;
 
             public QuestionOption toEntity(Question question) {
-                String safeRubric = Optional.ofNullable(rubricItem)
-                        .filter(s -> !s.isBlank())
-                        .orElse(null);
                 return QuestionOption.builder()
                         .no(optionNo)
                         .content(optionContent)
                         .point(optionPoint)
-                        .rubricItem(safeRubric)
+                        .rubricItem(Optional.ofNullable(rubricItem).filter(s -> !s.isBlank()).orElse(null))
                         .question(question)
                         .build();
             }

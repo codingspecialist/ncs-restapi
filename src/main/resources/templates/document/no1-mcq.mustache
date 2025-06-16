@@ -50,7 +50,7 @@
                 <th>채점일시</th>
                 <td>{{model.subjectEvaluationDate}}</td>
                 <th>평가장소</th>
-                <td>{{model.loc}}</td>
+                <td>{{model.evaluationRoom}}</td>
                 <th>평가일시</th>
                 <td>{{model.subjectEvaluationDate}}</td>
             </tr>
@@ -69,7 +69,11 @@
                         </tr>
                         <tr>
                             <th>제출형태</th>
-                            <td colspan="2">{{model.submitWay}}</td>
+                            <td colspan="2">
+                                {{#model.submissionFormats}}
+                                    {{.}}<br>
+                                {{/model.submissionFormats}}
+                            </td>
                         </tr>
                         <tr>
                             <th>제출기한</th>
@@ -83,14 +87,14 @@
                             <th>평가배점</th>
                             <td>
                                 본평가, 재평가, 결시자에 관련한 평가 배점 방법은 아래와 같다. <br>
-                                {{#model.examRates}}
+                                {{#model.scorePolicies}}
                                     {{.}} <br>
-                                {{/model.examRates}}
+                                {{/model.scorePolicies}}
                             </td>
                         </tr>
                         <tr>
                             <th>평가환경 및 장비</th>
-                            <td colspan="2">{{model.equipment}}</td>
+                            <td colspan="2">{{model.evaluationDevice}}</td>
                         </tr>
                     </table>
                 </td>

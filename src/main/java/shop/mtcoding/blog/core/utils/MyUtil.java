@@ -65,13 +65,14 @@ public class MyUtil {
         }
     }
 
-    private static List<String> parseMultiline(String raw) {
+    public static List<String> parseMultiline(String raw) {
         if (raw == null || raw.trim().isEmpty()) return Collections.emptyList();
 
         return Arrays.stream(raw.split("\\r?\\n"))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
-                .map(s -> s.startsWith("- ") ? s.substring(2).trim() : s) // 하이픈 제거
+                .map(s -> s.replaceFirst("^-\\s*", ""))  // ← 하이픈+공백 제거
                 .toList();
     }
+
 }

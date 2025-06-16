@@ -1,32 +1,37 @@
 {{> layout/header}}
-<!--문제 시나리오: 현실적인 프로젝트 또는 업무 상황을 기반-->
 
-<!--예: "쇼핑몰 관리자 페이지의 상품 등록 기능을 구현하시오."-->
-
-<!--세부 구현 항목:-->
-
-<!--기능 요구사항 (예: 로그인, CRUD, 페이징 등)-->
-
-<!--기술 제한 (예: Spring Boot, JPA, React 사용)-->
-
-<!--UI 설계 조건 (Figma 제공 시 명시)-->
-
-<!--배포 조건 (예: GitHub Pages 또는 EC2 업로드)-->
-
-<!--제출 형식: (ex: GitHub 링크, 배포 링크, 발표 자료)-->
-
-<!--제한 시간: 4시간, 하루, 이틀 등-->
-
-<!--평가 기준 연동 표: 문제와 평가 항목이 어떻게 연계되는지 명시-->
 <div class="container p-5">
-    <div class="mb-4">
-        <strong>시험일:</strong> {{model.evaluationDate}} <br>
-        <strong>시험장소:</strong> {{model.loc}} <br>
-        <strong>교과목:</strong> {{model.subjectTitle}} <br>
-    </div>
-
     <div class="d-flex justify-content-end mb-3">
         <a href="/api/paper-menu/paper/{{model.paperId}}/question/save-form" class="btn btn-primary">문제등록</a>
+    </div>
+
+    <div class="mb-4">
+        <div class="mb-4">
+            <strong>시험일:</strong> {{model.evaluationDate}} <br>
+            <strong>시험장비:</strong> {{model.evaluationDevice}} <br>
+            <strong>시험장소:</strong> {{model.evaluationRoom}} <br>
+            <strong>교과목:</strong> {{model.subjectTitle}} <br>
+        </div>
+    </div>
+
+    <div style="border: 2px solid #ced4da; border-radius: 8px; padding: 16px; background-color: #f8f9fa;" class="mb-3">
+        <p style="margin-bottom: 8px;">
+            <strong>🔗 상세 예시 링크:</strong>
+            <a href="{{model.guideLink}}" target="_blank"
+               style="color: #0d6efd; text-decoration: underline;">
+                {{model.guideLink}}
+            </a>
+        </p>
+
+        <div style="margin-bottom: 12px; font-weight: 600; color: #343a40;">
+            이 과제의 정답은 다양할 수 있으며, 아래와 같은 수준의 결과물이 이상적입니다:
+        </div>
+
+        <ul style="padding-left: 20px; line-height: 1.6; color: #495057; margin: 0;">
+            {{#model.guideSummaries}}
+                <li>{{.}}</li>
+            {{/model.guideSummaries}}
+        </ul>
     </div>
 
     {{#model.questions}}

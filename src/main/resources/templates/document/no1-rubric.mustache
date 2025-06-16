@@ -50,7 +50,7 @@
                 <th>채점일시</th>
                 <td>{{model.subjectEvaluationDate}}</td>
                 <th>평가장소</th>
-                <td>{{model.loc}}</td>
+                <td>{{model.evaluationRoom}}</td>
                 <th>평가일시</th>
                 <td>{{model.subjectEvaluationDate}}</td>
             </tr>
@@ -69,7 +69,11 @@
                         </tr>
                         <tr>
                             <th>제출형태</th>
-                            <td colspan="2">{{model.submitWay}}</td>
+                            <td colspan="2">
+                                {{#model.submissionFormats}}
+                                    {{.}}<br>
+                                {{/model.submissionFormats}}
+                            </td>
                         </tr>
                         <tr>
                             <th>제출기한</th>
@@ -83,14 +87,14 @@
                             <th>평가배점</th>
                             <td>
                                 본평가, 재평가, 결시자에 관련한 평가 배점 방법은 아래와 같다. <br>
-                                {{#model.examRates}}
+                                {{#model.scorePolicies}}
                                     {{.}} <br>
-                                {{/model.examRates}}
+                                {{/model.scorePolicies}}
                             </td>
                         </tr>
                         <tr>
                             <th>평가환경 및 장비</th>
-                            <td colspan="2">{{model.equipment}}</td>
+                            <td colspan="2">{{model.evaluationDevice}}</td>
                         </tr>
                     </table>
                 </td>
@@ -120,9 +124,9 @@
                     <div style="border: 2px solid #ced4da; border-radius: 8px; padding: 16px; background-color: #f8f9fa;">
                         <p style="margin-bottom: 8px;">
                             <strong>🔗 상세 예시 링크:</strong>
-                            <a href="#" target="_blank"
+                            <a href="{{model.guideLink}}" target="_blank"
                                style="color: #0d6efd; text-decoration: underline;">
-                                https://notion.io
+                                {{model.guideLink}}
                             </a>
                         </p>
 
@@ -131,12 +135,9 @@
                         </div>
 
                         <ul style="padding-left: 20px; line-height: 1.6; color: #495057; margin: 0;">
-                            <li>요구사항을 충실히 반영한 기능 구현</li>
-                            <li>RESTful한 API 설계</li>
-                            <li>Swagger 또는 Postman을 통한 API 명세화</li>
-                            <li>코드 구성의 일관성 및 모듈화</li>
-                            <li>예외처리 및 인증(JWT 등) 포함</li>
-                            <li>실제 데이터를 통한 시연 가능성</li>
+                            {{#model.guideSummaries}}
+                                <li>{{.}}</li>
+                            {{/model.guideSummaries}}
                         </ul>
                     </div>
                 </td>

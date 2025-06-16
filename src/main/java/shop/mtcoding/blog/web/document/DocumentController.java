@@ -73,11 +73,11 @@ public class DocumentController {
         var modelData = documentService.no3(subjectId);
 
         if (modelData.paper().getEvaluationWay() == EvaluationWay.MCQ) {
-            var respDTO = new DocumentResponse.No3DTO(modelData.paper(), modelData.elements(), modelData.questions(), modelData.teacher());
+            var respDTO = new DocumentResponse.No3McqDTO(modelData.paper(), modelData.elements(), modelData.questions(), modelData.teacher());
             model.addAttribute("model", respDTO);
             return "document/no3-mcq";
         } else {
-            var respDTO = new DocumentResponse.No3DTO(modelData.paper(), modelData.elements(), modelData.questions(), modelData.teacher());
+            var respDTO = new DocumentResponse.No3RubricDTO(modelData.paper(), modelData.questions(), modelData.teacher());
             model.addAttribute("model", respDTO);
             return "document/no3-rubric";
         }

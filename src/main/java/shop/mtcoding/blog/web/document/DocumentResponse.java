@@ -178,11 +178,15 @@ public class DocumentResponse {
         private String subjectEvaluationWay;
         private String subjectTeacherName;
         private String subjectEvaluationDate; // 채점일시 == 평가일시 == 제출기한
-        private String loc;
+
+        private String evaluationDevice;
+        private String evaluationRoom;
+        private List<String> submissionFormats;
+        private String guideLink;
+        private List<String> guideSummaries;
+        private List<String> scorePolicies;
+
         private List<String> subjectElements;
-        private String submitWay; // 제출방법 : 온라인
-        private List<String> examRates; // 평가 배점 (1차, 2차), 결시자는 2차 평가와 같다.
-        private String equipment; // 평가환경 장비
         private List<QuestionDTO> questions;
         private String sign;
 
@@ -196,11 +200,16 @@ public class DocumentResponse {
             this.subjectEvaluationWay = paper.getEvaluationWay().toKorean();
             this.subjectTeacherName = subject.getTeacherName();
             this.subjectEvaluationDate = MyUtil.localDateToString(paper.getEvaluationDate());
-            this.loc = "3호";
-            this.subjectElements = subject.getElements().stream().map(subjectElement -> subjectElement.getSubtitle()).toList();
-            this.submitWay = "온라인 제출";
-            this.examRates = Arrays.asList("본평가 배점 : 평가점수 X 100%", "재평가 배점 : 평가점수 X 90%", "결시자 배점 : 평가점수 X 90%");
-            this.equipment = "인터넷이 설치되어 있는 PC";
+
+            this.evaluationDevice = paper.getEvaluationDevice();
+            this.evaluationRoom = paper.getEvaluationRoom();
+            this.submissionFormats = MyUtil.parseMultiline(paper.getSubmissionFormat());
+            this.guideLink = paper.getGuideLink();
+            this.guideSummaries = MyUtil.parseMultiline(paper.getGuideSummary());
+            // TODO (결시자, 재평가자야 0.9 프로 Subject에서 받기)
+            this.scorePolicies = Arrays.asList("본평가 배점 : 평가점수 X 1.0", "재평가 배점 : 평가점수 X 0.9", "결시자 배점 : 평가점수 X 0.9");
+
+            this.subjectElements = subject.getElements().stream().map(SubjectElement::getSubtitle).toList();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
             this.sign = sign;
         }
@@ -254,11 +263,13 @@ public class DocumentResponse {
         private String subjectEvaluationWay;
         private String subjectTeacherName;
         private String subjectEvaluationDate; // 채점일시 == 평가일시 == 제출기한
-        private String loc;
+
+        private String evaluationDevice;
+        private String evaluationRoom;
+        private List<String> submissionFormats;
+        private List<String> scorePolicies;
+
         private List<String> subjectElements;
-        private String submitWay; // 제출방법 : 온라인
-        private List<String> examRates; // 평가 배점 (1차, 2차), 결시자는 2차 평가와 같다.
-        private String equipment; // 평가환경 장비
         private List<QuestionDTO> questions;
         private String sign;
 
@@ -272,11 +283,14 @@ public class DocumentResponse {
             this.subjectEvaluationWay = paper.getEvaluationWay().toKorean();
             this.subjectTeacherName = subject.getTeacherName();
             this.subjectEvaluationDate = MyUtil.localDateToString(paper.getEvaluationDate());
-            this.loc = "3호";
+
+            this.evaluationDevice = paper.getEvaluationDevice();
+            this.evaluationRoom = paper.getEvaluationRoom();
+            this.submissionFormats = MyUtil.parseMultiline(paper.getSubmissionFormat());
+            // TODO (결시자, 재평가자야 0.9 프로 Subject에서 받기)
+            this.scorePolicies = Arrays.asList("본평가 배점 : 평가점수 X 1.0", "재평가 배점 : 평가점수 X 0.9", "결시자 배점 : 평가점수 X 0.9");
+
             this.subjectElements = subject.getElements().stream().map(subjectElement -> subjectElement.getSubtitle()).toList();
-            this.submitWay = "온라인 제출";
-            this.examRates = Arrays.asList("본평가 배점 : 평가점수 X 100%", "재평가 배점 : 평가점수 X 90%", "결시자 배점 : 평가점수 X 90%");
-            this.equipment = "인터넷이 설치되어 있는 PC";
             this.questions = questions.stream().map(QuestionDTO::new).toList();
             this.sign = sign;
         }
@@ -319,9 +333,68 @@ public class DocumentResponse {
         }
     }
 
+    @Data
+    public static class No3RubricDTO {
+        private String teacherName;
+        private String evaluationDate; // 평가일 (subject)
+        private String loc; // 평가장소 (임시)
+        private String subjectTitle; // 교과목 (subject)
+        private List<String> guideSummaries; // 가이드 요약본
+        private String guideLink;
+        private Integer questionCount;
+        private String teacherSign;
+        private Integer grade;
+        private List<QuestionDTO> questions;
+
+        public No3RubricDTO(Paper paper, List<Question> questions, Teacher teacher) {
+            this.teacherName = paper.getSubject().getTeacherName();
+            this.evaluationDate = paper.getEvaluationDate().toString();
+            this.loc = "3호";
+            this.subjectTitle = paper.getSubject().getTitle();
+            this.guideSummaries = MyUtil.parseMultiline(paper.getGuideSummary());
+            this.guideLink = paper.getGuideLink();
+            this.questionCount = paper.getQuestions().size();
+            this.teacherSign = teacher.getSign();
+            this.grade = paper.getSubject().getGrade();
+            this.questions = questions.stream().map(QuestionDTO::new).toList();
+        }
+
+        @Data
+        class QuestionDTO {
+            private Long questionId;
+            private Integer no;
+            private String title;
+            private List<OptionDTO> options;
+
+            public QuestionDTO(Question question) {
+                this.questionId = question.getId();
+                this.no = question.getNo();
+                this.title = question.getTitle();
+                this.options = question.getQuestionOptions().stream().map(QuestionDTO.OptionDTO::new).toList();
+            }
+
+            @Data
+            class OptionDTO {
+                private Long optionId;
+                private Integer no;
+                private String rubricItem;
+                private Integer point;
+                private Boolean isRight;
+
+                public OptionDTO(QuestionOption option) {
+                    this.optionId = option.getId();
+                    this.no = option.getNo();
+                    this.rubricItem = option.getRubricItem();
+                    this.point = option.getPoint();
+                    this.isRight = option.getPoint() > 0;
+                }
+            }
+        }
+    }
+
 
     @Data
-    public static class No3DTO {
+    public static class No3McqDTO {
         private String teacherName;
         private String evaluationDate; // 평가일 (subject)
         private String loc; // 평가장소 (임시)
@@ -332,7 +405,7 @@ public class DocumentResponse {
         private Integer grade;
         private List<QuestionDTO> questions;
 
-        public No3DTO(Paper paper, List<SubjectElement> subjectElements, List<Question> questions, Teacher teacher) {
+        public No3McqDTO(Paper paper, List<SubjectElement> subjectElements, List<Question> questions, Teacher teacher) {
             this.teacherName = paper.getSubject().getTeacherName();
             this.evaluationDate = paper.getEvaluationDate().toString();
             this.loc = "3호";

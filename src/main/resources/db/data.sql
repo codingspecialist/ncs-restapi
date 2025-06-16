@@ -99,14 +99,29 @@ values ('2025-06-14 22:08:32.766494', 3, 3, '커뮤니케이션능력', '커뮤�
 
 
 -- 시험지 3
-insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way)
-values (1, now(), 'ORIGINAL', '2024-06-07', 'MCQ');
-insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way)
-values (2, now(), 'ORIGINAL', '2024-06-13', 'MCQ');
-insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way)
-values (1, now(), 'RETEST', '2024-06-08', 'MCQ');
-insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way)
-values (3, now(), 'ORIGINAL', '2024-06-08', 'PROJECT');
+insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
+                     evaluation_room, score_policy, submission_format, guide_summary, guide_link)
+values (1, now(), 'ORIGINAL', '2024-06-07', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호', 1.0, '온라인제출', null, null);
+insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
+                     evaluation_room, score_policy, submission_format, guide_summary, guide_link)
+values (2, now(), 'ORIGINAL', '2024-06-13', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호', 1.0, '온라인제출', null, null);
+insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
+                     evaluation_room, score_policy, submission_format, guide_summary, guide_link)
+values (1, now(), 'RETEST', '2024-06-08', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호', 0.9, '온라인제출', null, null);
+insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
+                     evaluation_room, score_policy, submission_format, guide_summary, guide_link)
+values (3, now(), 'ORIGINAL', '2024-06-08', 'PROJECT', '인터넷 가능한 PC', '본관 3층 302호', 1.0,
+        '- GitHub Repository 주소
+        - Swagger 또는 Postman API 명세서
+        - Notion 주소
+        - EC2 또는 Render에 배포된 서비스 주소',
+        '- 요구사항을 충실히 반영한 기능 구현
+        - RESTful한 API 설계
+        - Swagger 또는 Postman을 통한 API 명세화
+        - 코드 구성의 일관성 및 모듈화
+        - 예외처리 및 인증(JWT 등) 포함
+        - 실제 데이터를 통한 시연 가능성',
+        'https://getinthere.notion.site/PBL-2128a08b6c0d80898b12f096198cd488?source=copy_link');
 
 -- 1번 시험지의 문제 2개 (1,2)
 insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)

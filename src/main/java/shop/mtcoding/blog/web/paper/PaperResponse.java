@@ -115,18 +115,85 @@ public class PaperResponse {
 
 
     @Data
-    public static class QuestionListDTO {
+    public static class McuDetailDTO {
         private Long paperId;
         private String evaluationDate; // 평가일 (subject)
-        private String loc; // 평가장소 (임시)
+        private String evaluationDevice; // 평가장소 (임시)
+        private String evaluationRoom; // 평가장소 (임시)
         private String subjectTitle; // 교과목 (subject)
         private List<QuestionDTO> questions;
 
-        public QuestionListDTO(Paper paper, List<Question> questions) {
+        public McuDetailDTO(Paper paper, List<Question> questions) {
             this.paperId = paper.getId();
             this.evaluationDate = paper.getEvaluationDate().toString();
-            this.loc = "3호";
+            this.evaluationDevice = paper.getEvaluationDevice();
+            this.evaluationRoom = paper.getEvaluationRoom();
             this.subjectTitle = paper.getSubject().getTitle();
+            this.questions = questions.stream().map(QuestionDTO::new).toList();
+        }
+
+        @Data
+        class QuestionDTO {
+            private Long questionId;
+            private Integer no;
+            private String title;
+            private String stimulusImg;
+            private Integer totalPoint; // 배점
+            private List<OptionDTO> options;
+
+            public QuestionDTO(Question question) {
+                this.questionId = question.getId();
+                this.no = question.getNo();
+                this.title = question.getTitle();
+                this.stimulusImg = question.getStimulusImg();
+                this.totalPoint = question.getQuestionOptions()
+                        .stream()
+                        .mapToInt(o -> o.getPoint())
+                        .max()
+                        .orElse(0);
+                this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
+            }
+
+            @Data
+            class OptionDTO {
+                private Long optionId;
+                private Integer no;
+                private String content;
+                private String rubricItem;
+                private Integer point;
+                private Boolean isRight;
+
+                public OptionDTO(QuestionOption option) {
+                    this.optionId = option.getId();
+                    this.no = option.getNo();
+                    this.content = option.getContent();
+                    this.rubricItem = option.getRubricItem();
+                    this.point = option.getPoint();
+                    this.isRight = option.getPoint() > 0;
+                }
+            }
+        }
+    }
+
+    @Data
+    public static class RubricDetailDTO {
+        private Long paperId;
+        private String evaluationDate; // 평가일 (subject)
+        private String evaluationDevice; // 평가장소 (임시)
+        private String evaluationRoom; // 평가장소 (임시)
+        private String subjectTitle; // 교과목 (subject)
+        private List<String> guideSummaries; // 가이드 요약본
+        private String guideLink;
+        private List<QuestionDTO> questions;
+
+        public RubricDetailDTO(Paper paper, List<Question> questions) {
+            this.paperId = paper.getId();
+            this.evaluationDate = paper.getEvaluationDate().toString();
+            this.evaluationDevice = paper.getEvaluationDevice();
+            this.evaluationRoom = paper.getEvaluationRoom();
+            this.subjectTitle = paper.getSubject().getTitle();
+            this.guideSummaries = MyUtil.parseMultiline(paper.getGuideSummary());
+            this.guideLink = paper.getGuideLink();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
         }
 

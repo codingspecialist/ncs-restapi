@@ -76,12 +76,17 @@ public class PaperController {
     @GetMapping("/api/paper-menu/paper/{paperId}")
     public String detail(@PathVariable("paperId") Long paperId, Model model) {
         PaperModel.Detail detail = paperService.시험지상세(paperId);
-        PaperResponse.QuestionListDTO respDTO = new PaperResponse.QuestionListDTO(detail.paper(), detail.questions());
-        model.addAttribute("model", respDTO);
+
 
         if (detail.paper().getEvaluationWay() == EvaluationWay.MCQ) {
+            PaperResponse.McuDetailDTO respDTO = new PaperResponse.McuDetailDTO(detail.paper(), detail.questions());
+            model.addAttribute("model", respDTO);
             return "paper/mcq-detail";
         } else {
+            PaperResponse.RubricDetailDTO respDTO = new PaperResponse.RubricDetailDTO(detail.paper(), detail.questions());
+            System.out.println("가이드 크기 : " + respDTO.getGuideSummaries().size());
+            respDTO.getGuideSummaries().stream().forEach(System.out::println);
+            model.addAttribute("model", respDTO);
             return "paper/rubric-detail";
         }
 

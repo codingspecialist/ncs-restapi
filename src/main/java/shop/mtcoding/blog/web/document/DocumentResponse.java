@@ -338,7 +338,7 @@ public class DocumentResponse {
             this.loc = "3호";
             this.subjectTitle = paper.getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
-            this.questionCount = paper.getQuestionCount();
+            this.questionCount = paper.getQuestions().size();
             this.teacherSign = teacher.getSign();
             this.grade = paper.getSubject().getGrade();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
@@ -426,7 +426,7 @@ public class DocumentResponse {
             this.subjectTitle = exam.getPaper().getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
             this.answers = exam.getExamAnswers().stream().map(AnswerDTO::new).toList();
-            this.questionCount = exam.getPaper().getQuestionCount();
+            this.questionCount = exam.getPaper().getQuestions().size();
             this.examState = exam.getExamState();
             this.reExamReason = exam.getReExamReason();
             this.examPassState = exam.getPassState();

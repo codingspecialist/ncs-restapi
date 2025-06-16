@@ -153,7 +153,7 @@ public class ExamResponse {
             this.subjectTitle = exam.getPaper().getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
             this.answers = exam.getExamAnswers().stream().map(AnswerDTO::new).toList();
-            this.questionCount = exam.getPaper().getQuestionCount();
+            this.questionCount = exam.getPaper().getQuestions().size();
             this.examState = exam.getExamState();
             this.reExamReason = exam.getReExamReason() == null ? "" : exam.getReExamReason();
             this.examPassState = exam.getPassState();

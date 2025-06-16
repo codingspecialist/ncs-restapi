@@ -2,10 +2,11 @@
 <input type="hidden" id="paperId" value="{{model.paperId}}">
 
 <div class="container p-5">
-    <form id="questionForm" enctype="multipart/form-data">
+    <form id="questionForm">
         <div class="card">
             <!-- 능력단위 요소 선택 -->
             <div class="card-header">
+                <label for="elementId" class="form-label">능력단위 요소</label>
                 <select class="form-select" id="elementId">
                     <option value="0">능력단위 요소를 선택해주세요 (필수)</option>
                     {{#model.elements}}
@@ -16,26 +17,48 @@
 
             <!-- 문제 번호 -->
             <div class="card-header">
-                <b>문제 번호를 입력해주세요</b>
+                <label for="questionNo" class="form-label">문제 번호</label>
                 <input type="text" class="form-control mt-1" placeholder="문제번호" value="{{model.expectNo}}"
                        id="questionNo">
             </div>
 
             <!-- 문제 제목 -->
             <div class="card-header">
-                <b>문제 제목을 입력해주세요</b>
+                <label for="questionTitle" class="form-label">문제 제목</label>
                 <input type="text" class="form-control mt-1" placeholder="문제 제목" id="questionTitle">
             </div>
 
-            <!-- 지문 이미지 -->
+            <!-- 문제 시나리오 -->
             <div class="card-header">
-                <b>지문 이미지 (선택)</b>
-                <input type="file" class="form-control mt-1" id="stimulusImage">
+                <label for="scenario" class="form-label">문제 시나리오</label>
+                <div class="text-end mb-1">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="insertScenarioExample()">
+                        예시 입력
+                    </button>
+                </div>
+                <textarea class="form-control mt-2" id="scenario" rows="4"
+                          placeholder="쇼핑몰 관리자 페이지의 상품 등록 기능을 구현하시오.
+- 요구사항: 상품명/가격 등록, 리스트 조회, 페이징
+- 기술조건: Spring Boot, JPA, JWT 사용"></textarea>
+                <small class="form-text text-muted">
+                    ※ 각 항목은 <strong>줄바꿈(Enter)</strong>으로 구분해주세요. 한 줄당 하나의 항목으로 처리됩니다.
+                </small>
+            </div>
+
+            <!-- 문제 시나리오 참고 링크 -->
+            <div class="card-header">
+                <label for="scenarioLink" class="form-label">문제 시나리오 참고 링크 <small
+                        class="text-muted">(선택사항)</small></label>
+                <input type="url" class="form-control" name="scenarioLink" id="scenarioLink"
+                       placeholder="https://notion.so/your-scenario-doc">
+                <small class="form-text text-muted">
+                    ※ 시나리오를 상세하게 설명한 문서가 있다면 링크를 첨부해주세요.
+                </small>
             </div>
 
             <!-- 루브릭 항목 -->
             <div class="card-header">
-                <b>루브릭 항목을 등록해주세요</b>
+                <label class="form-label">루브릭 항목</label>
                 <div id="questionBox" class="mt-2"></div>
                 <button type="button" class="btn btn-secondary mt-2" onclick="addOption()">루브릭 추가</button>
             </div>
@@ -65,26 +88,18 @@
         addOption();
     };
 
-    async function saveQuestion() {
+    function saveQuestion() {
         const formData = {
             elementId: document.getElementById("elementId").value,
             paperId: document.getElementById("paperId").value,
             questionNo: document.getElementById("questionNo").value,
             questionTitle: document.getElementById("questionTitle").value,
-            stimulusFileBase64: "",
+            scenario: document.getElementById("scenario").value,
+            scenarioLink: document.getElementById("scenarioLink").value,
             options: []
         };
 
-        const fileInput = document.getElementById("stimulusImage");
-        await new Promise((resolve) => {
-            convertFileToBase64(fileInput, (base64) => {
-                formData.stimulusFileBase64 = base64;
-                resolve();
-            });
-        });
-
         const optionItems = document.querySelectorAll("#questionBox .questionItem");
-
         for (const item of optionItems) {
             const optionNo = item.querySelector(".optionNo").value;
             const optionPoint = parseInt(item.querySelector(".optionPoint").value);
@@ -94,7 +109,6 @@
                 alert("점수를 정확히 입력해주세요.");
                 return;
             }
-
             if (!rubricItem.trim()) {
                 alert("루브릭 설명은 필수입니다.");
                 return;
@@ -120,15 +134,11 @@
         });
     }
 
-    function convertFileToBase64(fileInput, callback) {
-        const file = fileInput.files[0];
-        if (!file) {
-            callback("");
-            return;
-        }
-        const reader = new FileReader();
-        reader.onload = () => callback(reader.result);
-        reader.readAsDataURL(file);
+    function insertScenarioExample() {
+        const example = `쇼핑몰 관리자 페이지의 상품 등록 기능을 구현하시오.
+- 요구사항: 상품명/가격 등록, 리스트 조회, 페이징
+- 기술조건: Spring Boot, JPA, JWT 사용`;
+        document.getElementById("scenario").value = example;
     }
 </script>
 

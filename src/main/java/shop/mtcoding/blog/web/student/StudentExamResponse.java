@@ -52,7 +52,7 @@ public class StudentExamResponse {
                 this.courseRound = paper.getSubject().getCourse().getRound();
                 this.subjectId = paper.getSubject().getId();
                 this.subjectTitle = paper.getSubject().getTitle();
-                this.questionCount = paper.getQuestionCount();
+                this.questionCount = paper.getQuestions().size();
                 this.paperType = paper.getPaperType().toKorean();
                 this.teacherName = paper.getSubject().getTeacherName();
                 this.isAttendance = isAttendance;
@@ -224,7 +224,7 @@ public class StudentExamResponse {
             this.subjectTitle = exam.getPaper().getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
             this.answers = exam.getExamAnswers().stream().map(AnswerDTO::new).toList();
-            this.questionCount = exam.getPaper().getQuestionCount();
+            this.questionCount = exam.getPaper().getQuestions().size();
             this.examState = exam.getExamState();
             this.reExamReason = exam.getReExamReason();
             this.examPassState = exam.getPassState();

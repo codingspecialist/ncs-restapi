@@ -52,12 +52,12 @@ public class DocumentController {
         if (modelData.paper().getEvaluationWay() == EvaluationWay.MCQ) {
             var respDTO = new DocumentResponse.No1McqDTO(modelData.subject(), modelData.questions(), modelData.teacher().getSign(), modelData.paper());
             model.addAttribute("model", respDTO);
+            return "document/no1-mcq";
         } else {
             var respDTO = new DocumentResponse.No1RubricDTO(modelData.subject(), modelData.questions(), modelData.teacher().getSign(), modelData.paper());
             model.addAttribute("model", respDTO);
+            return "document/no1-rubric";
         }
-
-        return "document/no1";
     }
 
     @GetMapping("/api/document-menu/subject/{subjectId}/no2")

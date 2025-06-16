@@ -1,0 +1,150 @@
+{{> layout/header}}
+<style>
+    .table th {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table th {
+        background-color: #c4d2d9;
+    }
+
+    .page-title {
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+</style>
+
+<div class="container p-5">
+
+    <div class="page-title">
+        <h1>평가개요서</h1>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <tbody>
+            <!-- Page 1 Content -->
+            <tr class="title-row">
+                <th>과정명 (훈련기간)</th>
+                <td colspan="5">{{model.courseTitle}} {{model.courseRound}}회차<br>({{model.courseStartDate}}
+                    ~ {{model.courseEndDate}})
+                </td>
+            </tr>
+            <tr class="header-row">
+                <th>교과목명</th>
+                <td>{{model.subjectTitle}}</td>
+                <th>평가방법</th>
+                <td>{{model.subjectEvaluationWay}}</td>
+                <th>평가자</th>
+                <td>
+                    <span class="content">
+                    {{model.subjectTeacherName}} <span class="signature">(인)</span>
+                    <img src="{{model.sign}}" class="signature-img" alt="signature">
+                </span>
+                </td>
+            </tr>
+            <tr class="sub-header-row">
+                <th>채점일시</th>
+                <td>{{model.subjectEvaluationDate}}</td>
+                <th>평가장소</th>
+                <td>{{model.loc}}</td>
+                <th>평가일시</th>
+                <td>{{model.subjectEvaluationDate}}</td>
+            </tr>
+
+            <tr>
+                <th>수행내용 및 유의사항</th>
+                <td colspan="5">
+                    <table class="table table-bordered m-0">
+                        <tr>
+                            <th>주제</th>
+                            <td>
+                                {{#model.subjectElements}}
+                                    {{.}} <br>
+                                {{/model.subjectElements}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>제출형태</th>
+                            <td colspan="2">{{model.submitWay}}</td>
+                        </tr>
+                        <tr>
+                            <th>제출기한</th>
+                            <td colspan="2">{{model.subjectEvaluationDate}}</td>
+                        </tr>
+                        <tr>
+                            <th>피평가자유의사항</th>
+                            <td colspan="2">제출기한 엄수</td>
+                        </tr>
+                        <tr>
+                            <th>평가배점</th>
+                            <td>
+                                본평가, 재평가, 결시자에 관련한 평가 배점 방법은 아래와 같다. <br>
+                                {{#model.examRates}}
+                                    {{.}} <br>
+                                {{/model.examRates}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>평가환경 및 장비</th>
+                            <td colspan="2">{{model.equipment}}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+
+            <tr>
+                <th>평가기준 및 유의사항</th>
+                <td colspan="5">
+
+                    <table class="table table-bordered m-0">
+                        {{#model.questions}}
+                            <tr>
+                                <td><span
+                                        class="circle-number">{{no}}</span>
+                                    {{questionPurpose}} </td>
+                            </tr>
+                        {{/model.questions}}
+                    </table>
+
+                </td>
+            </tr>
+
+            <tr class="sub-header-row">
+                <th>모범답안</th>
+                <td colspan="5">
+                    <div style="border: 2px solid #ced4da; border-radius: 8px; padding: 16px; background-color: #f8f9fa;">
+                        <p style="margin-bottom: 8px;">
+                            <strong>🔗 상세 예시 링크:</strong>
+                            <a href="#" target="_blank"
+                               style="color: #0d6efd; text-decoration: underline;">
+                                https://notion.io
+                            </a>
+                        </p>
+
+                        <div style="margin-bottom: 12px; font-weight: 600; color: #343a40;">
+                            이 과제의 정답은 다양할 수 있으며, 아래와 같은 수준의 결과물이 이상적입니다:
+                        </div>
+
+                        <ul style="padding-left: 20px; line-height: 1.6; color: #495057; margin: 0;">
+                            <li>요구사항을 충실히 반영한 기능 구현</li>
+                            <li>RESTful한 API 설계</li>
+                            <li>Swagger 또는 Postman을 통한 API 명세화</li>
+                            <li>코드 구성의 일관성 및 모듈화</li>
+                            <li>예외처리 및 인증(JWT 등) 포함</li>
+                            <li>실제 데이터를 통한 시연 가능성</li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+{{> layout/footer}}

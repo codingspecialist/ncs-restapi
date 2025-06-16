@@ -98,15 +98,15 @@ insert into subject_element_tb(created_at, no, subject_id, subtitle, subject_ele
 values ('2025-06-14 22:08:32.766494', 3, 3, '커뮤니케이션능력', '커뮤니케이션 능력으로 팀과 협업할 수 있다.');
 
 
--- 시험지 3개
-insert into paper_tb(subject_id, created_at, question_count, paper_type, evaluation_date, evaluation_way)
-values (1, now(), 2, 'ORIGINAL', '2024-06-07', 'MCQ');
-insert into paper_tb(subject_id, created_at, question_count, paper_type, evaluation_date, evaluation_way)
-values (2, now(), 5, 'ORIGINAL', '2024-06-13', 'MCQ');
-insert into paper_tb(subject_id, created_at, question_count, paper_type, evaluation_date, evaluation_way)
-values (1, now(), 2, 'RETEST', '2024-06-08', 'MCQ');
-insert into paper_tb(subject_id, created_at, question_count, paper_type, evaluation_date, evaluation_way)
-values (3, now(), 1, 'ORIGINAL', '2024-06-08', 'PROJECT');
+-- 시험지 3
+insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way)
+values (1, now(), 'ORIGINAL', '2024-06-07', 'MCQ');
+insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way)
+values (2, now(), 'ORIGINAL', '2024-06-13', 'MCQ');
+insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way)
+values (1, now(), 'RETEST', '2024-06-08', 'MCQ');
+insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way)
+values (3, now(), 'ORIGINAL', '2024-06-08', 'PROJECT');
 
 -- 1번 시험지의 문제 2개 (1,2)
 insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)

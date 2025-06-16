@@ -1,14 +1,13 @@
 {{> layout/header}}
 
 <div class="container p-5">
-
     <div class="card">
         <div class="card-header"><b>시험지를 등록 해주세요</b></div>
         <div class="card-body">
             <form id="save-form" action="/api/paper-menu/subject/{{subjectId}}/paper/save" method="post">
-                <hr>
                 <div class="mb-3">
-                    <select class="form-control" name="paperType" required>
+                    <label for="paperType" class="form-label">평가 유형</label>
+                    <select class="form-control" name="paperType" id="paperType" required>
                         <option value="ORIGINAL">본평가</option>
                         <option value="RETEST">재평가</option>
                     </select>
@@ -17,16 +16,32 @@
                 <hr>
 
                 <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="문항수" name="questionCount" required>
+                    <label for="evaluationDate" class="form-label">평가일</label>
+                    <input type="date" class="form-control" name="evaluationDate" id="evaluationDate"
+                           value="2024-05-10" required>
                 </div>
 
                 <div class="mb-3">
-                    <label>평가일</label>
-                    <input type="date" class="form-control" placeholder="평가일" name="evaluationDate" value="2024-05-10">
+                    <label for="evaluationRoom" class="form-label">평가 장소</label>
+                    <input type="text" class="form-control" name="evaluationRoom" id="evaluationRoom"
+                           placeholder="예: 본관 3층 302호" required>
                 </div>
+
+                <div class="mb-3">
+                    <label for="evaluationDevice" class="form-label">평가 장비</label>
+                    <input type="text" class="form-control" name="evaluationDevice" id="evaluationDevice"
+                           placeholder="예: 인터넷 가능 PC, IntelliJ 설치" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="scorePolicy" class="form-label">점수 환산 비율 (1.0 = 100%, 0.9 = 90%)</label>
+                    <input type="number" step="0.1" min="0.6" max="1.0" class="form-control" name="scorePolicy"
+                           id="scorePolicy" value="1.0" required>
+                </div>
+
                 <div class="mb-3">
                     <label for="evaluationWay" class="form-label">평가 방법</label>
-                    <select class="form-select" name="evaluationWay">
+                    <select class="form-select" name="evaluationWay" id="evaluationWay">
                         <option value="MCQ">객관식</option>
                         <option value="DESCRIPTIVE">서술형</option>
                         <option value="PRACTICAL">작업형</option>
@@ -34,10 +49,109 @@
                     </select>
                 </div>
 
+                <!-- 모범답안 요약/링크 + 제출자료 안내: 객관식이 아닌 경우만 표시 -->
+                <div id="guideGroup" style="display: none;">
+                    <div class="mb-3">
+                        <label for="guideSummary" class="form-label">
+                            모범답안 요약 <small class="text-muted">(훈련생에게 보여질 설명)</small>
+                        </label>
+                        <div class="text-end mb-1">
+                            <button type="button" class="btn btn-outline-secondary btn-sm"
+                                    onclick="insertGuideExample()">
+                                예시 입력
+                            </button>
+                        </div>
+                        <textarea class="form-control"
+                                  name="guideSummary"
+                                  id="guideSummary"
+                                  rows="7"
+                                  placeholder="- 요구사항을 충실히 반영한 기능 구현
+- RESTful한 API 설계
+- Swagger 또는 Postman을 통한 API 명세화
+- 코드 구성의 일관성 및 모듈화
+- 예외처리 및 인증(JWT 등) 포함
+- 실제 데이터를 통한 시연 가능성"
+                                  required></textarea>
+                        <small class="form-text text-muted">
+                            ※ 각 항목은 <strong>줄바꿈(Enter)</strong>으로 구분해주세요. 한 줄당 하나의 항목으로 처리됩니다.
+                        </small>
+                    </div>
+
+                    <div class="mb-3" id="submissionFormatGroup">
+                        <label for="submissionFormat" class="form-label">
+                            제출자료 안내 <small class="text-muted">(훈련생이 제출해야 할 형태)</small>
+                        </label>
+                        <div class="text-end mb-1">
+                            <button type="button" class="btn btn-outline-secondary btn-sm"
+                                    onclick="insertSubmissionExample()">
+                                예시 입력
+                            </button>
+                        </div>
+                        <textarea class="form-control"
+                                  name="submissionFormat"
+                                  id="submissionFormat"
+                                  rows="5"
+                                  placeholder="- GitHub Repository 주소
+- Swagger 또는 Postman API 명세서
+- Notion 주소
+- EC2 또는 Render에 배포된 서비스 주소"></textarea>
+                        <small class="form-text text-muted">
+                            ※ 각 항목은 줄바꿈(Enter)으로 구분해주세요. 한 줄당 하나의 항목으로 처리됩니다.
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="guideLink" class="form-label">
+                            모범답안 링크 <small class="text-muted">(강사용 / Notion, GitHub 등)</small>
+                        </label>
+                        <input type="url"
+                               class="form-control"
+                               name="guideLink"
+                               id="guideLink"
+                               placeholder="https://notion.so/your-answer">
+                        <small class="form-text text-muted">
+                            ※ 선택사항입니다. 외부 문서나 코드 저장소 링크를 추가할 수 있습니다.
+                        </small>
+                    </div>
+                </div>
+
                 <button type="submit" class="btn btn-primary form-control">시험지등록</button>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    const evaluationSelect = document.getElementById("evaluationWay");
+    const guideGroup = document.getElementById("guideGroup");
+    const submissionFormatGroup = document.getElementById("submissionFormatGroup");
+
+    function toggleGuideFields() {
+        const isMCQ = evaluationSelect.value === "MCQ";
+        guideGroup.style.display = isMCQ ? "none" : "block";
+        submissionFormatGroup.style.display = isMCQ ? "none" : "block";
+    }
+
+    function insertGuideExample() {
+        document.getElementById("guideSummary").value =
+                `- 요구사항을 충실히 반영한 기능 구현
+- RESTful한 API 설계
+- Swagger 또는 Postman을 통한 API 명세화
+- 코드 구성의 일관성 및 모듈화
+- 예외처리 및 인증(JWT 등) 포함
+- 실제 데이터를 통한 시연 가능성`;
+    }
+
+    function insertSubmissionExample() {
+        document.getElementById("submissionFormat").value =
+                `- GitHub Repository 주소
+- Swagger 또는 Postman API 명세서
+- Notion 주소
+- EC2 또는 Render에 배포된 서비스 주소`;
+    }
+
+    evaluationSelect.addEventListener("change", toggleGuideFields);
+    window.addEventListener("DOMContentLoaded", toggleGuideFields);
+</script>
 
 {{> layout/footer}}

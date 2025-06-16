@@ -51,6 +51,18 @@ public class PaperService {
         Subject subjectPS = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new Exception404("해당 교과목을 찾을 수 없어요"));
 
+        if (!reqDTO.getEvaluationWay().equals(EvaluationWay.MCQ)) {
+            if (reqDTO.getGuideSummary() == null || reqDTO.getGuideSummary().isBlank()) {
+                throw new IllegalArgumentException("객관식이 아닌 경우, guideSummary는 필수입니다.");
+            }
+        }
+
+        if (!reqDTO.getEvaluationWay().equals(EvaluationWay.MCQ)) {
+            if (reqDTO.getSubmissionFormat() == null || reqDTO.getSubmissionFormat().isBlank()) {
+                throw new IllegalArgumentException("객관식이 아닌 경우, 제출자료 안내는 필수입니다.");
+            }
+        }
+
         // ORIGINAL 유형이면 해당 교과목에 이미 존재하는지 확인
         if (reqDTO.getPaperType() == PaperType.ORIGINAL) {
             boolean exists = paperRepository.existsBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL);

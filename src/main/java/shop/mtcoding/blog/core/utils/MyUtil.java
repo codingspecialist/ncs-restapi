@@ -10,8 +10,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 public class MyUtil {
@@ -64,6 +63,15 @@ public class MyUtil {
         } catch (Exception e) {
             throw new Exception500("이미지 저장 오류 : " + e.getMessage());
         }
+    }
 
+    private static List<String> parseMultiline(String raw) {
+        if (raw == null || raw.trim().isEmpty()) return Collections.emptyList();
+
+        return Arrays.stream(raw.split("\\r?\\n"))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(s -> s.startsWith("- ") ? s.substring(2).trim() : s) // 하이픈 제거
+                .toList();
     }
 }

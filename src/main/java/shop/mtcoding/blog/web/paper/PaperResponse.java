@@ -192,7 +192,7 @@ public class PaperResponse {
             this.courseRound = paper.getSubject().getCourse().getRound();
             this.subjectId = paper.getSubject().getId();
             this.subjectTitle = paper.getSubject().getTitle();
-            this.questionCount = paper.getQuestionCount();
+            this.questionCount = paper.getQuestions().size();
             this.paperType = paper.getPaperType().toKorean();
             this.evaluationDate = MyUtil.localDateToString(paper.getEvaluationDate());
         }

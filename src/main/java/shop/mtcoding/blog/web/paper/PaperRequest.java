@@ -61,20 +61,33 @@ public class PaperRequest {
 
     @Data
     public static class SaveDTO {
-        private Integer questionCount;
         private PaperType paperType; // 본평가 / 재평가
         private LocalDate evaluationDate;
         private EvaluationWay evaluationWay; // 서술형 / 혼합형 / 포트폴리오
 
+        private String evaluationRoom; // 평가 장소
+        private String evaluationDevice; // 평가 장비
+        private Double scorePolicy; // 점수 환산 비율
+
+        private String guideSummary; // 훈련생용 안내 (객관식 제외 시 필수)
+        private String guideLink;    // 강사용 외부 링크
+        private String submissionFormat;
+
         public Paper toEntity(Subject subject) {
             return Paper.builder()
                     .subject(subject)
-                    .questionCount(questionCount)
                     .paperType(paperType)
                     .evaluationDate(evaluationDate)
                     .evaluationWay(evaluationWay)
+                    .evaluationRoom(evaluationRoom)
+                    .evaluationDevice(evaluationDevice)
+                    .scorePolicy(scorePolicy)
+                    .guideSummary(guideSummary)
+                    .guideLink(guideLink)
+                    .submissionFormat(submissionFormat)
                     .build();
         }
     }
+
 
 }

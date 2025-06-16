@@ -52,15 +52,16 @@
                 <!-- 모범답안 요약/링크 + 제출자료 안내: 객관식이 아닌 경우만 표시 -->
                 <div id="guideGroup" style="display: none;">
                     <div class="mb-3">
-                        <label for="guideSummary" class="form-label">
-                            모범답안 요약 <small class="text-muted">(훈련생에게 보여질 설명)</small>
-                        </label>
-                        <div class="text-end mb-1">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="guideSummary" class="form-label fw-bold mb-0">
+                                모범답안 요약 <small class="text-muted">(훈련생에게 보여질 설명)</small>
+                            </label>
                             <button type="button" class="btn btn-outline-secondary btn-sm"
                                     onclick="insertGuideExample()">
                                 예시 입력
                             </button>
                         </div>
+
                         <textarea class="form-control"
                                   name="guideSummary"
                                   id="guideSummary"
@@ -77,15 +78,16 @@
                     </div>
 
                     <div class="mb-3" id="submissionFormatGroup">
-                        <label for="submissionFormat" class="form-label">
-                            제출자료 안내 <small class="text-muted">(훈련생이 제출해야 할 형태)</small>
-                        </label>
-                        <div class="text-end mb-1">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="submissionFormat" class="form-label fw-bold mb-0">
+                                제출자료 안내 <small class="text-muted">(훈련생이 제출해야 할 형태)</small>
+                            </label>
                             <button type="button" class="btn btn-outline-secondary btn-sm"
                                     onclick="insertSubmissionExample()">
                                 예시 입력
                             </button>
                         </div>
+
                         <textarea class="form-control"
                                   name="submissionFormat"
                                   id="submissionFormat"

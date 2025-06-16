@@ -3,10 +3,10 @@
 
 <div class="container p-5">
     <form id="questionForm">
-        <div class="card">
+        <div class="card p-4">
             <!-- 능력단위 요소 선택 -->
-            <div class="card-header">
-                <label for="elementId" class="form-label">능력단위 요소</label>
+            <div class="mb-4">
+                <label for="elementId" class="form-label fw-bold">능력단위 요소</label>
                 <select class="form-select" id="elementId">
                     <option value="0">능력단위 요소를 선택해주세요 (필수)</option>
                     {{#model.elements}}
@@ -16,27 +16,26 @@
             </div>
 
             <!-- 문제 번호 -->
-            <div class="card-header">
-                <label for="questionNo" class="form-label">문제 번호</label>
-                <input type="text" class="form-control mt-1" placeholder="문제번호" value="{{model.expectNo}}"
-                       id="questionNo">
+            <div class="mb-4">
+                <label for="questionNo" class="form-label fw-bold">문제 번호</label>
+                <input type="text" class="form-control" placeholder="문제번호" value="{{model.expectNo}}" id="questionNo">
             </div>
 
             <!-- 문제 제목 -->
-            <div class="card-header">
-                <label for="questionTitle" class="form-label">문제 제목</label>
-                <input type="text" class="form-control mt-1" placeholder="문제 제목" id="questionTitle">
+            <div class="mb-4">
+                <label for="questionTitle" class="form-label fw-bold">문제 제목</label>
+                <input type="text" class="form-control" placeholder="문제 제목" id="questionTitle">
             </div>
 
             <!-- 문제 시나리오 -->
-            <div class="card-header">
-                <label for="scenario" class="form-label">문제 시나리오</label>
-                <div class="text-end mb-1">
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <label for="scenario" class="form-label fw-bold mb-0">문제 시나리오</label>
                     <button type="button" class="btn btn-outline-secondary btn-sm" onclick="insertScenarioExample()">
                         예시 입력
                     </button>
                 </div>
-                <textarea class="form-control mt-2" id="scenario" rows="4"
+                <textarea class="form-control mt-2" id="scenario" rows="5"
                           placeholder="쇼핑몰 관리자 페이지의 상품 등록 기능을 구현하시오.
 - 요구사항: 상품명/가격 등록, 리스트 조회, 페이징
 - 기술조건: Spring Boot, JPA, JWT 사용"></textarea>
@@ -45,11 +44,11 @@
                 </small>
             </div>
 
-            <!-- 문제 시나리오 참고 링크 -->
-            <div class="card-header">
-                <label for="scenarioLink" class="form-label">문제 시나리오 참고 링크 <small
+            <!-- 시나리오 링크 -->
+            <div class="mb-4">
+                <label for="scenarioLink" class="form-label fw-bold">문제 시나리오 참고 링크 <small
                         class="text-muted">(선택사항)</small></label>
-                <input type="url" class="form-control" name="scenarioLink" id="scenarioLink"
+                <input type="url" class="form-control" id="scenarioLink"
                        placeholder="https://notion.so/your-scenario-doc">
                 <small class="form-text text-muted">
                     ※ 시나리오를 상세하게 설명한 문서가 있다면 링크를 첨부해주세요.
@@ -57,14 +56,14 @@
             </div>
 
             <!-- 루브릭 항목 -->
-            <div class="card-header">
-                <label class="form-label">루브릭 항목</label>
+            <div class="mb-4">
+                <label class="form-label fw-bold">루브릭 항목</label>
                 <div id="questionBox" class="mt-2"></div>
-                <button type="button" class="btn btn-secondary mt-2" onclick="addOption()">루브릭 추가</button>
+                <button type="button" class="btn btn-secondary mt-3" onclick="addOption()">루브릭 추가</button>
             </div>
-        </div>
 
-        <button type="button" onclick="saveQuestion()" class="btn btn-primary form-control mt-3">문제 등록</button>
+            <button type="button" onclick="saveQuestion()" class="btn btn-primary form-control mt-4">문제 등록</button>
+        </div>
     </form>
 </div>
 
@@ -74,7 +73,7 @@
     function addOption(no = optionCounter) {
         const box = document.querySelector("#questionBox");
         const div = document.createElement("div");
-        div.className = "mt-2 mb-3 pl-2 questionItem";
+        div.className = "mt-2 mb-2 pl-2 questionItem";
         div.innerHTML = `
             <input type="hidden" class="form-control optionNo" value="${no}" readonly>
             <input type="text" class="form-control optionRubric mt-1" placeholder="루브릭 평가 항목 (필수)">
@@ -142,7 +141,6 @@
         ];
         document.getElementById("scenario").value = exampleLines.join("\n");
     }
-
 </script>
 
 {{> layout/footer}}

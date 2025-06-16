@@ -55,6 +55,26 @@
             </div>
 
             <div class="card-body p-3">
+
+                <div style="border: 1px solid #dee2e6; border-radius: 6px; padding: 12px; background-color: #fefefe; margin-bottom: 16px;">
+                    {{#scenarioLink}}
+                        <p style="margin-bottom: 6px;">
+                            <strong>📝 시나리오 링크:</strong>
+                            <a href="{{scenarioLink}}" target="_blank"
+                               style="color: #0d6efd; text-decoration: underline;">
+                                {{scenarioLink}}
+                            </a>
+                        </p>
+                    {{/scenarioLink}}
+
+                    <div style="color: #343a40;">
+                        {{#scenarios}}
+                            {{.}}<br>
+                        {{/scenarios}}
+                    </div>
+                </div>
+
+
                 <table class="table table-bordered">
                     <thead class="table-light">
                     <tr>

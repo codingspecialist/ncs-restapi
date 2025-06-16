@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog.core.errors.exception.Exception400;
 import shop.mtcoding.blog.core.errors.exception.Exception404;
+import shop.mtcoding.blog.core.errors.exception.api.ApiException404;
 import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.SubjectRepository;
@@ -64,10 +65,10 @@ public class PaperService {
     @Transactional
     public void 문제등록(PaperRequest.QuestionSaveDTO reqDTO) {
         Paper paper = paperRepository.findById(reqDTO.getPaperId())
-                .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
+                .orElseThrow(() -> new ApiException404("시험지가 존재하지 않아요"));
 
         SubjectElement subjectElement = subjectElementRepository.findById(reqDTO.getElementId())
-                .orElseThrow(() -> new Exception404("능력단위 요소가 존재하지 않아요"));
+                .orElseThrow(() -> new ApiException404("능력단위 요소가 존재하지 않아요"));
 
         EvaluationWay evalWay = paper.getEvaluationWay();
 

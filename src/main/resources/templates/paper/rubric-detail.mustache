@@ -15,13 +15,15 @@
     </div>
 
     <div style="border: 2px solid #ced4da; border-radius: 8px; padding: 16px; background-color: #f8f9fa;" class="mb-3">
-        <p style="margin-bottom: 8px;">
-            <strong>🔗 상세 예시 링크:</strong>
-            <a href="{{model.guideLink}}" target="_blank"
-               style="color: #0d6efd; text-decoration: underline;">
-                {{model.guideLink}}
-            </a>
-        </p>
+        {{#model.guideLink}}
+            <p style="margin-bottom: 8px;">
+                <strong>🔗 상세 예시 링크:</strong>
+                <a href="{{model.guideLink}}" target="_blank"
+                   style="color: #0d6efd; text-decoration: underline;">
+                    {{model.guideLink}}
+                </a>
+            </p>
+        {{/model.guideLink}}
 
         <div style="margin-bottom: 12px; font-weight: 600; color: #343a40;">
             이 과제의 정답은 다양할 수 있으며, 아래와 같은 수준의 결과물이 이상적입니다:
@@ -41,12 +43,23 @@
             </div>
 
             <div class="card-body p-3">
-                <!-- 지문 이미지 -->
-                {{#stimulusImg}}
-                    <div class="mb-3">
-                        <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid" style="max-height: 200px;">
+                <div style="border: 1px solid #dee2e6; border-radius: 6px; padding: 12px; background-color: #fefefe; margin-bottom: 16px;">
+                    {{#scenarioLink}}
+                        <p style="margin-bottom: 6px;">
+                            <strong>📝 시나리오 링크:</strong>
+                            <a href="{{scenarioLink}}" target="_blank"
+                               style="color: #0d6efd; text-decoration: underline;">
+                                {{scenarioLink}}
+                            </a>
+                        </p>
+                    {{/scenarioLink}}
+
+                    <div style="color: #343a40;">
+                        {{#scenarios}}
+                            {{.}}<br>
+                        {{/scenarios}}
                     </div>
-                {{/stimulusImg}}
+                </div>
 
                 <table class="table table-bordered">
                     <thead class="table-light">

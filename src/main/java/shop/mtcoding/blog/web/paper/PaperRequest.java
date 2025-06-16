@@ -58,8 +58,8 @@ public class PaperRequest {
             public QuestionOption toEntity(Question question) {
                 return QuestionOption.builder()
                         .no(optionNo)
-                        .content(optionContent)
-                        .point(optionPoint)
+                        .content(Optional.ofNullable(optionContent).filter(s -> !s.isBlank()).orElse(null))
+                        .point(Optional.ofNullable(optionPoint).orElse(0))
                         .rubricItem(Optional.ofNullable(rubricItem).filter(s -> !s.isBlank()).orElse(null))
                         .question(question)
                         .build();

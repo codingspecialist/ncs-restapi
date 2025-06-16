@@ -192,7 +192,7 @@ public class PaperResponse {
             this.evaluationDevice = paper.getEvaluationDevice();
             this.evaluationRoom = paper.getEvaluationRoom();
             this.subjectTitle = paper.getSubject().getTitle();
-            this.guideSummaries = MyUtil.parseMultiline(paper.getGuideSummary());
+            this.guideSummaries = MyUtil.parseMultilineWithoutHyphen(paper.getGuideSummary());
             this.guideLink = paper.getGuideLink();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
         }
@@ -202,20 +202,16 @@ public class PaperResponse {
             private Long questionId;
             private Integer no;
             private String title;
-            private String stimulusImg;
-            private Integer totalPoint; // 배점
+            private String scenarioLink;
+            private List<String> scenarios; // 가이드 요약본
             private List<OptionDTO> options;
 
             public QuestionDTO(Question question) {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-                this.stimulusImg = question.getStimulusImg();
-                this.totalPoint = question.getQuestionOptions()
-                        .stream()
-                        .mapToInt(o -> o.getPoint())
-                        .max()
-                        .orElse(0);
+                this.scenarioLink = question.getScenarioLink();
+                this.scenarios = MyUtil.parseMultiline(question.getScenario());
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
             }
 
@@ -226,7 +222,6 @@ public class PaperResponse {
                 private String content;
                 private String rubricItem;
                 private Integer point;
-                private Boolean isRight;
 
                 public OptionDTO(QuestionOption option) {
                     this.optionId = option.getId();
@@ -234,7 +229,6 @@ public class PaperResponse {
                     this.content = option.getContent();
                     this.rubricItem = option.getRubricItem();
                     this.point = option.getPoint();
-                    this.isRight = option.getPoint() > 0;
                 }
             }
         }

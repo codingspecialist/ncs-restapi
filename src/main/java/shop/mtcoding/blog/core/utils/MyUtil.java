@@ -71,6 +71,17 @@ public class MyUtil {
         return Arrays.stream(raw.split("\\r?\\n"))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
+                .filter(s -> !s.isBlank())
+                .toList();
+    }
+
+    public static List<String> parseMultilineWithoutHyphen(String raw) {
+        if (raw == null || raw.trim().isEmpty()) return Collections.emptyList();
+
+        return Arrays.stream(raw.split("\\r?\\n"))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .filter(s -> !s.isBlank())
                 .map(s -> s.replaceFirst("^-\\s*", ""))  // ← 하이픈+공백 제거
                 .toList();
     }

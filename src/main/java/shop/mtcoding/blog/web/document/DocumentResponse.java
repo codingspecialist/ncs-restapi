@@ -108,7 +108,7 @@ public class DocumentResponse {
         public No2DTO(Subject subject, List<Question> questions) {
             this.subjectPurpose = subject.getPurpose();
             this.subjectTitle = subject.getTitle();
-            this.subjectElements = subject.getElements().stream().map(subjectElement -> subjectElement.getSubtitle()).toList();
+            this.subjectElements = subject.getElements().stream().map(SubjectElement::getSubtitle).toList();
             this.menus = questions.get(0).getQuestionOptions().stream()
                     .filter(option -> option.getRubricItem() != null)
                     .map(QuestionOption::getPoint).toList();
@@ -203,9 +203,9 @@ public class DocumentResponse {
 
             this.evaluationDevice = paper.getEvaluationDevice();
             this.evaluationRoom = paper.getEvaluationRoom();
-            this.submissionFormats = MyUtil.parseMultiline(paper.getSubmissionFormat());
+            this.submissionFormats = MyUtil.parseMultilineWithoutHyphen(paper.getSubmissionFormat());
             this.guideLink = paper.getGuideLink();
-            this.guideSummaries = MyUtil.parseMultiline(paper.getGuideSummary());
+            this.guideSummaries = MyUtil.parseMultilineWithoutHyphen(paper.getGuideSummary());
             // TODO (결시자, 재평가자야 0.9 프로 Subject에서 받기)
             this.scorePolicies = Arrays.asList("본평가 배점 : 평가점수 X 1.0", "재평가 배점 : 평가점수 X 0.9", "결시자 배점 : 평가점수 X 0.9");
 
@@ -286,7 +286,7 @@ public class DocumentResponse {
 
             this.evaluationDevice = paper.getEvaluationDevice();
             this.evaluationRoom = paper.getEvaluationRoom();
-            this.submissionFormats = MyUtil.parseMultiline(paper.getSubmissionFormat());
+            this.submissionFormats = MyUtil.parseMultilineWithoutHyphen(paper.getSubmissionFormat());
             // TODO (결시자, 재평가자야 0.9 프로 Subject에서 받기)
             this.scorePolicies = Arrays.asList("본평가 배점 : 평가점수 X 1.0", "재평가 배점 : 평가점수 X 0.9", "결시자 배점 : 평가점수 X 0.9");
 
@@ -351,7 +351,7 @@ public class DocumentResponse {
             this.evaluationDate = paper.getEvaluationDate().toString();
             this.loc = "3호";
             this.subjectTitle = paper.getSubject().getTitle();
-            this.guideSummaries = MyUtil.parseMultiline(paper.getGuideSummary());
+            this.guideSummaries = MyUtil.parseMultilineWithoutHyphen(paper.getGuideSummary());
             this.guideLink = paper.getGuideLink();
             this.questionCount = paper.getQuestions().size();
             this.teacherSign = teacher.getSign();
@@ -364,12 +364,16 @@ public class DocumentResponse {
             private Long questionId;
             private Integer no;
             private String title;
+            private String scenarioLink;
+            private List<String> scenarios; // 가이드 요약본
             private List<OptionDTO> options;
 
             public QuestionDTO(Question question) {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
+                this.scenarioLink = question.getScenarioLink();
+                this.scenarios = MyUtil.parseMultiline(question.getScenario());
                 this.options = question.getQuestionOptions().stream().map(QuestionDTO.OptionDTO::new).toList();
             }
 
@@ -379,14 +383,12 @@ public class DocumentResponse {
                 private Integer no;
                 private String rubricItem;
                 private Integer point;
-                private Boolean isRight;
 
                 public OptionDTO(QuestionOption option) {
                     this.optionId = option.getId();
                     this.no = option.getNo();
                     this.rubricItem = option.getRubricItem();
                     this.point = option.getPoint();
-                    this.isRight = option.getPoint() > 0;
                 }
             }
         }

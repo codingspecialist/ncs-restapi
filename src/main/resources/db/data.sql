@@ -148,12 +148,22 @@ insert into question_tb(no, title, paper_id, created_at, subject_element_id, sti
 values (2, '다음 중 소켓 설명으로 틀린것은?', 3, now(), 2, null);
 
 -- 4번 시험지의 문제 1개 (10)
-INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_img, title)
-VALUES (1, now(), 4, 8, NULL, '백엔드 설계능력');
-INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_img, title)
-VALUES (2, now(), 4, 9, NULL, 'RestAPI 구현능력');
-INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_img, title)
-VALUES (3, now(), 4, 10, NULL, '커뮤니케이션능력');
+INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_img, title, scenario_link, scenario)
+VALUES (1, now(), 4, 8, NULL, '백엔드 설계능력',
+        'https://getinthere.notion.site/PBL-2128a08b6c0d80898b12f096198cd488?source=copy_link', '온라인 강의 플랫폼의 강의 등록 기능을 설계하시오.
+- 요구사항: 강의명, 강사명, 가격, 소개글 등록
+- 기술조건: MVC 패턴 기반 설계, 도메인 모델 작성, RESTful API 구조 명세');
+INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_img, title, scenario_link, scenario)
+VALUES (2, now(), 4, 9, NULL, 'RestAPI 구현능력', null, '블로그 서비스의 게시글 CRUD API를 구현하시오.
+- 요구사항: 게시글 등록/조회/수정/삭제
+- 기술조건: Spring Boot 기반 REST API, 예외 처리 및 응답 메시지 통일
+');
+INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_img, title, scenario_link, scenario)
+VALUES (3, now(), 4, 10, NULL, '커뮤니케이션능력',
+        'https://getinthere.notion.site/PBL-2128a08b6c0d80898b12f096198cd488?source=copy_link', '팀 프로젝트 회의록을 작성하고, 팀원들과 공유 및 피드백을 주고받는 시나리오를 설명하시오.
+- 요구사항: 회의록 작성 → 피드백 공유 → 수정본 반영
+- 기술조건: 협업툴(Notion, Slack 등) 사용, 피드백 처리 과정 설명 포함
+');
 
 -- 4번 시험지의 문제옵션들(1)
 INSERT INTO question_option_tb(no, created_at, point, question_id, rubric_item, content, is_right)

@@ -50,18 +50,6 @@ public class PaperService {
         Subject subjectPS = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new Exception404("해당 교과목을 찾을 수 없어요"));
 
-        if (!reqDTO.getEvaluationWay().equals(EvaluationWay.MCQ)) {
-            if (reqDTO.getGuideSummary() == null || reqDTO.getGuideSummary().isBlank()) {
-                throw new IllegalArgumentException("객관식이 아닌 경우, guideSummary는 필수입니다.");
-            }
-        }
-
-        if (!reqDTO.getEvaluationWay().equals(EvaluationWay.MCQ)) {
-            if (reqDTO.getSubmissionFormat() == null || reqDTO.getSubmissionFormat().isBlank()) {
-                throw new IllegalArgumentException("객관식이 아닌 경우, 제출자료 안내는 필수입니다.");
-            }
-        }
-
         // ORIGINAL 유형이면 해당 교과목에 이미 존재하는지 확인
         if (reqDTO.getPaperType() == PaperType.ORIGINAL) {
             boolean exists = paperRepository.existsBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL);
@@ -83,14 +71,6 @@ public class PaperService {
 
         EvaluationWay evalWay = paper.getEvaluationWay();
 
-        // 공통 유효성 검사
-        if (reqDTO.getQuestionNo() == null || reqDTO.getQuestionNo() <= 0) {
-            throw new Exception400("문제 번호는 필수입니다.");
-        }
-        if (reqDTO.getQuestionTitle() == null || reqDTO.getQuestionTitle().isBlank()) {
-            throw new Exception400("문제 제목은 필수입니다.");
-        }
-
         String imgPath = null;
 
         // ✅ 객관식일 때
@@ -99,41 +79,8 @@ public class PaperService {
             if (reqDTO.getStimulusFileBase64() != null && !reqDTO.getStimulusFileBase64().isBlank()) {
                 imgPath = MyUtil.fileWrite(reqDTO.getStimulusFileBase64());
             }
-
-            // 정답은 반드시 하나
-            long correctCount = reqDTO.getOptions().stream()
-                    .filter(opt -> opt.getOptionPoint() != null && opt.getOptionPoint() == 1)
-                    .count();
-
-            if (correctCount != 1) {
-                throw new Exception400("객관식 문제는 정답이 반드시 1개여야 합니다.");
-            }
-
-            // 정답에는 루브릭 설명 필수
-            for (var opt : reqDTO.getOptions()) {
-                if (opt.getOptionPoint() != null && opt.getOptionPoint() == 1) {
-                    if (opt.getRubricItem() == null || opt.getRubricItem().isBlank()) {
-                        throw new Exception400("정답의 루브릭 설명은 필수입니다.");
-                    }
-                }
-            }
         }
-        // ✅ 서술형/작업형/프로젝트형일 때
-        else {
-            if (reqDTO.getScenario() == null || reqDTO.getScenario().isBlank()) {
-                throw new Exception400("문제 시나리오는 필수입니다.");
-            }
 
-            // 옵션마다 루브릭과 점수 체크
-            for (var opt : reqDTO.getOptions()) {
-                if (opt.getRubricItem() == null || opt.getRubricItem().isBlank()) {
-                    throw new Exception400("루브릭 항목 설명은 필수입니다.");
-                }
-                if (opt.getOptionPoint() == null || opt.getOptionPoint() <= 0) {
-                    throw new Exception400("루브릭 점수는 1 이상이어야 합니다.");
-                }
-            }
-        }
 
         // 저장
         Question question = questionRepository.save(reqDTO.toEntity(paper, subjectElement, imgPath));

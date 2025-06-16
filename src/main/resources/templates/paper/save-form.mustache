@@ -70,8 +70,7 @@
 - Swagger 또는 Postman을 통한 API 명세화
 - 코드 구성의 일관성 및 모듈화
 - 예외처리 및 인증(JWT 등) 포함
-- 실제 데이터를 통한 시연 가능성"
-                                  required></textarea>
+- 실제 데이터를 통한 시연 가능성"></textarea>
                         <small class="form-text text-muted">
                             ※ 각 항목은 <strong>줄바꿈(Enter)</strong>으로 구분해주세요. 한 줄당 하나의 항목으로 처리됩니다.
                         </small>
@@ -133,25 +132,32 @@
     }
 
     function insertGuideExample() {
-        document.getElementById("guideSummary").value =
-                `- 요구사항을 충실히 반영한 기능 구현
-- RESTful한 API 설계
-- Swagger 또는 Postman을 통한 API 명세화
-- 코드 구성의 일관성 및 모듈화
-- 예외처리 및 인증(JWT 등) 포함
-- 실제 데이터를 통한 시연 가능성`;
+        const guideLines = [
+            "- 요구사항을 충실히 반영한 기능 구현",
+            "- RESTful한 API 설계",
+            "- Swagger 또는 Postman을 통한 API 명세화",
+            "- 코드 구성의 일관성 및 모듈화",
+            "- 예외처리 및 인증(JWT 등) 포함",
+            "- 실제 데이터를 통한 시연 가능성"
+        ];
+        document.getElementById("guideSummary").value = guideLines.join("\n");
     }
 
     function insertSubmissionExample() {
-        document.getElementById("submissionFormat").value =
-                `- GitHub Repository 주소
-- Swagger 또는 Postman API 명세서
-- Notion 주소
-- EC2 또는 Render에 배포된 서비스 주소`;
+        const submissionLines = [
+            "- GitHub Repository 주소",
+            "- Swagger 또는 Postman API 명세서",
+            "- Notion 주소",
+            "- EC2 또는 Render에 배포된 서비스 주소"
+        ];
+        document.getElementById("submissionFormat").value = submissionLines.join("\n");
     }
 
+
     evaluationSelect.addEventListener("change", toggleGuideFields);
-    window.addEventListener("DOMContentLoaded", toggleGuideFields);
+    window.addEventListener("pageshow", () => {
+        setTimeout(toggleGuideFields, 50);
+    });
 </script>
 
 {{> layout/footer}}

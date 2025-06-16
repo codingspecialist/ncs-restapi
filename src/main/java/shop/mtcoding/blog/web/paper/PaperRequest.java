@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class PaperRequest {
-    
+
     @Data
-    public class QuestionSaveDTO {
+    public static class QuestionSaveDTO {
         private Long elementId;
         private Long paperId;
         private Integer questionNo;
@@ -25,8 +25,9 @@ public class PaperRequest {
         // 객관식일 경우 사용
         private String stimulusFileBase64;
 
-        // 서술형일 경우 사용
+        // 객관식이 아닐 경우 사용
         private String scenario;
+        // 객관식이 아닐 경우 사용
         private String scenarioLink;
 
         private List<OptionDTO> options;
@@ -46,8 +47,12 @@ public class PaperRequest {
         @Data
         public static class OptionDTO {
             private Integer optionNo;
+            // 객관식일 경우
             private String optionContent;
+            // 객관식의 정답에 체크가 되어있으면 점수를 받고, 아니면 0점을 받기
             private Integer optionPoint;
+            // 객관식의 정답에 체크가 되어있으면 루브릭 내용받기
+            // 객관식이 아닐경우에는 무조건 받기
             private String rubricItem;
 
             public QuestionOption toEntity(Question question) {

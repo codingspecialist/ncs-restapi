@@ -184,6 +184,7 @@ public class PaperResponse {
         private String subjectTitle; // 교과목명
         private Integer questionCount; // 문항수
         private String paperType;
+        private String evaluationWay;
         private String evaluationDate;
 
         public DTO(Paper paper) {
@@ -194,6 +195,7 @@ public class PaperResponse {
             this.subjectTitle = paper.getSubject().getTitle();
             this.questionCount = paper.getQuestions().size();
             this.paperType = paper.getPaperType().toKorean();
+            this.evaluationWay = paper.getEvaluationWay().toKorean();
             this.evaluationDate = MyUtil.localDateToString(paper.getEvaluationDate());
         }
     }

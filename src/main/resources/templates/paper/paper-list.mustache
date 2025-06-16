@@ -10,6 +10,7 @@
         <thead>
         <tr>
             <th>시험유형</th>
+            <th>시험방식</th>
             <th>교과목</th>
             <th>문항수</th>
             <th>과정명/회차</th>
@@ -20,6 +21,7 @@
         {{#models}}
             <tr class="click-tr" onclick="location.href='/api/paper-menu/paper/{{paperId}}'">
                 <th>{{paperType}}</th>
+                <th>{{evaluationWay}}</th>
                 <td>{{subjectTitle}}</td>
                 <td>{{questionCount}}</td>
                 <td>{{courseTitle}}/{{courseRound}}회차</td>

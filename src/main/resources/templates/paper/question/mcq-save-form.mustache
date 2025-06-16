@@ -54,11 +54,12 @@
         div.className = "mt-2 mb-3 pl-2 questionItem";
         div.innerHTML = `
             <input type="hidden" class="form-control optionNo" value="${no}" readonly>
-            <input type="text" class="form-control optionContent" placeholder="옵션 내용 (보기)" required>
+            <input type="text" class="form-control optionContent" placeholder="옵션 내용 (보기)">
             <label class="mt-1">
                 <input type="checkbox" class="optionCorrect"> 정답
             </label>
-            <input type="text" class="form-control optionRubric mt-1" placeholder="정답 루브릭 설명 (필수)" style="display:none;">
+            <input type="text" class="form-control optionRubric mt-1" placeholder="정답 루브릭 설명" style="display:none;">
+            <input type="number" class="form-control optionPoint mt-1" placeholder="배점 (예: 10)" min="1" style="display:none;">
         `;
         box.appendChild(div);
         optionCounter++;
@@ -72,10 +73,21 @@
         if (e.target.classList.contains("optionCorrect")) {
             const checkboxes = document.querySelectorAll(".optionCorrect");
             checkboxes.forEach(cb => {
-                const rubric = cb.closest(".questionItem").querySelector(".optionRubric");
+                const item = cb.closest(".questionItem");
+                const rubric = item.querySelector(".optionRubric");
+                const point = item.querySelector(".optionPoint");
+
                 if (cb !== e.target) cb.checked = false;
-                rubric.style.display = cb.checked ? "block" : "none";
-                if (!cb.checked) rubric.value = "";
+
+                if (cb.checked) {
+                    rubric.style.display = "block";
+                    point.style.display = "block";
+                } else {
+                    rubric.style.display = "none";
+                    point.style.display = "none";
+                    rubric.value = "";
+                    point.value = "";
+                }
             });
         }
     });
@@ -99,38 +111,20 @@
         });
 
         const optionItems = document.querySelectorAll("#questionBox .questionItem");
-        let correctChecked = 0;
 
         for (const item of optionItems) {
             const optionContent = item.querySelector(".optionContent").value;
             const optionNo = item.querySelector(".optionNo").value;
             const isCorrect = item.querySelector(".optionCorrect").checked;
             const rubricItem = item.querySelector(".optionRubric").value;
-
-            if (!optionContent.trim()) {
-                alert("옵션 내용을 입력해주세요.");
-                return;
-            }
-
-            if (isCorrect) {
-                correctChecked++;
-                if (!rubricItem.trim()) {
-                    alert("정답 루브릭 설명은 필수입니다.");
-                    return;
-                }
-            }
+            const pointValue = item.querySelector(".optionPoint").value;
 
             formData.options.push({
                 optionNo,
                 optionContent,
-                optionPoint: isCorrect ? 1 : 0,
+                optionPoint: isCorrect ? Number(pointValue) : 0,
                 rubricItem: isCorrect ? rubricItem : ""
             });
-        }
-
-        if (correctChecked !== 1) {
-            alert("객관식 문제는 하나의 정답만 선택해야 합니다.");
-            return;
         }
 
         fetch(`/api/paper-menu/paper/${formData.paperId}/question/save`, {

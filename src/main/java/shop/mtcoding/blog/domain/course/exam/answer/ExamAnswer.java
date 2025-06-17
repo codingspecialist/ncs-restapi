@@ -70,12 +70,13 @@ public class ExamAnswer {
     }
 
     @Builder
-    public ExamAnswer(Long id, Exam exam, Question question, Integer questionNo, Integer selectedOptionNo, Boolean isRight, LocalDateTime createdAt) {
+    public ExamAnswer(Long id, Exam exam, Question question, Integer questionNo, Integer selectedOptionNo, Integer earnedPoint, Boolean isRight, LocalDateTime createdAt) {
         this.id = id;
         this.exam = exam;
         this.question = question;
         this.questionNo = questionNo;
         this.selectedOptionNo = selectedOptionNo;
+        this.earnedPoint = earnedPoint;
         this.isRight = isRight;
         this.createdAt = createdAt;
     }

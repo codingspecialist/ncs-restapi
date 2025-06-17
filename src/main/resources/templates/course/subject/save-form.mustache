@@ -1,57 +1,127 @@
 {{> layout/header}}
 
-<div class="container p-5">
+<style>
+    .subject-form-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        max-width: 720px;
+        margin: 0 auto;
+    }
 
-    <div class="card">
-        <div class="card-header"><b>{{courseTitle}}/{{courseRound}}회차</b></div>
+    .subject-form-card .card-header {
+        background-color: transparent;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+    }
 
-        <div class="card-body">
-            <form id="save-form" action="/api/course-menu/course/{{courseId}}/subject/save"
-                  method="post">
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="훈련교사" name="teacherName" value="최주호">
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="교과목코드" name="code" value="S1001">
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="교과목명" name="title" value="자바">
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="교과목목표" name="purpose"
-                           value="자바 for, if, 객체지향을 학습하여 프로그래밍의 기본기를 배양하는 능력이다">
-                </div>
-                <div class="mb-3">
-                    <select class="form-control" name="ncsType">
-                        <option value="NCS">NCS</option>
-                        <option value="NON_NCS">비NCS</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="교과목수준" name="grade" value="3">
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="교과목 시간" name="totalTime" value="80">
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="교과목 순서" name="no" value="1">
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="교수 학습방법" name="learningWay" value="MIXED">
-                </div>
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+    }
 
-                <div class="mb-3">
-                    <label>시작일</label>
-                    <input type="date" class="form-control" placeholder="교과목 시작일" name="startDate" value="2024-05-01">
-                </div>
-                <div class="mb-3">
-                    <label>종료일</label>
-                    <input type="date" class="form-control" placeholder="교과목 종료일" name="endDate" value="2024-05-10">
-                </div>
+    .form-control, .form-select {
+        border-radius: 10px;
+    }
 
-                <button type="submit" class="btn btn-primary form-control">교과목 등록</button>
-            </form>
+    .btn-primary {
+        padding: 0.75rem;
+        font-weight: bold;
+        font-size: 1rem;
+        border-radius: 12px;
+    }
+
+    .form-section {
+        margin-bottom: 1.4rem;
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="subject-form-card">
+        <div class="card-header">
+            {{courseTitle}} / {{courseRound}}회차 교과목 등록
         </div>
+
+        <form id="save-form" action="/api/course-menu/course/{{courseId}}/subject/save" method="post">
+
+            <div class="form-section">
+                <label class="form-label">훈련교사</label>
+                <input type="text" class="form-control" name="teacherName" value="최주호" placeholder="훈련교사">
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">교과목 코드</label>
+                <input type="text" class="form-control" name="code" value="S1001" placeholder="교과목코드">
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">교과목명</label>
+                <input type="text" class="form-control" name="title" value="자바" placeholder="교과목명">
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">교과목 목표</label>
+                <input type="text" class="form-control" name="purpose"
+                       value="자바 for, if, 객체지향을 학습하여 프로그래밍의 기본기를 배양하는 능력이다" placeholder="교과목목표">
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">교과 유형</label>
+                <select class="form-select" name="ncsType">
+                    <option value="NCS">NCS</option>
+                    <option value="NON_NCS">비NCS</option>
+                </select>
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">교과목 수준</label>
+                <input type="text" class="form-control" name="grade" value="3" placeholder="교과목수준">
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">총 시간</label>
+                <input type="text" class="form-control" name="totalTime" value="80" placeholder="교과목 시간">
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">교과목 순서</label>
+                <input type="text" class="form-control" name="no" value="1" placeholder="교과목 순서">
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">교수 학습방법</label>
+                <select class="form-select" name="learningWay">
+                    <option value="THEORY">이론</option>
+                    <option value="PRACTICE">실습</option>
+                    <option value="MIXED" selected>이론+실습</option>
+                </select>
+            </div>
+
+            <div class="form-section">
+                <label for="scorePolicy" class="form-label">
+                    재평가 또는 결시자 점수 반영 비율 (예: 0.9 = 원점수의 90% 반영)<br>
+                    <small class="text-muted">※ 본평가에서 60점 미만이거나 결석한 경우에만 적용</small>
+                </label>
+                <input type="number" step="0.1" min="0.6" max="1.0" class="form-control"
+                       name="scorePolicy" id="scorePolicy" value="1.0" required>
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">시작일</label>
+                <input type="date" class="form-control" name="startDate" value="2024-05-01">
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">종료일</label>
+                <input type="date" class="form-control" name="endDate" value="2024-05-10">
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3 form-control">교과목 등록</button>
+        </form>
     </div>
 </div>
 

@@ -17,6 +17,7 @@ import shop.mtcoding.blog.domain.course.subject.paper.PaperRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperType;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionRepository;
+import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
 import shop.mtcoding.blog.domain.user.User;
 import shop.mtcoding.blog.domain.user.UserType;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
@@ -168,9 +169,9 @@ public class ExamService {
                 })
                 .sum();
 
-        // 5. 재평가지로 시험쳤으면 10%
+        // 5. 재평가지로 시험쳤으면 10%, 20% 등등
         if (examPS.getPaper().isReEvaluation()) {
-            score = score * 0.9;
+            score = score * examPS.getSubject().getScorePolicy();
         }
 
         // 6. 점수 입력 수준 입력
@@ -236,8 +237,17 @@ public class ExamService {
         });
 
         // 4. 시험점수, 수준, 통과여부 업데이트 하기
-        //double score = examAnswerList.stream().mapToInt(value -> value.getIsCorrect() ? value.getQuestion().getPoint() : 0).sum();
-        double score = 100;
+        double score = examAnswerList.stream()
+                .mapToInt(answer -> {
+                    if (!answer.getIsRight()) return 0;
+                    return answer.getQuestion()
+                            .getQuestionOptions()
+                            .stream()
+                            .filter(QuestionOption::getIsRight)
+                            .mapToInt(QuestionOption::getPoint)
+                            .findFirst()  // 선택은 1개만 가능
+                            .orElse(0);
+                }).sum();
 
         // 5. 재평가지로 시험쳤으면 10%
         if (paper.isReEvaluation()) {

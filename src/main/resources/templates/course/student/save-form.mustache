@@ -1,21 +1,64 @@
 {{> layout/header}}
 
-<div class="container p-5">
+<style>
+    .subject-form-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        max-width: 720px;
+        margin: 0 auto;
+    }
 
-    <div class="card">
-        <div class="card-header"><b>{{courseTitle}}/{{courseRound}}회차</b></div>
+    .subject-form-card .card-header {
+        background-color: transparent;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+    }
 
-        <div class="card-body">
-            <form id="save-form" action="/api/course-menu/course/{{courseId}}/student/save" method="post">
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="학생명" name="name" value="보스">
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="생년원일6자리" name="birthday" value="860205">
-                </div>
-                <button type="submit" class="btn btn-primary form-control">학생 등록</button>
-            </form>
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+    }
+
+    .form-control {
+        border-radius: 10px;
+    }
+
+    .btn-primary {
+        padding: 0.75rem;
+        font-weight: bold;
+        font-size: 1rem;
+        border-radius: 12px;
+    }
+
+    .form-section {
+        margin-bottom: 1.4rem;
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="subject-form-card">
+        <div class="card-header">
+            {{courseTitle}} / {{courseRound}}회차 학생 등록
         </div>
+
+        <form id="save-form" action="/api/course-menu/course/{{courseId}}/student/save" method="post">
+            <div class="form-section">
+                <label class="form-label">학생 이름</label>
+                <input type="text" class="form-control" name="name" value="보스" placeholder="학생명">
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">생년월일 (6자리)</label>
+                <input type="text" class="form-control" name="birthday" value="860205" placeholder="예: 860205">
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3 form-control">학생 등록</button>
+        </form>
     </div>
 </div>
 

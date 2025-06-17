@@ -1,37 +1,85 @@
 {{> layout/header}}
 <input type="hidden" id="subjectId" value="{{subjectId}}">
 
-<div class="container p-5">
+<style>
+    .subject-form-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        max-width: 720px;
+        margin: 0 auto;
+    }
 
-    <div class="card">
-        <div class="card-header"><b>교과목 요소를 등록 해주세요</b></div>
+    .subject-form-card .card-header {
+        background-color: transparent;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+    }
 
-        <div class="card-body">
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+    }
 
-            <button type="button" class="btn btn-primary mb-2" onclick="addElement()">요소 추가</button>
+    .form-control {
+        border-radius: 10px;
+    }
 
-            <div id="element-input-box">
-                <div class="subject-element-item">
-                    <div class="mb-3">
-                        <input type="text" class="form-control no" placeholder="순번" value="1">
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" class="form-control subtitle" placeholder="교과목 요소명" value="오버로딩">
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" class="form-control subjectElementPurpose" placeholder="교과목 요소 평가기준"
-                               value="여러 메서드를 타입, 매개변수를 변경하여 재사용할 수 있다.">
-                    </div>
+    .btn-primary {
+        padding: 0.75rem;
+        font-weight: bold;
+        font-size: 1rem;
+        border-radius: 12px;
+    }
+
+    .form-section {
+        margin-bottom: 1.4rem;
+    }
+
+    .subject-element-item {
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background-color: #f8f9fa;
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="subject-form-card">
+        <div class="card-header">교과목 요소 등록</div>
+
+        <div class="form-section text-end">
+            <button type="button" class="btn btn-sm btn-primary" onclick="addElement()">+ 요소 추가</button>
+        </div>
+
+        <div id="element-input-box">
+            <div class="subject-element-item">
+                <div class="form-section">
+                    <label class="form-label">순번</label>
+                    <input type="text" class="form-control no" placeholder="순번" value="1">
+                </div>
+                <div class="form-section">
+                    <label class="form-label">교과목 요소명</label>
+                    <input type="text" class="form-control subtitle" placeholder="교과목 요소명" value="오버로딩">
+                </div>
+                <div class="form-section">
+                    <label class="form-label">교과목 요소 평가기준</label>
+                    <input type="text" class="form-control subjectElementPurpose" placeholder="평가기준"
+                           value="여러 메서드를 타입, 매개변수를 변경하여 재사용할 수 있다.">
                 </div>
             </div>
-
-            <button type="button" onclick="saveElement()" class="btn btn-primary form-control">교과목 요소 등록</button>
-
         </div>
+
+        <button type="button" onclick="saveElement()" class="btn btn-primary form-control mt-3">교과목 요소 등록</button>
     </div>
 </div>
-<script>
 
+<script>
     async function saveElement() {
         const subjectId = document.querySelector("#subjectId").value;
         const items = document.querySelectorAll("#element-input-box .subject-element-item");
@@ -64,26 +112,26 @@
         }
     }
 
-
     function addElement() {
-        $("#element-input-box").append(makeElement());
-    }
-
-    function makeElement() {
-        return `<div class="subject-element-item">
-                    <div class="mb-3">
-                        <input type="text" class="form-control no" placeholder="순번" value="2">
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" class="form-control subtitle" placeholder="교과목 요소명" value="객체지향">
-                    </div>
-                     <div class="mb-3">
-                        <input type="text" class="form-control subjectElementPurpose" placeholder="교과목 요소 평가기준"
-                               value="디자인 패턴을 활용할 수 있다.">
-                    </div>
-                </div>`;
+        const elementHtml = `
+            <div class="subject-element-item">
+                <div class="form-section">
+                    <label class="form-label">순번</label>
+                    <input type="text" class="form-control no" placeholder="순번" value="2">
+                </div>
+                <div class="form-section">
+                    <label class="form-label">교과목 요소명</label>
+                    <input type="text" class="form-control subtitle" placeholder="교과목 요소명" value="객체지향">
+                </div>
+                <div class="form-section">
+                    <label class="form-label">교과목 요소 평가기준</label>
+                    <input type="text" class="form-control subjectElementPurpose" placeholder="평가기준"
+                           value="디자인 패턴을 활용할 수 있다.">
+                </div>
+            </div>
+        `;
+        document.querySelector("#element-input-box").insertAdjacentHTML("beforeend", elementHtml);
     }
 </script>
-
 
 {{> layout/footer}}

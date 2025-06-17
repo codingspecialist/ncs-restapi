@@ -40,7 +40,6 @@ public class Paper {
     private String guideLink; // 강사용 노션/GitHub 등 외부 링크
     private String evaluationRoom;     // 평가 장소
     private String evaluationDevice;   // 평가 장비 정보
-    private Double scorePolicy;        // 평가 배점 정책
     private String submissionFormat;
 
     @CreationTimestamp
@@ -65,7 +64,7 @@ public class Paper {
     }
 
     @Builder
-    public Paper(Long id, EvaluationWay evaluationWay, LocalDate evaluationDate, Subject subject, PaperType paperType, String guideSummary, String guideLink, String evaluationRoom, String evaluationDevice, Double scorePolicy, String submissionFormat, LocalDateTime createdAt) {
+    public Paper(Long id, EvaluationWay evaluationWay, LocalDate evaluationDate, Subject subject, PaperType paperType, String guideSummary, String guideLink, String evaluationRoom, String evaluationDevice, String submissionFormat, LocalDateTime createdAt) {
         this.id = id;
         this.evaluationWay = evaluationWay;
         this.evaluationDate = evaluationDate;
@@ -75,7 +74,6 @@ public class Paper {
         this.guideLink = guideLink;
         this.evaluationRoom = evaluationRoom;
         this.evaluationDevice = evaluationDevice;
-        this.scorePolicy = scorePolicy;
         this.submissionFormat = submissionFormat;
         this.createdAt = createdAt;
     }

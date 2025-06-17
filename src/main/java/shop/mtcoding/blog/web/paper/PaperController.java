@@ -94,9 +94,9 @@ public class PaperController {
 
     // 5. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록(교과목별) - 시험지등록(교과목별)
     @PostMapping("/api/paper-menu/subject/{subjectId}/paper/save")
-    public String save(@PathVariable("subjectId") Long subjectId, PaperRequest.SaveDTO reqDTO) {
+    public ResponseEntity<?> save(@PathVariable("subjectId") Long subjectId, @RequestBody PaperRequest.SaveDTO reqDTO) {
         paperService.시험지등록(subjectId, reqDTO);
-        return "redirect:/api/paper-menu/subject/" + subjectId + "/paper";
+        return ResponseEntity.ok(new ApiUtil<>(subjectId));
     }
 
     // 6. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록 - 시험지상세 - 문제등록 폼

@@ -48,17 +48,17 @@ values (1, now(), 'MAIN', 1);
 
 
 insert into subject_tb(teacher_name, code, course_id, start_date, end_date, grade, ncs_type, learning_way, no, purpose,
-                       title, total_time, created_at)
+                       title, total_time, created_at, score_policy)
 values ('최주호', 'S2001', 1, '2024-06-01', '2024-06-07', 3, 'NCS', 'MIXED', 1,
-        '객체지향을 학습하는 능력이다', '자바', 50, now());
+        '객체지향을 학습하는 능력이다', '자바', 50, now(), 0.9);
 insert into subject_tb(teacher_name, code, course_id, start_date, end_date, grade, ncs_type, learning_way, no, purpose,
-                       title, total_time, created_at)
+                       title, total_time, created_at, score_policy)
 values ('최주호', 'S2002', 1, '2024-06-08', '2024-06-13', 3, 'NCS', 'MIXED', 2,
-        'HTTP를 학습하는 능력이다', '스프링부트', 50, now());
+        'HTTP를 학습하는 능력이다', '스프링부트', 50, now(), 0.9);
 insert into subject_tb(teacher_name, code, course_id, start_date, end_date, grade, ncs_type, learning_way, no, purpose,
-                       title, total_time, created_at)
+                       title, total_time, created_at, score_policy)
 values ('최주호', 'S1001', 1, '2024-05-01', '2024-05-10', 3, 'NON_NCS', 'MIXED', 5,
-        '스프링, 템플릿 엔진, 협업능력을 보는 프로젝트이다.', '미니프로젝트1', 120, '2025-06-14 22:07:20.442618');
+        '스프링, 템플릿 엔진, 협업능력을 보는 프로젝트이다.', '미니프로젝트1', 120, now(), 0.9);
 
 
 
@@ -100,17 +100,17 @@ values ('2025-06-14 22:08:32.766494', 3, 3, '커뮤니케이션능력', '커뮤�
 
 -- 시험지 3
 insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
-                     evaluation_room, score_policy, submission_format, guide_summary, guide_link)
-values (1, now(), 'ORIGINAL', '2024-06-07', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호', 1.0, '온라인제출', null, null);
+                     evaluation_room, submission_format, guide_summary, guide_link)
+values (1, now(), 'ORIGINAL', '2024-06-07', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호', '온라인제출', null, null);
 insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
-                     evaluation_room, score_policy, submission_format, guide_summary, guide_link)
-values (2, now(), 'ORIGINAL', '2024-06-13', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호', 1.0, '온라인제출', null, null);
+                     evaluation_room, submission_format, guide_summary, guide_link)
+values (2, now(), 'ORIGINAL', '2024-06-13', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호', '온라인제출', null, null);
 insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
-                     evaluation_room, score_policy, submission_format, guide_summary, guide_link)
-values (1, now(), 'RETEST', '2024-06-08', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호', 0.9, '온라인제출', null, null);
+                     evaluation_room, submission_format, guide_summary, guide_link)
+values (1, now(), 'RETEST', '2024-06-08', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호', '온라인제출', null, null);
 insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
-                     evaluation_room, score_policy, submission_format, guide_summary, guide_link)
-values (3, now(), 'ORIGINAL', '2024-06-08', 'PROJECT', '인터넷 가능한 PC', '본관 3층 302호', 1.0,
+                     evaluation_room, submission_format, guide_summary, guide_link)
+values (3, now(), 'ORIGINAL', '2024-06-08', 'PROJECT', '인터넷 가능한 PC', '본관 3층 302호',
         '- GitHub Repository 주소
         - Swagger 또는 Postman API 명세서
         - Notion 주소

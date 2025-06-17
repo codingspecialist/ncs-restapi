@@ -39,6 +39,8 @@ public class Subject {
     @Enumerated(EnumType.STRING)
     private LearningWay learningWay; // 교수 학습 방법
 
+    private Double scorePolicy; // 결시자/재평가자 감점 비율 (0.9, 0.8)
+
     private LocalDate startDate;
     private LocalDate endDate;
     private String teacherName;
@@ -64,24 +66,21 @@ public class Subject {
     }
 
     @Builder
-    public Subject(Long id, String code, String title, String purpose,
-                   NcsType ncsType, Integer grade, Integer totalTime, Integer no,
-                   LearningWay learningWay,
-                   LocalDate startDate, LocalDate endDate, String teacherName,
-                   Course course, LocalDateTime createdAt) {
-        this.id = id;
-        this.code = code;
-        this.title = title;
-        this.purpose = purpose;
-        this.ncsType = ncsType;
-        this.grade = grade;
-        this.totalTime = totalTime;
-        this.no = no;
-        this.learningWay = learningWay;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.teacherName = teacherName;
-        this.course = course;
+    public Subject(LocalDateTime createdAt, Course course, String teacherName, LocalDate endDate, LocalDate startDate, Double scorePolicy, LearningWay learningWay, Integer totalTime, Integer grade, NcsType ncsType, String purpose, String title, String code, Integer no, Long id) {
         this.createdAt = createdAt;
+        this.course = course;
+        this.teacherName = teacherName;
+        this.endDate = endDate;
+        this.startDate = startDate;
+        this.scorePolicy = scorePolicy;
+        this.learningWay = learningWay;
+        this.totalTime = totalTime;
+        this.grade = grade;
+        this.ncsType = ncsType;
+        this.purpose = purpose;
+        this.title = title;
+        this.code = code;
+        this.no = no;
+        this.id = id;
     }
 }

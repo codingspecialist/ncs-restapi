@@ -71,17 +71,20 @@ public class PaperRequest {
     public static class SaveDTO {
         private PaperType paperType; // 본평가 / 재평가
         private LocalDate evaluationDate;
-        private EvaluationWay evaluationWay; // 서술형 / 혼합형 / 포트폴리오
 
-        private String evaluationRoom; // 평가 장소
         private String evaluationDevice; // 평가 장비
-        private Double scorePolicy; // 점수 환산 비율
+        private String evaluationRoom; // 평가 장소
+
+        private EvaluationWay evaluationWay; // 객관식. 서술형. 작업형. 프로젝트형
 
         private String guideSummary; // 훈련생용 안내 (객관식 제외 시 필수)
         private String guideLink;    // 강사용 외부 링크
         private String submissionFormat;
 
         public Paper toEntity(Subject subject) {
+            // guideLink가 공백이거나 trim() 후 빈 문자열이면 null로 처리
+            String processedGuideLink = (this.guideLink != null && !this.guideLink.trim().isEmpty()) ? this.guideLink.trim() : null;
+
             return Paper.builder()
                     .subject(subject)
                     .paperType(paperType)
@@ -89,13 +92,11 @@ public class PaperRequest {
                     .evaluationWay(evaluationWay)
                     .evaluationRoom(evaluationRoom)
                     .evaluationDevice(evaluationDevice)
-                    .scorePolicy(scorePolicy)
                     .guideSummary(guideSummary)
-                    .guideLink(guideLink)
+                    .guideLink(processedGuideLink) // 수정된 guideLink 적용
                     .submissionFormat(submissionFormat)
                     .build();
         }
     }
-
 
 }

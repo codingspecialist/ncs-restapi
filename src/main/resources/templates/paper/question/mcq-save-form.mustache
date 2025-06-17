@@ -1,12 +1,62 @@
 {{> layout/header}}
 <input type="hidden" id="paperId" value="{{model.paperId}}">
 
-<div class="container p-5">
-    <form id="questionForm" enctype="multipart/form-data">
-        <div class="card">
-            <!-- 능력단위 요소 선택 -->
-            <div class="card-header">
-                <select class="form-select" id="elementId">
+<style>
+    .paper-form-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        max-width: 840px;
+        margin: 0 auto;
+    }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 10px;
+    }
+
+    .btn-primary {
+        padding: 0.75rem;
+        font-weight: bold;
+        font-size: 1rem;
+        border-radius: 12px;
+        width: 100%;
+    }
+
+    .form-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .questionItem {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 1rem;
+        background-color: #f9f9f9;
+        margin-top: 1rem;
+    }
+
+    /* 첫 번째 questionItem 위에는 마진 없음 */
+    .questionItem:first-child {
+        margin-top: 0;
+    }
+
+    .rubric-box {
+        margin-top: 0.75rem;
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="paper-form-card">
+        <form id="questionForm" enctype="multipart/form-data">
+            <div class="form-section">
+                <label for="elementId" class="form-label">능력단위 요소 선택 <span class="text-danger">*</span></label>
+                <select class="form-select" id="elementId" required>
                     <option value="0">능력단위 요소를 선택해주세요 (필수)</option>
                     {{#model.elements}}
                         <option value="{{elementId}}">{{subtitle}}</option>
@@ -14,35 +64,31 @@
                 </select>
             </div>
 
-            <!-- 문제 번호 -->
-            <div class="card-header">
-                <b>문제 번호를 입력해주세요</b>
-                <input type="text" class="form-control mt-1" placeholder="문제번호" value="{{model.expectNo}}"
-                       id="questionNo">
+            <div class="form-section">
+                <label for="questionNo" class="form-label">문제 번호</label>
+                <input type="text" class="form-control" id="questionNo" placeholder="예: 1" value="{{model.expectNo}}"
+                       required>
             </div>
 
-            <!-- 문제 제목 -->
-            <div class="card-header">
-                <b>문제 제목을 입력해주세요</b>
-                <input type="text" class="form-control mt-1" placeholder="문제 제목" id="questionTitle">
+            <div class="form-section">
+                <label for="questionTitle" class="form-label">문제 제목</label>
+                <input type="text" class="form-control" id="questionTitle" placeholder="문제 제목 입력" required>
             </div>
 
-            <!-- 지문 이미지 -->
-            <div class="card-header">
-                <b>지문 이미지 (선택)</b>
-                <input type="file" class="form-control mt-1" id="stimulusImage">
+            <div class="form-section">
+                <label for="stimulusImage" class="form-label">지문 이미지 (선택)</label>
+                <input type="file" class="form-control" id="stimulusImage" accept="image/*">
             </div>
 
-            <!-- 문제 옵션 -->
-            <div class="card-header">
-                <b>문제 항목을 등록해주세요</b>
-                <div id="questionBox" class="mt-2"></div>
-                <button type="button" class="btn btn-secondary mt-2" onclick="addOption()">옵션 추가</button>
+            <div class="form-section">
+                <label class="form-label">문제 항목 (보기) <span class="text-danger">*</span></label>
+                <div id="questionBox"></div>
+                <button type="button" class="btn btn-outline-secondary mt-3" onclick="addOption()">+ 옵션 추가</button>
             </div>
-        </div>
 
-        <button type="button" onclick="saveQuestion()" class="btn btn-primary form-control mt-3">문제 등록</button>
-    </form>
+            <button type="button" onclick="saveQuestion()" class="btn btn-primary mt-4">문제 등록</button>
+        </form>
+    </div>
 </div>
 
 <script>
@@ -51,15 +97,22 @@
     function addOption(no = optionCounter) {
         const box = document.querySelector("#questionBox");
         const div = document.createElement("div");
-        div.className = "mt-2 mb-3 pl-2 questionItem";
+        div.className = "questionItem";
         div.innerHTML = `
-            <input type="hidden" class="form-control optionNo" value="${no}" readonly>
-            <input type="text" class="form-control optionContent" placeholder="옵션 내용 (보기)">
-            <label class="mt-1">
-                <input type="checkbox" class="optionCorrect"> 정답
-            </label>
-            <input type="text" class="form-control optionRubric mt-1" placeholder="정답 루브릭 설명" style="display:none;">
-            <input type="number" class="form-control optionPoint mt-1" placeholder="배점 (예: 10)" min="1" style="display:none;">
+            <input type="hidden" class="optionNo" value="${no}"> <div class="mb-2">
+                <label class="form-label">옵션 내용</label>
+                <input type="text" class="form-control optionContent" placeholder="옵션 내용 입력">
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input optionCorrect" id="correct-${no}">
+                <label class="form-check-label" for="correct-${no}">정답으로 설정</label>
+            </div>
+            <div class="rubric-box" style="display: none;">
+                <label class="form-label">정답 루브릭 설명</label>
+                <input type="text" class="form-control optionRubric" placeholder="정답 기준 설명">
+                <label class="form-label mt-2">배점</label>
+                <input type="number" class="form-control optionPoint" placeholder="예: 10" min="1">
+            </div>
         `;
         box.appendChild(div);
         optionCounter++;
@@ -74,19 +127,27 @@
             const checkboxes = document.querySelectorAll(".optionCorrect");
             checkboxes.forEach(cb => {
                 const item = cb.closest(".questionItem");
-                const rubric = item.querySelector(".optionRubric");
-                const point = item.querySelector(".optionPoint");
+                const rubricBox = item.querySelector(".rubric-box");
+                const rubricInput = item.querySelector(".optionRubric");
+                const pointInput = item.querySelector(".optionPoint");
 
-                if (cb !== e.target) cb.checked = false;
 
-                if (cb.checked) {
-                    rubric.style.display = "block";
-                    point.style.display = "block";
+                // 현재 체크박스 외의 다른 체크박스는 모두 해제 (단일 정답 선택)
+                if (cb !== e.target) {
+                    cb.checked = false;
+                    // 다른 체크박스가 해제될 때 관련 필드도 초기화
+                    item.querySelector(".rubric-box").style.display = "none";
+                    item.querySelector(".optionRubric").value = "";
+                    item.querySelector(".optionPoint").value = "";
+                }
+
+                // 현재 체크박스의 상태에 따라 루브릭/배점 필드 표시/숨김
+                if (e.target.checked) {
+                    rubricBox.style.display = "block";
                 } else {
-                    rubric.style.display = "none";
-                    point.style.display = "none";
-                    rubric.value = "";
-                    point.value = "";
+                    rubricBox.style.display = "none";
+                    rubricInput.value = "";
+                    pointInput.value = "";
                 }
             });
         }
@@ -110,32 +171,33 @@
             });
         });
 
-        const optionItems = document.querySelectorAll("#questionBox .questionItem");
+        const optionItems = document.querySelectorAll("#questionBox .questionItem"); // 선택자 통일
 
-        for (const item of optionItems) {
+        for (const item of optionItems) { // forEach 대신 for...of 루프 사용 (async/await과 더 잘 맞음)
+            const optionNo = item.querySelector(".optionNo").value; // optionNo 추가
             const optionContent = item.querySelector(".optionContent").value;
-            const optionNo = item.querySelector(".optionNo").value;
             const isCorrect = item.querySelector(".optionCorrect").checked;
             const rubricItem = item.querySelector(".optionRubric").value;
             const pointValue = item.querySelector(".optionPoint").value;
 
             formData.options.push({
-                optionNo,
-                optionContent,
-                optionPoint: isCorrect ? Number(pointValue) : 0,
-                rubricItem: isCorrect ? rubricItem : ""
+                optionNo: optionNo, // 필드 이름 통일
+                optionContent: optionContent, // 필드 이름 통일
+                optionPoint: isCorrect ? Number(pointValue) : 0, // 조건부 배점 설정
+                rubricItem: isCorrect ? rubricItem : "" // 조건부 루브릭 설정
             });
         }
 
+        // 서버 전송 로직 추가
         fetch(`/api/paper-menu/paper/${formData.paperId}/question/save`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(formData)
         }).then(async res => {
             if (!res.ok) throw new Error((await res.json()).msg);
-            location.href = `/api/paper-menu/paper/${formData.paperId}`;
+            location.href = `/api/paper-menu/paper/${formData.paperId}`; // 성공 시 페이지 이동
         }).catch(err => {
-            alert(err.message);
+            alert(err.message); // 에러 발생 시 알림
         });
     }
 

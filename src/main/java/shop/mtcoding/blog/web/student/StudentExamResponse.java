@@ -63,23 +63,25 @@ public class StudentExamResponse {
     }
 
     @Data
-    public static class StartDTO {
+    public static class McqStartDTO {
         private Long paperId;
         private String studentName;
         private String teacherName;
         private String evaluationDate; // 평가일 (subject)
-        private String loc; // 평가장소 (임시)
+        private String evaluationDevice; // 평가장비 (임시)
+        private String evaluationRoom; // 평가장소 (임시)
         private String subjectTitle; // 교과목 (subject)
         private List<String> subjectElements;
         private List<QuestionDTO> questions;
         private Integer questionCount;
 
-        public StartDTO(Paper paper, String studentName, List<SubjectElement> subjectElements, List<Question> questions) {
+        public McqStartDTO(Paper paper, String studentName, List<SubjectElement> subjectElements, List<Question> questions) {
             this.paperId = paper.getId();
             this.studentName = studentName;
             this.teacherName = paper.getSubject().getTeacherName();
             this.evaluationDate = paper.getEvaluationDate().toString();
-            this.loc = "3호";
+            this.evaluationDevice = paper.getEvaluationDevice();
+            this.evaluationRoom = paper.getEvaluationRoom();
             this.subjectTitle = paper.getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
@@ -91,12 +93,16 @@ public class StudentExamResponse {
             private Long questionId;
             private Integer no;
             private String title;
+            private Integer point;
+            private String stimulusImg;
             private List<OptionDTO> options;
 
             public QuestionDTO(Question question) {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
+                this.point = question.getQuestionOptions().stream().mapToInt(option -> option.getPoint()).max().getAsInt();
+                this.stimulusImg = question.getStimulusImg();
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
             }
 

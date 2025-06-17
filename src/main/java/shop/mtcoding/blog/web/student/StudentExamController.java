@@ -31,9 +31,9 @@ public class StudentExamController {
     public String studentExamStartInfo(@PathVariable("paperId") Long paperId, Model model) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         var modelData = examService.학생_시험시작정보(sessionUser, paperId);
-        var respDTO = new StudentExamResponse.StartDTO(modelData.paperPS(), modelData.studentName(), modelData.subjectElementListPS(), modelData.questionListPS());
+        var respDTO = new StudentExamResponse.McqStartDTO(modelData.paperPS(), modelData.studentName(), modelData.subjectElementListPS(), modelData.questionListPS());
         model.addAttribute("model", respDTO);
-        return "student/paper/start";
+        return "student/paper/mcq-start";
     }
 
     @PostMapping("/api/student/exam")

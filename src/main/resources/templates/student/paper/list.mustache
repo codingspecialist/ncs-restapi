@@ -1,41 +1,122 @@
 {{> layout/header}}
 
-<div class="container p-5">
+<style>
+    .paper-list-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        margin: 0 auto;
+        max-width: 1200px;
+    }
 
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>번호</th>
-            <th>교과목</th>
-            <th>시험유형</th>
-            <th>시험문항수</th>
-            <th>과정명/회차</th>
-            <th>훈련강사</th>
-            <th>응시하기</th>
-        </tr>
-        </thead>
-        <tbody>
-        {{#model.papers}}
-            <tr>
-                <td>{{subjectNo}}</td>
-                <td>{{subjectTitle}}</td>
-                <td>{{paperType}}</td>
-                <td>{{questionCount}}</td>
-                <td>{{courseTitle}}/{{courseRound}}회차</td>
-                <td>{{teacherName}}</td>
-                <td>
-                    {{#isAttendance}}
-                        <a class="btn btn-outline-secondary btn-sm" href="#" disabled>응시완료</a>
-                    {{/isAttendance}}
-                    {{^isAttendance}}
-                        <a class="btn btn-outline-primary btn-sm" href="/api/student/paper/{{paperId}}/start">응시하기</a>
-                    {{/isAttendance}}
-                </td>
-            </tr>
-        {{/model.papers}}
-        </tbody>
-    </table>
+    .list-header {
+        background-color: transparent;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
+    .list-header h2 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 0;
+        color: #343a40;
+    }
+
+    .table {
+        margin-bottom: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-responsive {
+        border-radius: 10px;
+        overflow-x: auto;
+        border: 1px solid #dee2e6;
+        margin-top: 1rem;
+    }
+
+    .table-responsive .table {
+        border: none;
+    }
+
+    .table thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        color: #495057;
+        padding: 1rem 0.75rem;
+        white-space: nowrap;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f0f8ff;
+    }
+
+    .table tbody td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        border-top: 1px solid #dee2e6;
+        white-space: nowrap;
+    }
+
+    .btn-sm {
+        border-radius: 8px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="paper-list-card">
+        <div class="list-header">
+            <h2>응시 가능한 시험 목록</h2>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>교과목</th>
+                    <th>시험유형</th>
+                    <th>문항수</th>
+                    <th>과정명/회차</th>
+                    <th>훈련강사</th>
+                    <th>응시</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#model.papers}}
+                    <tr>
+                        <td>{{subjectNo}}</td>
+                        <td>{{subjectTitle}}</td>
+                        <td>{{paperType}}</td>
+                        <td>{{questionCount}}</td>
+                        <td>{{courseTitle}} / {{courseRound}}회차</td>
+                        <td>{{teacherName}}</td>
+                        <td>
+                            {{#isAttendance}}
+                                <button class="btn btn-outline-secondary btn-sm" disabled>응시완료</button>
+                            {{/isAttendance}}
+                            {{^isAttendance}}
+                                <a class="btn btn-outline-primary btn-sm" href="/api/student/paper/{{paperId}}/start">응시하기</a>
+                            {{/isAttendance}}
+                        </td>
+                    </tr>
+                {{/model.papers}}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 {{> layout/footer}}

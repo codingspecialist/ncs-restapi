@@ -1,0 +1,198 @@
+{{> layout/header}}
+
+<style>
+    /* 기존 스타일 유지 + 아래 새로 추가 */
+    .element-info-box {
+        background-color: #f1f3f5;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .element-info-box h6 {
+        font-weight: bold;
+        color: #343a40;
+        margin-bottom: 1rem;
+    }
+
+    .element-info-box ul {
+        padding-left: 1.2rem;
+        margin-bottom: 0;
+    }
+
+    .element-info-box li {
+        line-height: 1.7;
+        color: #495057;
+        margin-bottom: 0.3rem;
+    }
+
+    .paper-list-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        margin: 0 auto;
+        max-width: 1200px;
+    }
+
+    .list-header {
+        background-color: transparent;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .detail-info-section {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        line-height: 1.8;
+        border: 1px solid #e9ecef;
+    }
+
+    .detail-info-section strong {
+        color: #343a40;
+        min-width: 90px;
+        display: inline-block;
+    }
+
+    .question-card {
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .question-card .card-body {
+        padding: 1.5rem;
+    }
+
+    .question-card .card-title {
+        color: #212529;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .question-card .form-check {
+        font-size: 0.95rem;
+    }
+
+    .question-card .form-check-input {
+        margin-top: 0.3em;
+    }
+
+    .btn-primary {
+        padding: 0.75rem 1.5rem;
+        font-weight: bold;
+        font-size: 1rem;
+        border-radius: 12px;
+        margin-top: 2rem;
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="paper-list-card">
+        <div class="detail-info-section">
+            <strong>시험일:</strong> {{model.evaluationDate}}<br>
+            <strong>시험장소:</strong> {{model.evaluationRoom}}<br>
+            <strong>시험장비:</strong> {{model.evaluationDevice}}<br>
+            <strong>교과목:</strong> {{model.subjectTitle}}<br>
+            <strong>훈련교사:</strong> {{model.teacherName}}<br>
+            <strong>훈련생:</strong> {{model.studentName}}<br>
+            <strong>문항수:</strong> {{model.questionCount}}<br>
+        </div>
+
+        <div class="element-info-box">
+            <h6>평가기준 (교과목 요소)</h6>
+            <ul>
+                {{#model.subjectElements}}
+                    <li>{{.}}</li>
+                {{/model.subjectElements}}
+            </ul>
+        </div>
+
+        <form>
+            {{#model.questions}}
+                <div class="card mb-4 question-card">
+                    <div class="card-body">
+                        <input type="hidden" class="questionNo" value="{{no}}">
+                        <h5 class="card-title">{{no}}. {{title}}</h5>
+                        <div class="badge bg-secondary my-2">배점: {{point}}점</div>
+
+                        {{#stimulusImg}}
+                            <div>
+                                <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid mb-3"
+                                     style="max-height: 200px;">
+                            </div>
+                        {{/stimulusImg}}
+
+
+                        <div>
+                            {{#options}}
+                                <div class="form-check mb-1 d-flex align-items-center">
+                                    <input class="form-check-input me-2 optionNo" type="radio"
+                                           name="question-{{questionId}}" value="{{no}}">
+                                    <label>
+                                        {{no}}. {{content}}
+                                    </label>
+                                </div>
+                            {{/options}}
+                        </div>
+                    </div>
+                </div>
+            {{/model.questions}}
+
+            <button type="button" onclick="sendAnswer()" class="btn btn-primary">제출하기</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function sendAnswer() {
+        let requestBody = {
+            paperId: {{model.paperId}},
+            teacherName: "{{model.teacherName}}",
+            answers: []
+        };
+
+        let items = document.querySelectorAll(".questionNo");
+        items.forEach(el => {
+            const questionNo = el.value;
+            const tr = el.closest(".card");
+            const selected = tr.querySelector(".optionNo:checked");
+            const selectedOptionNo = selected ? selected.value : null;
+
+            requestBody.answers.push({
+                questionNo: Number(questionNo),
+                selectedOptionNo: Number(selectedOptionNo)
+            });
+        });
+
+        fetch("/api/student/exam", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody)
+        })
+                .then(res => {
+                    if (!res.ok) return res.json().then(err => Promise.reject(err));
+                    return res.json();
+                })
+                .then(res => {
+                    console.log(res);
+                    location.href = "/api/student/paper";
+                })
+                .catch(err => {
+                    alert(err.msg || "제출 중 오류가 발생했습니다.");
+                });
+    }
+</script>
+
+{{> layout/footer}}

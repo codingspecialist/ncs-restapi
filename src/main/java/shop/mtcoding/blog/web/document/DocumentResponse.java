@@ -463,7 +463,7 @@ public class DocumentResponse {
     }
 
     @Data
-    public static class No4DTO {
+    public static class No4McqDTO {
         private Long subjectId;
         private Long courseId;
         private Long examId;
@@ -471,7 +471,8 @@ public class DocumentResponse {
         private String studentName;
         private String teacherName;
         private String evaluationDate; // 평가일 (subject)
-        private String loc; // 평가장소 (임시)
+        private String evaluationDevice; // 장비 (subject)
+        private String evaluationRoom; // 장소 (subject)
         private String subjectTitle; // 교과목 (subject)
         private List<String> subjectElements;
         private List<AnswerDTO> answers;
@@ -489,7 +490,7 @@ public class DocumentResponse {
         private Integer nextIndex;
         private Integer no;
 
-        public No4DTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher, Integer prevIndex, Integer nextIndex, Integer currentIndex) {
+        public No4McqDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher, Integer prevIndex, Integer nextIndex, Integer currentIndex) {
             this.subjectId = exam.getPaper().getSubject().getId();
             this.courseId = exam.getPaper().getSubject().getCourse().getId();
             this.examId = exam.getId();
@@ -497,7 +498,110 @@ public class DocumentResponse {
             this.studentName = exam.getStudent().getName();
             this.teacherName = exam.getTeacherName();
             this.evaluationDate = exam.getPaper().getEvaluationDate().toString();
-            this.loc = "3호";
+            this.evaluationDevice = exam.getPaper().getEvaluationDevice();
+            this.evaluationRoom = exam.getPaper().getEvaluationRoom();
+            this.subjectTitle = exam.getPaper().getSubject().getTitle();
+            this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
+            this.answers = exam.getExamAnswers().stream().map(AnswerDTO::new).toList();
+            this.questionCount = exam.getPaper().getQuestions().size();
+            this.examState = exam.getExamState();
+            this.reExamReason = exam.getReExamReason();
+            this.examPassState = exam.getPassState();
+            this.score = exam.getScore();
+            this.teacherComment = exam.getTeacherComment();
+            this.grade = exam.getGrade();
+            this.teacherSign = teacher.getSign();
+            this.studentSign = exam.getStudentSign();
+            this.isStudentSign = exam.getStudentSign() == null ? false : true;
+            this.prevIndex = prevIndex;
+            this.nextIndex = nextIndex;
+            this.no = currentIndex + 1;
+        }
+
+        @Data
+        class AnswerDTO {
+            private Long answerId;
+            private Long questionId;
+            private Integer no;
+            private String title;
+            private Integer totalPoint; // 배점
+            private Integer answerNumber; // 정답 번호
+            private Integer selectedOptionNo; // 학생 선택 번호
+            private Integer studentPoint;
+            private String stimulusImg;
+            private List<OptionDTO> options;
+
+            public AnswerDTO(ExamAnswer answer) {
+                this.answerId = answer.getId();
+                this.questionId = answer.getQuestion().getId();
+                this.no = answer.getQuestion().getNo();
+                this.title = answer.getQuestion().getTitle();
+                QuestionOption _option = answer.getQuestion().getQuestionOptions().stream()
+                        .max(Comparator.comparingInt(QuestionOption::getPoint))
+                        .orElse(null);
+                this.totalPoint = _option.getPoint();
+                this.answerNumber = _option.getNo();
+                this.selectedOptionNo = answer.getSelectedOptionNo();
+                this.studentPoint = answer.getEarnedPoint();
+                this.stimulusImg = answer.getQuestion().getStimulusImg();
+                this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new AnswerDTO.OptionDTO(option, selectedOptionNo)).toList();
+            }
+
+            @Data
+            class OptionDTO {
+                private Long optionId;
+                private Integer no;
+                private String content;
+                private Boolean isSelect; // 해당 옵션이 선택되었는지 여부
+
+                public OptionDTO(QuestionOption option, Integer selectedOptionNo) {
+                    this.optionId = option.getId();
+                    this.no = option.getNo();
+                    this.content = option.getContent();
+                    this.isSelect = no == selectedOptionNo ? true : false;
+                }
+            }
+        }
+    }
+
+    @Data
+    public static class No4RubricDTO {
+        private Long subjectId;
+        private Long courseId;
+        private Long examId;
+        private Long paperId;
+        private String studentName;
+        private String teacherName;
+        private String evaluationDate; // 평가일 (subject)
+        private String evaluationRoom; // 평가일 (subject)
+        private String evaluationDevice; // 장비 (subject)
+        private String subjectTitle; // 교과목 (subject)
+        private List<String> subjectElements;
+        private List<AnswerDTO> answers;
+        private Integer questionCount;
+        private String examState;
+        private String reExamReason;
+        private String examPassState;
+        private Double score;
+        private String teacherComment;
+        private Integer grade;
+        private String teacherSign;
+        private String studentSign;
+        private Boolean isStudentSign;
+        private Integer prevIndex;
+        private Integer nextIndex;
+        private Integer no;
+
+        public No4RubricDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher, Integer prevIndex, Integer nextIndex, Integer currentIndex) {
+            this.subjectId = exam.getPaper().getSubject().getId();
+            this.courseId = exam.getPaper().getSubject().getCourse().getId();
+            this.examId = exam.getId();
+            this.paperId = exam.getPaper().getId();
+            this.studentName = exam.getStudent().getName();
+            this.teacherName = exam.getTeacherName();
+            this.evaluationDate = exam.getPaper().getEvaluationDate().toString();
+            this.evaluationDevice = exam.getPaper().getEvaluationDevice();
+            this.evaluationRoom = exam.getPaper().getEvaluationRoom();
             this.subjectTitle = exam.getPaper().getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
             this.answers = exam.getExamAnswers().stream().map(AnswerDTO::new).toList();
@@ -559,4 +663,5 @@ public class DocumentResponse {
             }
         }
     }
+
 }

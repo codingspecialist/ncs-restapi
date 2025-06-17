@@ -87,10 +87,20 @@ public class DocumentController {
     public String no4(@PathVariable("subjectId") Long subjectId, Model model,
                       @RequestParam(value = "currentIndex", defaultValue = "0") Integer currentIndex) {
         var modelData = documentService.no4(subjectId, currentIndex);
-        var respDTO = new DocumentResponse.No4DTO(modelData.exam(), modelData.elements(), modelData.teacher(),
-                modelData.prevIndex(), modelData.nextIndex(), modelData.currentIndex());
-        model.addAttribute("model", respDTO);
-        return "document/no4";
+
+        if (modelData.exam().getPaper().getEvaluationWay() == EvaluationWay.MCQ) {
+            var respDTO = new DocumentResponse.No4McqDTO(modelData.exam(), modelData.elements(), modelData.teacher(),
+                    modelData.prevIndex(), modelData.nextIndex(), modelData.currentIndex());
+            model.addAttribute("model", respDTO);
+            return "document/no4-mcq";
+        } else {
+            var respDTO = new DocumentResponse.No4RubricDTO(modelData.exam(), modelData.elements(), modelData.teacher(),
+                    modelData.prevIndex(), modelData.nextIndex(), modelData.currentIndex());
+            model.addAttribute("model", respDTO);
+            return "document/no4-rubric";
+        }
+
+
     }
 
     @GetMapping("/api/document-menu/subject/{subjectId}/no5")

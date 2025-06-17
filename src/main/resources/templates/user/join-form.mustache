@@ -1,66 +1,117 @@
 {{> layout/header}}
 
-<div class="container p-5">
+<style>
+    .paper-form-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        max-width: 840px;
+        margin: 0 auto;
+    }
 
-    <div class="card">
-        <div class="card-header"><b>회원가입을 해주세요</b></div>
-        <div class="card-body">
-            <form action="/join" method="post" enctype="application/x-www-form-urlencoded">
+    .paper-form-card .card-header {
+        background-color: transparent;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 10px;
+    }
+
+    .btn-primary {
+        padding: 0.75rem;
+        font-weight: bold;
+        font-size: 1rem;
+        border-radius: 12px;
+        width: 100%; /* 버튼 너비를 100%로 설정 */
+    }
+
+    .form-section {
+        margin-bottom: 1.4rem; /* 일관된 섹션 간격 */
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="paper-form-card">
+        <div class="card-header">회원가입을 해주세요</div>
+        <form action="/join" method="post" enctype="application/x-www-form-urlencoded">
+            <div class="form-section">
+                <label for="roleSelect" class="form-label">역할 선택</label>
                 <select class="form-control select-option" name="role" id="roleSelect">
                     <option value="STUDENT">학생</option>
                     <option value="TEACHER">강사</option>
                 </select>
-                <!-- 인증코드 입력창 (초기에는 숨김) -->
-                <div class="mb-3 mt-3" id="authCodeBox" style="display: none;">
-                    <input type="text" class="form-control" placeholder="인증코드를 입력하세요" name="authCode">
-                </div>
-                <div class="mb-3 mt-3" id="birthdayBox" style="display: none;">
-                    <input type="text" class="form-control" placeholder="생년월일을 입력하세요" name="birthday" value="860205">
-                </div>
-                <hr>
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Enter username" name="username" value="boss">
-                </div>
-                <div class="mb-3">
-                    <input type="password" class="form-control" placeholder="Enter password" name="password"
-                           value="1234">
-                </div>
-                <div class="mb-3">
-                    <input type="email" class="form-control" placeholder="Enter email" name="email"
-                           value="bos@nate.com">
-                </div>
-                <div class="mb-3 mt-3">
-                    <input type="text" class="form-control" placeholder="이름을 입력하세요" name="name" value="보스">
-                </div>
-                <button type="submit" class="btn btn-primary form-control">회원가입</button>
-            </form>
-        </div>
+            </div>
+
+            <div class="form-section" id="authCodeBox" style="display: none;">
+                <label for="authCode" class="form-label">인증코드</label>
+                <input type="text" class="form-control" id="authCode" placeholder="인증코드를 입력하세요" name="authCode">
+            </div>
+            <div class="form-section" id="birthdayBox" style="display: none;">
+                <label for="birthday" class="form-label">생년월일</label>
+                <input type="text" class="form-control" id="birthday" placeholder="생년월일 6자리를 입력하세요 (예: 860205)"
+                       name="birthday" value="860205">
+            </div>
+            <hr class="mb-4 mt-4">
+            <div class="form-section">
+                <label for="username" class="form-label">사용자 이름</label>
+                <input type="text" class="form-control" id="username" placeholder="사용자 이름을 입력하세요" name="username"
+                       value="boss">
+            </div>
+            <div class="form-section">
+                <label for="password" class="form-label">비밀번호</label>
+                <input type="password" class="form-control" id="password" placeholder="비밀번호를 입력하세요" name="password"
+                       value="1234">
+            </div>
+            <div class="form-section">
+                <label for="email" class="form-label">이메일</label>
+                <input type="email" class="form-control" id="email" placeholder="이메일을 입력하세요" name="email"
+                       value="bos@nate.com">
+            </div>
+            <div class="form-section">
+                <label for="name" class="form-label">이름</label>
+                <input type="text" class="form-control" id="name" placeholder="이름을 입력하세요" name="name" value="보스">
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">회원가입</button>
+        </form>
     </div>
 </div>
 
 <script>
-    $(".select-option").css("color", "blue");
+    // jQuery 대신 순수 JavaScript 사용 권장, 하지만 기존 코드 유지 요청에 따라 jQuery 유지
+    // $(".select-option").css("color", "blue"); // 이 스타일은 CSS로 옮기는 것이 좋습니다.
 
     // 인증코드 박스를 보여주거나 숨기는 로직
     const roleSelect = document.getElementById("roleSelect");
     const authCodeBox = document.getElementById("authCodeBox");
     const birthdayBox = document.getElementById("birthdayBox");
 
-    roleSelect.addEventListener("change", function () {
-        if (this.value === "STUDENT") {
+    function toggleAuthAndBirthdayFields() {
+        if (roleSelect.value === "STUDENT") {
             authCodeBox.style.display = "block";
             birthdayBox.style.display = "block";
         } else {
             authCodeBox.style.display = "none";
             birthdayBox.style.display = "none";
         }
-    });
-
-    // 페이지 진입 시 기본값에 따라 처리 (예: 자동선택 되어 있는 경우)
-    if (roleSelect.value === "STUDENT") {
-        authCodeBox.style.display = "block";
-        birthdayBox.style.display = "block";
     }
+
+    // 역할 선택 변경 시 이벤트 리스너
+    roleSelect.addEventListener("change", toggleAuthAndBirthdayFields);
+
+    // 페이지 로드 시 현재 선택된 값에 따라 초기 상태 설정
+    window.addEventListener('DOMContentLoaded', toggleAuthAndBirthdayFields);
 </script>
 
 {{> layout/footer}}

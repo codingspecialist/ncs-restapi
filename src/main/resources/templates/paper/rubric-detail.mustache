@@ -1,85 +1,262 @@
 {{> layout/header}}
 
-<div class="container p-5">
-    <div class="d-flex justify-content-end mb-3">
-        <a href="/api/paper-menu/paper/{{model.paperId}}/question/save-form" class="btn btn-primary">문제등록</a>
-    </div>
+<style>
+    /* 공통 카드 기본 스타일 (목록, 상세 화면 모두 재사용) */
+    .paper-list-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        max-width: 1200px; /* 목록 및 상세 화면 카드 너비 */
+        margin: 0 auto;
+    }
 
-    <div class="mb-4">
-        <div class="mb-4">
+    /* 목록/상세 화면 공통 헤더 스타일 */
+    .list-header {
+        background-color: transparent;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        display: flex;
+        justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
+        align-items: center;
+    }
+
+    /* 버튼 스타일 */
+    .btn-primary {
+        padding: 0.75rem 1.25rem;
+        font-weight: bold;
+        font-size: 1rem;
+        border-radius: 12px;
+        width: auto;
+    }
+
+    /* 테이블 스타일 */
+    .table {
+        margin-bottom: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-responsive {
+        border-radius: 10px;
+        overflow-x: auto;
+        border: 1px solid #dee2e6;
+    }
+
+    .table-responsive .table { /* Ensures inner table has no extra border */
+        border: none;
+        margin-bottom: 0;
+    }
+
+    .table thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        color: #495057;
+        padding: 1rem 0.75rem;
+        white-space: nowrap;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f0f8ff;
+    }
+
+    .table tbody td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        border-top: 1px solid #dee2e6;
+        white-space: nowrap;
+    }
+
+    /* 상세 정보 섹션 스타일 */
+    .detail-info-section {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        line-height: 1.8;
+        border: 1px solid #e9ecef;
+    }
+
+    .detail-info-section strong {
+        color: #343a40;
+        min-width: 90px;
+        display: inline-block;
+    }
+
+    .detail-info-section p { /* Style for paragraphs in info section */
+        margin-bottom: 0.5rem;
+    }
+
+    .detail-info-section a { /* Style for links in info section */
+        color: #0d6efd;
+        text-decoration: underline;
+    }
+
+    .detail-info-section div.fw-bold { /* Style for bold div in info section */
+        margin-bottom: 0.75rem;
+    }
+
+    .detail-info-section ul { /* Styling for ul within detail-info-section */
+        padding-left: 20px;
+        line-height: 1.6;
+        color: #495057;
+        margin: 0;
+    }
+
+
+    /* 개별 문제 카드 스타일 */
+    .question-card {
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .question-card .card-header { /* 부트스트랩 card-header 스타일 오버라이드 */
+        background-color: #f8f9fa; /* 헤더 배경색 */
+        font-weight: bold;
+        border-bottom: 1px solid #dee2e6;
+        padding: 1rem 1.25rem; /* 패딩 조정 */
+    }
+
+    .question-card .card-title {
+        color: #212529;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .question-card .badge {
+        font-size: 0.85em;
+        padding: 0.5em 0.8em;
+        border-radius: 0.35rem;
+    }
+
+    .question-card .img-fluid {
+        border-radius: 8px;
+        border: 1px solid #f0f0f0;
+        padding: 5px;
+        background-color: #fff;
+    }
+
+    .question-card .form-check {
+        font-size: 0.95rem;
+    }
+
+    .question-card .form-check-input {
+        margin-top: 0.3em;
+    }
+
+    /* 시나리오/문제 설명 블록 스타일 */
+    .scenario-description-block {
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 12px;
+        background-color: #fefefe;
+        margin-bottom: 1rem;
+    }
+
+    .scenario-description-block p {
+        margin-bottom: 0.5rem;
+    }
+
+    .scenario-description-block a {
+        color: #0d6efd;
+        text-decoration: underline;
+    }
+
+    .scenario-description-block div {
+        color: #343a40;
+    }
+
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="paper-list-card">
+        <div class="list-header">
+            <a href="/api/paper-menu/paper/{{model.paperId}}/question/save-form" class="btn btn-primary">문제등록</a>
+        </div>
+
+        <div class="detail-info-section mb-4">
             <strong>시험일:</strong> {{model.evaluationDate}} <br>
             <strong>시험장비:</strong> {{model.evaluationDevice}} <br>
             <strong>시험장소:</strong> {{model.evaluationRoom}} <br>
             <strong>교과목:</strong> {{model.subjectTitle}} <br>
         </div>
-    </div>
 
-    <div style="border: 2px solid #ced4da; border-radius: 8px; padding: 16px; background-color: #f8f9fa;" class="mb-3">
-        {{#model.guideLink}}
-            <p style="margin-bottom: 8px;">
-                <strong>🔗 상세 예시 링크:</strong>
-                <a href="{{model.guideLink}}" target="_blank"
-                   style="color: #0d6efd; text-decoration: underline;">
-                    {{model.guideLink}}
-                </a>
-            </p>
-        {{/model.guideLink}}
+        <div class="detail-info-section mb-3">
+            {{#model.guideLink}}
+                <p class="mb-2">
+                    <strong>🔗 상세 예시 링크:</strong>
+                    <a href="{{model.guideLink}}" target="_blank"
+                       class="text-primary text-decoration-underline">
+                        {{model.guideLink}}
+                    </a>
+                </p>
+            {{/model.guideLink}}
 
-        <div style="margin-bottom: 12px; font-weight: 600; color: #343a40;">
-            이 과제의 정답은 다양할 수 있으며, 아래와 같은 수준의 결과물이 이상적입니다:
-        </div>
+            <div class="fw-bold text-dark mb-3">
+                이 과제의 정답은 다양할 수 있으며, 아래와 같은 수준의 결과물이 이상적입니다:
+            </div>
 
-        <ul style="padding-left: 20px; line-height: 1.6; color: #495057; margin: 0;">
-            {{#model.guideSummaries}}
+            <ul class="ps-3"> {{#model.guideSummaries}}
                 <li>{{.}}</li>
             {{/model.guideSummaries}}
-        </ul>
-    </div>
+            </ul>
+        </div>
 
-    {{#model.questions}}
-        <div class="card mb-4">
-            <div class="card-header fw-bold">
-                {{no}}. {{title}} <!-- 문제 제목 -->
-            </div>
+        {{#model.questions}}
+            <div class="card mb-4 question-card">
+                <div class="card-header">
+                    {{no}}. {{title}} </div>
 
-            <div class="card-body p-3">
-                <div style="border: 1px solid #dee2e6; border-radius: 6px; padding: 12px; background-color: #fefefe; margin-bottom: 16px;">
-                    {{#scenarioLink}}
-                        <p style="margin-bottom: 6px;">
-                            <strong>📝 시나리오 링크:</strong>
-                            <a href="{{scenarioLink}}" target="_blank"
-                               style="color: #0d6efd; text-decoration: underline;">
-                                {{scenarioLink}}
-                            </a>
-                        </p>
-                    {{/scenarioLink}}
+                <div class="card-body p-3">
+                    <div class="scenario-description-block mb-4">
+                        {{#scenarioLink}}
+                            <p class="mb-2">
+                                <strong>📝 시나리오 링크:</strong>
+                                <a href="{{scenarioLink}}" target="_blank"
+                                   class="text-primary text-decoration-underline">
+                                    {{scenarioLink}}
+                                </a>
+                            </p>
+                        {{/scenarioLink}}
 
-                    <div style="color: #343a40;">
-                        {{#scenarios}}
-                            {{.}}<br>
-                        {{/scenarios}}
+                        <div class="text-dark">
+                            {{#scenarios}}
+                                {{.}}<br>
+                            {{/scenarios}}
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                            <tr>
+                                <th style="width: 80px;" class="text-center">점수</th>
+                                <th>평가기준 (루브릭 설명)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#options}}
+                                <tr>
+                                    <td class="text-center fw-bold align-middle">{{point}}점</td>
+                                    <td>{{rubricItem}}</td>
+                                </tr>
+                            {{/options}}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-
-                <table class="table table-bordered">
-                    <thead class="table-light">
-                    <tr>
-                        <th style="width: 80px;" class="text-center">점수</th>
-                        <th>평가기준 (루브릭 설명)</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {{#options}}
-                        <tr>
-                            <td class="text-center fw-bold align-middle">{{point}}점</td>
-                            <td>{{rubricItem}}</td>
-                        </tr>
-                    {{/options}}
-                    </tbody>
-                </table>
             </div>
-        </div>
-    {{/model.questions}}
+        {{/model.questions}}
+    </div>
 </div>
 
 {{> layout/footer}}

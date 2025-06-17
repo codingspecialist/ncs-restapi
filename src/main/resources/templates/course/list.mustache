@@ -1,47 +1,147 @@
 {{> layout/header}}
 
-<div class="container p-5">
+<style>
+    /* 목록 페이지 전용 카드 스타일 */
+    .paper-list-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem; /* 폼 카드와 유사한 패딩 */
+        max-width: 1200px; /* 목록이 더 넓을 수 있으므로 max-width를 넓게 설정하거나 제거 */
+        margin: 0 auto;
+    }
 
-    <div class="d-flex justify-content-end">
-        <a href="/api/course-menu/course/save-form" class="btn btn-primary">과정등록</a>
+    .paper-list-card .list-header { /* card-header와 유사하게 목록 헤더 스타일 정의 */
+        background-color: transparent;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        display: flex; /* 제목과 버튼을 한 줄에 정렬 */
+        justify-content: flex-end; /* 변경: 버튼 그룹을 오른쪽 끝으로 정렬 */
+        align-items: center; /* 세로 중앙 정렬 */
+    }
+
+    /* 테이블 스타일 */
+    .table {
+        margin-bottom: 0; /* table-responsive 내부 테이블은 마진 제거 */
+        border-collapse: separate; /* border-radius 적용을 위해 */
+        border-spacing: 0;
+    }
+
+    /* table-responsive 컨테이너에 border-radius 적용 */
+    .table-responsive {
+        border-radius: 10px; /* 컨테이너에 둥근 모서리 적용 */
+        overflow-x: auto; /* 가로 스크롤 추가 */
+        border: 1px solid #dee2e6; /* 테이블 전체 테두리처럼 보이게 */
+    }
+
+    /* .table-responsive 안에 있는 .table에 추가 border 없애기 */
+    .table-responsive .table {
+        border: none;
+        margin-bottom: 0; /* 부트스트랩 기본 margin-bottom 제거 */
+    }
+
+
+    .table thead th {
+        background-color: #f8f9fa; /* 헤더 배경색 */
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        color: #495057;
+        padding: 1rem 0.75rem; /* 패딩 조정 */
+        white-space: nowrap; /* 헤더 텍스트 줄바꿈 방지 */
+    }
+
+    .table tbody tr {
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f0f8ff; /* 호버 시 배경색 변경 */
+    }
+
+    .table tbody td {
+        padding: 0.75rem; /* 셀 패딩 */
+        vertical-align: middle;
+        border-top: 1px solid #dee2e6;
+        white-space: nowrap; /* 셀 내용 줄바꿈 방지 */
+    }
+
+    /* 버튼 스타일 (기존 .btn-primary 스타일과 일치) */
+    .btn-primary {
+        padding: 0.75rem 1.25rem; /* 100% 너비가 아니므로 패딩 조정 */
+        font-weight: bold;
+        font-size: 1rem;
+        border-radius: 12px;
+        width: auto; /* 100% 너비가 아님 */
+    }
+
+    /* 페이징 스타일 (부트스트랩 기본 스타일 유지) */
+    .pagination {
+        margin-top: 1.5rem; /* 페이징 상단 간격 */
+    }
+
+    .pagination .page-item .page-link {
+        border-radius: 8px; /* 페이지 링크 둥근 모서리 */
+        margin: 0 4px; /* 페이지 링크 간 간격 */
+        min-width: 40px; /* 최소 너비 */
+        text-align: center;
+    }
+
+    .pagination .page-item:first-child .page-link,
+    .pagination .page-item:last-child .page-link {
+        border-radius: 8px; /* Previous/Next 버튼도 둥근 모서리 */
+    }
+
+</style>
+
+<div class="container mt-5 mb-5">
+
+    <div class="paper-list-card">
+        <div class="list-header">
+            <a href="/api/course-menu/course/save-form" class="btn btn-primary">과정등록</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>과정ID</th>
+                    <th>과정명</th>
+                    <th>회차</th>
+                    <th>훈련시간</th>
+                    <th>훈련일수</th>
+                    <th>개강일</th>
+                    <th>수료일</th>
+                    <th>훈련교사</th>
+                    <th>진행상태</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#model.courses}}
+                    <tr class="click-tr" onclick="location.href='/api/course-menu/course/{{id}}'">
+                        <td>{{code}}</td>
+                        <td>{{title}}</td>
+                        <td>{{round}}</td>
+                        <td>{{totalTime}}</td>
+                        <td>{{totalDay}}</td>
+                        <td>{{startDate}}</td>
+                        <td>{{endDate}}</td>
+                        <td>{{teacherName}}</td>
+                        <td>{{courseStatus}}</td>
+                    </tr>
+                {{/model.courses}}
+                </tbody>
+            </table>
+        </div>
+        <ul class="pagination d-flex justify-content-center">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+
     </div>
-
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>과정ID</th>
-            <th>과정명</th>
-            <th>회차</th>
-            <th>훈련시간</th>
-            <th>훈련일수</th>
-            <th>개강일</th>
-            <th>수료일</th>
-            <th>훈련교사</th>
-            <th>진행상태</th>
-        </tr>
-        </thead>
-        <tbody>
-        {{#model.courses}}
-            <tr class="click-tr" onclick="location.href='/api/course-menu/course/{{id}}'">
-                <td>{{code}}</td>
-                <td>{{title}}</td>
-                <td>{{round}}</td>
-                <td>{{totalTime}}</td>
-                <td>{{totalDay}}</td>
-                <td>{{startDate}}</td>
-                <td>{{endDate}}</td>
-                <td>{{teacherName}}</td>
-                <td>{{courseStatus}}</td>
-            </tr>
-        {{/model.courses}}
-        </tbody>
-    </table>
-
-    <ul class="pagination d-flex justify-content-center">
-        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-        <li class="page-item"><a class="page-link" href="#">Next</a></li>
-    </ul>
-
 </div>
 
 {{> layout/footer}}

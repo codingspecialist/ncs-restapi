@@ -1,36 +1,161 @@
 {{> layout/header}}
 
-<div class="container p-5">
+<style>
+    /* 목록 페이지 전용 카드 스타일 */
+    .paper-list-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem; /* 폼 카드와 유사한 패딩 */
+        max-width: 1200px; /* 목록이 더 넓을 수 있으므로 max-width를 넓게 설정하거나 제거 */
+        margin: 0 auto;
+    }
 
-    <div class="d-flex justify-content-end">
-        <a href="/api/paper-menu/subject/{{subjectId}}/paper/save-form" class="btn btn-primary">시험지등록</a>
+    .paper-list-card .list-header { /* card-header와 유사하게 목록 헤더 스타일 정의 */
+        background-color: transparent;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        display: flex; /* 제목과 버튼을 한 줄에 정렬 */
+        justify-content: flex-end; /* 양 끝 정렬 (제목이 있으면 왼쪽, 버튼이 있으면 오른쪽) */
+        align-items: center; /* 세로 중앙 정렬 */
+    }
+
+    /* 테이블 스타일 */
+    .table {
+        margin-bottom: 0; /* table-responsive 내부 테이블은 마진 제거 */
+        border-collapse: separate; /* border-radius 적용을 위해 */
+        border-spacing: 0;
+    }
+
+    /* table-responsive 컨테이너에 border-radius 적용 */
+    .table-responsive {
+        border-radius: 10px; /* 컨테이너에 둥근 모서리 적용 */
+        overflow-x: auto; /* 가로 스크롤 추가 */
+        border: 1px solid #dee2e6; /* 테이블 전체 테두리처럼 보이게 */
+    }
+
+    /* .table-responsive 안에 있는 .table에 추가 border 없애기 */
+    .table-responsive .table {
+        border: none;
+        margin-bottom: 0; /* 부트스트랩 기본 margin-bottom 제거 */
+    }
+
+
+    .table thead th {
+        background-color: #f8f9fa; /* 헤더 배경색 */
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        color: #495057;
+        padding: 1rem 0.75rem; /* 패딩 조정 */
+        white-space: nowrap; /* 헤더 텍스트 줄바꿈 방지 */
+    }
+
+    .table tbody tr {
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f0f8ff; /* 호버 시 배경색 변경 */
+    }
+
+    .table tbody td {
+        padding: 0.75rem; /* 셀 패딩 */
+        vertical-align: middle;
+        border-top: 1px solid #dee2e6;
+        white-space: nowrap; /* 셀 내용 줄바꿈 방지 */
+    }
+
+    /* 버튼 스타일 (기존 .btn-primary 스타일과 일치) */
+    .btn-primary {
+        padding: 0.75rem 1.25rem; /* 100% 너비가 아니므로 패딩 조정 */
+        font-weight: bold;
+        font-size: 1rem;
+        border-radius: 12px;
+        width: auto; /* 100% 너비가 아님 */
+    }
+
+    /* 페이징 스타일 (부트스트랩 기본 스타일 유지) */
+    .pagination {
+        margin-top: 1.5rem; /* 페이징 상단 간격 */
+    }
+
+    .pagination .page-item .page-link {
+        border-radius: 8px; /* 페이지 링크 둥근 모서리 */
+        margin: 0 4px; /* 페이지 링크 간 간격 */
+        min-width: 40px; /* 최소 너비 */
+        text-align: center;
+    }
+
+    .pagination .page-item:first-child .page-link,
+    .pagination .page-item:last-child .page-link {
+        border-radius: 8px; /* Previous/Next 버튼도 둥근 모서리 */
+    }
+
+    /* 브레드크럼 스타일 (사용하지 않음, 하지만 충돌 방지를 위해 빈 스타일 유지 가능) */
+    .breadcrumb {
+        background-color: transparent;
+        padding: 0;
+        margin-bottom: 1.5rem; /* 브레드크럼 아래 간격 */
+        font-size: 0.95rem;
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: ">" !important; /* 구분자 변경 */
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
+        color: #6c757d;
+    }
+
+    .breadcrumb-item a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .breadcrumb-item.active {
+        color: #6c757d;
+        font-weight: 600;
+    }
+
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="paper-list-card">
+        <div class="list-header">
+            <a href="/api/paper-menu/subject/{{subjectId}}/paper/save-form" class="btn btn-primary">시험지등록</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>시험유형</th>
+                    <th>시험방식</th>
+                    <th>교과목</th>
+                    <th>문항수</th>
+                    <th>과정명/회차</th>
+                    <th>평가일</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#models}}
+                    <tr class="click-tr" onclick="location.href='/api/paper-menu/paper/{{paperId}}'">
+                        <th>{{paperType}}</th>
+                        <th>{{evaluationWay}}</th>
+                        <td>{{subjectTitle}}</td>
+                        <td>{{questionCount}}</td>
+                        <td>{{courseTitle}}/{{courseRound}}회차</td>
+                        <td>{{evaluationDate}}</td>
+                    </tr>
+                {{/models}}
+                </tbody>
+            </table>
+        </div>
+
     </div>
-
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>시험유형</th>
-            <th>시험방식</th>
-            <th>교과목</th>
-            <th>문항수</th>
-            <th>과정명/회차</th>
-            <th>평가일</th>
-        </tr>
-        </thead>
-        <tbody>
-        {{#models}}
-            <tr class="click-tr" onclick="location.href='/api/paper-menu/paper/{{paperId}}'">
-                <th>{{paperType}}</th>
-                <th>{{evaluationWay}}</th>
-                <td>{{subjectTitle}}</td>
-                <td>{{questionCount}}</td>
-                <td>{{courseTitle}}/{{courseRound}}회차</td>
-                <td>{{evaluationDate}}</td>
-            </tr>
-        {{/models}}
-        </tbody>
-    </table>
-
 </div>
 
 {{> layout/footer}}

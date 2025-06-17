@@ -88,7 +88,7 @@ control+tab 이전 탭 가기
 - [ ] 삭제
 - [ ] validation 체크
 - [ ] 사용하지 않는 파일 삭제
-- [ ] css 파일 분리
+- [ ] css 파일 분리 [script에서 사용하는 class명 디자인과 무관하게 만들기, css 재사용 분리하기]
 - [ ] js 파일 분리
 
 ### KDT PBL 평가 필요

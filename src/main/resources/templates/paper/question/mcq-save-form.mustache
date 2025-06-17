@@ -46,8 +46,10 @@
         margin-top: 0;
     }
 
+    /* rubric-box의 기본 상태는 숨김 */
     .rubric-box {
         margin-top: 0.75rem;
+        display: none; /* 이 부분이 CSS에 추가되었습니다. */
     }
 </style>
 
@@ -99,7 +101,8 @@
         const div = document.createElement("div");
         div.className = "questionItem";
         div.innerHTML = `
-            <input type="hidden" class="optionNo" value="${no}"> <div class="mb-2">
+            <input type="hidden" class="optionNo" value="${no}">
+            <div class="mb-2">
                 <label class="form-label">옵션 내용</label>
                 <input type="text" class="form-control optionContent" placeholder="옵션 내용 입력">
             </div>
@@ -107,7 +110,7 @@
                 <input type="checkbox" class="form-check-input optionCorrect" id="correct-${no}">
                 <label class="form-check-label" for="correct-${no}">정답으로 설정</label>
             </div>
-            <div class="rubric-box" style="display: none;">
+            <div class="rubric-box">
                 <label class="form-label">정답 루브릭 설명</label>
                 <input type="text" class="form-control optionRubric" placeholder="정답 기준 설명">
                 <label class="form-label mt-2">배점</label>
@@ -124,32 +127,36 @@
 
     document.addEventListener("change", (e) => {
         if (e.target.classList.contains("optionCorrect")) {
+            const clickedCheckbox = e.target;
             const checkboxes = document.querySelectorAll(".optionCorrect");
+
+            // 1. 모든 체크박스의 루브릭 박스를 숨기고 값을 초기화합니다.
+            //    그리고 클릭된 체크박스를 제외한 나머지는 체크를 해제합니다.
             checkboxes.forEach(cb => {
                 const item = cb.closest(".questionItem");
                 const rubricBox = item.querySelector(".rubric-box");
                 const rubricInput = item.querySelector(".optionRubric");
                 const pointInput = item.querySelector(".optionPoint");
 
+                // 모든 루브릭 박스를 숨기고 값 초기화
+                rubricBox.style.display = "none";
+                rubricInput.value = "";
+                pointInput.value = "";
 
-                // 현재 체크박스 외의 다른 체크박스는 모두 해제 (단일 정답 선택)
-                if (cb !== e.target) {
+                // 현재 클릭된 체크박스가 아니라면 체크를 해제합니다.
+                if (cb !== clickedCheckbox) {
                     cb.checked = false;
-                    // 다른 체크박스가 해제될 때 관련 필드도 초기화
-                    item.querySelector(".rubric-box").style.display = "none";
-                    item.querySelector(".optionRubric").value = "";
-                    item.querySelector(".optionPoint").value = "";
-                }
-
-                // 현재 체크박스의 상태에 따라 루브릭/배점 필드 표시/숨김
-                if (e.target.checked) {
-                    rubricBox.style.display = "block";
-                } else {
-                    rubricBox.style.display = "none";
-                    rubricInput.value = "";
-                    pointInput.value = "";
                 }
             });
+
+            // 2. 이제 클릭된 체크박스가 'checked' 상태라면 해당 루브릭 박스만 보이게 합니다.
+            if (clickedCheckbox.checked) {
+                const item = clickedCheckbox.closest(".questionItem");
+                const rubricBox = item.querySelector(".rubric-box");
+                rubricBox.style.display = "block";
+            }
+            // 만약 클릭된 체크박스가 checked가 아니라면 (사용자가 직접 해제한 경우),
+            // 이미 1단계에서 숨겨지고 초기화되었으므로 추가 작업은 필요 없습니다.
         }
     });
 
@@ -171,20 +178,20 @@
             });
         });
 
-        const optionItems = document.querySelectorAll("#questionBox .questionItem"); // 선택자 통일
+        const optionItems = document.querySelectorAll("#questionBox .questionItem");
 
-        for (const item of optionItems) { // forEach 대신 for...of 루프 사용 (async/await과 더 잘 맞음)
-            const optionNo = item.querySelector(".optionNo").value; // optionNo 추가
+        for (const item of optionItems) {
+            const optionNo = item.querySelector(".optionNo").value;
             const optionContent = item.querySelector(".optionContent").value;
             const isCorrect = item.querySelector(".optionCorrect").checked;
             const rubricItem = item.querySelector(".optionRubric").value;
             const pointValue = item.querySelector(".optionPoint").value;
 
             formData.options.push({
-                optionNo: optionNo, // 필드 이름 통일
-                optionContent: optionContent, // 필드 이름 통일
-                optionPoint: isCorrect ? Number(pointValue) : 0, // 조건부 배점 설정
-                rubricItem: isCorrect ? rubricItem : "" // 조건부 루브릭 설정
+                optionNo: optionNo,
+                optionContent: optionContent,
+                optionPoint: isCorrect ? Number(pointValue) : 0,
+                rubricItem: isCorrect ? rubricItem : ""
             });
         }
 
@@ -195,9 +202,9 @@
             body: JSON.stringify(formData)
         }).then(async res => {
             if (!res.ok) throw new Error((await res.json()).msg);
-            location.href = `/api/paper-menu/paper/${formData.paperId}`; // 성공 시 페이지 이동
+            location.href = `/api/paper-menu/paper/${formData.paperId}`;
         }).catch(err => {
-            alert(err.message); // 에러 발생 시 알림
+            alert(err.message);
         });
     }
 

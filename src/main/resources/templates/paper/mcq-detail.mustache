@@ -1,46 +1,130 @@
 {{> layout/header}}
 
-<div class="container p-5">
-    <div class="d-flex justify-content-end mb-3">
-        <a href="/api/paper-menu/paper/{{model.paperId}}/question/save-form" class="btn btn-primary">문제등록</a>
-    </div>
-    
-    <div class="mb-4">
-        <strong>시험일:</strong> {{model.evaluationDate}} <br>
-        <strong>시험장비:</strong> {{model.evaluationDevice}} <br>
-        <strong>시험장소:</strong> {{model.evaluationRoom}} <br>
-        <strong>교과목:</strong> {{model.subjectTitle}} <br>
-    </div>
+<style>
+    /* 공통 카드 스타일 (목록, 상세, 폼 화면 모두 재사용) */
+    .paper-list-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        max-width: 1200px; /* 목록 및 상세 화면 카드 너비 */
+        margin: 0 auto;
+    }
 
-    {{#model.questions}}
-        <div class="card mb-4 p-3">
-            <div class="card-body">
-                <!-- 문제 제목 -->
-                <h5 class="card-title">{{no}}. {{title}}</h5>
-                <div class="badge bg-secondary my-2">배점: {{totalPoint}}점</div>
+    /* 목록/상세 화면 공통 헤더 스타일 */
+    .list-header {
+        background-color: transparent;
+        font-size: 1.5rem; /* 버튼만 있어도 폰트 크기 및 볼드 유지는 사용자 CSS 의도에 따름 */
+        font-weight: bold;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        display: flex;
+        justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
+        align-items: center;
+    }
 
-                <!-- 지문 이미지 -->
-                {{#stimulusImg}}
-                    <div>
-                        <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid mb-3" style="max-height: 200px;">
-                    </div>
-                {{/stimulusImg}}
+    /* 버튼 스타일 */
+    .btn-primary {
+        padding: 0.75rem 1.25rem;
+        font-weight: bold;
+        font-size: 1rem;
+        border-radius: 12px;
+        width: auto;
+    }
 
-                <!-- 객관식 옵션 -->
-                <div>
-                    {{#options}}
-                        <div class="form-check mb-1 d-flex align-items-center">
-                            <input class="form-check-input me-2" type="radio" name="answer-{{questionId}}"
-                                   {{#isRight}}checked{{/isRight}} disabled>
-                            <label>
-                                {{no}}. {{content}}
-                            </label>
+    /* 상세 정보 섹션 스타일 */
+    .detail-info-section {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        line-height: 1.8;
+        border: 1px solid #e9ecef;
+    }
+
+    .detail-info-section strong {
+        color: #343a40;
+        min-width: 90px;
+        display: inline-block;
+    }
+
+    /* 개별 문제 카드 스타일 (기존 Bootstrap card를 활용하되, 추가 일관성 부여) */
+    .question-card {
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .question-card .card-title {
+        color: #212529;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .question-card .badge {
+        font-size: 0.85em;
+        padding: 0.5em 0.8em;
+        border-radius: 0.35rem;
+    }
+
+    .question-card .img-fluid {
+        border-radius: 8px;
+        border: 1px solid #f0f0f0;
+        padding: 5px;
+        background-color: #fff;
+    }
+
+    .question-card .form-check {
+        font-size: 0.95rem;
+    }
+
+    .question-card .form-check-input {
+        margin-top: 0.3em;
+    }
+
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="paper-list-card">
+        <div class="list-header">
+            <a href="/api/paper-menu/paper/{{model.paperId}}/question/save-form" class="btn btn-primary">문제등록</a>
+        </div>
+
+        <div class="detail-info-section mb-4">
+            <strong>시험일:</strong> {{model.evaluationDate}} <br>
+            <strong>시험장비:</strong> {{model.evaluationDevice}} <br>
+            <strong>시험장소:</strong> {{model.evaluationRoom}} <br>
+            <strong>교과목:</strong> {{model.subjectTitle}} <br>
+        </div>
+
+        {{#model.questions}}
+            <div class="card mb-4 question-card">
+                <div class="card-body">
+                    <h5 class="card-title">{{no}}. {{title}}</h5>
+                    <div class="badge bg-secondary my-2">배점: {{totalPoint}}점</div>
+
+                    {{#stimulusImg}}
+                        <div>
+                            <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid mb-3" style="max-height: 200px;">
                         </div>
-                    {{/options}}
+                    {{/stimulusImg}}
+
+                    <div>
+                        {{#options}}
+                            <div class="form-check mb-1 d-flex align-items-center">
+                                <input class="form-check-input me-2" type="radio" name="answer-{{questionId}}"
+                                       {{#isRight}}checked{{/isRight}} disabled>
+                                <label>
+                                    {{no}}. {{content}}
+                                </label>
+                            </div>
+                        {{/options}}
+                    </div>
                 </div>
             </div>
-        </div>
-    {{/model.questions}}
+        {{/model.questions}}
+    </div>
 </div>
 
 {{> layout/footer}}

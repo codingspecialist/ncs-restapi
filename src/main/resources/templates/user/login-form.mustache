@@ -1,20 +1,63 @@
 {{> layout/header}}
 
-<div class="container p-5">
+<style>
+    .paper-form-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        max-width: 840px;
+        margin: 0 auto;
+    }
 
-    <div class="card">
-        <div class="card-header"><b>로그인을 해주세요</b></div>
-        <div class="card-body">
-            <form action="/login" method="post" enctype="application/x-www-form-urlencoded">
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Enter username" name="username" value="ssar">
-                </div>
-                <div class="mb-3">
-                    <input type="password" class="form-control" placeholder="Enter password" name="password" value="1234">
-                </div>
-                <button type="submit" class="btn btn-primary form-control">로그인</button>
-            </form>
-        </div>
+    .paper-form-card .card-header {
+        background-color: transparent;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 10px;
+    }
+
+    .btn-primary {
+        padding: 0.75rem;
+        font-weight: bold;
+        font-size: 1rem;
+        border-radius: 12px;
+        width: 100%; /* 버튼 너비를 100%로 설정 */
+    }
+
+    .form-section {
+        margin-bottom: 1.4rem; /* 일관된 섹션 간격 */
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="paper-form-card">
+        <div class="card-header">로그인을 해주세요</div>
+        <form action="/login" method="post" enctype="application/x-www-form-urlencoded">
+            <div class="form-section">
+                <label for="username" class="form-label">사용자 이름</label>
+                <input type="text" class="form-control" id="username" placeholder="사용자 이름을 입력하세요"
+                       name="username" value="ssar">
+            </div>
+            <div class="form-section">
+                <label for="password" class="form-label">비밀번호</label>
+                <input type="password" class="form-control" id="password" placeholder="비밀번호를 입력하세요"
+                       name="password" value="1234">
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">로그인</button>
+        </form>
     </div>
 </div>
 

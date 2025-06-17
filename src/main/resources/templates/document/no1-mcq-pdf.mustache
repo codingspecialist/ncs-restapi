@@ -1,0 +1,509 @@
+{{> layout/header}}
+<style>
+    /* ------------------------------------------------------------------------- */
+    /* 공통 디자인 시스템 CSS (웹 화면에 보이는 기본 스타일)                      */
+    /* ------------------------------------------------------------------------- */
+
+    /* 공통 카드 기본 스타일 */
+    .paper-list-card,
+    .paper-form-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        margin: 0 auto;
+    }
+
+    .paper-list-card {
+        max-width: 1200px;
+    }
+
+    .paper-form-card {
+        max-width: 840px;
+    }
+
+    /* 목록/상세 화면 공통 헤더 스타일 */
+    .list-header {
+        background-color: transparent;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .list-header h2 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 0;
+        color: #343a40;
+    }
+
+    /* 버튼 스타일 */
+    .btn-primary {
+        padding: 0.75rem 1.25rem;
+        font-weight: bold;
+        font-size: 1rem;
+        border-radius: 12px;
+        width: auto;
+    }
+
+    .paper-form-card .btn-primary {
+        width: 100%;
+        padding: 0.75rem;
+    }
+
+    /* 테이블 스타일 */
+    .table {
+        margin-bottom: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-responsive {
+        border-radius: 10px;
+        overflow-x: auto;
+        border: 1px solid #dee2e6;
+    }
+
+    .table-responsive .table {
+        border: none;
+        margin-bottom: 0;
+    }
+
+    .table thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        color: #495057;
+        padding: 1rem 0.75rem;
+        white-space: nowrap;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .table tbody tr.click-tr {
+        cursor: pointer;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f0f8ff;
+    }
+
+    .table tbody td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        border-top: 1px solid #dee2e6;
+        white-space: nowrap;
+    }
+
+    /* 페이징 스타일 */
+    .pagination {
+        margin-top: 1.5rem;
+    }
+
+    .pagination .page-item .page-link {
+        border-radius: 8px;
+        margin: 0 4px;
+        min-width: 40px;
+        text-align: center;
+    }
+
+    .pagination .page-item:first-child .page-link,
+    .pagination .page-item:last-child .page-link {
+        border-radius: 8px;
+    }
+
+    /* 브레드크럼 스타일 */
+    .breadcrumb {
+        background-color: transparent;
+        padding: 0;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: ">" !important;
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
+        color: #6c757d;
+    }
+
+    .breadcrumb-item a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .breadcrumb-item.active {
+        color: #6c757d;
+        font-weight: 600;
+    }
+
+    /* 상세 정보 섹션 스타일 */
+    .detail-info-section {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        line-height: 1.8;
+        border: 1px solid #e9ecef;
+    }
+
+    .detail-info-section strong {
+        color: #343a40;
+        min-width: 90px;
+        display: inline-block;
+    }
+
+    .detail-info-section p {
+        margin-bottom: 0.5rem;
+    }
+
+    .detail-info-section a {
+        color: #0d6efd;
+        text-decoration: underline;
+    }
+
+    .detail-info-section div.fw-bold {
+        margin-bottom: 0.75rem;
+    }
+
+    .detail-info-section ul {
+        padding-left: 20px;
+        line-height: 1.6;
+        color: #495057;
+        margin: 0;
+    }
+
+    /* 개별 문제 카드 스타일 */
+    .question-card {
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .question-card .card-header {
+        background-color: #f8f9fa;
+        font-weight: bold;
+        border-bottom: 1px solid #dee2e6;
+        padding: 1rem 1.25rem;
+    }
+
+    .question-card .card-title {
+        color: #212529;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .question-card .badge {
+        font-size: 0.85em;
+        padding: 0.5em 0.8em;
+        border-radius: 0.35rem;
+    }
+
+    .question-card .img-fluid {
+        border-radius: 8px;
+        border: 1px solid #f0f0f0;
+        padding: 5px;
+        background-color: #fff;
+    }
+
+    .question-card .form-check {
+        font-size: 0.95rem;
+    }
+
+    .question-card .form-check-input {
+        margin-top: 0.3em;
+    }
+
+    /* 시나리오/문제 설명 블록 스타일 */
+    .scenario-description-block {
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 12px;
+        background-color: #fefefe;
+        margin-bottom: 1rem;
+    }
+
+    .scenario-description-block p {
+        margin-bottom: 0.5rem;
+    }
+
+    .scenario-description-block a {
+        color: #0d6efd;
+        text-decoration: underline;
+    }
+
+    .scenario-description-block div {
+        color: #343a40;
+    }
+
+    /* 폼 관련 스타일 */
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 10px;
+    }
+
+    .form-section {
+        margin-bottom: 1.4rem;
+    }
+
+    /* 문제 등록 페이지의 옵션 아이템 스타일 */
+    .questionItem {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 1rem;
+        background-color: #f9f9f9;
+        margin-top: 1rem;
+    }
+
+    .questionItem:first-child {
+        margin-top: 0;
+    }
+
+    .rubric-box {
+        margin-top: 0.75rem;
+        display: none;
+    }
+
+    /* ------------------------------------------------------------------------- */
+    /* 현재 문서(평가개요서) 전용 스타일                                         */
+    /* ------------------------------------------------------------------------- */
+
+    .page-title {
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 2rem;
+    }
+
+    .table th {
+        background-color: #c4d2d9;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .title-row th, .header-row th, .sub-header-row th {
+        background-color: #c4d2d9;
+    }
+
+    .table td .content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .signature {
+        font-size: 0.85em;
+        vertical-align: middle;
+    }
+
+    .signature-img {
+        height: 25px;
+        vertical-align: middle;
+    }
+
+    .circle-number {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: #007bff;
+        color: white;
+        font-weight: bold;
+        font-size: 0.9em;
+        margin-right: 8px;
+        flex-shrink: 0;
+    }
+
+    /* ------------------------------------------------------------------------- */
+    /* PDF 출력 및 인쇄 전용 스타일 (@media print)                              */
+    /* ------------------------------------------------------------------------- */
+    @media print {
+        @page {
+            size: A4 portrait;
+            margin: 1cm;
+        }
+
+        body * {
+            visibility: hidden;
+        }
+
+        /* print-area 안쪽만 보이게 하기 */
+        #print-area, #print-area * {
+            visibility: visible;
+        }
+
+        /* print-area만 인쇄 영역으로 지정 */
+        #print-area {
+            left: 0.5cm;
+            position: absolute;
+            background: white;
+            width: 100%;
+        }
+
+        body {
+            background-color: #fff !important;
+            -webkit-print-color-adjust: exact;
+            color-adjust: exact;
+            color: #000 !important;
+            font-size: 10pt;
+            line-height: 1.3;
+        }
+
+        .paper-list-card {
+            box-shadow: none !important;
+            border: none !important;
+            background-color: transparent !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            max-width: none !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        .page-title {
+            margin-bottom: 0.5cm !important;
+            page-break-after: avoid !important;
+        }
+    }
+</style>
+
+
+<div class="container mt-5 mb-5" id="print-area">
+    <div class="paper-list-card">
+        <div class="page-title">
+            <h1>평가개요서</h1>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <tbody>
+                <tr class="title-row">
+                    <th>과정명 (훈련기간)</th>
+                    <td colspan="5">{{model.courseTitle}} {{model.courseRound}}회차<br>({{model.courseStartDate}}
+                        ~ {{model.courseEndDate}})
+                    </td>
+                </tr>
+                <tr class="header-row">
+                    <th>교과목명</th>
+                    <td>{{model.subjectTitle}}</td>
+                    <th>평가방법</th>
+                    <td>{{model.subjectEvaluationWay}}</td>
+                    <th>평가자</th>
+                    <td>
+                        <span class="content">
+                            {{model.subjectTeacherName}} <span class="signature">(인)</span>
+                            <img src="{{model.sign}}" class="signature-img" alt="signature">
+                        </span>
+                    </td>
+                </tr>
+                <tr class="sub-header-row">
+                    <th>채점일시</th>
+                    <td>{{model.subjectEvaluationDate}}</td>
+                    <th>평가장소</th>
+                    <td>{{model.evaluationRoom}}</td>
+                    <th>평가일시</th>
+                    <td>{{model.subjectEvaluationDate}}</td>
+                </tr>
+
+                <tr>
+                    <th>수행내용 및 유의사항</th>
+                    <td colspan="5">
+                        <table class="table table-bordered m-0">
+                            <tr>
+                                <th>주제</th>
+                                <td>
+                                    {{#model.subjectElements}}
+                                        {{.}} <br>
+                                    {{/model.subjectElements}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>제출형태</th>
+                                <td colspan="2">
+                                    {{#model.submissionFormats}}
+                                        {{.}}<br>
+                                    {{/model.submissionFormats}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>제출기한</th>
+                                <td colspan="2">{{model.subjectEvaluationDate}}</td>
+                            </tr>
+                            <tr>
+                                <th>피평가자유의사항</th>
+                                <td colspan="2">제출기한 엄수</td>
+                            </tr>
+                            <tr>
+                                <th>평가배점</th>
+                                <td>
+                                    본평가, 재평가, 결시자에 관련한 평가 배점 방법은 아래와 같다. <br>
+                                    {{#model.scorePolicies}}
+                                        {{.}} <br>
+                                    {{/model.scorePolicies}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>평가환경 및 장비</th>
+                                <td colspan="2">{{model.evaluationDevice}}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <th>평가기준 및 유의사항</th>
+                    <td colspan="5">
+
+                        <table class="table table-bordered m-0">
+                            {{#model.questions}}
+                                <tr>
+                                    <td><span
+                                            class="circle-number">{{no}}</span>
+                                        {{questionPurpose}} </td>
+                                </tr>
+                            {{/model.questions}}
+                        </table>
+
+                    </td>
+                </tr>
+
+                <tr class="sub-header-row">
+                    <th>모범답안</th>
+                    <td colspan="5">
+                        <table class="table table-hover m-0">
+                            <tbody>
+                            {{#model.questions}}
+                                <tr>
+                                    <td>{{no}}</td>
+                                    <td>{{title}} ({{point}}점)</td>
+                                    <td>
+                                        {{#options}}
+                                            {{no}}. {{content}} <input type="radio"
+                                                                       {{#isRight}}checked{{/isRight}}><br>
+                                        {{/options}}
+                                    </td>
+                                </tr>
+                            {{/model.questions}}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

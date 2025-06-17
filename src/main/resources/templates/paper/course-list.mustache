@@ -71,10 +71,33 @@
         border-radius: 8px;
     }
 
+    /* 제목 헤더 스타일 */
+    .list-header {
+        background-color: transparent;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .list-header h2 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 0;
+        color: #343a40;
+    }
+    
 </style>
 
 <div class="container mt-5 mb-5">
     <div class="paper-list-card">
+
+        <div class="list-header">
+            <h2>과정 목록</h2>
+        </div>
+
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>

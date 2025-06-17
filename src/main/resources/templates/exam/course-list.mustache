@@ -1,43 +1,142 @@
 {{> layout/header}}
 
-<div class="container p-5">
+<style>
+    /* 공통 카드 스타일 */
+    .paper-list-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        margin: 0 auto;
+        max-width: 1200px;
+    }
 
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>과정ID</th>
-            <th>과정명</th>
-            <th>회차</th>
-            <th>훈련시간</th>
-            <th>훈련일수</th>
-            <th>개강일</th>
-            <th>수료일</th>
-            <th>훈련교사</th>
-            <th>진행상태</th>
-        </tr>
-        </thead>
-        <tbody>
-        {{#model.courses}}
-            <tr class="click-tr" onclick="location.href='/api/exam-menu/course/{{id}}/subject'">
-                <td>{{code}}</td>
-                <td>{{title}}</td>
-                <td>{{round}}</td>
-                <td>{{totalTime}}</td>
-                <td>{{totalDay}}</td>
-                <td>{{startDate}}</td>
-                <td>{{endDate}}</td>
-                <td>{{teacherName}}</td>
-                <td>{{courseStatus}}</td>
-            </tr>
-        {{/model.courses}}
-        </tbody>
-    </table>
+    /* 제목 헤더 스타일 */
+    .list-header {
+        background-color: transparent;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-    <ul class="pagination d-flex justify-content-center">
-        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-        <li class="page-item"><a class="page-link" href="#">Next</a></li>
-    </ul>
+    .list-header h2 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 0;
+        color: #343a40;
+    }
 
+    /* 테이블 스타일 */
+    .table {
+        margin-bottom: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-responsive {
+        border-radius: 10px;
+        overflow-x: auto;
+        border: 1px solid #dee2e6;
+    }
+
+    .table-responsive .table {
+        border: none;
+        margin-bottom: 0;
+    }
+
+    .table thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        color: #495057;
+        padding: 1rem 0.75rem;
+        white-space: nowrap;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .table tbody tr.click-tr {
+        cursor: pointer;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f0f8ff;
+    }
+
+    .table tbody td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        border-top: 1px solid #dee2e6;
+        white-space: nowrap;
+    }
+
+    /* 페이징 스타일 */
+    .pagination {
+        margin-top: 1.5rem;
+    }
+
+    .pagination .page-item .page-link {
+        border-radius: 8px;
+        margin: 0 4px;
+        min-width: 40px;
+        text-align: center;
+    }
+
+    .pagination .page-item:first-child .page-link,
+    .pagination .page-item:last-child .page-link {
+        border-radius: 8px;
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="paper-list-card">
+        <div class="list-header">
+            <h2>과정 목록</h2>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>과정ID</th>
+                    <th>과정명</th>
+                    <th>회차</th>
+                    <th>훈련시간</th>
+                    <th>훈련일수</th>
+                    <th>개강일</th>
+                    <th>수료일</th>
+                    <th>훈련교사</th>
+                    <th>진행상태</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#model.courses}}
+                    <tr class="click-tr" onclick="location.href='/api/exam-menu/course/{{id}}/subject'">
+                        <td>{{code}}</td>
+                        <td>{{title}}</td>
+                        <td>{{round}}</td>
+                        <td>{{totalTime}}</td>
+                        <td>{{totalDay}}</td>
+                        <td>{{startDate}}</td>
+                        <td>{{endDate}}</td>
+                        <td>{{teacherName}}</td>
+                        <td>{{courseStatus}}</td>
+                    </tr>
+                {{/model.courses}}
+                </tbody>
+            </table>
+        </div>
+
+        <ul class="pagination d-flex justify-content-center">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+    </div>
 </div>
 
 {{> layout/footer}}

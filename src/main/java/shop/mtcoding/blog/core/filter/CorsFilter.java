@@ -16,7 +16,7 @@ public class CorsFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) res;
 
         String origin = request.getHeader("Origin");
-        log.debug("Origin : " + origin);
+
 
         response.setHeader("Access-Control-Allow-Origin", origin);
         response.setHeader("Access-Control-Expose-Headers", "Authorization"); // 이 헤더 응답을 자바스크립트로 접근하게 허용할지!!

@@ -123,7 +123,10 @@ public class ExamResponse {
         private String studentName;
         private String teacherName;
         private String evaluationDate; // 평가일 (subject)
-        private String loc; // 평가장소 (임시)
+
+        private String evaluationDevice; // 평가장소
+        private String evaluationRoom; // 평가장소
+
         private String subjectTitle; // 교과목 (subject)
         private List<String> subjectElements;
         private List<AnswerDTO> answers;
@@ -136,7 +139,6 @@ public class ExamResponse {
         private Integer grade;
         private String teacherSign;
         private String studentSign;
-        private Boolean isStudentSign;
         private Boolean isAbsent;
         private Integer studentNo;
         private Long prevExamId; // 해당 교과목에 이전 학생 id
@@ -149,7 +151,8 @@ public class ExamResponse {
             this.studentName = exam.getStudent().getName();
             this.teacherName = exam.getTeacherName();
             this.evaluationDate = exam.getPaper().getEvaluationDate().toString();
-            this.loc = "3호";
+            this.evaluationDevice = exam.getPaper().getEvaluationDevice();
+            this.evaluationRoom = exam.getPaper().getEvaluationRoom();
             this.subjectTitle = exam.getPaper().getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
             this.answers = exam.getExamAnswers().stream().map(AnswerDTO::new).toList();
@@ -162,7 +165,6 @@ public class ExamResponse {
             this.grade = exam.getGrade();
             this.teacherSign = teacher.getSign();
             this.studentSign = exam.getStudentSign();
-            this.isStudentSign = exam.getStudentSign() == null ? false : true;
             this.studentNo = currentIndex == null ? null : currentIndex + 1;
             this.prevExamId = prevExamId;
             this.nextExamId = nextExamId;
@@ -177,6 +179,7 @@ public class ExamResponse {
             private Long questionId;
             private Integer no;
             private String title;
+            private String stimulusImg;
             private Integer totalPoint;
             private Integer answerNumber; // 정답 번호
             private Integer selectedOptionNo; // 학생 선택 번호
@@ -188,7 +191,7 @@ public class ExamResponse {
                 this.questionId = answer.getQuestion().getId();
                 this.no = answer.getQuestion().getNo();
                 this.title = answer.getQuestion().getTitle();
-
+                this.stimulusImg = answer.getQuestion().getStimulusImg();
                 // 객관식일때는, isRight인것의 점수를 가져오면 되는데, 객관식이 아닐때는, 정답이 여러개일수 있기 때문에 가장 높은점수를 가져와야 해서 아래 코드 필수임
                 QuestionOption _option = answer.getQuestion().getQuestionOptions().stream()
                         .max(Comparator.comparingInt(QuestionOption::getPoint))

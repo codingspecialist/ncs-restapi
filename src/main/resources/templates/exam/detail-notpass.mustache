@@ -1,27 +1,112 @@
 {{> layout/header}}
 
+<style>
+    .paper-list-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
 
-<div class="container p-5">
-    <h3>통과하지 못한 본평가 시험입니다.</h3>
+    .card-header {
+        background-color: #f8f9fa;
+        font-weight: bold;
+        border-bottom: 1px solid #dee2e6;
+    }
 
+    .card-footer {
+        background-color: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+    }
 
-    <div class="card mb-3">
-        <div class="card-header">
-            <div class="d-flex justify-content-between">
-                <div>
-                    시험일 : {{model.evaluationDate}} <br>
-                    시험장소 : {{model.loc}} <br>
-                    교과목 : {{model.subjectTitle}} <br>
-                    훈련교사 : {{model.teacherName}} <br>
-                    훈련생 : {{model.studentName}} <br>
-                    문항수 : {{model.questionCount}} <br>
-                    총점 : {{model.score}} <br>
-                    수준 : {{model.grade}} <br>
-                    통과여부 : {{model.examPassState}} <br>
-                    평가유형 : {{model.examState}} <br>
-                </div>
-                <div>
-                    <div class="d-flex">
+    .sign-table {
+        border-collapse: collapse;
+        margin-left: auto;
+    }
+
+    .sign-header {
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 0.5rem;
+        text-align: center;
+        background-color: #f1f3f5;
+    }
+
+    .sign-box {
+        width: 100px;
+        height: 60px;
+        text-align: center;
+        border: 1px solid #ced4da;
+    }
+
+    .sign-fit {
+        width: auto;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        color: #495057;
+        white-space: nowrap;
+    }
+
+    .table td {
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .form-control[readonly] {
+        background-color: #f8f9fa;
+        color: #6c757d;
+        border-color: #dee2e6;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f0f8ff;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.5em 0.8em;
+        border-radius: 0.35rem;
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="paper-list-card">
+
+        <div class="alert alert-danger d-flex align-items-center mb-4" role="alert"
+             style="font-size: 1.1rem; font-weight: 500;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="me-2" width="20" height="20" fill="currentColor"
+                 viewBox="0 0 16 16">
+                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.964 0L.165 13.233c-.457.778.091 1.767.982 1.767h13.707c.89 0 1.438-.99.982-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1-2.002 0 1 1 0 0 1 2.002 0z"/>
+            </svg>
+            통과하지 못한 본평가 시험입니다.
+        </div>
+
+        <!-- 시험 정보 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        시험일 : {{model.evaluationDate}} <br>
+                        평가장소 : {{model.evaluationRoom}} <br>
+                        평가장비 : {{model.evaluationDevice}} <br>
+                        교과목 : {{model.subjectTitle}} <br>
+                        훈련교사 : {{model.teacherName}} <br>
+                        훈련생 : {{model.studentName}} <br>
+                        문항수 : {{model.questionCount}} <br>
+                        총점 : {{model.score}} <br>
+                        수준 : {{model.grade}} <br>
+                        통과여부 : {{model.examPassState}} <br>
+                        평가유형 : {{model.examState}} <br>
+                    </div>
+                    <div>
                         <table class="sign-table">
                             <tr>
                                 <td class="sign-header">훈련교사</td>
@@ -32,68 +117,74 @@
                                     <img class="sign-fit" src="{{model.teacherSign}}">
                                 </td>
                                 <td class="sign-box">
-                                    {{#model.isStudentSign}}
+                                    {{#model.studentSign}}
                                         <img class="sign-fit" src="{{model.studentSign}}">
-                                    {{/model.isStudentSign}}
+                                    {{/model.studentSign}}
                                 </td>
                             </tr>
                         </table>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="card-body">
-            <div>
+            <div class="card-body">
                 {{#model.subjectElements}}
                     <div><i>{{.}}</i></div>
                 {{/model.subjectElements}}
             </div>
         </div>
-    </div>
 
-    <form>
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th>번호</th>
-                <th>제목</th>
-                <th>문제점수</th>
-                <th>항목</th>
-                <th>정답번호</th>
-                <th>채점</th>
-            </tr>
-            </thead>
-            <tbody class="exam-body">
-            {{#model.answers}}
-
-                <tr>
-                    <input type="hidden" class="answerId" value="{{answerId}}">
-                    <td>{{no}}</td>
-                    <td>{{title}}</td>
-                    <td>{{point}}점</td>
-                    <td>
-                        {{#options}}
-                            {{no}} {{content}} <input type="radio" value="{{no}}" class="optionNo"
-                                                      name="question-{{questionId}}"
-                                                      {{#isSelect}}checked{{/isSelect}} disabled><br>
-                        {{/options}}
-                    </td>
-                    <td>정답 {{answerNumber}}</td>
-                    <td>{{studentPoint}}점</td>
-                </tr>
-            {{/model.answers}}
-            </tbody>
-        </table>
-        <div class="card">
-            <div class="card-header">총평</div>
-            <div class="card-body">
-                <textarea id="teacherComment" class="form-control bg-light text-muted"
-                          readonly>{{model.teacherComment}}</textarea>
+        <!-- 문항 목록 -->
+        <form>
+            <div class="table-responsive mb-4">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>제목</th>
+                        <th>문제점수</th>
+                        <th>항목</th>
+                        <th>정답번호</th>
+                        <th>채점</th>
+                    </tr>
+                    </thead>
+                    <tbody class="exam-body">
+                    {{#model.answers}}
+                        <tr>
+                            <input type="hidden" class="answerId" value="{{answerId}}">
+                            <td>{{no}}</td>
+                            <td>{{title}}</td>
+                            <td><span class="badge bg-secondary">{{totalPoint}}점</span></td>
+                            <td>
+                                {{#options}}
+                                    <div class="form-check mb-1">
+                                        <input type="radio"
+                                               value="{{no}}"
+                                               class="form-check-input optionNo me-2"
+                                               name="question-{{questionId}}"
+                                               {{#isSelect}}checked{{/isSelect}} disabled>
+                                        <label class="form-check-label">{{no}}. {{content}}</label><br>
+                                    </div>
+                                {{/options}}
+                            </td>
+                            <td><span class="text-muted">정답 {{answerNumber}}</span></td>
+                            <td><span class="text-muted">{{studentPoint}}점</span></td>
+                        </tr>
+                    {{/model.answers}}
+                    </tbody>
+                </table>
             </div>
-        </div>
 
-    </form>
+            <!-- 총평 -->
+            <div class="card">
+                <div class="card-header">총평</div>
+                <div class="card-body">
+                    <textarea id="teacherComment" class="form-control" rows="5"
+                              readonly>{{model.teacherComment}}</textarea>
+                </div>
+            </div>
+        </form>
+
+    </div>
 </div>
-
 
 {{> layout/footer}}

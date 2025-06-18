@@ -1,7 +1,5 @@
 {{> layout/header}}
 
-이친구만의 응답 디티오 따로 만들기~~~~~~~~~~~~~~~~~~~~~~~
-
 <style>
     /* 기존 스타일 유지 + 아래 새로 추가 */
     .element-info-box {
@@ -110,12 +108,24 @@
             <strong>문항수:</strong> {{model.questionCount}}<br>
         </div>
 
-        <div class="element-info-box">
-            <h6>평가기준 (교과목 요소)</h6>
-            <ul>
-                {{#model.subjectElements}}
-                    <li>{{.}}</li>
-                {{/model.subjectElements}}
+        <div class="detail-info-section mb-3">
+            {{#model.guideLink}}
+                <p class="mb-2">
+                    <strong>🔗 상세 예시 링크:</strong>
+                    <a href="{{model.guideLink}}" target="_blank"
+                       class="text-primary text-decoration-underline">
+                        {{model.guideLink}}
+                    </a>
+                </p>
+            {{/model.guideLink}}
+
+            <div class="fw-bold text-dark mb-3">
+                이 과제의 정답은 다양할 수 있으며, 아래와 같은 수준의 결과물이 이상적입니다:
+            </div>
+
+            <ul class="ps-3"> {{#model.guideSummaries}}
+                <li>{{.}}</li>
+            {{/model.guideSummaries}}
             </ul>
         </div>
 
@@ -125,27 +135,64 @@
                     <div class="card-body">
                         <input type="hidden" class="questionNo" value="{{no}}">
                         <h5 class="card-title">{{no}}. {{title}}</h5>
-                        <div class="badge bg-secondary my-2">배점: {{point}}점</div>
 
-                        {{#stimulusImg}}
-                            <div>
-                                <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid mb-3"
-                                     style="max-height: 200px;">
-                            </div>
-                        {{/stimulusImg}}
+                        <div class="card-body p-3">
+                            <div class="scenario-description-block mb-4">
+                                {{#scenarioLink}}
+                                    <p class="mb-2">
+                                        <strong>📝 시나리오 링크:</strong>
+                                        <a href="{{scenarioLink}}" target="_blank"
+                                           class="text-primary text-decoration-underline">
+                                            {{scenarioLink}}
+                                        </a>
+                                    </p>
+                                {{/scenarioLink}}
 
-
-                        <div>
-                            {{#options}}
-                                <div class="form-check mb-1 d-flex align-items-center">
-                                    <input class="form-check-input me-2 optionNo" type="radio"
-                                           name="question-{{questionId}}" value="{{no}}">
-                                    <label>
-                                        {{no}}. {{content}}
-                                    </label>
+                                <div class="text-dark">
+                                    {{#scenarios}}
+                                        {{.}}<br>
+                                    {{/scenarios}}
                                 </div>
-                            {{/options}}
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 80px;" class="text-center">점수</th>
+                                        <th>평가기준 (루브릭 설명)</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {{#options}}
+                                        <tr>
+                                            <td class="text-center fw-bold align-middle">{{point}}점</td>
+                                            <td>{{rubricItem}}</td>
+                                        </tr>
+                                    {{/options}}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="scenarioLink" class="form-label fw-bold">제출 답안 <small
+                                        class="text-muted">(필수사항)</small></label>
+                                <input type="url" class="form-control" id="answer-hahahahah">
+                                <small class="form-text text-muted">
+                                    ※ Notion 링크로 제출해주세요.
+                                </small>
+                            </div>
+                            <div class="mb-4">
+                                <label for="scenarioLink" class="form-label fw-bold">소스 코드 <small
+                                        class="text-muted">(필수사항)</small></label>
+                                <input type="url" class="form-control" id="answer-hahahahah">
+                                <small class="form-text text-muted">
+                                    ※ Github 소스코드 링크로 제출해주세요.
+                                </small>
+                            </div>
+
                         </div>
+
                     </div>
                 </div>
             {{/model.questions}}

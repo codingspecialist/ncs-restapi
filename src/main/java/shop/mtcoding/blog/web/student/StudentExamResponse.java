@@ -1,6 +1,7 @@
 package shop.mtcoding.blog.web.student;
 
 import lombok.Data;
+import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.exam.Exam;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.student.Student;
@@ -93,7 +94,7 @@ public class StudentExamResponse {
             private Long questionId;
             private Integer no;
             private String title;
-            private Integer point;
+            private Integer totalPoint;
             private String stimulusImg;
             private List<OptionDTO> options;
 
@@ -101,7 +102,7 @@ public class StudentExamResponse {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-                this.point = question.getQuestionOptions().stream().mapToInt(option -> option.getPoint()).max().getAsInt();
+                this.totalPoint = question.getQuestionOptions().stream().mapToInt(option -> option.getPoint()).max().getAsInt();
                 this.stimulusImg = question.getStimulusImg();
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
             }
@@ -120,6 +121,74 @@ public class StudentExamResponse {
             }
         }
     }
+
+    @Data
+    public static class RubricStartDTO {
+        private Long paperId;
+        private String studentName;
+        private String teacherName;
+        private String evaluationDate; // 평가일 (subject)
+        private String evaluationDevice; // 평가장비 (임시)
+        private String evaluationRoom; // 평가장소 (임시)
+        private String subjectTitle; // 교과목 (subject)
+        private List<String> subjectElements;
+        private List<QuestionDTO> questions;
+        private Integer questionCount;
+        private List<String> guideSummaries; // 가이드 요약본
+        private String guideLink;
+
+        public RubricStartDTO(Paper paper, String studentName, List<SubjectElement> subjectElements, List<Question> questions) {
+            this.paperId = paper.getId();
+            this.studentName = studentName;
+            this.teacherName = paper.getSubject().getTeacherName();
+            this.evaluationDate = paper.getEvaluationDate().toString();
+            this.evaluationDevice = paper.getEvaluationDevice();
+            this.evaluationRoom = paper.getEvaluationRoom();
+            this.subjectTitle = paper.getSubject().getTitle();
+            this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
+            this.questions = questions.stream().map(QuestionDTO::new).toList();
+            this.questionCount = questions.size();
+            this.guideSummaries = MyUtil.parseMultilineWithoutHyphen(paper.getGuideSummary());
+            this.guideLink = paper.getGuideLink();
+        }
+
+        @Data
+        class QuestionDTO {
+            private Long questionId;
+            private Integer no;
+            private String title;
+            private Integer totalPoint; // 이 문제의 총점
+            private String scenarioLink;
+            private List<String> scenarios; // 가이드 요약본
+            private List<OptionDTO> options;
+
+            public QuestionDTO(Question question) {
+                this.questionId = question.getId();
+                this.no = question.getNo();
+                this.title = question.getTitle();
+                this.totalPoint = question.getQuestionOptions().stream().mapToInt(option -> option.getPoint()).max().getAsInt();
+                this.scenarioLink = question.getScenarioLink();
+                this.scenarios = MyUtil.parseMultiline(question.getScenario());
+                this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
+            }
+
+            @Data
+            class OptionDTO {
+                private Long optionId;
+                private Integer no;
+                private String rubricItem;
+                private Integer point; // 각 루브릭의 점수
+
+                public OptionDTO(QuestionOption option) {
+                    this.optionId = option.getId();
+                    this.no = option.getNo();
+                    this.rubricItem = option.getRubricItem();
+                    this.point = option.getPoint();
+                }
+            }
+        }
+    }
+
 
     @Data
     public static class ResultDTO {

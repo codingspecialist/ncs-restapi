@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog.core.utils.ApiUtil;
 import shop.mtcoding.blog.domain.course.exam.ExamService;
+import shop.mtcoding.blog.domain.course.subject.paper.EvaluationWay;
 import shop.mtcoding.blog.domain.user.User;
 
 @RequiredArgsConstructor
@@ -31,9 +32,18 @@ public class StudentExamController {
     public String studentExamStartInfo(@PathVariable("paperId") Long paperId, Model model) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         var modelData = examService.학생_시험시작정보(sessionUser, paperId);
-        var respDTO = new StudentExamResponse.McqStartDTO(modelData.paperPS(), modelData.studentName(), modelData.subjectElementListPS(), modelData.questionListPS());
-        model.addAttribute("model", respDTO);
-        return "student/paper/mcq-start";
+
+        if (modelData.paperPS().getEvaluationWay() == EvaluationWay.MCQ) {
+            var respDTO = new StudentExamResponse.McqStartDTO(modelData.paperPS(), modelData.studentName(), modelData.subjectElementListPS(), modelData.questionListPS());
+            model.addAttribute("model", respDTO);
+            return "student/paper/mcq-start";
+        } else {
+            var respDTO = new StudentExamResponse.RubricStartDTO(modelData.paperPS(), modelData.studentName(), modelData.subjectElementListPS(), modelData.questionListPS());
+            model.addAttribute("model", respDTO);
+            return "student/paper/rubric-start";
+        }
+
+
     }
 
     @PostMapping("/api/student/exam")

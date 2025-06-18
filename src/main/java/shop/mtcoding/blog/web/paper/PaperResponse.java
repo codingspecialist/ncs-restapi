@@ -115,7 +115,7 @@ public class PaperResponse {
 
 
     @Data
-    public static class McuDetailDTO {
+    public static class McqDetailDTO {
         private Long paperId;
         private String evaluationDate; // 평가일 (subject)
         private String evaluationDevice; // 평가장소 (임시)
@@ -123,7 +123,7 @@ public class PaperResponse {
         private String subjectTitle; // 교과목 (subject)
         private List<QuestionDTO> questions;
 
-        public McuDetailDTO(Paper paper, List<Question> questions) {
+        public McqDetailDTO(Paper paper, List<Question> questions) {
             this.paperId = paper.getId();
             this.evaluationDate = paper.getEvaluationDate().toString();
             this.evaluationDevice = paper.getEvaluationDevice();

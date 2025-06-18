@@ -199,7 +199,37 @@ public class ExamService {
     }
 
     @Transactional
-    public void 학생_시험응시(StudentExamRequest.SaveDTO reqDTO, User sessionUser) {
+    public void 학생_루브릭_시험응시(StudentExamRequest.RubricSaveDTO reqDTO, User sessionUser) {
+        // 1. 시험지 찾기
+        Paper paper = paperRepository.findById(reqDTO.getPaperId())
+                .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
+
+        Student student = studentRepository.findByUserId(sessionUser.getId());
+
+        // 2. Exam 생성
+        Exam exam = reqDTO.toEntity(paper, student, "채점중", 0.0, 0, "");
+
+        Exam examPS = examRepository.save(exam);
+
+        List<Question> questionList = questionRepository.findAllByPaperId(reqDTO.getPaperId());
+
+        // 3. ExamAnswer 컬렉션 저장 (채점하기)
+        List<ExamAnswer> examAnswerList = new ArrayList<>();
+
+        questionList.forEach(question -> {
+            reqDTO.getAnswers().forEach(answerDTO -> {
+                if (answerDTO.getQuestionNo().equals(question.getNo())) {
+                    examAnswerList.add(answerDTO.toEntity(question, examPS));
+                }
+            });
+        });
+
+        examAnswerRepository.saveAll(examAnswerList);
+    }
+
+
+    @Transactional
+    public void 학생_객관식_시험응시(StudentExamRequest.McqSaveDTO reqDTO, User sessionUser) {
         // 1. Exam 저장
         Paper paper = paperRepository.findById(reqDTO.getPaperId())
                 .orElseThrow(() -> new Exception404("시험지를 찾을 수 없어요"));
@@ -218,7 +248,7 @@ public class ExamService {
         }
 
 
-        Exam exam = reqDTO.toEntity(paper, student, paper.getPaperType().toKorean(), 0.0, 0, "");
+        Exam exam = reqDTO.toEntity(paper, student, "채점중", 0.0, 0, "");
         Exam examPS = examRepository.save(exam);
 
         // 2. 정답지 가져오기

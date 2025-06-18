@@ -46,11 +46,19 @@ public class StudentExamController {
 
     }
 
-    @PostMapping("/api/student/exam")
-    public ResponseEntity<?> studentExamSave(@RequestBody StudentExamRequest.SaveDTO reqDTO) {
+    @PostMapping("/api/student/exam/mcq")
+    public ResponseEntity<?> studentExamMcqSave(@RequestBody StudentExamRequest.McqSaveDTO reqDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
 
-        examService.학생_시험응시(reqDTO, sessionUser);
+        examService.학생_객관식_시험응시(reqDTO, sessionUser);
+        return ResponseEntity.ok(new ApiUtil<>(null));
+    }
+
+    @PostMapping("/api/student/exam/rubric")
+    public ResponseEntity<?> studentExamRubricSave(@RequestBody StudentExamRequest.RubricSaveDTO reqDTO) {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+
+        examService.학생_루브릭_시험응시(reqDTO, sessionUser);
         return ResponseEntity.ok(new ApiUtil<>(null));
     }
 

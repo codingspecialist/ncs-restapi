@@ -108,28 +108,59 @@
             <strong>문항수:</strong> {{model.questionCount}}<br>
         </div>
 
-        <div class="detail-info-section mb-3">
-            {{#model.guideLink}}
-                <p class="mb-2">
-                    <strong>🔗 상세 예시 링크:</strong>
-                    <a href="{{model.guideLink}}" target="_blank"
-                       class="text-primary text-decoration-underline">
-                        {{model.guideLink}}
-                    </a>
-                </p>
-            {{/model.guideLink}}
+        <!-- 과제 정보 박스 -->
+        <div class="detail-info-section mb-4">
+            <h5 class="mb-3 fw-bold text-dark">과제 정보</h5>
 
-            <div class="fw-bold text-dark mb-3">
-                이 과제의 정답은 다양할 수 있으며, 아래와 같은 수준의 결과물이 이상적입니다:
+            <div class="mb-3">
+                <div class="fw-bold text-secondary mb-1">📌 주제</div>
+                <div class="ps-1">{{model.pblTitle}}</div>
             </div>
 
-            <ul class="ps-3"> {{#model.guideSummaries}}
-                <li>{{.}}</li>
-            {{/model.guideSummaries}}
-            </ul>
+            <div class="mb-3">
+                <div class="fw-bold text-secondary mb-1">📖 시나리오</div>
+                <div class="ps-1">{{model.pblScenario}}</div>
+            </div>
+
+            <div class="mb-3">
+                <div class="fw-bold text-secondary mb-1">💡 도전 과제</div>
+                <ul class="ps-4 mb-1">
+                    {{#model.pblChallenges}}
+                        <li>{{.}}</li>{{/model.pblChallenges}}
+                </ul>
+            </div>
+
+            <div class="mb-3">
+                <div class="fw-bold text-secondary mb-1">📤 제출 항목</div>
+                <ul class="ps-4 mb-1">
+                    {{#model.pblSubmitFormats}}
+                        <li>{{.}}</li>{{/model.pblSubmitFormats}}
+                </ul>
+            </div>
+
+            {{#model.pblScenarioGuideLink}}
+                <div class="mb-3">
+                    <div class="fw-bold text-secondary mb-1">🔗 시나리오 상세 가이드</div>
+                    <a href="{{model.pblScenarioGuideLink}}" target="_blank"
+                       class="ps-1 text-decoration-underline text-primary">
+                        {{model.pblScenarioGuideLink}}
+                    </a>
+                </div>
+            {{/model.pblScenarioGuideLink}}
+
+            {{#model.pblSubmitTemplateLink}}
+                <div class="mb-3">
+                    <div class="fw-bold text-secondary mb-1">📎 제출 항목 샘플</div>
+                    <a href="{{model.pblSubmitTemplateLink}}" target="_blank"
+                       class="text-decoration-underline text-primary">
+                        {{model.pblSubmitTemplateLink}}
+                    </a>
+                </div>
+            {{/model.pblSubmitTemplateLink}}
         </div>
 
         <form>
+
             {{#model.questions}}
                 <div class="card mb-4 question-card">
                     <div class="card-body">
@@ -175,22 +206,10 @@
                             </div>
 
                             <div class="mb-4">
-                                <label for="scenarioLink" class="form-label fw-bold">제출 답안 <small
-                                        class="text-muted">(필수사항)</small></label>
-                                <input type="url" class="form-control" id="answer-hahahahah">
-                                <small class="form-text text-muted">
-                                    ※ Notion 링크로 제출해주세요.
-                                </small>
-                            </div>
-                            <div class="mb-4">
                                 <label for="scenarioLink" class="form-label fw-bold">소스 코드 <small
                                         class="text-muted">(선택사항)</small></label>
-                                <input type="url" class="form-control" id="answer-hahahahah">
-                                <small class="form-text text-muted">
-                                    ※
-                                    ex)
-                                    https://github.com/codingspecialist/blog-jpa/blob/master/src/main/java/shop/mtcoding/blog/user/UserController.java
-                                </small>
+                                <input type="url" class="form-control codeReviewLink"
+                                       placeholder="https://github.com/codingspecialist/blog-jpa/blob/master/src/main/java/shop/mtcoding/blog/user/UserController.java">
                             </div>
 
                         </div>
@@ -199,33 +218,50 @@
                 </div>
             {{/model.questions}}
 
+            <div class="mb-4">
+                <label for="scenarioLink" class="form-label fw-bold">제출 답안 <small
+                        class="text-muted">(필수사항)</small></label>
+                <input type="url" class="form-control" id="answer-submitLink">
+                <small class="form-text text-muted">
+                    ※ Notion 링크로 제출해주세요.
+                </small>
+            </div>
+
             <button type="button" onclick="sendAnswer()" class="btn btn-primary">제출하기</button>
         </form>
     </div>
 </div>
 
+
 <script>
     function sendAnswer() {
+        const paperId = "{{model.paperId}}";
+        const teacherName = "{{model.teacherName}}";
+        const submitLink = document.querySelector("#answer-submitLink").value.trim();
+
         let requestBody = {
-            paperId: {{model.paperId}},
-            teacherName: "{{model.teacherName}}",
+            paperId: paperId,
+            teacherName: teacherName,
+            submitLink: submitLink,
             answers: []
         };
 
-        let items = document.querySelectorAll(".questionNo");
-        items.forEach(el => {
-            const questionNo = el.value;
-            const tr = el.closest(".card");
-            const selected = tr.querySelector(".optionNo:checked");
-            const selectedOptionNo = selected ? selected.value : null;
+        const questionCards = document.querySelectorAll(".question-card");
+
+        questionCards.forEach(card => {
+            const questionNo = card.querySelector(".questionNo").value;
+            const codeReviewInput = card.querySelector(".codeReviewLink");
+            const codeReviewLink = codeReviewInput && codeReviewInput.value.trim() !== ""
+                    ? codeReviewInput.value.trim()
+                    : null;
 
             requestBody.answers.push({
                 questionNo: Number(questionNo),
-                selectedOptionNo: Number(selectedOptionNo)
+                codeReviewLink: codeReviewLink
             });
         });
 
-        fetch("/api/student/exam", {
+        fetch("/api/student/exam/rubric", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -237,7 +273,7 @@
                     return res.json();
                 })
                 .then(res => {
-                    console.log(res);
+                    console.log("제출 성공", res);
                     location.href = "/api/student/paper";
                 })
                 .catch(err => {
@@ -245,5 +281,6 @@
                 });
     }
 </script>
+
 
 {{> layout/footer}}

@@ -190,44 +190,57 @@
             <strong>교과목:</strong> {{model.subjectTitle}} <br>
         </div>
 
-        <!-- 과제 정보 통합 박스 -->
+        <!-- 과제 정보 박스 -->
         <div class="detail-info-section mb-4">
-            <h5 class="mb-3 fw-bold text-dark">📘 PBL 과제 정보</h5>
+            <h5 class="mb-3 fw-bold text-dark">과제 정보</h5>
 
-            <p class="mb-2"><strong>과제 제목:</strong> {{model.pblTitle}}</p>
+            <div class="mb-3">
+                <div class="fw-bold text-secondary mb-1">📌 주제</div>
+                <div class="ps-1">{{model.pblTitle}}</div>
+            </div>
 
-            <p class="mb-3"><strong>시나리오:</strong><br>{{model.pblScenario}}</p>
+            <div class="mb-3">
+                <div class="fw-bold text-secondary mb-1">📖 시나리오</div>
+                <div class="ps-1">{{model.pblScenario}}</div>
+            </div>
+
+            <div class="mb-3">
+                <div class="fw-bold text-secondary mb-1">💡 도전 과제</div>
+                <ul class="ps-4 mb-1">
+                    {{#model.pblChallenges}}
+                        <li>{{.}}</li>{{/model.pblChallenges}}
+                </ul>
+            </div>
+
+            <div class="mb-3">
+                <div class="fw-bold text-secondary mb-1">📤 제출 항목</div>
+                <ul class="ps-4 mb-1">
+                    {{#model.pblSubmitFormats}}
+                        <li>{{.}}</li>{{/model.pblSubmitFormats}}
+                </ul>
+            </div>
 
             {{#model.pblScenarioGuideLink}}
-                <p class="mb-3">
-                    <strong>🔗 시나리오 상세 가이드:</strong><br>
+                <div class="mb-3">
+                    <div class="fw-bold text-secondary mb-1">🔗 시나리오 상세 가이드</div>
                     <a href="{{model.pblScenarioGuideLink}}" target="_blank"
-                       class="text-primary text-decoration-underline">
+                       class="ps-1 text-decoration-underline text-primary">
                         {{model.pblScenarioGuideLink}}
                     </a>
-                </p>
+                </div>
             {{/model.pblScenarioGuideLink}}
 
-            <p class="fw-bold mt-4 mb-2">💡 도전과제</p>
-            <ul class="ps-3 mb-4">
-                {{#model.pblChallenges}}
-                    <li>{{.}}</li>{{/model.pblChallenges}}
-            </ul>
-
-            <p class="fw-bold mb-2">📤 제출 항목</p>
-            <ul class="ps-3 mb-3">
-                {{#model.pblSubmitFormats}}
-                    <li>{{.}}</li>{{/model.pblSubmitFormats}}
-            </ul>
-
             {{#model.pblSubmitTemplateLink}}
-                <div class="bg-white p-3 border rounded" style="font-size: 0.95rem;">
-                    <strong>📎 템플릿 예시 링크:</strong><br>
+                <div class="mb-3">
+                    <div class="fw-bold text-secondary mb-1">📎 제출 항목 샘플</div>
                     <a href="{{model.pblSubmitTemplateLink}}" target="_blank"
-                       class="text-primary text-decoration-underline">{{model.pblSubmitTemplateLink}}</a>
+                       class="text-decoration-underline text-primary">
+                        {{model.pblSubmitTemplateLink}}
+                    </a>
                 </div>
             {{/model.pblSubmitTemplateLink}}
         </div>
+
 
 
         {{#model.questions}}

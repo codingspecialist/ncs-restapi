@@ -12,8 +12,54 @@ import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOp
 import java.util.List;
 
 public class StudentExamRequest {
+
     @Data
-    public static class SaveDTO {
+    public static class RubricSaveDTO {
+        private Long paperId;
+        private String teacherName;
+        private String submitLink;
+        private List<AnswerDTO> answers;
+
+        @Data
+        public static class AnswerDTO {
+            private Integer questionNo;
+            private String codeReviewLink;
+
+            public ExamAnswer toEntity(Question question, Exam exam) {
+
+                // ExamAnswer 생성
+                return ExamAnswer.builder()
+                        .exam(exam)
+                        .question(question)
+                        .questionNo(questionNo)
+                        .codeReviewLink(codeReviewLink) // nullable
+                        .earnedPoint(0) // 수동 채점 시 업데이트
+                        .isRight(false)  // 수동 채점이므로 false
+                        .build();
+            }
+        }
+
+        // Exam 생성 (시험 응시 결과)
+        public Exam toEntity(Paper paper, Student student, String passState, Double score, Integer grade, String reExamReason) {
+            return Exam.builder()
+                    .isUse(true)
+                    .paper(paper)
+                    .subject(paper.getSubject())
+                    .student(student)
+                    .teacherName(teacherName)
+                    .passState(passState)
+                    .score(score)
+                    .grade(grade)
+                    .examState(paper.getPaperType().toKorean())
+                    .reExamReason(reExamReason)
+                    .standby(false)
+                    .build();
+        }
+    }
+
+
+    @Data
+    public static class McqSaveDTO {
         private Long paperId;
         private String teacherName;
         private List<AnswerDTO> answers;
@@ -55,6 +101,7 @@ public class StudentExamRequest {
             return Exam.builder()
                     .isUse(true)
                     .paper(paper)
+                    .subject(paper.getSubject())
                     .student(student)
                     .teacherName(teacherName)
                     .passState(passState)
@@ -62,6 +109,7 @@ public class StudentExamRequest {
                     .grade(grade)
                     .examState(paper.getPaperType().toKorean())
                     .reExamReason(reExamReason)
+                    .standby(true)
                     .build();
         }
     }

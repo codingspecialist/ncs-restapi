@@ -27,8 +27,9 @@ public class ExamAnswer {
     private Question question; // 시험지 1개 - 시험문제 20개(문제수만큼)
 
     private Integer questionNo;
-    private Integer selectedOptionNo;
 
+    // 객관식은 자동 계산 / 그게 아니면 수동 계산됨
+    private Integer selectedOptionNo;
     private Integer earnedPoint; // 5점, 4점, 3점, 2점, 1점 (머든지 될 수 있음) - 이건 배점이 아님!!
     private Boolean isRight; // 0점이 아니면 전부다 true임!! 루브릭은 모든 답변에 점수가 부여됨
 

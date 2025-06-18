@@ -66,6 +66,7 @@ public class Exam {
 
     // ------------- 객관식이 아닐때 받아야함
     private String submitLink;
+    private Boolean standby; // 채점중 (false, true)
 
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
     private List<ExamAnswer> examAnswers = new ArrayList<>();
@@ -127,11 +128,12 @@ public class Exam {
                 .passState("미통과")
                 .isUse(true)
                 .grade(1)
+                .standby(true)
                 .build();
     }
 
     @Builder
-    public Exam(Long id, Student student, String teacherName, Subject subject, Paper paper, String examState, String reExamReason, String passState, Double score, Integer grade, Boolean isUse, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, LocalDateTime createdAt) {
+    public Exam(Long id, Student student, String teacherName, Subject subject, Paper paper, String examState, String reExamReason, String passState, Double score, Integer grade, Boolean isUse, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, Boolean standby, LocalDateTime createdAt) {
         this.id = id;
         this.student = student;
         this.teacherName = teacherName;
@@ -148,6 +150,7 @@ public class Exam {
         this.teacherComment = teacherComment;
         this.commentUpdatedAt = commentUpdatedAt;
         this.submitLink = submitLink;
+        this.standby = standby;
         this.createdAt = createdAt;
     }
 }

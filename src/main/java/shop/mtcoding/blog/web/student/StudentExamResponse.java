@@ -134,8 +134,15 @@ public class StudentExamResponse {
         private List<String> subjectElements;
         private List<QuestionDTO> questions;
         private Integer questionCount;
-        private List<String> guideSummaries; // 가이드 요약본
-        private String guideLink;
+
+        // -------------------- 객관식이 아닐때 받아야 할 목록
+        private String pblTitle;
+        private String pblScenario;
+        private String pblScenarioGuideLink;
+        private List<String> pblSubmitFormats; // 제출항목 (notion)
+        private String pblSubmitTemplateLink; // 제출항목 복제 템플릿 (선택)
+        private List<String> pblChallenges; // 도전과제
+
 
         public RubricStartDTO(Paper paper, String studentName, List<SubjectElement> subjectElements, List<Question> questions) {
             this.paperId = paper.getId();
@@ -148,8 +155,12 @@ public class StudentExamResponse {
             this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
             this.questionCount = questions.size();
-            //this.guideSummaries = MyUtil.parseMultilineWithoutHyphen(paper.getGuideSummary());
-            //this.guideLink = paper.getGuideLink();
+            this.pblTitle = paper.getPblTitle();
+            this.pblScenario = paper.getPblScenario();
+            this.pblScenarioGuideLink = paper.getPblScenarioGuideLink();
+            this.pblSubmitFormats = MyUtil.parseMultilineWithoutHyphen(paper.getPblSubmitFormat());
+            this.pblSubmitTemplateLink = paper.getPblSubmitTemplateLink();
+            this.pblChallenges = MyUtil.parseMultilineWithoutHyphen(paper.getPblChallenge());
         }
 
         @Data
@@ -158,7 +169,6 @@ public class StudentExamResponse {
             private Integer no;
             private String title;
             private Integer totalPoint; // 이 문제의 총점
-            private String scenarioLink;
             private List<String> scenarios; // 가이드 요약본
             private List<OptionDTO> options;
 
@@ -166,8 +176,7 @@ public class StudentExamResponse {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-                this.totalPoint = question.getQuestionOptions().stream().mapToInt(option -> option.getPoint()).max().getAsInt();
-                //this.scenarioLink = question.getScenarioLink();
+                this.totalPoint = question.getQuestionOptions().stream().mapToInt(QuestionOption::getPoint).max().getAsInt();
                 this.scenarios = MyUtil.parseMultiline(question.getScenario());
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
             }

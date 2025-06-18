@@ -10,15 +10,18 @@ import java.util.List;
 
 public class ExamRequest {
 
+
     @Data
     public static class UpdateDTO {
         private String teacherComment;
+        private Boolean standby;
         private List<AnswerDTO> answers;
 
         @Data
         public static class AnswerDTO {
             private Integer answerId;
             private Integer selectedOptionNo; // 정답 번호 (PK 아님)
+            private String codeReviewPRLink;
 
             public void update(Question question, ExamAnswer answer) {
                 if (selectedOptionNo == null) {
@@ -29,7 +32,8 @@ public class ExamRequest {
                         .filter(QuestionOption::getIsRight) // 정답 후보들만 필터링
                         .anyMatch(option -> option.getNo().equals(selectedOptionNo)); // 수험생의 선택과 일치하는지
 
-                answer.update(selectedOptionNo, isRight);
+                answer.update(selectedOptionNo, isRight, codeReviewPRLink);
+
                 answer.autoGrade();
             }
 

@@ -124,7 +124,7 @@
                         훈련교사 : {{model.teacherName}} <br>
                         훈련생 : {{model.studentName}} <br>
                         문항수 : {{model.questionCount}} <br>
-                        총점 : {{model.score}} <br>
+                        총점 : {{model.score}} / 백분율 : {{model.finalScore}}<br>
                         수준 : {{model.grade}} <br>
                         통과여부 : {{model.examPassState}} <br>
                         평가유형 : {{model.examState}} <br>
@@ -179,6 +179,7 @@
 
         {{#model.answers}}
             <div class="card mb-1 question-card exam-body">
+                <input type="hidden" class="answerId" value="{{answerId}}">
                 <div class="card-header">
                     {{no}}. {{title}} </div>
 
@@ -230,8 +231,9 @@
 
                                 <input type="url"
                                        class="form-control codeReviewInput"
-                                       name="codeReviewLink"
-                                       id="codeReviewLink-{{questionId}}"
+                                       name="codeReviewPRLink"
+                                       value="{{#codeReviewPRLink}}{{codeReviewPRLink}}{{/codeReviewPRLink}}"
+                                       id="codeReviewPRLink-{{questionId}}"
                                        placeholder="리뷰 완료 후 GitHub PR 주소를 직접 붙여넣으세요.">
                             </div>
                         {{/codeReviewLink}}
@@ -283,12 +285,12 @@
         $(".exam-body").each(function () {
             const answerId = $(this).find(".answerId").val();
             const selectedOptionNo = $(this).find(".optionNo:checked").val();
-            const codeReviewLink = $(this).find(".codeReviewInput").val().trim();
+            const codeReviewPRLink = $(this).find(".codeReviewPRLink").val();
             if (!selectedOptionNo) return;
             requestBody.answers.push({
                 answerId: Number(answerId),
                 selectedOptionNo: Number(selectedOptionNo),
-                codeReviewLink: codeReviewLink
+                codeReviewPRLink: codeReviewPRLink
             });
         });
 

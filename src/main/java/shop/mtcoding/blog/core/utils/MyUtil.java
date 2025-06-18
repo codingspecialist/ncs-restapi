@@ -86,4 +86,11 @@ public class MyUtil {
                 .toList();
     }
 
+    public static double scaleTo100(double score, double currentMaxScore) {
+        if (currentMaxScore <= 0) {
+            throw new IllegalArgumentException("현재 만점은 0보다 커야 합니다.");
+        }
+        return (score / currentMaxScore) * 100;
+    }
+
 }

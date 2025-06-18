@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.student.Student;
 import shop.mtcoding.blog.domain.course.subject.Subject;
@@ -52,6 +53,7 @@ public class Exam {
     private String passState; // 통과, 미통과, 결석, 미응시
 
     private Double score; // 시험결과 점수 (재평가라면 10% 감점)
+    private Double finalScore; // 감점 후 백분율까지된 점수
     private Integer grade; // 시험결과 수준
 
     // default : true
@@ -88,15 +90,18 @@ public class Exam {
         this.commentUpdatedAt = LocalDateTime.now(); // 총평 남겼다는 인증 시간
     }
 
-    public void updatePointAndGrade(Double score) {
+    public void updatePointAndGrade(Double score, Double sumQuestionPoints) {
         this.score = score;
-        if (score >= 90) {
+
+        this.finalScore = MyUtil.scaleTo100(score, sumQuestionPoints);
+
+        if (finalScore >= 90) {
             grade = 5;
-        } else if (score >= 80) {
+        } else if (finalScore >= 80) {
             grade = 4;
-        } else if (score >= 70) {
+        } else if (finalScore >= 70) {
             grade = 3;
-        } else if (score >= 60) {
+        } else if (finalScore >= 60) {
             grade = 2;
         } else {
             grade = 1;
@@ -109,6 +114,7 @@ public class Exam {
             passState = "미통과";
             reExamReason = "60점미만";
         }
+        standby = true;
     }
 
     public void setNotUse() {
@@ -129,11 +135,12 @@ public class Exam {
                 .isUse(true)
                 .grade(1)
                 .standby(true)
+                .finalScore(0.0)
                 .build();
     }
 
     @Builder
-    public Exam(Long id, Student student, String teacherName, Subject subject, Paper paper, String examState, String reExamReason, String passState, Double score, Integer grade, Boolean isUse, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, Boolean standby, LocalDateTime createdAt) {
+    public Exam(Long id, Student student, String teacherName, Subject subject, Paper paper, String examState, String reExamReason, String passState, Double score, Integer grade, Boolean isUse, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, Boolean standby, LocalDateTime createdAt, Double finalScore) {
         this.id = id;
         this.student = student;
         this.teacherName = teacherName;
@@ -152,5 +159,6 @@ public class Exam {
         this.submitLink = submitLink;
         this.standby = standby;
         this.createdAt = createdAt;
+        this.finalScore = finalScore;
     }
 }

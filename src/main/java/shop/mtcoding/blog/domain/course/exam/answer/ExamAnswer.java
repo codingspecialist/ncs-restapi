@@ -34,6 +34,7 @@ public class ExamAnswer {
     private Boolean isRight; // 0점이 아니면 전부다 true임!! 루브릭은 모든 답변에 점수가 부여됨
 
     private String codeReviewLink; // 선택적 (링크 들어가서 파일에 주석달고, 그거 캡쳐후 새로운 브랜치 임의생성후 PR요청)
+    private String codeReviewPRLink;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -59,13 +60,14 @@ public class ExamAnswer {
     }
 
 
-    public void update(Integer selectedOptionNo, Boolean isRight) {
+    public void update(Integer selectedOptionNo, Boolean isRight, String codeReviewPRLink) {
         this.selectedOptionNo = selectedOptionNo;
         this.isRight = isRight;
+        this.codeReviewPRLink = codeReviewPRLink;
     }
 
     @Builder
-    public ExamAnswer(Long id, Exam exam, Question question, Integer questionNo, Integer selectedOptionNo, Integer earnedPoint, Boolean isRight, String codeReviewLink, LocalDateTime createdAt) {
+    public ExamAnswer(Long id, Exam exam, Question question, Integer questionNo, Integer selectedOptionNo, Integer earnedPoint, Boolean isRight, String codeReviewLink, LocalDateTime createdAt, String codeReviewPRLink) {
         this.id = id;
         this.exam = exam;
         this.question = question;
@@ -75,5 +77,6 @@ public class ExamAnswer {
         this.isRight = isRight;
         this.codeReviewLink = codeReviewLink;
         this.createdAt = createdAt;
+        this.codeReviewPRLink = codeReviewPRLink;
     }
 }

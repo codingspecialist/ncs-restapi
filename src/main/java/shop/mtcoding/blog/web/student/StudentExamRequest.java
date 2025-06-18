@@ -53,6 +53,7 @@ public class StudentExamRequest {
                     .examState(paper.getPaperType().toKorean())
                     .reExamReason(reExamReason)
                     .standby(false)
+                    .finalScore(0.0)
                     .build();
         }
     }
@@ -110,6 +111,7 @@ public class StudentExamRequest {
                     .examState(paper.getPaperType().toKorean())
                     .reExamReason(reExamReason)
                     .standby(true)
+                    .finalScore(0.0)
                     .build();
         }
     }

@@ -136,6 +136,7 @@ public class ExamResponse {
         private String reExamReason;
         private String examPassState;
         private Double score;
+        private Double finalScore;
         private String teacherComment;
         private Integer grade;
         private String teacherSign;
@@ -162,6 +163,7 @@ public class ExamResponse {
             this.reExamReason = exam.getReExamReason() == null ? "" : exam.getReExamReason();
             this.examPassState = exam.getPassState();
             this.score = exam.getScore();
+            this.finalScore = exam.getFinalScore();
             this.teacherComment = exam.getTeacherComment();
             this.grade = exam.getGrade();
             this.teacherSign = teacher.getSign();
@@ -224,6 +226,7 @@ public class ExamResponse {
 
     @Data
     public static class ResultRubricDetailDTO {
+        private Boolean standby;
         private Long examId;
         private Long paperId;
         private String studentName;
@@ -240,6 +243,7 @@ public class ExamResponse {
         private String reExamReason;
         private String examPassState;
         private Double score;
+        private Double finalScore;
         private String teacherComment;
         private Integer grade;
         private String teacherSign;
@@ -252,6 +256,7 @@ public class ExamResponse {
         private Long originExamId;
 
         public ResultRubricDetailDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher, Long prevExamId, Long nextExamId, Integer currentIndex, Long originExamId) {
+            this.standby = exam.getStandby();
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
             this.studentName = exam.getStudent().getName();
@@ -267,6 +272,7 @@ public class ExamResponse {
             this.reExamReason = exam.getReExamReason() == null ? "" : exam.getReExamReason();
             this.examPassState = exam.getPassState();
             this.score = exam.getScore();
+            this.finalScore = exam.getFinalScore();
             this.teacherComment = exam.getTeacherComment();
             this.grade = exam.getGrade();
             this.teacherSign = teacher.getSign();
@@ -290,6 +296,7 @@ public class ExamResponse {
             private Integer selectedOptionNo; // 학생 선택 번호
             private Integer studentPoint;
             private String codeReviewLink;
+            private String codeReviewPRLink;
             private List<String> scenarios;
 
             private List<OptionDTO> options;
@@ -308,6 +315,7 @@ public class ExamResponse {
                 this.selectedOptionNo = answer.getSelectedOptionNo(); // 기본적으로 1번에 체크되게 하기
                 this.studentPoint = answer.getEarnedPoint();
                 this.codeReviewLink = answer.getCodeReviewLink();
+                this.codeReviewPRLink = answer.getCodeReviewPRLink();
                 this.scenarios = MyUtil.parseMultilineWithoutHyphen(answer.getQuestion().getScenario());
                 this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new OptionDTO(option, selectedOptionNo)).toList();
             }

@@ -175,7 +175,7 @@ public class ExamService {
         }
 
         // 6. 점수 입력 수준 입력
-        examPS.updatePointAndGrade(score);
+        examPS.updatePointAndGrade(score, examPS.getPaper().sumQuestionPoints());
 
         // 7. 코멘트 수정 (총평 남기기, 총평 남긴 시간 남기기)
         examPS.updateTeacherComment(reqDTO.getTeacherComment());
@@ -285,7 +285,7 @@ public class ExamService {
         }
 
         // 6. 점수 입력 수준 입력
-        examPS.updatePointAndGrade(score);
+        examPS.updatePointAndGrade(score, paper.sumQuestionPoints());
 
 
         // 7. 총평 자동화

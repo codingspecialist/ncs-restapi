@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.domain.course.exam.Exam;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
+import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -54,6 +55,17 @@ public class Paper {
 
     @OneToMany(mappedBy = "paper", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Exam> exams = new ArrayList<>();
+
+    public Double sumQuestionPoints() {
+        return questions.stream()
+                .mapToInt(q -> q.getQuestionOptions().stream()
+
+                        .mapToInt(QuestionOption::getPoint)
+                        .max()
+                        .orElse(0)) // 옵션이 없을 경우 0점 처리
+                .sum() * 1.0; // Double로 반환
+    }
+
 
     public void addExam(Exam exam) {
         this.exams.add(exam);

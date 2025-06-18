@@ -44,7 +44,6 @@ public class Paper {
     private String pblScenarioGuideLink;
     private String pblSubmitFormat; // 제출항목 (notion)
     private String pblSubmitTemplateLink; // 제출항목 복제 템플릿 (선택)
-    private String pblFeatures; // 요구기능 엔터로 구분해서 받기 (요약 가이드 같은것 guideSummary)
     private String pblChallenge; // 도전과제
 
     @CreationTimestamp
@@ -69,7 +68,7 @@ public class Paper {
     }
 
     @Builder
-    public Paper(Long id, EvaluationWay evaluationWay, LocalDate evaluationDate, Subject subject, PaperType paperType, String evaluationRoom, String evaluationDevice, String pblTitle, String pblScenario, String pblScenarioGuideLink, String pblSubmitFormat, String pblSubmitTemplateLink, String pblFeatures, String pblChallenge, LocalDateTime createdAt) {
+    public Paper(Long id, EvaluationWay evaluationWay, LocalDate evaluationDate, Subject subject, PaperType paperType, String evaluationRoom, String evaluationDevice, String pblTitle, String pblScenario, String pblScenarioGuideLink, String pblSubmitFormat, String pblSubmitTemplateLink, String pblChallenge, LocalDateTime createdAt) {
         this.id = id;
         this.evaluationWay = evaluationWay;
         this.evaluationDate = evaluationDate;
@@ -82,7 +81,6 @@ public class Paper {
         this.pblScenarioGuideLink = pblScenarioGuideLink;
         this.pblSubmitFormat = pblSubmitFormat;
         this.pblSubmitTemplateLink = pblSubmitTemplateLink;
-        this.pblFeatures = pblFeatures;
         this.pblChallenge = pblChallenge;
         this.createdAt = createdAt;
     }

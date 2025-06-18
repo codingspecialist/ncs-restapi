@@ -76,7 +76,6 @@ public class PaperRequest {
         private String pblTitle;
         private String pblScenario;
         private String pblScenarioGuideLink;
-        private String pblFeatures;
         private String pblChallenge;
         private String pblSubmitFormat;
         private String pblSubmitTemplateLink;
@@ -92,7 +91,6 @@ public class PaperRequest {
                     .pblTitle(pblTitle != null && !pblTitle.isBlank() ? pblTitle : null)
                     .pblScenario(pblScenario != null && !pblScenario.isBlank() ? pblScenario : null)
                     .pblScenarioGuideLink(pblScenarioGuideLink != null && !pblScenarioGuideLink.isBlank() ? pblScenarioGuideLink : null)
-                    .pblFeatures(pblFeatures != null && !pblFeatures.isBlank() ? pblFeatures : null)
                     .pblChallenge(pblChallenge != null && !pblChallenge.isBlank() ? pblChallenge : null)
                     .pblSubmitFormat(pblSubmitFormat != null && !pblSubmitFormat.isBlank() ? pblSubmitFormat : null)
                     .pblSubmitTemplateLink(pblSubmitTemplateLink != null && !pblSubmitTemplateLink.isBlank() ? pblSubmitTemplateLink : null)

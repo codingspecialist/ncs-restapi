@@ -182,8 +182,16 @@ public class PaperResponse {
         private String evaluationDevice; // 평가장소 (임시)
         private String evaluationRoom; // 평가장소 (임시)
         private String subjectTitle; // 교과목 (subject)
-        private List<String> guideSummaries; // 가이드 요약본
-        private String guideLink;
+
+        // -------------------- 객관식이 아닐때 받아야 할 목록
+        private String pblTitle;
+        private String pblScenario;
+        private String pblScenarioGuideLink;
+        private List<String> pblSubmitFormats; // 제출항목 (notion)
+        private String pblSubmitTemplateLink; // 제출항목 복제 템플릿 (선택)
+        private List<String> pblChallenges; // 도전과제
+
+
         private List<QuestionDTO> questions;
 
         public RubricDetailDTO(Paper paper, List<Question> questions) {
@@ -192,8 +200,12 @@ public class PaperResponse {
             this.evaluationDevice = paper.getEvaluationDevice();
             this.evaluationRoom = paper.getEvaluationRoom();
             this.subjectTitle = paper.getSubject().getTitle();
-            //this.guideSummaries = MyUtil.parseMultilineWithoutHyphen(paper.getGuideSummary());
-            //this.guideLink = paper.getGuideLink();
+            this.pblTitle = paper.getPblTitle();
+            this.pblScenario = paper.getPblScenario();
+            this.pblScenarioGuideLink = paper.getPblScenarioGuideLink();
+            this.pblSubmitFormats = MyUtil.parseMultilineWithoutHyphen(paper.getPblSubmitFormat());
+            this.pblSubmitTemplateLink = paper.getPblSubmitTemplateLink();
+            this.pblChallenges = MyUtil.parseMultilineWithoutHyphen(paper.getPblChallenge());
             this.questions = questions.stream().map(QuestionDTO::new).toList();
         }
 
@@ -202,7 +214,6 @@ public class PaperResponse {
             private Long questionId;
             private Integer no;
             private String title;
-            private String scenarioLink;
             private List<String> scenarios; // 가이드 요약본
             private List<OptionDTO> options;
 
@@ -210,7 +221,6 @@ public class PaperResponse {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-                //this.scenarioLink = question.getScenarioLink();
                 this.scenarios = MyUtil.parseMultiline(question.getScenario());
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
             }
@@ -219,14 +229,12 @@ public class PaperResponse {
             class OptionDTO {
                 private Long optionId;
                 private Integer no;
-                private String content;
                 private String rubricItem;
                 private Integer point;
 
                 public OptionDTO(QuestionOption option) {
                     this.optionId = option.getId();
                     this.no = option.getNo();
-                    this.content = option.getContent();
                     this.rubricItem = option.getRubricItem();
                     this.point = option.getPoint();
                 }

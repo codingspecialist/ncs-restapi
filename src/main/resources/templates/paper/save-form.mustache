@@ -76,7 +76,6 @@
                 <label for="evaluationWay" class="form-label">평가 방법</label>
                 <select class="form-select" name="evaluationWay" id="evaluationWay">
                     <option value="MCQ">객관식</option>
-                    <option value="DESCRIPTIVE">서술형</option>
                     <option value="PRACTICAL">작업형</option>
                     <option value="PROJECT">프로젝트형(PBL)</option>
                 </select>
@@ -99,15 +98,6 @@
                     <label for="pblScenarioGuideLink" class="form-label">시나리오 상세 예시 링크 (필수)</label>
                     <input type="url" class="form-control" name="pblScenarioGuideLink" id="pblScenarioGuideLink"
                            placeholder="https://notion.so/scenario-guide">
-                </div>
-
-                <div class="form-section">
-                    <label for="pblFeatures" class="form-label">요구기능 (필수)</label>
-                    <textarea class="form-control" name="pblFeatures" id="pblFeatures" rows="6" placeholder="- 회원가입 / 로그인 (JWT 인증)
-- 게시글 CRUD (제목, 내용, 작성자, 작성일)
-- 댓글 등록/삭제
-- 마이페이지: 내가 쓴 글 목록 확인"></textarea>
-                    <small class="form-text text-muted">※ 줄바꿈(Enter)으로 기능 항목을 구분하세요.</small>
                 </div>
 
                 <div class="form-section">
@@ -162,14 +152,13 @@
             pblTitle: document.getElementById('pblTitle')?.value.trim(),
             pblScenario: document.getElementById('pblScenario')?.value.trim(),
             pblScenarioGuideLink: document.getElementById('pblScenarioGuideLink')?.value.trim(),
-            pblFeatures: document.getElementById('pblFeatures')?.value.trim(),
             pblChallenge: document.getElementById('pblChallenge')?.value.trim(),
             pblSubmitFormat: document.getElementById('pblSubmitFormat')?.value.trim(),
             pblSubmitTemplateLink: document.getElementById('pblSubmitTemplateLink')?.value.trim(),
         };
 
         if (formData.evaluationWay !== 'MCQ') {
-            if (!formData.pblTitle || !formData.pblScenario || !formData.pblFeatures || !formData.pblSubmitFormat) {
+            if (!formData.pblTitle || !formData.pblScenario || !formData.pblSubmitFormat) {
                 alert('PBL 유형은 과제 제목, 시나리오, 요구기능, 제출항목이 모두 필요합니다.');
                 return;
             }

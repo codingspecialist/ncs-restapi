@@ -111,17 +111,13 @@ values (1, now(), 'RETEST', '2024-06-08', 'MCQ', '인터넷 가능한 PC', '본�
 insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
                      evaluation_room,
                      pbl_title, pbl_scenario, pbl_scenario_guide_link, pbl_submit_format,
-                     pbl_submit_template_link, pbl_features, pbl_challenge)
+                     pbl_submit_template_link, pbl_challenge)
 values (3, now(), 'ORIGINAL', '2024-06-08', 'PROJECT', '인터넷 가능한 PC', '본관 3층 302호',
         '스프링 부트 기반으로 나만의 블로그 시스템을 설계하고 개발하세요.',
         '당신은 스타트업의 백엔드 개발자로 채용되었습니다. 기획자는 블로그 서비스 기능을 요구했고, 디자이너는 아직 없기 때문에 API 문서 기반으로 프론트엔드와 협업해야 합니다. 당신은 다음 요구사항을 구현하고, 문서화 및 팀과 공유해야 합니다.',
         'https://getinthere.notion.site/PBL-2128a08b6c0d80898b12f096198cd488?source=copy_link',
         '노션링크',
         'https://getinthere.notion.site/PBL-2128a08b6c0d80898b12f096198cd488?source=copy_link',
-        '- 회원가입 / 로그인 (JWT 인증)
-- 게시글 CRUD (제목, 내용, 작성자, 작성일)
-- 댓글 등록/삭제
-- 마이페이지: 내가 쓴 글 목록 확인',
         '- 도커로 환경구성
 - 통합테스트');
 

@@ -190,26 +190,45 @@
             <strong>교과목:</strong> {{model.subjectTitle}} <br>
         </div>
 
-        <div class="detail-info-section mb-3">
-            {{#model.guideLink}}
-                <p class="mb-2">
-                    <strong>🔗 상세 예시 링크:</strong>
-                    <a href="{{model.guideLink}}" target="_blank"
+        <!-- 과제 정보 통합 박스 -->
+        <div class="detail-info-section mb-4">
+            <h5 class="mb-3 fw-bold text-dark">📘 PBL 과제 정보</h5>
+
+            <p class="mb-2"><strong>과제 제목:</strong> {{model.pblTitle}}</p>
+
+            <p class="mb-3"><strong>시나리오:</strong><br>{{model.pblScenario}}</p>
+
+            {{#model.pblScenarioGuideLink}}
+                <p class="mb-3">
+                    <strong>🔗 시나리오 상세 가이드:</strong><br>
+                    <a href="{{model.pblScenarioGuideLink}}" target="_blank"
                        class="text-primary text-decoration-underline">
-                        {{model.guideLink}}
+                        {{model.pblScenarioGuideLink}}
                     </a>
                 </p>
-            {{/model.guideLink}}
+            {{/model.pblScenarioGuideLink}}
 
-            <div class="fw-bold text-dark mb-3">
-                이 과제의 정답은 다양할 수 있으며, 아래와 같은 수준의 결과물이 이상적입니다:
-            </div>
-
-            <ul class="ps-3"> {{#model.guideSummaries}}
-                <li>{{.}}</li>
-            {{/model.guideSummaries}}
+            <p class="fw-bold mt-4 mb-2">💡 도전과제</p>
+            <ul class="ps-3 mb-4">
+                {{#model.pblChallenges}}
+                    <li>{{.}}</li>{{/model.pblChallenges}}
             </ul>
+
+            <p class="fw-bold mb-2">📤 제출 항목</p>
+            <ul class="ps-3 mb-3">
+                {{#model.pblSubmitFormats}}
+                    <li>{{.}}</li>{{/model.pblSubmitFormats}}
+            </ul>
+
+            {{#model.pblSubmitTemplateLink}}
+                <div class="bg-white p-3 border rounded" style="font-size: 0.95rem;">
+                    <strong>📎 템플릿 예시 링크:</strong><br>
+                    <a href="{{model.pblSubmitTemplateLink}}" target="_blank"
+                       class="text-primary text-decoration-underline">{{model.pblSubmitTemplateLink}}</a>
+                </div>
+            {{/model.pblSubmitTemplateLink}}
         </div>
+
 
         {{#model.questions}}
             <div class="card mb-4 question-card">
@@ -218,16 +237,6 @@
 
                 <div class="card-body p-3">
                     <div class="scenario-description-block mb-4">
-                        {{#scenarioLink}}
-                            <p class="mb-2">
-                                <strong>📝 시나리오 링크:</strong>
-                                <a href="{{scenarioLink}}" target="_blank"
-                                   class="text-primary text-decoration-underline">
-                                    {{scenarioLink}}
-                                </a>
-                            </p>
-                        {{/scenarioLink}}
-
                         <div class="text-dark">
                             {{#scenarios}}
                                 {{.}}<br>

@@ -134,7 +134,19 @@
     const guideGroup = document.getElementById("guideGroup");
 
     function toggleGuideFields() {
-        guideGroup.style.display = evaluationSelect.value === "MCQ" ? "none" : "block";
+        const isMCQ = evaluationSelect.value === "MCQ";
+        guideGroup.style.display = isMCQ ? "none" : "block";
+
+        const paperTypeSelect = document.getElementById("paperType");
+
+        if (!isMCQ) {
+            // 비MCQ일 경우 본평가로 고정하고 수정 불가
+            paperTypeSelect.value = "ORIGINAL";
+            paperTypeSelect.setAttribute("disabled", "disabled");
+        } else {
+            // 객관식이면 선택 가능하게 복원
+            paperTypeSelect.removeAttribute("disabled");
+        }
     }
 
     evaluationSelect.addEventListener("change", toggleGuideFields);

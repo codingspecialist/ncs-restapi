@@ -15,6 +15,7 @@ import shop.mtcoding.blog.domain.course.CourseService;
 import shop.mtcoding.blog.domain.course.exam.ExamService;
 import shop.mtcoding.blog.domain.course.subject.SubjectModel;
 import shop.mtcoding.blog.domain.course.subject.SubjectService;
+import shop.mtcoding.blog.domain.course.subject.paper.EvaluationWay;
 import shop.mtcoding.blog.domain.user.User;
 
 import java.util.List;
@@ -58,9 +59,16 @@ public class ExamController {
     @GetMapping("/api/exam-menu/exam/{examId}")
     public String teacherResultDetail(@PathVariable(value = "examId") Long examId, Model model) {
         var modelData = examService.강사_시험결과상세(examId);
-        var respDTO = new ExamResponse.ResultDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher(), modelData.prevExamId(), modelData.nextExamId(), modelData.currentIndex(), modelData.originExamId());
-        model.addAttribute("model", respDTO);
-        return "exam/detail";
+
+        if (modelData.exam().getPaper().getEvaluationWay() == EvaluationWay.MCQ) {
+            var respDTO = new ExamResponse.ResultMcqDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher(), modelData.prevExamId(), modelData.nextExamId(), modelData.currentIndex(), modelData.originExamId());
+            model.addAttribute("model", respDTO);
+            return "exam/mcq-detail";
+        } else {
+            var respDTO = new ExamResponse.ResultRubricDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher(), modelData.prevExamId(), modelData.nextExamId(), modelData.currentIndex(), modelData.originExamId());
+            model.addAttribute("model", respDTO);
+            return "exam/rubric-detail";
+        }
     }
 
     // 시험을 치지 않아도 Exam은 만들어져야 한다.
@@ -70,7 +78,7 @@ public class ExamController {
         examService.강사_결석처리(reqDTO, sessionUser);
         return ResponseEntity.ok(new ApiUtil<>(null));
     }
- 
+
     @PutMapping("/api/exam-menu/exam/{examId}")
     public ResponseEntity<?> update(@PathVariable("examId") Long examId, @RequestBody ExamRequest.UpdateDTO reqDTO) {
         examService.강사_총평남기기(examId, reqDTO);
@@ -81,7 +89,7 @@ public class ExamController {
     public String teacherResultDetailNotPass(@PathVariable(value = "notPassExamId") Long notPassExamId, Model model) {
 
         var modelData = examService.강사_시험결과상세(notPassExamId);
-        var respDTO = new ExamResponse.ResultDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher(), null, null, null, null);
+        var respDTO = new ExamResponse.ResultMcqDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher(), null, null, null, null);
         model.addAttribute("model", respDTO);
         return "exam/detail-notpass";
     }

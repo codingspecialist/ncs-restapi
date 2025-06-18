@@ -312,8 +312,9 @@ values (true, 1, true, now(), '재평가', 5, 3, '통과', '', 90, 1, '재평가
 insert into exam_tb
 (standby, subject_id, is_use, created_at, exam_state, grade, paper_id, pass_state, re_exam_reason, score, student_id,
  teacher_comment,
- teacher_name, student_sign_updated_at, student_sign)
-values (false, 3, true, now(), '본평가', 0, 4, '채점중', '', 0, 2, '', '최주호', now(), null);
+ teacher_name, student_sign_updated_at, student_sign, submit_link)
+values (false, 3, true, now(), '본평가', 0, 4, '채점중', '', 0, 2, '', '최주호', now(), null,
+        'https://getinthere.notion.site/PBL-2128a08b6c0d80898b12f096198cd488?source=copy_link');
 
 
 insert into exam_answer_tb

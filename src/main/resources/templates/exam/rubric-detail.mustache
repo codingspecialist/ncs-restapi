@@ -1,0 +1,314 @@
+{{> layout/header}}
+
+<style>
+    /* 공통 카드 스타일 */
+    .paper-list-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .text-end {
+        font-size: 0.85rem;
+        line-height: 1.2;
+        color: #6c757d;
+    }
+
+    .card .card-title {
+        font-size: 1.15rem;
+        font-weight: bold;
+        color: #212529;
+        margin-bottom: 1rem;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.5em 0.8em;
+        border-radius: 0.35rem;
+    }
+
+    .form-check {
+        font-size: 0.95rem;
+    }
+
+    .form-check-input {
+        margin-top: 0.3em;
+    }
+
+    .form-check label {
+        margin-bottom: 0;
+    }
+
+    .img-fluid {
+        border-radius: 8px;
+        border: 1px solid #f0f0f0;
+        padding: 5px;
+        background-color: #fff;
+        max-height: 200px;
+    }
+
+    .exam-body {
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        font-weight: bold;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .card-footer {
+        background-color: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .sign-table {
+        border-collapse: collapse;
+    }
+
+    .sign-header {
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 0.5rem;
+        text-align: center;
+        background-color: #f1f3f5;
+    }
+
+    .sign-box {
+        width: 100px;
+        height: 60px;
+        text-align: center;
+        border: 1px solid #ced4da;
+    }
+
+    .sign-fit {
+        width: auto;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .pagination .page-link {
+        border-radius: 8px;
+        margin: 0 4px;
+        min-width: 40px;
+        text-align: center;
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="paper-list-card">
+
+        <ul class="pagination d-flex justify-content-end">
+            {{#model.prevExamId}}
+                <li class="page-item"><a class="page-link" href="/api/exam-menu/exam/{{model.prevExamId}}">이전학생</a></li>
+            {{/model.prevExamId}}
+            {{#model.nextExamId}}
+                <li class="page-item"><a class="page-link" href="/api/exam-menu/exam/{{model.nextExamId}}">다음학생</a></li>
+                <input type="hidden" value="{{model.nextExamId}}" id="nextExamId">
+            {{/model.nextExamId}}
+        </ul>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        시험일 : {{model.evaluationDate}} <br>
+                        평가장소 : {{model.evaluationRoom}} <br>
+                        평가장비 : {{model.evaluationDevice}} <br>
+                        교과목 : {{model.subjectTitle}} <br>
+                        훈련교사 : {{model.teacherName}} <br>
+                        훈련생 : {{model.studentName}} <br>
+                        문항수 : {{model.questionCount}} <br>
+                        총점 : {{model.score}} <br>
+                        수준 : {{model.grade}} <br>
+                        통과여부 : {{model.examPassState}} <br>
+                        평가유형 : {{model.examState}} <br>
+                    </div>
+                    <div>
+                        <div class="text-end mb-3">연번 : {{model.studentNo}}</div>
+                        <div class="d-flex">
+                            <table class="sign-table">
+                                <tr>
+                                    <td class="sign-header">훈련교사</td>
+                                    <td class="sign-header">훈련생</td>
+                                </tr>
+                                <tr>
+                                    <td class="sign-box">
+                                        <img class="sign-fit" src="{{model.teacherSign}}">
+                                    </td>
+                                    <td class="sign-box">
+                                        {{#model.studentSign}}
+                                            <img class="sign-fit" src="{{model.studentSign}}">
+                                        {{/model.studentSign}}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 학생 제출 자료 -->
+        <div class="card mb-4 border border-secondary-subtle shadow-sm">
+            <div class="card-header bg-light text-dark fw-bold">
+                📎 제출 자료
+            </div>
+            <div class="card-body">
+                {{#model.submitLink}}
+                    <a href="{{model.submitLink}}" target="_blank"
+                       class="btn btn-outline-primary d-inline-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                             class="bi bi-link-45deg me-2" viewBox="0 0 16 16">
+                            <path d="M4.715 6.542a3.486 3.486 0 0 1 .962-2.31l2.543-2.543a3.5 3.5 0 0 1 4.95 4.95L10.627 9.9a3.486 3.486 0 0 1-2.31.962 3.482 3.482 0 0 1-2.313-.964l-.036-.036a.5.5 0 1 1 .708-.708l.036.036a2.486 2.486 0 0 0 3.514 0l2.543-2.543a2.5 2.5 0 0 0-3.536-3.536L6.092 5.188a2.5 2.5 0 0 0 0 3.536.5.5 0 1 1-.708.708 3.482 3.482 0 0 1-.964-2.313z"/>
+                        </svg>
+                        근거 자료 보기
+                    </a>
+                {{/model.submitLink}}
+                {{^model.submitLink}}
+                    <div class="text-muted">제출된 자료가 없습니다.</div>
+                {{/model.submitLink}}
+            </div>
+        </div>
+
+
+        {{#model.answers}}
+            <div class="card mb-1 question-card exam-body">
+                <div class="card-header">
+                    {{no}}. {{title}} </div>
+
+                <div class="card-body p-3">
+                    <div class="scenario-description-block mb-4">
+                        <div class="text-dark">
+                            {{#scenarios}}
+                                {{.}}<br>
+                            {{/scenarios}}
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                            <tr>
+                                <th style="width: 80px;" class="text-center">점수</th>
+                                <th>평가기준 (루브릭 설명)</th>
+                                <th>채점</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#options}}
+                                <tr>
+                                    <td class="text-center fw-bold align-middle">
+                                        {{point}}점
+                                    </td>
+                                    <td>{{rubricItem}}</td>
+                                    <td><input class="form-check-input me-2 optionNo" type="radio"
+                                               name="question-{{questionId}}"
+                                               value="{{no}}"
+                                               {{#isSelect}}checked{{/isSelect}}></td>
+                                </tr>
+                            {{/options}}
+                            </tbody>
+                        </table>
+
+                        {{#codeReviewLink}}
+                            <div class="mb-3 mt-4">
+
+
+                                <div class="mb-2">
+                                    <a href="{{codeReviewLink}}" target="_blank"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        코드 리뷰 보기
+                                    </a>
+                                </div>
+
+
+                                <input type="url"
+                                       class="form-control codeReviewInput"
+                                       name="codeReviewLink"
+                                       id="codeReviewLink-{{questionId}}"
+                                       placeholder="리뷰 완료 후 GitHub PR 주소를 직접 붙여넣으세요.">
+                            </div>
+                        {{/codeReviewLink}}
+
+
+                    </div>
+                </div>
+            </div>
+        {{/model.answers}}
+
+        <div class="card">
+            <div class="card-header">총평</div>
+            <div class="card-body">
+                <textarea id="teacherComment" class="form-control" rows="5">{{model.teacherComment}}</textarea>
+            </div>
+            <div class="card-footer d-flex justify-content-end">
+                <button type="button" class="btn btn-primary" onclick="sendAnswer({{model.examId}})">총평저장</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // 모든 선택된 라디오박스의 루브릭 설명을 textarea에 반영
+    $(document).on("change", ".optionNo", function () {
+        let comments = [];
+
+        $(".exam-body").each(function () {
+            const selected = $(this).find(".optionNo:checked");
+            if (selected.length > 0) {
+                const rubricText = selected.closest("tr").find("td").eq(1).text().trim();
+                comments.push(rubricText);
+            }
+        });
+
+        // 줄바꿈으로 연결된 전체 총평 내용
+        $("#teacherComment").val(comments.join("\n"));
+    });
+
+    function sendAnswer(examId) {
+        let nextExamId = $("#nextExamId").val();
+
+        let requestBody = {
+            teacherComment: $("#teacherComment").val(),
+            answers: []
+        };
+
+        $(".exam-body").each(function () {
+            const answerId = $(this).find(".answerId").val();
+            const selectedOptionNo = $(this).find(".optionNo:checked").val();
+            const codeReviewLink = $(this).find(".codeReviewInput").val().trim();
+            if (!selectedOptionNo) return;
+            requestBody.answers.push({
+                answerId: Number(answerId),
+                selectedOptionNo: Number(selectedOptionNo),
+                codeReviewLink: codeReviewLink
+            });
+        });
+
+        $.ajax({
+            url: `/api/exam-menu/exam/${examId}`,
+            type: "put",
+            data: JSON.stringify(requestBody),
+            contentType: "application/json; charset=utf-8"
+        }).done((res) => {
+            if (nextExamId) {
+                alert("총평 저장 완료");
+                location.reload();
+            } else {
+                alert("총평 저장 완료 - 마지막페이지입니다");
+                location.reload();
+            }
+        }).fail((res) => {
+            alert(res.responseJSON?.msg || "저장 중 오류가 발생했습니다.");
+        });
+    }
+</script>
+
+{{> layout/footer}}

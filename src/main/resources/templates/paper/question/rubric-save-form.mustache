@@ -30,7 +30,7 @@
             <!-- 문제 시나리오 -->
             <div class="mb-4">
                 <div class="d-flex justify-content-between align-items-center">
-                    <label for="scenario" class="form-label fw-bold mb-0">문제 시나리오</label>
+                    <label for="scenario" class="form-label fw-bold mb-0">문제 상세 시나리오</label>
                     <button type="button" class="btn btn-outline-secondary btn-sm" onclick="insertScenarioExample()">
                         예시 입력
                     </button>
@@ -41,17 +41,6 @@
 - 기술조건: Spring Boot, JPA, JWT 사용"></textarea>
                 <small class="form-text text-muted">
                     ※ 각 항목은 <strong>줄바꿈(Enter)</strong>으로 구분해주세요. 한 줄당 하나의 항목으로 처리됩니다.
-                </small>
-            </div>
-
-            <!-- 시나리오 링크 -->
-            <div class="mb-4">
-                <label for="scenarioLink" class="form-label fw-bold">문제 시나리오 참고 링크 <small
-                        class="text-muted">(선택사항)</small></label>
-                <input type="url" class="form-control" id="scenarioLink"
-                       placeholder="https://notion.so/your-scenario-doc">
-                <small class="form-text text-muted">
-                    ※ 시나리오를 상세하게 설명한 문서가 있다면 링크를 첨부해주세요.
                 </small>
             </div>
 
@@ -94,7 +83,6 @@
             questionNo: document.getElementById("questionNo").value,
             questionTitle: document.getElementById("questionTitle").value,
             scenario: document.getElementById("scenario").value,
-            scenarioLink: document.getElementById("scenarioLink").value,
             options: []
         };
 

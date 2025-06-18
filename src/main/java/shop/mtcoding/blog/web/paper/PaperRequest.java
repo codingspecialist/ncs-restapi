@@ -22,10 +22,8 @@ public class PaperRequest {
         private Integer questionNo;
         private String questionTitle;
 
-        // 객관식일 경우 사용
+        // 둘 중 택일로 받음
         private String stimulusFileBase64;
-
-        // 객관식이 아닐 경우 사용
         private String scenario;
 
         private List<OptionDTO> options;
@@ -70,14 +68,20 @@ public class PaperRequest {
         private LocalDate evaluationDate;
 
         private String evaluationDevice; // 평가 장비
-        private String evaluationRoom; // 평가 장소
+        private String evaluationRoom;   // 평가 장소
 
         private EvaluationWay evaluationWay; // 객관식. 서술형. 작업형. 프로젝트형
 
-        // 몇개 더받아야함
+        // PBL 관련 항목 (null 가능)
+        private String pblTitle;
+        private String pblScenario;
+        private String pblScenarioGuideLink;
+        private String pblFeatures;
+        private String pblChallenge;
+        private String pblSubmitFormat;
+        private String pblSubmitTemplateLink;
 
         public Paper toEntity(Subject subject) {
-
             return Paper.builder()
                     .subject(subject)
                     .paperType(paperType)
@@ -85,7 +89,13 @@ public class PaperRequest {
                     .evaluationWay(evaluationWay)
                     .evaluationRoom(evaluationRoom)
                     .evaluationDevice(evaluationDevice)
-                    // TODO 새로운 것 받아야함
+                    .pblTitle(pblTitle != null && !pblTitle.isBlank() ? pblTitle : null)
+                    .pblScenario(pblScenario != null && !pblScenario.isBlank() ? pblScenario : null)
+                    .pblScenarioGuideLink(pblScenarioGuideLink != null && !pblScenarioGuideLink.isBlank() ? pblScenarioGuideLink : null)
+                    .pblFeatures(pblFeatures != null && !pblFeatures.isBlank() ? pblFeatures : null)
+                    .pblChallenge(pblChallenge != null && !pblChallenge.isBlank() ? pblChallenge : null)
+                    .pblSubmitFormat(pblSubmitFormat != null && !pblSubmitFormat.isBlank() ? pblSubmitFormat : null)
+                    .pblSubmitTemplateLink(pblSubmitTemplateLink != null && !pblSubmitTemplateLink.isBlank() ? pblSubmitTemplateLink : null)
                     .build();
         }
     }

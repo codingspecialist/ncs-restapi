@@ -27,8 +27,8 @@ public class Question {
 
     private Integer no; // 시험지에 종속되는 시험 순서 1, 2, 3
     private String title; // 시험 문제 제목
-    private String stimulusImg; // 객관식 지문 이미지 (선택)
-    private String scenario; // 서술형 문제 시나리오 (선택)
+    private String stimulusImg; // (객관식 보기 지문)
+    private String scenario; // (루브릭 시나리오 지문)
     private String scenarioLink; // 시나리오 참고 링크 (선택)
 
     @ManyToOne(fetch = FetchType.LAZY)

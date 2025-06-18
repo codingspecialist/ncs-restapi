@@ -28,7 +28,7 @@ public class QuestionOption {
     private String rubricItem; // 0점일때는 없고, 점수가 있을때만 존재하는 부분
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Question question; // 발표력 or 문제제목 (Question쪽에 타입 필요할듯)
+    private Question question;
 
     // TODO: rubric_test
     private Integer point; // 정답이면 점수, 정답 아니면 0점 // 루브릭일때는 모든 옵션에 점수가 있음.

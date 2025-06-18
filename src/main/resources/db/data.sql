@@ -100,28 +100,30 @@ values ('2025-06-14 22:08:32.766494', 3, 3, '커뮤니케이션능력', '커뮤�
 
 -- 시험지 3
 insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
-                     evaluation_room, submission_format, guide_summary, guide_link)
-values (1, now(), 'ORIGINAL', '2024-06-07', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호', '온라인제출', null, null);
+                     evaluation_room)
+values (1, now(), 'ORIGINAL', '2024-06-07', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호');
 insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
-                     evaluation_room, submission_format, guide_summary, guide_link)
-values (2, now(), 'ORIGINAL', '2024-06-13', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호', '온라인제출', null, null);
+                     evaluation_room)
+values (2, now(), 'ORIGINAL', '2024-06-13', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호');
 insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
-                     evaluation_room, submission_format, guide_summary, guide_link)
-values (1, now(), 'RETEST', '2024-06-08', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호', '온라인제출', null, null);
+                     evaluation_room)
+values (1, now(), 'RETEST', '2024-06-08', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호');
 insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
-                     evaluation_room, submission_format, guide_summary, guide_link)
+                     evaluation_room,
+                     pbl_title, pbl_scenario, pbl_scenario_guide_link, pbl_submit_format,
+                     pbl_submit_template_link, pbl_features, pbl_challenge)
 values (3, now(), 'ORIGINAL', '2024-06-08', 'PROJECT', '인터넷 가능한 PC', '본관 3층 302호',
-        '- GitHub Repository 주소
-        - Swagger 또는 Postman API 명세서
-        - Notion 주소
-        - EC2 또는 Render에 배포된 서비스 주소',
-        '- 요구사항을 충실히 반영한 기능 구현
-        - RESTful한 API 설계
-        - Swagger 또는 Postman을 통한 API 명세화
-        - 코드 구성의 일관성 및 모듈화
-        - 예외처리 및 인증(JWT 등) 포함
-        - 실제 데이터를 통한 시연 가능성',
-        'https://getinthere.notion.site/PBL-2128a08b6c0d80898b12f096198cd488?source=copy_link');
+        '스프링 부트 기반으로 나만의 블로그 시스템을 설계하고 개발하세요.',
+        '당신은 스타트업의 백엔드 개발자로 채용되었습니다. 기획자는 블로그 서비스 기능을 요구했고, 디자이너는 아직 없기 때문에 API 문서 기반으로 프론트엔드와 협업해야 합니다. 당신은 다음 요구사항을 구현하고, 문서화 및 팀과 공유해야 합니다.',
+        'https://getinthere.notion.site/PBL-2128a08b6c0d80898b12f096198cd488?source=copy_link',
+        '노션링크',
+        'https://getinthere.notion.site/PBL-2128a08b6c0d80898b12f096198cd488?source=copy_link',
+        '- 회원가입 / 로그인 (JWT 인증)
+- 게시글 CRUD (제목, 내용, 작성자, 작성일)
+- 댓글 등록/삭제
+- 마이페이지: 내가 쓴 글 목록 확인',
+        '- 도커로 환경구성
+- 통합테스트');
 
 -- 1번 시험지의 문제 2개 (1,2)
 insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
@@ -148,19 +150,19 @@ insert into question_tb(no, title, paper_id, created_at, subject_element_id, sti
 values (2, '다음 중 소켓 설명으로 틀린것은?', 3, now(), 2, null);
 
 -- 4번 시험지의 문제 1개 (10)
-INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_img, title, scenario_link, scenario)
+INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_img, title, scenario)
 VALUES (1, now(), 4, 8, NULL, '백엔드 설계능력',
-        'https://getinthere.notion.site/PBL-2128a08b6c0d80898b12f096198cd488?source=copy_link', '온라인 강의 플랫폼의 강의 등록 기능을 설계하시오.
+        '온라인 강의 플랫폼의 강의 등록 기능을 설계하시오.
 - 요구사항: 강의명, 강사명, 가격, 소개글 등록
 - 기술조건: MVC 패턴 기반 설계, 도메인 모델 작성, RESTful API 구조 명세');
-INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_img, title, scenario_link, scenario)
-VALUES (2, now(), 4, 9, NULL, 'RestAPI 구현능력', null, '블로그 서비스의 게시글 CRUD API를 구현하시오.
+INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_img, title, scenario)
+VALUES (2, now(), 4, 9, NULL, 'RestAPI 구현능력', '블로그 서비스의 게시글 CRUD API를 구현하시오.
 - 요구사항: 게시글 등록/조회/수정/삭제
 - 기술조건: Spring Boot 기반 REST API, 예외 처리 및 응답 메시지 통일
 ');
-INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_img, title, scenario_link, scenario)
+INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_img, title, scenario)
 VALUES (3, now(), 4, 10, NULL, '커뮤니케이션능력',
-        'https://getinthere.notion.site/PBL-2128a08b6c0d80898b12f096198cd488?source=copy_link', '팀 프로젝트 회의록을 작성하고, 팀원들과 공유 및 피드백을 주고받는 시나리오를 설명하시오.
+        '팀 프로젝트 회의록을 작성하고, 팀원들과 공유 및 피드백을 주고받는 시나리오를 설명하시오.
 - 요구사항: 회의록 작성 → 피드백 공유 → 수정본 반영
 - 기술조건: 협업툴(Notion, Slack 등) 사용, 피드백 처리 과정 설명 포함
 ');

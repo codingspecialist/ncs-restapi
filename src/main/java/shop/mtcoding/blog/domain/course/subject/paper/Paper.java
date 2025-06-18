@@ -40,12 +40,12 @@ public class Paper {
 
     // -------------------- 객관식이 아닐때 받아야 할 목록
     private String pblTitle;
-    private String pblContent;
-    private String pblContentGuideLink;
+    private String pblScenario;
+    private String pblScenarioGuideLink;
     private String pblSubmitFormat; // 제출항목 (notion)
-    private String pblSubmitTemplate; // 제출항목 복제 템플릿 (선택)
+    private String pblSubmitTemplateLink; // 제출항목 복제 템플릿 (선택)
     private String pblFeatures; // 요구기능 엔터로 구분해서 받기 (요약 가이드 같은것 guideSummary)
-    private String pblICanDoIt; // 도전과제
+    private String pblChallenge; // 도전과제
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -69,7 +69,7 @@ public class Paper {
     }
 
     @Builder
-    public Paper(Long id, EvaluationWay evaluationWay, LocalDate evaluationDate, Subject subject, PaperType paperType, String evaluationRoom, String evaluationDevice, String pblTitle, String pblContent, String pblContentGuideLink, String pblSubmitFormat, String pblSubmitTemplate, String pblFeatures, String pblICanDoIt, LocalDateTime createdAt) {
+    public Paper(Long id, EvaluationWay evaluationWay, LocalDate evaluationDate, Subject subject, PaperType paperType, String evaluationRoom, String evaluationDevice, String pblTitle, String pblScenario, String pblScenarioGuideLink, String pblSubmitFormat, String pblSubmitTemplateLink, String pblFeatures, String pblChallenge, LocalDateTime createdAt) {
         this.id = id;
         this.evaluationWay = evaluationWay;
         this.evaluationDate = evaluationDate;
@@ -78,12 +78,12 @@ public class Paper {
         this.evaluationRoom = evaluationRoom;
         this.evaluationDevice = evaluationDevice;
         this.pblTitle = pblTitle;
-        this.pblContent = pblContent;
-        this.pblContentGuideLink = pblContentGuideLink;
+        this.pblScenario = pblScenario;
+        this.pblScenarioGuideLink = pblScenarioGuideLink;
         this.pblSubmitFormat = pblSubmitFormat;
-        this.pblSubmitTemplate = pblSubmitTemplate;
+        this.pblSubmitTemplateLink = pblSubmitTemplateLink;
         this.pblFeatures = pblFeatures;
-        this.pblICanDoIt = pblICanDoIt;
+        this.pblChallenge = pblChallenge;
         this.createdAt = createdAt;
     }
 }

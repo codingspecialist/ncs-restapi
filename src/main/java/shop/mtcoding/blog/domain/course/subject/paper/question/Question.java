@@ -28,8 +28,7 @@ public class Question {
     private Integer no; // 시험지에 종속되는 시험 순서 1, 2, 3
     private String title; // 시험 문제 제목
     private String stimulusImg; // (객관식 보기 지문)
-    private String scenario; // (루브릭 시나리오 지문)
-    private String scenarioLink; // 시나리오 참고 링크 (선택)
+    private String scenario; // (루브릭 시나리오 지문 = 전체 노션 상세 예시에 있지만 중복되어 들어간다.)
 
     @ManyToOne(fetch = FetchType.LAZY)
     private SubjectElement subjectElement;
@@ -48,14 +47,13 @@ public class Question {
     }
 
     @Builder
-    public Question(Long id, Integer no, String title, String stimulusImg, String scenario, String scenarioLink,
+    public Question(Long id, Integer no, String title, String stimulusImg, String scenario,
                     SubjectElement subjectElement, Paper paper, LocalDateTime createdAt) {
         this.id = id;
         this.no = no;
         this.title = title;
         this.stimulusImg = stimulusImg;
         this.scenario = scenario;
-        this.scenarioLink = scenarioLink;
         this.subjectElement = subjectElement;
         this.paper = paper;
         this.createdAt = createdAt;

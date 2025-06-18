@@ -27,8 +27,6 @@ public class PaperRequest {
 
         // 객관식이 아닐 경우 사용
         private String scenario;
-        // 객관식이 아닐 경우 사용
-        private String scenarioLink;
 
         private List<OptionDTO> options;
 
@@ -38,7 +36,6 @@ public class PaperRequest {
                     .title(questionTitle)
                     .stimulusImg(Optional.ofNullable(imagePath).filter(s -> !s.isBlank()).orElse(null))
                     .scenario(Optional.ofNullable(scenario).filter(s -> !s.isBlank()).orElse(null))
-                    .scenarioLink(Optional.ofNullable(scenarioLink).filter(s -> !s.isBlank()).orElse(null))
                     .paper(paper)
                     .subjectElement(element)
                     .build();
@@ -77,13 +74,9 @@ public class PaperRequest {
 
         private EvaluationWay evaluationWay; // 객관식. 서술형. 작업형. 프로젝트형
 
-        private String guideSummary; // 훈련생용 안내 (객관식 제외 시 필수)
-        private String guideLink;    // 강사용 외부 링크
-        private String submissionFormat;
+        // 몇개 더받아야함
 
         public Paper toEntity(Subject subject) {
-            // guideLink가 공백이거나 trim() 후 빈 문자열이면 null로 처리
-            String processedGuideLink = (this.guideLink != null && !this.guideLink.trim().isEmpty()) ? this.guideLink.trim() : null;
 
             return Paper.builder()
                     .subject(subject)
@@ -92,9 +85,7 @@ public class PaperRequest {
                     .evaluationWay(evaluationWay)
                     .evaluationRoom(evaluationRoom)
                     .evaluationDevice(evaluationDevice)
-                    .guideSummary(guideSummary)
-                    .guideLink(processedGuideLink) // 수정된 guideLink 적용
-                    .submissionFormat(submissionFormat)
+                    // TODO 새로운 것 받아야함
                     .build();
         }
     }

@@ -203,9 +203,9 @@ public class DocumentResponse {
 
             this.evaluationDevice = paper.getEvaluationDevice();
             this.evaluationRoom = paper.getEvaluationRoom();
-            this.submissionFormats = MyUtil.parseMultilineWithoutHyphen(paper.getSubmissionFormat());
-            this.guideLink = paper.getGuideLink();
-            this.guideSummaries = MyUtil.parseMultilineWithoutHyphen(paper.getGuideSummary());
+            //this.submissionFormats = MyUtil.parseMultilineWithoutHyphen(paper.getSubmissionFormat());
+            //this.guideLink = paper.getGuideLink();
+            //this.guideSummaries = MyUtil.parseMultilineWithoutHyphen(paper.getGuideSummary());
             // TODO (결시자, 재평가자야 0.9 프로 Subject에서 받기)
             this.scorePolicies = Arrays.asList("본평가 배점 : 평가점수 X 1.0", "재평가 배점 : 평가점수 X 0.9", "결시자 배점 : 평가점수 X 0.9");
 
@@ -286,7 +286,7 @@ public class DocumentResponse {
 
             this.evaluationDevice = paper.getEvaluationDevice();
             this.evaluationRoom = paper.getEvaluationRoom();
-            this.submissionFormats = MyUtil.parseMultilineWithoutHyphen(paper.getSubmissionFormat());
+            //this.submissionFormats = MyUtil.parseMultilineWithoutHyphen(paper.getSubmissionFormat());
             // TODO (결시자, 재평가자야 0.9 프로 Subject에서 받기)
             this.scorePolicies = Arrays.asList("본평가 배점 : 평가점수 X 1.0", "재평가 배점 : 평가점수 X 0.9", "결시자 배점 : 평가점수 X 0.9");
 
@@ -349,10 +349,10 @@ public class DocumentResponse {
         public No3RubricDTO(Paper paper, List<Question> questions, Teacher teacher) {
             this.teacherName = paper.getSubject().getTeacherName();
             this.evaluationDate = paper.getEvaluationDate().toString();
-            this.loc = "3호";
+            //this.loc = "3호";
             this.subjectTitle = paper.getSubject().getTitle();
-            this.guideSummaries = MyUtil.parseMultilineWithoutHyphen(paper.getGuideSummary());
-            this.guideLink = paper.getGuideLink();
+            //this.guideSummaries = MyUtil.parseMultilineWithoutHyphen(paper.getGuideSummary());
+            //this.guideLink = paper.getGuideLink();
             this.questionCount = paper.getQuestions().size();
             this.teacherSign = teacher.getSign();
             this.grade = paper.getSubject().getGrade();
@@ -372,7 +372,7 @@ public class DocumentResponse {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-                this.scenarioLink = question.getScenarioLink();
+                //this.scenarioLink = question.getScenarioLink();
                 this.scenarios = MyUtil.parseMultiline(question.getScenario());
                 this.options = question.getQuestionOptions().stream().map(QuestionDTO.OptionDTO::new).toList();
             }

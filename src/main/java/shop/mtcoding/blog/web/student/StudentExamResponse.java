@@ -148,8 +148,8 @@ public class StudentExamResponse {
             this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
             this.questionCount = questions.size();
-            this.guideSummaries = MyUtil.parseMultilineWithoutHyphen(paper.getGuideSummary());
-            this.guideLink = paper.getGuideLink();
+            //this.guideSummaries = MyUtil.parseMultilineWithoutHyphen(paper.getGuideSummary());
+            //this.guideLink = paper.getGuideLink();
         }
 
         @Data
@@ -167,7 +167,7 @@ public class StudentExamResponse {
                 this.no = question.getNo();
                 this.title = question.getTitle();
                 this.totalPoint = question.getQuestionOptions().stream().mapToInt(option -> option.getPoint()).max().getAsInt();
-                this.scenarioLink = question.getScenarioLink();
+                //this.scenarioLink = question.getScenarioLink();
                 this.scenarios = MyUtil.parseMultiline(question.getScenario());
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
             }

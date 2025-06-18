@@ -64,6 +64,9 @@ public class Exam {
     private String teacherComment;
     private LocalDateTime commentUpdatedAt;
 
+    // ------------- 객관식이 아닐때 받아야함
+    private String submitLink;
+
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
     private List<ExamAnswer> examAnswers = new ArrayList<>();
 
@@ -128,10 +131,7 @@ public class Exam {
     }
 
     @Builder
-    public Exam(Boolean isUse, Long id, Student student, String teacherName, Subject subject,
-                Paper paper, String examState, String reExamReason, String passState,
-                Double score, Integer grade, String studentSign, String teacherComment,
-                LocalDateTime commentUpdatedAt, LocalDateTime createdAt) {
+    public Exam(Long id, Student student, String teacherName, Subject subject, Paper paper, String examState, String reExamReason, String passState, Double score, Integer grade, Boolean isUse, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, LocalDateTime createdAt) {
         this.id = id;
         this.student = student;
         this.teacherName = teacherName;
@@ -142,10 +142,12 @@ public class Exam {
         this.passState = passState;
         this.score = score;
         this.grade = grade;
+        this.isUse = isUse;
         this.studentSign = studentSign;
+        this.studentSignUpdatedAt = studentSignUpdatedAt;
         this.teacherComment = teacherComment;
         this.commentUpdatedAt = commentUpdatedAt;
+        this.submitLink = submitLink;
         this.createdAt = createdAt;
-        this.isUse = isUse;
     }
 }

@@ -192,8 +192,8 @@ public class PaperResponse {
             this.evaluationDevice = paper.getEvaluationDevice();
             this.evaluationRoom = paper.getEvaluationRoom();
             this.subjectTitle = paper.getSubject().getTitle();
-            this.guideSummaries = MyUtil.parseMultilineWithoutHyphen(paper.getGuideSummary());
-            this.guideLink = paper.getGuideLink();
+            //this.guideSummaries = MyUtil.parseMultilineWithoutHyphen(paper.getGuideSummary());
+            //this.guideLink = paper.getGuideLink();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
         }
 
@@ -210,7 +210,7 @@ public class PaperResponse {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-                this.scenarioLink = question.getScenarioLink();
+                //this.scenarioLink = question.getScenarioLink();
                 this.scenarios = MyUtil.parseMultiline(question.getScenario());
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
             }

@@ -30,7 +30,9 @@ public class ExamAnswer {
     private Integer selectedOptionNo;
 
     private Integer earnedPoint; // 5점, 4점, 3점, 2점, 1점 (머든지 될 수 있음) - 이건 배점이 아님!!
-    private Boolean isRight; // 객관식에만 사용
+    private Boolean isRight; // 0점이 아니면 전부다 true임!! 루브릭은 모든 답변에 점수가 부여됨
+
+    private String codeReviewLink; // 선택적 (링크 들어가서 파일에 주석달고, 그거 캡쳐후 새로운 브랜치 임의생성후 PR요청)
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -56,21 +58,13 @@ public class ExamAnswer {
     }
 
 
-    /**
-     * 강사 수동 입력용
-     */
-    public void manualGrade(int earnedPoint) {
-        this.isRight = null; // 의미 없음
-        this.earnedPoint = earnedPoint;
-    }
-
     public void update(Integer selectedOptionNo, Boolean isRight) {
         this.selectedOptionNo = selectedOptionNo;
         this.isRight = isRight;
     }
 
     @Builder
-    public ExamAnswer(Long id, Exam exam, Question question, Integer questionNo, Integer selectedOptionNo, Integer earnedPoint, Boolean isRight, LocalDateTime createdAt) {
+    public ExamAnswer(Long id, Exam exam, Question question, Integer questionNo, Integer selectedOptionNo, Integer earnedPoint, Boolean isRight, String codeReviewLink, LocalDateTime createdAt) {
         this.id = id;
         this.exam = exam;
         this.question = question;
@@ -78,6 +72,7 @@ public class ExamAnswer {
         this.selectedOptionNo = selectedOptionNo;
         this.earnedPoint = earnedPoint;
         this.isRight = isRight;
+        this.codeReviewLink = codeReviewLink;
         this.createdAt = createdAt;
     }
 }

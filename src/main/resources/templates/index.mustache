@@ -1,20 +1,60 @@
 {{> layout/header}}
 
-<div class="container p-5">
-    <div class="card shadow-sm">
-        <div class="card-header">
-            <b>📺 필독! 튜토리얼 영상</b>
-        </div>
-        <div class="card-body">
-            <div class="ratio ratio-16x9">
-                <iframe
-                        src="https://www.youtube.com/embed/eBQ02ipa00o"
-                        title="YouTube video"
-                        allowfullscreen>
-                </iframe>
+<div class="container py-5">
+
+    <!-- 역할별 튜토리얼 섹션 -->
+    <div class="card border-0 shadow rounded-4">
+        <div class="card-body p-5">
+            <h2 class="fw-bold fs-3 mb-4 text-dark">📺 튜토리얼 영상</h2>
+
+            <!-- 탭 메뉴 -->
+            <ul class="nav nav-tabs mb-4" id="videoTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active fs-5" id="teacher-tab" data-bs-toggle="tab" data-bs-target="#teacher"
+                            type="button" role="tab">👩‍🏫 선생님용
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fs-5" id="admin-tab" data-bs-toggle="tab" data-bs-target="#admin"
+                            type="button" role="tab">🛠 관리자용
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fs-5" id="student-tab" data-bs-toggle="tab" data-bs-target="#student"
+                            type="button" role="tab">🎓 학생용
+                    </button>
+                </li>
+            </ul>
+
+            <!-- 탭 콘텐츠 -->
+            <div class="tab-content rounded-3 border border-light-subtle p-4 bg-light" id="videoTabContent">
+                <!-- 선생님용 -->
+                <div class="tab-pane fade show active" id="teacher" role="tabpanel">
+                    <div class="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm">
+                        <iframe src="https://www.youtube.com/embed/eBQ02ipa00o"
+                                title="선생님용 튜토리얼" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <!-- 관리자용 -->
+                <div class="tab-pane fade" id="admin" role="tabpanel">
+                    <div class="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm">
+                        <iframe src="https://www.youtube.com/embed/관리자용영상ID"
+                                title="관리자용 튜토리얼" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <!-- 학생용 -->
+                <div class="tab-pane fade" id="student" role="tabpanel">
+                    <div class="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm">
+                        <iframe src="https://www.youtube.com/embed/학생용영상ID"
+                                title="학생용 튜토리얼" allowfullscreen></iframe>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
 </div>
 
 {{> layout/footer}}

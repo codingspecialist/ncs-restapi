@@ -1,68 +1,122 @@
 {{> layout/header}}
 
 <style>
+    .paper-list-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
     .page-title {
         text-align: center;
-        font-size: 20px;
+        font-size: 2rem;
         font-weight: bold;
+        color: #212529;
         margin-bottom: 2rem;
+        font-family: 'Noto Sans KR', sans-serif;
+        letter-spacing: -0.5px;
+    }
+
+    .detail-info-section {
+        background-color: #f8f9fa;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        line-height: 1.8;
+        border: 1px solid #e9ecef;
+        font-size: 1rem;
+    }
+
+    .detail-info-section strong {
+        color: #343a40;
+        min-width: 100px;
+        display: inline-block;
+    }
+
+    .question-card {
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .question-card .card-title {
+        font-size: 1.15rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: #212529;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.45em 0.8em;
+        border-radius: 0.35rem;
+    }
+
+    .img-fluid {
+        max-height: 200px;
+        border-radius: 8px;
+        border: 1px solid #f0f0f0;
+        padding: 5px;
+        background-color: #fff;
+    }
+
+    .form-check {
+        font-size: 0.95rem;
+    }
+
+    .form-check-input {
+        margin-top: 0.35em;
+    }
+
+    .form-check label {
+        margin-bottom: 0;
+        line-height: 1.4;
     }
 </style>
 
-<div class="container p-5">
+<div class="container mt-5 mb-5">
+    <div class="paper-list-card">
+        <h1 class="page-title">평가지</h1>
 
-    <div class="page-title">
-        <h1>평가지</h1>
-    </div>
-
-    <div class="card mb-3">
-        <div class="card-header">
-            <div>
-                시험일 : {{model.evaluationDate}} <br>
-                시험장소 : {{model.loc}} <br>
-                교과목 : {{model.subjectTitle}} <br>
-                훈련교사 : {{model.teacherName}} <br>
-                문항수 : {{model.questionCount}} <br>
-            </div>
+        <div class="detail-info-section">
+            <strong>시험일:</strong> {{model.evaluationDate}}<br>
+            <strong>시험장소:</strong> {{model.evaluationRoom}}<br>
+            <strong>시험장비:</strong> {{model.evaluationDevice}}<br>
+            <strong>교과목:</strong> {{model.subjectTitle}}<br>
+            <strong>훈련교사:</strong> {{model.teacherName}}<br>
+            <strong>문항수:</strong> {{model.questionCount}}<br>
         </div>
-        <div class="card-body">
-            <div>
-                {{#model.subjectElements}}
-                    <div><i>{{.}}</i></div>
-                {{/model.subjectElements}}
-            </div>
-        </div>
-    </div>
 
-    {{#model.questions}}
-        <div class="card mb-4 p-3">
-            <div class="card-body">
-                <!-- 문제 제목 -->
-                <h5 class="card-title">{{no}}. {{title}}</h5>
-                <div class="badge bg-secondary my-2">배점: {{totalPoint}}점</div>
+        {{#model.questions}}
+            <div class="question-card">
+                <div class="card-body">
+                    <h5 class="card-title">{{no}}. {{title}}</h5>
+                    <div class="badge bg-secondary mb-3">배점: {{totalPoint}}점</div>
 
-                <!-- 지문 이미지 -->
-                {{#stimulusImg}}
-                    <div>
-                        <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid mb-3" style="max-height: 200px;">
-                    </div>
-                {{/stimulusImg}}
-
-                <!-- 객관식 옵션 -->
-                <div>
-                    {{#options}}
-                        <div class="form-check mb-1 d-flex align-items-center">
-                            <input class="form-check-input me-2" type="radio" name="answer-{{questionId}}"
-                                   {{#isRight}}checked{{/isRight}} disabled>
-                            <label>
-                                {{no}}. {{content}}
-                            </label>
+                    {{#stimulusImg}}
+                        <div>
+                            <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid mb-3">
                         </div>
-                    {{/options}}
+                    {{/stimulusImg}}
+
+                    <div>
+                        {{#options}}
+                            <div class="form-check mb-2 d-flex align-items-center">
+                                <input class="form-check-input me-2" type="radio" name="answer-{{questionId}}"
+                                       {{#isRight}}checked{{/isRight}} disabled>
+                                <label>{{no}}. {{content}}</label>
+                            </div>
+                        {{/options}}
+                    </div>
                 </div>
             </div>
-        </div>
-    {{/model.questions}}
+        {{/model.questions}}
+    </div>
 </div>
 
 {{> layout/footer}}

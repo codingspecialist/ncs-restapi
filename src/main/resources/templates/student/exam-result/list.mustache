@@ -1,40 +1,121 @@
 {{> layout/header}}
 
-<div class="container p-5">
+<style>
+    .paper-list-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        margin: 0 auto;
+        max-width: 1200px;
+    }
 
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>번호</th>
-            <th>과정명/회차</th>
-            <th>교과목</th>
-            <th>시험유형</th>
-            <th>학생명</th>
-            <th>훈련강사</th>
-            <th>점수</th>
-            <th>수준</th>
-            <th>통과여부/이유</th>
-            <th>상세보기</th>
-        </tr>
-        </thead>
-        <tbody>
-        {{#models}}
-            <tr>
-                <td>{{subjectNo}}</td>
-                <td>{{courseNameAndRound}}</td>
-                <td>{{subjectTitle}}</td>
-                <td>{{examState}}</td>
-                <td>{{studentName}}</td>
-                <td>{{teacherName}}</td>
-                <td>{{examScore}}</td>
-                <td>{{grade}}</td>
-                <td>{{examPassState}}{{reExamReason}}</td>
-                <td><a class="btn btn-outline-primary btn-sm" href="/api/student/exam/{{examId}}">상세보기</a></td>
-            </tr>
-        {{/models}}
-        </tbody>
-    </table>
+    .list-header {
+        background-color: transparent;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
+    .list-header h2 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 0;
+        color: #343a40;
+    }
+
+    .table {
+        margin-bottom: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-responsive {
+        border-radius: 10px;
+        overflow-x: auto;
+        border: 1px solid #dee2e6;
+        margin-top: 1rem;
+    }
+
+    .table-responsive .table {
+        border: none;
+    }
+
+    .table thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        color: #495057;
+        padding: 1rem 0.75rem;
+        white-space: nowrap;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f0f8ff;
+    }
+
+    .table tbody td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        border-top: 1px solid #dee2e6;
+        white-space: nowrap;
+    }
+
+    .btn-sm {
+        border-radius: 8px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="paper-list-card">
+        <div class="list-header">
+            <h2>시험 결과 목록</h2>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>과정명/회차</th>
+                    <th>교과목</th>
+                    <th>시험유형</th>
+                    <th>학생명</th>
+                    <th>훈련강사</th>
+                    <th>점수</th>
+                    <th>수준</th>
+                    <th>통과여부/이유</th>
+                    <th>상세보기</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#models}}
+                    <tr>
+                        <td>{{subjectNo}}</td>
+                        <td>{{courseNameAndRound}}</td>
+                        <td>{{subjectTitle}}</td>
+                        <td>{{examState}}</td>
+                        <td>{{studentName}}</td>
+                        <td>{{teacherName}}</td>
+                        <td>{{examScore}}</td>
+                        <td>{{grade}}</td>
+                        <td>{{examPassState}}{{reExamReason}}</td>
+                        <td><a class="btn btn-outline-primary btn-sm" href="/api/student/exam/{{examId}}">상세보기</a></td>
+                    </tr>
+                {{/models}}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 {{> layout/footer}}

@@ -1,6 +1,15 @@
 {{> layout/header}}
 
 <style>
+    .paper-list-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
     .page-title {
         text-align: center;
         font-size: 2rem;
@@ -11,270 +20,133 @@
         letter-spacing: -0.5px;
     }
 
-    /* 공통 카드 기본 스타일 (목록, 상세 화면 모두 재사용) */
-    .paper-list-card {
-        background: #ffffff;
-        border-radius: 16px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-        padding: 2.5rem;
-        max-width: 1200px; /* 목록 및 상세 화면 카드 너비 */
-        margin: 0 auto;
-    }
-
-    /* 목록/상세 화면 공통 헤더 스타일 */
-    .list-header {
-        background-color: transparent;
-        font-size: 1.5rem;
-        font-weight: bold;
-        border-bottom: 2px solid #eee;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        display: flex;
-        justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
-        align-items: center;
-    }
-
-    /* 버튼 스타일 */
-    .btn-primary {
-        padding: 0.75rem 1.25rem;
-        font-weight: bold;
-        font-size: 1rem;
-        border-radius: 12px;
-        width: auto;
-    }
-
-    /* 테이블 스타일 */
-    .table {
-        margin-bottom: 0;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-
-    .table-responsive {
-        border-radius: 10px;
-        overflow-x: auto;
-        border: 1px solid #dee2e6;
-    }
-
-    .table-responsive .table { /* Ensures inner table has no extra border */
-        border: none;
-        margin-bottom: 0;
-    }
-
-    .table thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: 600;
-        color: #495057;
-        padding: 1rem 0.75rem;
-        white-space: nowrap;
-    }
-
-    .table tbody tr {
-        transition: background-color 0.2s ease-in-out;
-    }
-
-    .table tbody tr:hover {
-        background-color: #f0f8ff;
-    }
-
-    .table tbody td {
-        padding: 0.75rem;
-        vertical-align: middle;
-        border-top: 1px solid #dee2e6;
-        white-space: nowrap;
-    }
-
-    /* 상세 정보 섹션 스타일 */
     .detail-info-section {
         background-color: #f8f9fa;
-        border-radius: 8px;
+        border-radius: 12px;
         padding: 1.5rem;
         margin-bottom: 2rem;
         line-height: 1.8;
         border: 1px solid #e9ecef;
+        font-size: 1rem;
     }
 
     .detail-info-section strong {
         color: #343a40;
-        min-width: 90px;
+        min-width: 100px;
         display: inline-block;
     }
 
-    .detail-info-section p { /* Style for paragraphs in info section */
-        margin-bottom: 0.5rem;
+    .section-title {
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: #212529;
     }
 
-    .detail-info-section a { /* Style for links in info section */
-        color: #0d6efd;
-        text-decoration: underline;
-    }
-
-    .detail-info-section div.fw-bold { /* Style for bold div in info section */
-        margin-bottom: 0.75rem;
-    }
-
-    .detail-info-section ul { /* Styling for ul within detail-info-section */
-        padding-left: 20px;
-        line-height: 1.6;
-        color: #495057;
-        margin: 0;
-    }
-
-
-    /* 개별 문제 카드 스타일 */
     .question-card {
         border: 1px solid #dee2e6;
         border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
-    }
-
-    .question-card .card-header { /* 부트스트랩 card-header 스타일 오버라이드 */
-        background-color: #f8f9fa; /* 헤더 배경색 */
-        font-weight: bold;
-        border-bottom: 1px solid #dee2e6;
-        padding: 1rem 1.25rem; /* 패딩 조정 */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
     }
 
     .question-card .card-title {
-        color: #212529;
+        font-size: 1.15rem;
         font-weight: bold;
         margin-bottom: 1rem;
+        color: #212529;
     }
 
-    .question-card .badge {
-        font-size: 0.85em;
-        padding: 0.5em 0.8em;
-        border-radius: 0.35rem;
+    .table-bordered th,
+    .table-bordered td {
+        vertical-align: middle;
     }
 
-    .question-card .img-fluid {
-        border-radius: 8px;
-        border: 1px solid #f0f0f0;
-        padding: 5px;
-        background-color: #fff;
+    .btn-outline-secondary {
+        font-size: 0.9rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 0.4rem;
     }
 
-    .question-card .form-check {
-        font-size: 0.95rem;
-    }
-
-    .question-card .form-check-input {
-        margin-top: 0.3em;
-    }
-
-    /* 시나리오/문제 설명 블록 스타일 */
     .scenario-description-block {
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        padding: 12px;
-        background-color: #fefefe;
+        font-size: 1rem;
+        color: #495057;
         margin-bottom: 1rem;
     }
-
-    .scenario-description-block p {
-        margin-bottom: 0.5rem;
-    }
-
-    .scenario-description-block a {
-        color: #0d6efd;
-        text-decoration: underline;
-    }
-
-    .scenario-description-block div {
-        color: #343a40;
-    }
-
 </style>
 
-<div class="container p-5">
+<div class="container mt-5 mb-5">
+    <div class="paper-list-card">
+        <div class="page-title"><h1>평가지</h1></div>
 
-    <div class="page-title">
-        <h1>평가지</h1>
-    </div>
-
-    <div class="card mb-3">
-        <div class="card-header">
-            <div>
-                시험일 : {{model.evaluationDate}} <br>
-                평가장소 : {{model.evaluationRoom}} <br>
-                평가장소 : {{model.evaluationDevice}} <br>
-                교과목 : {{model.subjectTitle}} <br>
-                훈련교사 : {{model.teacherName}} <br>
-                문항수 : {{model.questionCount}} <br>
-            </div>
-        </div>
-    </div>
-
-    <!-- 과제 정보 박스 -->
-    <div class="detail-info-section mb-4">
-        <h5 class="mb-3 fw-bold text-dark">과제 정보</h5>
-
-        <div class="mb-3">
-            <div class="fw-bold text-secondary mb-1">📌 주제</div>
-            <div class="ps-1">{{model.pblTitle}}</div>
+        <!-- 시험 정보 -->
+        <div class="detail-info-section">
+            <strong>시험일:</strong> {{model.evaluationDate}}<br>
+            <strong>시험장소:</strong> {{model.evaluationRoom}}<br>
+            <strong>시험장비:</strong> {{model.evaluationDevice}}<br>
+            <strong>교과목:</strong> {{model.subjectTitle}}<br>
+            <strong>훈련교사:</strong> {{model.teacherName}}<br>
+            <strong>문항수:</strong> {{model.questionCount}}<br>
         </div>
 
-        <div class="mb-3">
-            <div class="fw-bold text-secondary mb-1">📖 시나리오</div>
-            <div class="ps-1">{{model.pblScenario}}</div>
-        </div>
+        <!-- 과제 정보 -->
+        <div class="detail-info-section">
+            <div class="section-title">과제 정보</div>
 
-        <div class="mb-3">
-            <div class="fw-bold text-secondary mb-1">💡 도전 과제</div>
-            <ul class="ps-4 mb-1">
-                {{#model.pblChallenges}}
-                    <li>{{.}}</li>{{/model.pblChallenges}}
-            </ul>
-        </div>
-
-        <div class="mb-3">
-            <div class="fw-bold text-secondary mb-1">📤 제출 항목</div>
-            <ul class="ps-4 mb-1">
-                {{#model.pblSubmitFormats}}
-                    <li>{{.}}</li>{{/model.pblSubmitFormats}}
-            </ul>
-        </div>
-
-        {{#model.pblScenarioGuideLink}}
             <div class="mb-3">
-                <div class="fw-bold text-secondary mb-1">🔗 시나리오 상세 가이드</div>
-                <a href="{{model.pblScenarioGuideLink}}" target="_blank"
-                   class="ps-1 text-decoration-underline text-primary">
-                    {{model.pblScenarioGuideLink}}
-                </a>
+                <div class="fw-bold text-secondary mb-1">📌 주제</div>
+                <div class="ps-1">{{model.pblTitle}}</div>
             </div>
-        {{/model.pblScenarioGuideLink}}
 
-        {{#model.pblSubmitTemplateLink}}
             <div class="mb-3">
-                <div class="fw-bold text-secondary mb-1">📎 제출 항목 샘플</div>
-                <a href="{{model.pblSubmitTemplateLink}}" target="_blank"
-                   class="text-decoration-underline text-primary">
-                    {{model.pblSubmitTemplateLink}}
-                </a>
-            </div>
-        {{/model.pblSubmitTemplateLink}}
-    </div>
-
-
-    {{#model.questions}}
-        <div class="card mb-4">
-            <div class="card-header fw-bold">
-                {{no}}. {{title}} <!-- 문제 제목 -->
+                <div class="fw-bold text-secondary mb-1">📖 시나리오 및 상세 가이드</div>
+                <div class="ps-1 mb-2">{{model.pblScenario}}</div>
+                {{#model.pblScenarioGuideLink}}
+                    <a href="{{model.pblScenarioGuideLink}}" target="_blank" class="btn btn-sm btn-outline-secondary">
+                        시나리오 상세 가이드 열기
+                    </a>
+                {{/model.pblScenarioGuideLink}}
             </div>
 
-            <div class="card-body p-3">
+            <div class="mb-3">
+                <div class="fw-bold text-secondary mb-1">💡 도전 과제</div>
+                <ul class="ps-4 mb-1">
+                    {{#model.pblChallenges}}
+                        <li>{{.}}</li>{{/model.pblChallenges}}
+                </ul>
+            </div>
 
-                <div class="scenario-description-block mb-4">
-                    <div class="text-dark">
-                        {{#scenarios}}
-                            {{.}}<br>
-                        {{/scenarios}}
-                    </div>
+            <div class="mb-3">
+                <div class="fw-bold text-secondary mb-1">📤 제출 항목</div>
+                <ul class="ps-4 mb-1">
+                    {{#model.pblSubmitFormats}}
+                        <li>{{.}}</li>{{/model.pblSubmitFormats}}
+                </ul>
+            </div>
+
+            {{#model.pblSubmitTemplateLink}}
+                <div class="mb-3">
+                    <div class="fw-bold text-secondary mb-1">📎 프로젝트 제출 템플릿</div>
+                    <a href="{{model.pblSubmitTemplateLink}}" target="_blank" class="btn btn-sm btn-outline-secondary">
+                        제출 템플릿 열기
+                    </a>
+                </div>
+            {{/model.pblSubmitTemplateLink}}
+        </div>
+
+        <!-- 문제 목록 -->
+        {{#model.questions}}
+            <div class="question-card">
+                <div class="card-title">{{no}}. {{title}}</div>
+
+                <!-- 시나리오 -->
+                <div class="scenario-description-block">
+                    {{#scenarios}}
+                        {{.}}<br>
+                    {{/scenarios}}
                 </div>
 
-
+                <!-- 루브릭 표 -->
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead class="table-light">
@@ -286,7 +158,7 @@
                         <tbody>
                         {{#options}}
                             <tr>
-                                <td class="text-center fw-bold align-middle">{{point}}점</td>
+                                <td class="text-center fw-bold">{{point}}점</td>
                                 <td>{{rubricItem}}</td>
                             </tr>
                         {{/options}}
@@ -294,8 +166,8 @@
                     </table>
                 </div>
             </div>
-        </div>
-    {{/model.questions}}
+        {{/model.questions}}
+    </div>
 </div>
 
 {{> layout/footer}}

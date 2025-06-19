@@ -1,6 +1,15 @@
 {{> layout/header}}
 
 <style>
+    .paper-list-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 2.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
     .page-title {
         text-align: center;
         font-size: 2rem;
@@ -12,128 +21,195 @@
     }
 
     input[type="radio"]:checked {
-        accent-color: #007bff; /* 부트스트랩 primary 색상 */
+        accent-color: #007bff;
+    }
+
+    .detail-info-section {
+        background-color: #f8f9fa;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        line-height: 1.8;
+        border: 1px solid #e9ecef;
+        font-size: 1rem;
+    }
+
+    .detail-info-section strong {
+        color: #343a40;
+        min-width: 100px;
+        display: inline-block;
+    }
+
+    .sign-table {
+        border-collapse: collapse;
+        font-size: 0.95rem;
+    }
+
+    .sign-table td {
+        border: 1px solid #ccc;
+        padding: 0.5rem;
+        text-align: center;
+    }
+
+    .sign-header {
+        background-color: #f1f3f5;
+        font-weight: bold;
+        color: #212529;
+    }
+
+    .sign-box {
+        height: 80px;
+        width: 120px;
+        background-color: #ffffff;
+    }
+
+    .sign-fit {
+        max-height: 80px;
+        max-width: 100%;
+    }
+
+    .question-card {
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .question-card .card-title {
+        font-size: 1.15rem;
+        font-weight: bold;
+        color: #212529;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.45em 0.8em;
+        border-radius: 0.35rem;
+    }
+
+    .img-fluid {
+        max-height: 200px;
+        border-radius: 8px;
+        border: 1px solid #f0f0f0;
+        padding: 5px;
+        background-color: #fff;
+    }
+
+    .form-check {
+        font-size: 0.95rem;
+    }
+
+    .form-check-input {
+        margin-top: 0.35em;
+    }
+
+    .form-check label {
+        margin-bottom: 0;
+        line-height: 1.4;
+    }
+
+    textarea[readonly] {
+        background-color: #f8f9fa !important;
+        resize: none;
     }
 </style>
 
-<div class="container p-5">
-    <ul class="pagination d-flex justify-content-end">
-        {{#model.prevIndex}}
-            <li class="page-item"><a class="page-link"
-                                     href="/api/document-menu/subject/{{model.subjectId}}/no4?currentIndex={{model.prevIndex}}
-                ">이전학생</a>
-            </li>
-        {{/model.prevIndex}}
+<div class="container mt-5 mb-5">
+    <div class="paper-list-card">
+        <ul class="pagination d-flex justify-content-end">
+            {{#model.prevIndex}}
+                <li class="page-item"><a class="page-link"
+                                         href="/api/document-menu/subject/{{model.subjectId}}/no4?currentIndex={{model.prevIndex}}
+                    ">이전학생</a>
+                </li>
+            {{/model.prevIndex}}
 
-        {{#model.nextIndex}}
-            <li class="page-item"><a class="page-link"
-                                     href="/api/document-menu/subject/{{model.subjectId}}/no4?currentIndex={{model.nextIndex}}
-                ">다음학생</a>
-            </li>
-        {{/model.nextIndex}}
-    </ul>
+            {{#model.nextIndex}}
+                <li class="page-item"><a class="page-link"
+                                         href="/api/document-menu/subject/{{model.subjectId}}/no4?currentIndex={{model.nextIndex}}
+                    ">다음학생</a>
+                </li>
+            {{/model.nextIndex}}
+        </ul>
 
-    <div class="page-title">
-        <h1>개인별평가표</h1>
-    </div>
+        <h1 class="page-title">개인별평가표</h1>
 
-    <div class="card mb-3">
-        <div class="card-header">
-            <div class="d-flex justify-content-between">
-                <div>
-                    시험일 : {{model.evaluationDate}} <br>
-                    평가장소 : {{model.evaluationRoom}} <br>
-                    평가장비 : {{model.evaluationDevice}} <br>
-                    교과목 : {{model.subjectTitle}} <br>
-                    훈련교사 : {{model.teacherName}} <br>
-                    훈련생 : {{model.studentName}} <br>
-                    문항수 : {{model.questionCount}} <br>
-                    총점 : {{model.score}} <br>
-                    수준 : {{model.grade}} <br>
-                    통과여부 : {{model.examPassState}} <br>
-                    평가유형 : {{model.examState}} <br>
-                </div>
-                <div>
-                    <div class="d-flex justify-content-end mb-3">연번 : {{model.no}}</div>
-                    <div class="d-flex">
-                        <table class="sign-table">
-                            <tr>
-                                <td class="sign-header">훈련교사</td>
-                                <td class="sign-header">훈련생</td>
-                            </tr>
-                            <tr>
-                                <td class="sign-box">
-                                    <img class="sign-fit" src="{{model.teacherSign}}">
-                                </td>
-                                <td class="sign-box">
-                                    {{#model.isStudentSign}}
-                                        <img class="sign-fit" src="{{model.studentSign}}">
-                                    {{/model.isStudentSign}}
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card-body">
+        <div class="d-flex justify-content-between detail-info-section">
             <div>
-                {{#model.subjectElements}}
-                    <div><i>{{.}}</i></div>
-                {{/model.subjectElements}}
+                시험일 : {{model.evaluationDate}} <br>
+                평가장소 : {{model.evaluationRoom}} <br>
+                평가장비 : {{model.evaluationDevice}} <br>
+                교과목 : {{model.subjectTitle}} <br>
+                훈련교사 : {{model.teacherName}} <br>
+                훈련생 : {{model.studentName}} <br>
+                문항수 : {{model.questionCount}} <br>
+                총점 : {{model.score}} <br>
+                수준 : {{model.grade}} <br>
+                통과여부 : {{model.examPassState}} <br>
+                평가유형 : {{model.examState}} <br>
+            </div>
+            <div>
+                <div class="d-flex justify-content-end mb-3">연번 : {{model.no}}</div>
+                <table class="sign-table">
+                    <tr>
+                        <td class="sign-header">훈련교사</td>
+                        <td class="sign-header">훈련생</td>
+                    </tr>
+                    <tr>
+                        <td class="sign-box">
+                            <img class="sign-fit" src="{{model.teacherSign}}">
+                        </td>
+                        <td class="sign-box">
+                            {{#model.isStudentSign}}
+                                <img class="sign-fit" src="{{model.studentSign}}">
+                            {{/model.isStudentSign}}
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
-    </div>
 
-    {{#model.answers}}
-        <div class="card mb-4 p-3 position-relative exam-body">
-            <input type="hidden" class="answerId" value="{{answerId}}">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <!-- 문제 제목 -->
-                    <h5 class="card-title">{{no}}. {{title}}</h5>
-
-                    <!-- 정답 및 채점 점수 -->
-                    <div class="text-end">
-                        <small class="text-muted">정답: {{answerNumber}}번</small><br>
-                        <small class="text-muted">점수: {{studentPoint}}점</small>
-                    </div>
-                </div>
-
-                <div class="badge bg-secondary my-2">배점: {{totalPoint}}점</div>
-
-                <!-- 지문 이미지 -->
-                {{#stimulusImg}}
-                    <div>
-                        <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid mb-3" style="max-height: 200px;">
-                    </div>
-                {{/stimulusImg}}
-
-                <!-- 객관식 옵션 -->
-                <div>
-                    {{#options}}
-                        <div class="form-check mb-1 d-flex align-items-center">
-                            <input class="form-check-input me-2 optionNo" type="radio"
-                                   name="question-{{questionId}}"
-                                   value="{{no}}"
-                                   {{#isSelect}}checked{{/isSelect}}>
-                            <label>{{no}}. {{content}}</label>
+        {{#model.answers}}
+            <div class="question-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title">{{no}}. {{title}}</h5>
+                        <div class="text-end">
+                            <small class="text-muted">정답: {{answerNumber}}번</small><br>
+                            <small class="text-muted">점수: {{studentPoint}}점</small>
                         </div>
-                    {{/options}}
+                    </div>
+
+                    <div class="badge bg-secondary mb-3">배점: {{totalPoint}}점</div>
+
+                    {{#stimulusImg}}
+                        <div>
+                            <img src="{{stimulusImg}}" alt="지문 이미지" class="img-fluid mb-3">
+                        </div>
+                    {{/stimulusImg}}
+
+                    <div>
+                        {{#options}}
+                            <div class="form-check mb-2 d-flex align-items-center">
+                                <input class="form-check-input me-2 optionNo" type="radio"
+                                       name="question-{{questionId}}"
+                                       value="{{no}}" {{#isSelect}}checked{{/isSelect}} disabled>
+                                <label>{{no}}. {{content}}</label>
+                            </div>
+                        {{/options}}
+                    </div>
                 </div>
             </div>
-        </div>
-    {{/model.answers}}
+        {{/model.answers}}
 
-
-    <div class="card">
-        <div class="card-header">총평</div>
-        <div class="card-body">
-            <textarea id="teacherComment" class="form-control bg-light" readonly>{{model.teacherComment}}</textarea>
+        <div class="card">
+            <div class="card-header fw-bold">총평</div>
+            <div class="card-body">
+                <textarea id="teacherComment" class="form-control" rows="4" readonly>{{model.teacherComment}}</textarea>
+            </div>
         </div>
     </div>
-
 </div>
-
 
 {{> layout/footer}}

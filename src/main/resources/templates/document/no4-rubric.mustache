@@ -11,6 +11,22 @@
         margin: 0 auto;
     }
 
+    .detail-info-section {
+        background-color: #f8f9fa;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        line-height: 1.8;
+        border: 1px solid #e9ecef;
+        font-size: 1rem;
+    }
+
+    .detail-info-section strong {
+        color: #343a40;
+        min-width: 100px;
+        display: inline-block;
+    }
+
     .text-end {
         font-size: 0.85rem;
         line-height: 1.2;
@@ -119,47 +135,44 @@
             {{/model.nextIndex}}
         </ul>
 
-        <div class="card mb-4">
-            <div class="card-header">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        시험일 : {{model.evaluationDate}} <br>
-                        평가장소 : {{model.evaluationRoom}} <br>
-                        평가장비 : {{model.evaluationDevice}} <br>
-                        교과목 : {{model.subjectTitle}} <br>
-                        훈련교사 : {{model.teacherName}} <br>
-                        훈련생 : {{model.studentName}} <br>
-                        문항수 : {{model.questionCount}} <br>
-                        만점기준 : {{model.manjumScore}} <br>
-                        총점 : {{model.score}} / 백분율 : {{model.finalScore}}<br>
-                        수준 : {{model.grade}} <br>
-                        통과여부 : {{model.examPassState}} <br>
-                        평가유형 : {{model.examState}} <br>
-                    </div>
-                    <div>
-                        <div class="text-end mb-3">연번 : {{model.studentNo}}</div>
-                        <div class="d-flex">
-                            <table class="sign-table">
-                                <tr>
-                                    <td class="sign-header">훈련교사</td>
-                                    <td class="sign-header">훈련생</td>
-                                </tr>
-                                <tr>
-                                    <td class="sign-box">
-                                        <img class="sign-fit" src="{{model.teacherSign}}">
-                                    </td>
-                                    <td class="sign-box">
-                                        {{#model.studentSign}}
-                                            <img class="sign-fit" src="{{model.studentSign}}">
-                                        {{/model.studentSign}}
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
+        <div class="d-flex justify-content-between detail-info-section">
+            <div>
+                <strong>시험일</strong> : {{model.evaluationDate}} <br>
+                <strong>평가장소</strong> : {{model.evaluationRoom}} <br>
+                <strong>평가장비</strong> : {{model.evaluationDevice}} <br>
+                <strong>교과목</strong> : {{model.subjectTitle}} <br>
+                <strong>훈련교사</strong> : {{model.teacherName}} <br>
+                <strong>훈련생</strong> : {{model.studentName}} <br>
+                <strong>문항수</strong> : {{model.questionCount}} <br>
+                <strong>만점기준</strong> : {{model.manjumScore}} <br>
+                <strong>총점</strong> : {{model.score}} / 백분율 : {{model.finalScore}}<br>
+                <strong>수준</strong> : {{model.grade}} <br>
+                <strong>통과여부</strong> : {{model.examPassState}} <br>
+                <strong>평가유형</strong> : {{model.examState}} <br>
+            </div>
+            <div>
+                <div class="text-end mb-3">연번 : {{model.studentNo}}</div>
+                <div class="d-flex">
+                    <table class="sign-table">
+                        <tr>
+                            <td class="sign-header">훈련교사</td>
+                            <td class="sign-header">훈련생</td>
+                        </tr>
+                        <tr>
+                            <td class="sign-box">
+                                <img class="sign-fit" src="{{model.teacherSign}}">
+                            </td>
+                            <td class="sign-box">
+                                {{#model.studentSign}}
+                                    <img class="sign-fit" src="{{model.studentSign}}">
+                                {{/model.studentSign}}
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
+
 
         <!-- 학생 제출 자료 -->
         <div class="card mb-4 border border-secondary-subtle shadow-sm">
@@ -224,26 +237,15 @@
                             </tbody>
                         </table>
 
-                        {{#codeReviewLink}}
+                        {{#codeReviewPRLink}}
                             <div class="mb-3 mt-4">
-
-
                                 <div class="mb-2">
-                                    <a href="{{codeReviewLink}}" target="_blank"
-                                       class="btn btn-sm btn-outline-secondary">
-                                        코드 리뷰 하기
+                                    <a href="{{codeReviewPRLink}}" target="_blank">
+                                        {{codeReviewPRLink}}
                                     </a>
                                 </div>
-
-
-                                <input type="url"
-                                       class="form-control codeReviewInput"
-                                       name="codeReviewPRLink"
-                                       value="{{#codeReviewPRLink}}{{codeReviewPRLink}}{{/codeReviewPRLink}}"
-                                       id="codeReviewPRLink-{{questionId}}"
-                                       placeholder="리뷰 완료 후 GitHub PR 주소를 직접 붙여넣으세요.">
                             </div>
-                        {{/codeReviewLink}}
+                        {{/codeReviewPRLink}}
 
 
                     </div>

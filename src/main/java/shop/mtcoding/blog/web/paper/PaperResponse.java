@@ -121,6 +121,8 @@ public class PaperResponse {
         private String evaluationDevice; // 평가장소 (임시)
         private String evaluationRoom; // 평가장소 (임시)
         private String subjectTitle; // 교과목 (subject)
+        private String teacherName;
+        private Integer questionCount;
         private List<QuestionDTO> questions;
 
         public McqDetailDTO(Paper paper, List<Question> questions) {
@@ -129,6 +131,8 @@ public class PaperResponse {
             this.evaluationDevice = paper.getEvaluationDevice();
             this.evaluationRoom = paper.getEvaluationRoom();
             this.subjectTitle = paper.getSubject().getTitle();
+            this.teacherName = paper.getSubject().getTeacherName();
+            this.questionCount = questions.size();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
         }
 
@@ -178,10 +182,14 @@ public class PaperResponse {
     @Data
     public static class RubricDetailDTO {
         private Long paperId;
+
         private String evaluationDate; // 평가일 (subject)
-        private String evaluationDevice; // 평가장소 (임시)
         private String evaluationRoom; // 평가장소 (임시)
+        private String evaluationDevice; // 평가장소 (임시)
         private String subjectTitle; // 교과목 (subject)
+
+        private String teacherName;
+        private Integer questionCount;
 
         // -------------------- 객관식이 아닐때 받아야 할 목록
         private String pblTitle;
@@ -200,6 +208,10 @@ public class PaperResponse {
             this.evaluationDevice = paper.getEvaluationDevice();
             this.evaluationRoom = paper.getEvaluationRoom();
             this.subjectTitle = paper.getSubject().getTitle();
+
+            this.teacherName = paper.getSubject().getTeacherName();
+            this.questionCount = questions.size();
+
             this.pblTitle = paper.getPblTitle();
             this.pblScenario = paper.getPblScenario();
             this.pblScenarioGuideLink = paper.getPblScenarioGuideLink();

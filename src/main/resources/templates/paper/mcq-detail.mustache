@@ -91,11 +91,13 @@
             <a href="/api/paper-menu/paper/{{model.paperId}}/question/save-form" class="btn btn-primary">문제등록</a>
         </div>
 
-        <div class="detail-info-section mb-4">
-            <strong>시험일:</strong> {{model.evaluationDate}} <br>
-            <strong>시험장비:</strong> {{model.evaluationDevice}} <br>
-            <strong>시험장소:</strong> {{model.evaluationRoom}} <br>
-            <strong>교과목:</strong> {{model.subjectTitle}} <br>
+        <div class="detail-info-section">
+            <strong>시험일:</strong> {{model.evaluationDate}}<br>
+            <strong>시험장소:</strong> {{model.evaluationRoom}}<br>
+            <strong>시험장비:</strong> {{model.evaluationDevice}}<br>
+            <strong>교과목:</strong> {{model.subjectTitle}}<br>
+            <strong>훈련교사:</strong> {{model.teacherName}}<br>
+            <strong>문항수:</strong> {{model.questionCount}}<br>
         </div>
 
         {{#model.questions}}

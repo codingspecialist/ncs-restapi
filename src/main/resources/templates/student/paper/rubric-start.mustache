@@ -117,9 +117,16 @@
                 <div class="ps-1">{{model.pblTitle}}</div>
             </div>
 
+            <!-- 시나리오 및 상세 가이드 -->
             <div class="mb-3">
-                <div class="fw-bold text-secondary mb-1">📖 시나리오</div>
-                <div class="ps-1">{{model.pblScenario}}</div>
+                <div class="fw-bold text-secondary mb-1">📖 시나리오 및 상세 가이드</div>
+                <div class="ps-1 mb-2">{{model.pblScenario}}</div>
+                {{#model.pblScenarioGuideLink}}
+                    <a href="{{model.pblScenarioGuideLink}}" target="_blank"
+                       class="btn btn-sm btn-outline-secondary">
+                        시나리오 상세 가이드 열기
+                    </a>
+                {{/model.pblScenarioGuideLink}}
             </div>
 
             <div class="mb-3">
@@ -138,22 +145,14 @@
                 </ul>
             </div>
 
-            {{#model.pblScenarioGuideLink}}
-                <div class="mb-3">
-                    <div class="fw-bold text-secondary mb-1">🔗 시나리오 상세 가이드</div>
-                    <a href="{{model.pblScenarioGuideLink}}" target="_blank"
-                       class="ps-1 text-decoration-underline text-primary">
-                        {{model.pblScenarioGuideLink}}
-                    </a>
-                </div>
-            {{/model.pblScenarioGuideLink}}
 
+            <!-- 프로젝트 제출 템플릿 -->
             {{#model.pblSubmitTemplateLink}}
                 <div class="mb-3">
-                    <div class="fw-bold text-secondary mb-1">📎 제출 항목 샘플</div>
+                    <div class="fw-bold text-secondary mb-1">📎 프로젝트 제출 템플릿</div>
                     <a href="{{model.pblSubmitTemplateLink}}" target="_blank"
-                       class="text-decoration-underline text-primary">
-                        {{model.pblSubmitTemplateLink}}
+                       class="btn btn-sm btn-outline-secondary">
+                        제출 템플릿 열기
                     </a>
                 </div>
             {{/model.pblSubmitTemplateLink}}

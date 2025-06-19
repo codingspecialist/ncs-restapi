@@ -417,7 +417,8 @@ public class DocumentResponse {
     public static class No3McqDTO {
         private String teacherName;
         private String evaluationDate; // 평가일 (subject)
-        private String loc; // 평가장소 (임시)
+        private String evaluationRoom; // 평가장소 (임시)
+        private String evaluationDevice; // 평가장비 (임시)
         private String subjectTitle; // 교과목 (subject)
         private List<String> subjectElements;
         private Integer questionCount;
@@ -428,7 +429,8 @@ public class DocumentResponse {
         public No3McqDTO(Paper paper, List<SubjectElement> subjectElements, List<Question> questions, Teacher teacher) {
             this.teacherName = paper.getSubject().getTeacherName();
             this.evaluationDate = paper.getEvaluationDate().toString();
-            this.loc = "3호";
+            this.evaluationRoom = paper.getEvaluationRoom();
+            this.evaluationDevice = paper.getEvaluationDevice();
             this.subjectTitle = paper.getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
             this.questionCount = paper.getQuestions().size();

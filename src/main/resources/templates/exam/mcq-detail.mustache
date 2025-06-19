@@ -58,7 +58,6 @@
 
     .card-header {
         background-color: #f8f9fa;
-        font-weight: bold;
         border-bottom: 1px solid #dee2e6;
     }
 
@@ -98,6 +97,23 @@
         min-width: 40px;
         text-align: center;
     }
+
+    /* 상세 정보 섹션 스타일 */
+    .detail-info-section {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        line-height: 1.8;
+        border: 1px solid #e9ecef;
+    }
+
+    .detail-info-section strong {
+        color: #343a40;
+        min-width: 90px;
+        display: inline-block;
+    }
+
 </style>
 
 <div class="container mt-5 mb-5">
@@ -123,52 +139,47 @@
             {{/model.nextExamId}}
         </ul>
 
-        <div class="card mb-4">
-            <div class="card-header">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        시험일 : {{model.evaluationDate}} <br>
-                        평가장소 : {{model.evaluationRoom}} <br>
-                        평가장비 : {{model.evaluationDevice}} <br>
-                        교과목 : {{model.subjectTitle}} <br>
-                        훈련교사 : {{model.teacherName}} <br>
-                        훈련생 : {{model.studentName}} <br>
-                        문항수 : {{model.questionCount}} <br>
-                        만점기준 : {{model.manjumScore}} <br>
-                        총점 : {{model.score}} / 백분율 : {{model.finalScore}}<br>
-                        수준 : {{model.grade}} <br>
-                        통과여부 : {{model.examPassState}} <br>
-                        평가유형 : {{model.examState}} <br>
-                    </div>
-                    <div>
-                        <div class="text-end mb-3">연번 : {{model.studentNo}}</div>
-                        <div class="d-flex">
-                            <table class="sign-table">
-                                <tr>
-                                    <td class="sign-header">훈련교사</td>
-                                    <td class="sign-header">훈련생</td>
-                                </tr>
-                                <tr>
-                                    <td class="sign-box">
-                                        <img class="sign-fit" src="{{model.teacherSign}}">
-                                    </td>
-                                    <td class="sign-box">
-                                        {{#model.studentSign}}
-                                            <img class="sign-fit" src="{{model.studentSign}}">
-                                        {{/model.studentSign}}
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
+
+        <div class="d-flex justify-content-between detail-info-section">
+            <div>
+                <strong>시험일</strong> : {{model.evaluationDate}} <br>
+                <strong>평가장소</strong> : {{model.evaluationRoom}} <br>
+                <strong>평가장비</strong> : {{model.evaluationDevice}} <br>
+                <strong>교과목</strong> : {{model.subjectTitle}} <br>
+                <strong>훈련교사</strong> : {{model.teacherName}} <br>
+                <strong>훈련생</strong> : {{model.studentName}} <br>
+                <strong>문항수</strong> : {{model.questionCount}} <br>
+                <strong>만점기준</strong> : {{model.manjumScore}} <br>
+                <strong>총점</strong> : {{model.score}} / 백분율 : {{model.finalScore}}<br>
+                <strong>수준</strong> : {{model.grade}} <br>
+                <strong>통과여부</strong> : {{model.examPassState}} <br>
+                <strong>평가유형</strong> : {{model.examState}} <br>
+            </div>
+            <div>
+                <div class="text-end mb-3">연번 : {{model.studentNo}}</div>
+                <div class="d-flex">
+                    <table class="sign-table">
+                        <tr>
+                            <td class="sign-header">훈련교사</td>
+                            <td class="sign-header">훈련생</td>
+                        </tr>
+                        <tr>
+                            <td class="sign-box">
+                                <img class="sign-fit" src="{{model.teacherSign}}">
+                            </td>
+                            <td class="sign-box">
+                                {{#model.studentSign}}
+                                    <img class="sign-fit" src="{{model.studentSign}}">
+                                {{/model.studentSign}}
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
-            <div class="card-body">
-                {{#model.subjectElements}}
-                    <div><i>{{.}}</i></div>
-                {{/model.subjectElements}}
-            </div>
+
         </div>
+
+
 
         {{#model.answers}}
             <div class="card mb-4 p-3 position-relative exam-body">

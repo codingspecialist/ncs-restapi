@@ -1,17 +1,41 @@
 {{> layout/header}}
 
 <style>
-    /* 공통 카드 기본 스타일 (목록, 상세 화면 모두 재사용) */
+    /* 기존 스타일 유지 + 아래 새로 추가 */
+    .element-info-box {
+        background-color: #f1f3f5;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .element-info-box h6 {
+        font-weight: bold;
+        color: #343a40;
+        margin-bottom: 1rem;
+    }
+
+    .element-info-box ul {
+        padding-left: 1.2rem;
+        margin-bottom: 0;
+    }
+
+    .element-info-box li {
+        line-height: 1.7;
+        color: #495057;
+        margin-bottom: 0.3rem;
+    }
+
     .paper-list-card {
         background: #ffffff;
         border-radius: 16px;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
         padding: 2.5rem;
-        max-width: 1200px; /* 목록 및 상세 화면 카드 너비 */
         margin: 0 auto;
+        max-width: 1200px;
     }
 
-    /* 목록/상세 화면 공통 헤더 스타일 */
     .list-header {
         background-color: transparent;
         font-size: 1.5rem;
@@ -20,62 +44,10 @@
         margin-bottom: 1.5rem;
         padding-bottom: 1rem;
         display: flex;
-        justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
+        justify-content: flex-end;
         align-items: center;
     }
 
-    /* 버튼 스타일 */
-    .btn-primary {
-        padding: 0.75rem 1.25rem;
-        font-weight: bold;
-        font-size: 1rem;
-        border-radius: 12px;
-        width: auto;
-    }
-
-    /* 테이블 스타일 */
-    .table {
-        margin-bottom: 0;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-
-    .table-responsive {
-        border-radius: 10px;
-        overflow-x: auto;
-        border: 1px solid #dee2e6;
-    }
-
-    .table-responsive .table { /* Ensures inner table has no extra border */
-        border: none;
-        margin-bottom: 0;
-    }
-
-    .table thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: 600;
-        color: #495057;
-        padding: 1rem 0.75rem;
-        white-space: nowrap;
-    }
-
-    .table tbody tr {
-        transition: background-color 0.2s ease-in-out;
-    }
-
-    .table tbody tr:hover {
-        background-color: #f0f8ff;
-    }
-
-    .table tbody td {
-        padding: 0.75rem;
-        vertical-align: middle;
-        border-top: 1px solid #dee2e6;
-        white-space: nowrap;
-    }
-
-    /* 상세 정보 섹션 스타일 */
     .detail-info-section {
         background-color: #f8f9fa;
         border-radius: 8px;
@@ -91,58 +63,20 @@
         display: inline-block;
     }
 
-    .detail-info-section p { /* Style for paragraphs in info section */
-        margin-bottom: 0.5rem;
-    }
-
-    .detail-info-section a { /* Style for links in info section */
-        color: #0d6efd;
-        text-decoration: underline;
-    }
-
-    .detail-info-section div.fw-bold { /* Style for bold div in info section */
-        margin-bottom: 0.75rem;
-    }
-
-    .detail-info-section ul { /* Styling for ul within detail-info-section */
-        padding-left: 20px;
-        line-height: 1.6;
-        color: #495057;
-        margin: 0;
-    }
-
-
-    /* 개별 문제 카드 스타일 */
     .question-card {
         border: 1px solid #dee2e6;
         border-radius: 12px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
     }
 
-    .question-card .card-header { /* 부트스트랩 card-header 스타일 오버라이드 */
-        background-color: #f8f9fa; /* 헤더 배경색 */
-        font-weight: bold;
-        border-bottom: 1px solid #dee2e6;
-        padding: 1rem 1.25rem; /* 패딩 조정 */
+    .question-card .card-body {
+        padding: 1.5rem;
     }
 
     .question-card .card-title {
         color: #212529;
         font-weight: bold;
         margin-bottom: 1rem;
-    }
-
-    .question-card .badge {
-        font-size: 0.85em;
-        padding: 0.5em 0.8em;
-        border-radius: 0.35rem;
-    }
-
-    .question-card .img-fluid {
-        border-radius: 8px;
-        border: 1px solid #f0f0f0;
-        padding: 5px;
-        background-color: #fff;
     }
 
     .question-card .form-check {
@@ -153,27 +87,14 @@
         margin-top: 0.3em;
     }
 
-    /* 시나리오/문제 설명 블록 스타일 */
-    .scenario-description-block {
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        padding: 12px;
-        background-color: #fefefe;
-        margin-bottom: 1rem;
+    .btn-primary {
+        padding: 0.75rem 1.5rem;
+        font-weight: bold;
+        font-size: 1rem;
+        border-radius: 12px;
+        margin-top: 2rem;
     }
 
-    .scenario-description-block p {
-        margin-bottom: 0.5rem;
-    }
-
-    .scenario-description-block a {
-        color: #0d6efd;
-        text-decoration: underline;
-    }
-
-    .scenario-description-block div {
-        color: #343a40;
-    }
 
 </style>
 
@@ -183,11 +104,13 @@
             <a href="/api/paper-menu/paper/{{model.paperId}}/question/save-form" class="btn btn-primary">문제등록</a>
         </div>
 
-        <div class="detail-info-section mb-4">
-            시험일: {{model.evaluationDate}} <br>
-            평가장비: {{model.evaluationDevice}} <br>
-            평가장소: {{model.evaluationRoom}} <br>
-            교과목: {{model.subjectTitle}} <br>
+        <div class="detail-info-section">
+            <strong>시험일:</strong> {{model.evaluationDate}}<br>
+            <strong>시험장소:</strong> {{model.evaluationRoom}}<br>
+            <strong>시험장비:</strong> {{model.evaluationDevice}}<br>
+            <strong>교과목:</strong> {{model.subjectTitle}}<br>
+            <strong>훈련교사:</strong> {{model.teacherName}}<br>
+            <strong>문항수:</strong> {{model.questionCount}}<br>
         </div>
 
         <!-- 과제 정보 박스 -->
@@ -199,9 +122,16 @@
                 <div class="ps-1">{{model.pblTitle}}</div>
             </div>
 
+            <!-- 시나리오 및 상세 가이드 -->
             <div class="mb-3">
-                <div class="fw-bold text-secondary mb-1">📖 시나리오</div>
-                <div class="ps-1">{{model.pblScenario}}</div>
+                <div class="fw-bold text-secondary mb-1">📖 시나리오 및 상세 가이드</div>
+                <div class="ps-1 mb-2">{{model.pblScenario}}</div>
+                {{#model.pblScenarioGuideLink}}
+                    <a href="{{model.pblScenarioGuideLink}}" target="_blank"
+                       class="btn btn-sm btn-outline-secondary">
+                        시나리오 상세 가이드 열기
+                    </a>
+                {{/model.pblScenarioGuideLink}}
             </div>
 
             <div class="mb-3">
@@ -220,22 +150,13 @@
                 </ul>
             </div>
 
-            {{#model.pblScenarioGuideLink}}
-                <div class="mb-3">
-                    <div class="fw-bold text-secondary mb-1">🔗 시나리오 상세 가이드</div>
-                    <a href="{{model.pblScenarioGuideLink}}" target="_blank"
-                       class="ps-1 text-decoration-underline text-primary">
-                        {{model.pblScenarioGuideLink}}
-                    </a>
-                </div>
-            {{/model.pblScenarioGuideLink}}
-
+            <!-- 프로젝트 제출 템플릿 -->
             {{#model.pblSubmitTemplateLink}}
                 <div class="mb-3">
-                    <div class="fw-bold text-secondary mb-1">📎 제출 항목 샘플</div>
+                    <div class="fw-bold text-secondary mb-1">📎 프로젝트 제출 템플릿</div>
                     <a href="{{model.pblSubmitTemplateLink}}" target="_blank"
-                       class="text-decoration-underline text-primary">
-                        {{model.pblSubmitTemplateLink}}
+                       class="btn btn-sm btn-outline-secondary">
+                        제출 템플릿 열기
                     </a>
                 </div>
             {{/model.pblSubmitTemplateLink}}

@@ -236,11 +236,11 @@ public class ExamResponse {
         private String evaluationDate; // 평가일 (subject)
         private String evaluationDevice; // 평가장소
         private String evaluationRoom; // 평가장소
+        private Integer questionCount;
 
         private String subjectTitle; // 교과목 (subject)
         private List<String> subjectElements;
         private List<AnswerDTO> answers;
-        private Integer questionCount;
         private String examState;
         private String reExamReason;
         private String examPassState;

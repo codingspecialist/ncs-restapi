@@ -158,17 +158,15 @@ public class ExamService {
 
         // 4. 시험점수, 수준, 통과여부 업데이트 하기 (이 부분이 주관식 업데이트할때 오류남 - 정답이 여러개니까 로직 다시 짜기)
         double score = examAnswers.stream()
-                .mapToInt(value -> {
-                    if (value.getIsRight()) {
-                        return value.getQuestion()
-                                .getQuestionOptions()
-                                .stream()
-                                .mapToInt(option -> option.getPoint())
-                                .max()
-                                .orElse(0); // 옵션이 없을 경우 0
-                    } else {
-                        return 0;
-                    }
+                .mapToInt(answer -> {
+                    Integer selectedOptionNo = answer.getSelectedOptionNo(); // 사용자가 고른 번호
+                    List<QuestionOption> options = answer.getQuestion().getQuestionOptions();
+
+                    return options.stream()
+                            .filter(opt -> opt.getNo().equals(selectedOptionNo))
+                            .mapToInt(QuestionOption::getPoint)
+                            .findFirst()
+                            .orElse(0);
                 })
                 .sum();
 
@@ -275,15 +273,16 @@ public class ExamService {
         // 4. 시험점수, 수준, 통과여부 업데이트 하기
         double score = examAnswerList.stream()
                 .mapToInt(answer -> {
-                    if (!answer.getIsRight()) return 0;
-                    return answer.getQuestion()
-                            .getQuestionOptions()
-                            .stream()
-                            .filter(QuestionOption::getIsRight)
+                    Integer selectedOptionNo = answer.getSelectedOptionNo(); // 사용자가 고른 번호
+                    List<QuestionOption> options = answer.getQuestion().getQuestionOptions();
+
+                    return options.stream()
+                            .filter(opt -> opt.getNo().equals(selectedOptionNo))
                             .mapToInt(QuestionOption::getPoint)
-                            .findFirst()  // 선택은 1개만 가능
+                            .findFirst()
                             .orElse(0);
-                }).sum();
+                })
+                .sum();
 
         // 5. 재평가지로 시험쳤으면 10%
         if (paper.isReEvaluation()) {

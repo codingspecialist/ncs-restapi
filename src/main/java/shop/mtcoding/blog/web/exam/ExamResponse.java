@@ -135,6 +135,7 @@ public class ExamResponse {
         private String examState;
         private String reExamReason;
         private String examPassState;
+        private Double manjumScore;
         private Double score;
         private Double finalScore;
         private String teacherComment;
@@ -162,6 +163,7 @@ public class ExamResponse {
             this.examState = exam.getExamState();
             this.reExamReason = exam.getReExamReason() == null ? "" : exam.getReExamReason();
             this.examPassState = exam.getPassState();
+            this.manjumScore = exam.getManjumScore();
             this.score = exam.getScore();
             this.finalScore = exam.getFinalScore();
             this.teacherComment = exam.getTeacherComment();
@@ -183,7 +185,7 @@ public class ExamResponse {
             private Integer no;
             private String title;
             private String stimulusImg;
-            private Integer totalPoint;
+            private Integer totalPoint; // 점수
             private Integer answerNumber; // 정답 번호
             private Integer selectedOptionNo; // 학생 선택 번호
             private Integer studentPoint;
@@ -242,6 +244,7 @@ public class ExamResponse {
         private String examState;
         private String reExamReason;
         private String examPassState;
+        private Double manjumScore;
         private Double score;
         private Double finalScore;
         private String teacherComment;
@@ -271,6 +274,7 @@ public class ExamResponse {
             this.examState = exam.getExamState();
             this.reExamReason = exam.getReExamReason() == null ? "" : exam.getReExamReason();
             this.examPassState = exam.getPassState();
+            this.manjumScore = exam.getManjumScore();
             this.score = exam.getScore();
             this.finalScore = exam.getFinalScore();
             this.teacherComment = exam.getTeacherComment();

@@ -90,7 +90,18 @@ public class MyUtil {
         if (currentMaxScore <= 0) {
             throw new IllegalArgumentException("현재 만점은 0보다 커야 합니다.");
         }
-        return (score / currentMaxScore) * 100;
+        double result = (score / currentMaxScore) * 100;
+        return Math.round(result * 10) / 10.0;
+    }
+
+    public static String extractFirstLine(String text) {
+        if (text == null || text.isBlank()) return "";
+
+        int newlineIndex = text.indexOf('\n');
+        if (newlineIndex == -1) {
+            return text.trim(); // 줄바꿈이 없는 경우 전체 리턴
+        }
+        return text.substring(0, newlineIndex).trim(); // 첫 줄만 추출
     }
 
 }

@@ -5,10 +5,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 @Controller
 public class IndexController {
+
+    @GetMapping("/health")
+    public @ResponseBody String health() {
+        return "ok";
+    }
 
     @GetMapping("/")
     public String index() {

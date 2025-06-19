@@ -124,6 +124,7 @@
                         훈련교사 : {{model.teacherName}} <br>
                         훈련생 : {{model.studentName}} <br>
                         문항수 : {{model.questionCount}} <br>
+                        만점기준 : {{model.manjumScore}} <br>
                         총점 : {{model.score}} / 백분율 : {{model.finalScore}}<br>
                         수준 : {{model.grade}} <br>
                         통과여부 : {{model.examPassState}} <br>
@@ -224,13 +225,13 @@
                                 <div class="mb-2">
                                     <a href="{{codeReviewLink}}" target="_blank"
                                        class="btn btn-sm btn-outline-secondary">
-                                        코드 리뷰 보기
+                                        코드 리뷰 하기
                                     </a>
                                 </div>
 
 
                                 <input type="url"
-                                       class="form-control codeReviewInput"
+                                       class="form-control codeReviewPRLink"
                                        name="codeReviewPRLink"
                                        value="{{#codeReviewPRLink}}{{codeReviewPRLink}}{{/codeReviewPRLink}}"
                                        id="codeReviewPRLink-{{questionId}}"

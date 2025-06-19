@@ -52,6 +52,7 @@ public class Exam {
 
     private String passState; // 통과, 미통과, 결석, 미응시
 
+    private Double manjumScore; // 시험 만점 점수
     private Double score; // 시험결과 점수 (재평가라면 10% 감점)
     private Double finalScore; // 감점 후 백분율까지된 점수
     private Integer grade; // 시험결과 수준
@@ -91,9 +92,10 @@ public class Exam {
     }
 
     public void updatePointAndGrade(Double score, Double sumQuestionPoints) {
+        this.manjumScore = sumQuestionPoints;
         this.score = score;
 
-        this.finalScore = MyUtil.scaleTo100(score, sumQuestionPoints);
+        this.finalScore = MyUtil.scaleTo100(score, manjumScore);
 
         if (finalScore >= 90) {
             grade = 5;
@@ -122,6 +124,9 @@ public class Exam {
     }
 
     public static Exam createAbsentExam(Student student, Paper paper) {
+
+        Double manjumScore = paper.sumQuestionPoints();
+
         return Exam.builder()
                 .student(student)
                 .paper(paper)
@@ -136,11 +141,13 @@ public class Exam {
                 .grade(1)
                 .standby(true)
                 .finalScore(0.0)
+                .manjumScore(manjumScore)
                 .build();
     }
 
     @Builder
-    public Exam(Long id, Student student, String teacherName, Subject subject, Paper paper, String examState, String reExamReason, String passState, Double score, Integer grade, Boolean isUse, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, Boolean standby, LocalDateTime createdAt, Double finalScore) {
+    public Exam(Double manjumScore, Long id, Student student, String teacherName, Subject subject, Paper paper, String examState, String reExamReason, String passState, Double score, Integer grade, Boolean isUse, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, Boolean standby, LocalDateTime createdAt, Double finalScore) {
+        this.manjumScore = manjumScore;
         this.id = id;
         this.student = student;
         this.teacherName = teacherName;

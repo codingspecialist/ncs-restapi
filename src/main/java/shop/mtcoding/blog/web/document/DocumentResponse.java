@@ -181,11 +181,12 @@ public class DocumentResponse {
 
         private String evaluationDevice;
         private String evaluationRoom;
-        private List<String> submissionFormats;
-        private String guideLink;
-        private List<String> guideSummaries;
-        private List<String> scorePolicies;
 
+        private String pblScenarioGuideLink;
+        private List<String> optionScenarios; // 가이드 요약본
+        private List<String> pblSubmitFormats; // 제출항목 (notion)
+
+        private List<String> scorePolicies;
         private List<String> subjectElements;
         private List<QuestionDTO> questions;
         private String sign;
@@ -203,9 +204,13 @@ public class DocumentResponse {
 
             this.evaluationDevice = paper.getEvaluationDevice();
             this.evaluationRoom = paper.getEvaluationRoom();
-            //this.submissionFormats = MyUtil.parseMultilineWithoutHyphen(paper.getSubmissionFormat());
-            //this.guideLink = paper.getGuideLink();
-            //this.guideSummaries = MyUtil.parseMultilineWithoutHyphen(paper.getGuideSummary());
+
+            this.pblScenarioGuideLink = paper.getPblScenarioGuideLink();
+            this.optionScenarios = paper.getQuestions().stream()
+                    .map(question -> MyUtil.extractFirstLine(question.getScenario()))
+                    .toList();
+            this.pblSubmitFormats = MyUtil.parseMultilineWithoutHyphen(paper.getPblSubmitFormat());
+
             // TODO (결시자, 재평가자야 0.9 프로 Subject에서 받기)
             this.scorePolicies = Arrays.asList("본평가 배점 : 평가점수 X 1.0", "재평가 배점 : 평가점수 X 0.9", "결시자 배점 : 평가점수 X 0.9");
 
@@ -337,11 +342,18 @@ public class DocumentResponse {
     public static class No3RubricDTO {
         private String teacherName;
         private String evaluationDate; // 평가일 (subject)
-        private String loc; // 평가장소 (임시)
+        private String evaluationRoom; // 평가장소 (임시)
+        private String evaluationDevice; // 평가장비 (임시)
         private String subjectTitle; // 교과목 (subject)
-        private List<String> guideSummaries; // 가이드 요약본
-        private String guideLink;
         private Integer questionCount;
+
+        private String pblTitle;
+        private String pblScenario;
+        private String pblScenarioGuideLink;
+        private List<String> pblSubmitFormats; // 제출항목 (notion)
+        private String pblSubmitTemplateLink; // 제출항목 복제 템플릿 (선택)
+        private List<String> pblChallenges; // 도전과제
+
         private String teacherSign;
         private Integer grade;
         private List<QuestionDTO> questions;
@@ -349,11 +361,17 @@ public class DocumentResponse {
         public No3RubricDTO(Paper paper, List<Question> questions, Teacher teacher) {
             this.teacherName = paper.getSubject().getTeacherName();
             this.evaluationDate = paper.getEvaluationDate().toString();
-            //this.loc = "3호";
+            this.evaluationRoom = paper.getEvaluationRoom();
+            this.evaluationDevice = paper.getEvaluationDevice();
             this.subjectTitle = paper.getSubject().getTitle();
-            //this.guideSummaries = MyUtil.parseMultilineWithoutHyphen(paper.getGuideSummary());
-            //this.guideLink = paper.getGuideLink();
-            this.questionCount = paper.getQuestions().size();
+            this.questionCount = questions.size();
+
+            this.pblTitle = paper.getPblTitle();
+            this.pblScenario = paper.getPblScenario();
+            this.pblScenarioGuideLink = paper.getPblScenarioGuideLink();
+            this.pblSubmitFormats = MyUtil.parseMultilineWithoutHyphen(paper.getPblSubmitFormat());
+            this.pblSubmitTemplateLink = paper.getPblSubmitTemplateLink();
+            this.pblChallenges = MyUtil.parseMultilineWithoutHyphen(paper.getPblChallenge());
             this.teacherSign = teacher.getSign();
             this.grade = paper.getSubject().getGrade();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
@@ -582,7 +600,9 @@ public class DocumentResponse {
         private String examState;
         private String reExamReason;
         private String examPassState;
+        private Double manjumScore;
         private Double score;
+        private Double finalScore;
         private String teacherComment;
         private Integer grade;
         private String teacherSign;
@@ -590,7 +610,8 @@ public class DocumentResponse {
         private Boolean isStudentSign;
         private Integer prevIndex;
         private Integer nextIndex;
-        private Integer no;
+        private Integer studentNo;
+        private String submitLink;
 
         public No4RubricDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher, Integer prevIndex, Integer nextIndex, Integer currentIndex) {
             this.subjectId = exam.getPaper().getSubject().getId();
@@ -609,15 +630,17 @@ public class DocumentResponse {
             this.examState = exam.getExamState();
             this.reExamReason = exam.getReExamReason();
             this.examPassState = exam.getPassState();
+            this.manjumScore = exam.getManjumScore();
             this.score = exam.getScore();
+            this.finalScore = exam.getFinalScore();
             this.teacherComment = exam.getTeacherComment();
             this.grade = exam.getGrade();
             this.teacherSign = teacher.getSign();
             this.studentSign = exam.getStudentSign();
-            this.isStudentSign = exam.getStudentSign() == null ? false : true;
             this.prevIndex = prevIndex;
             this.nextIndex = nextIndex;
-            this.no = currentIndex + 1;
+            this.studentNo = currentIndex + 1;
+            this.submitLink = exam.getSubmitLink();
         }
 
         @Data
@@ -627,9 +650,11 @@ public class DocumentResponse {
             private Integer no;
             private String title;
             private Integer totalPoint; // 배점
-            private Integer answerNumber; // 정답 번호
             private Integer selectedOptionNo; // 학생 선택 번호
             private Integer studentPoint;
+            private String codeReviewLink;
+            private String codeReviewPRLink;
+            private List<String> scenarios;
             private List<OptionDTO> options;
 
             public AnswerDTO(ExamAnswer answer) {
@@ -641,9 +666,11 @@ public class DocumentResponse {
                         .max(Comparator.comparingInt(QuestionOption::getPoint))
                         .orElse(null);
                 this.totalPoint = _option.getPoint();
-                this.answerNumber = _option.getNo();
-                this.selectedOptionNo = answer.getSelectedOptionNo();
+                this.selectedOptionNo = answer.getSelectedOptionNo(); // 기본적으로 1번에 체크되게 하기
                 this.studentPoint = answer.getEarnedPoint();
+                this.codeReviewLink = answer.getCodeReviewLink();
+                this.codeReviewPRLink = answer.getCodeReviewPRLink();
+                this.scenarios = MyUtil.parseMultilineWithoutHyphen(answer.getQuestion().getScenario());
                 this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new AnswerDTO.OptionDTO(option, selectedOptionNo)).toList();
             }
 
@@ -651,14 +678,16 @@ public class DocumentResponse {
             class OptionDTO {
                 private Long optionId;
                 private Integer no;
-                private String content;
+                private String rubricItem;
                 private Boolean isSelect; // 해당 옵션이 선택되었는지 여부
+                private Integer point;
 
                 public OptionDTO(QuestionOption option, Integer selectedOptionNo) {
                     this.optionId = option.getId();
                     this.no = option.getNo();
-                    this.content = option.getContent();
-                    this.isSelect = no == selectedOptionNo ? true : false;
+                    this.rubricItem = option.getRubricItem();
+                    this.isSelect = no.equals(selectedOptionNo);
+                    this.point = option.getPoint();
                 }
             }
         }

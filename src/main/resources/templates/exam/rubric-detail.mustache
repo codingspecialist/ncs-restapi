@@ -285,11 +285,20 @@
         });
 
         $.ajax({
-            url: `/api/exam-menu/exam/${examId}`,
-            type: "put",
-            data: JSON.stringify(requestBody),
-            contentType: "application/json; charset=utf-8"
-        }).done((res) => {
+            url: /api/exam-menu / exam / $
+        {
+            examId
+        }
+    ,
+        type: "put",
+                data
+    :
+        JSON.stringify(requestBody),
+                contentType
+    :
+        "application/json; charset=utf-8"
+    }).
+        done((res) => {
             if (nextExamId) {
                 alert("총평 저장 완료");
                 location.reload();

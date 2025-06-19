@@ -35,7 +35,8 @@ public class ExamModel {
             String reExamReason,
             Long studentId,
             Long paperId,
-            Boolean isAbsent
+            Boolean isAbsent,
+            Boolean standby
     ) {
     }
 }

@@ -33,9 +33,16 @@
                     </td>
                 {{/isAbsent}}
                 {{^isAbsent}}
-                    <td>
-                        <a class="btn btn-outline-primary" href="/api/exam-menu/exam/{{examId}}">상세보기</a>
-                    </td>
+                    {{#standby}}
+                        <td>
+                            <a class="btn btn-outline-primary" href="/api/exam-menu/exam/{{examId}}">상세보기</a>
+                        </td>
+                    {{/standby}}
+                    {{^standby}}
+                        <td>
+                            <a class="btn btn-outline-primary" href="/api/exam-menu/exam/{{examId}}">채점하기</a>
+                        </td>
+                    {{/standby}}
                 {{/isAbsent}}
             </tr>
         {{/models}}

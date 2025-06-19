@@ -57,12 +57,6 @@
         border: 1px solid #e9ecef;
     }
 
-    .detail-info-section strong {
-        color: #343a40;
-        min-width: 90px;
-        display: inline-block;
-    }
-
     .question-card {
         border: 1px solid #dee2e6;
         border-radius: 12px;
@@ -106,15 +100,6 @@
             <strong>훈련교사:</strong> {{model.teacherName}}<br>
             <strong>훈련생:</strong> {{model.studentName}}<br>
             <strong>문항수:</strong> {{model.questionCount}}<br>
-        </div>
-
-        <div class="element-info-box">
-            <h6>평가기준 (교과목 요소)</h6>
-            <ul>
-                {{#model.subjectElements}}
-                    <li>{{.}}</li>
-                {{/model.subjectElements}}
-            </ul>
         </div>
 
         <form>

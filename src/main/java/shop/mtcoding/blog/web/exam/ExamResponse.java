@@ -247,13 +247,13 @@ public class ExamResponse {
         private Double manjumScore;
         private Double score;
         private Double finalScore;
+        private String submitLink;
         private String teacherComment;
         private Integer grade;
         private String teacherSign;
         private String studentSign;
         private Boolean isAbsent;
         private Integer studentNo;
-        private String submitLink;
         private Long prevExamId; // 해당 교과목에 이전 학생 id
         private Long nextExamId; // 해당 교과목에 다음 학생 id
         private Long originExamId;
@@ -277,6 +277,7 @@ public class ExamResponse {
             this.manjumScore = exam.getManjumScore();
             this.score = exam.getScore();
             this.finalScore = exam.getFinalScore();
+            this.submitLink = exam.getSubmitLink();
             this.teacherComment = exam.getTeacherComment();
             this.grade = exam.getGrade();
             this.teacherSign = teacher.getSign();
@@ -286,7 +287,7 @@ public class ExamResponse {
             this.nextExamId = nextExamId;
             this.isAbsent = exam.getReExamReason().equals("결석");
             this.originExamId = originExamId;
-            this.submitLink = exam.getSubmitLink();
+
         }
 
 

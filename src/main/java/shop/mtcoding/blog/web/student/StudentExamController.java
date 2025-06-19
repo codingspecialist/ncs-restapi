@@ -75,10 +75,18 @@ public class StudentExamController {
     @GetMapping("/api/student/exam/{examId}")
     public String studentExamResultDetail(@PathVariable(value = "examId") Long examId, Model model) {
         var modelData = examService.학생_시험결과상세(examId);
-        var respDTO = new StudentExamResponse.ResultDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher());
 
-        model.addAttribute("model", respDTO);
-        return "student/exam-result/detail";
+        if (modelData.exam().getPaper().getEvaluationWay() == EvaluationWay.MCQ) {
+            var respDTO = new StudentExamResponse.McqResultDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher());
+
+            model.addAttribute("model", respDTO);
+            return "student/exam-result/mcq-detail";
+        } else {
+            var respDTO = new StudentExamResponse.RubricResultDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher());
+
+            model.addAttribute("model", respDTO);
+            return "student/exam-result/rubric-detail";
+        }
     }
 
 

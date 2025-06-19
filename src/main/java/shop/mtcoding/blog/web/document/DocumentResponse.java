@@ -500,7 +500,9 @@ public class DocumentResponse {
         private String examState;
         private String reExamReason;
         private String examPassState;
+        private Double manjumScore;
         private Double score;
+        private Double finalScore;
         private String teacherComment;
         private Integer grade;
         private String teacherSign;
@@ -527,7 +529,6 @@ public class DocumentResponse {
             this.examState = exam.getExamState();
             this.reExamReason = exam.getReExamReason();
             this.examPassState = exam.getPassState();
-            this.score = exam.getScore();
             this.teacherComment = exam.getTeacherComment();
             this.grade = exam.getGrade();
             this.teacherSign = teacher.getSign();
@@ -536,6 +537,9 @@ public class DocumentResponse {
             this.prevIndex = prevIndex;
             this.nextIndex = nextIndex;
             this.no = currentIndex + 1;
+            this.manjumScore = exam.getManjumScore();
+            this.score = exam.getScore();
+            this.finalScore = exam.getFinalScore();
         }
 
         @Data

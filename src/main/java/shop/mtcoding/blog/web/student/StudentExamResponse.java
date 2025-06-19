@@ -204,7 +204,6 @@ public class StudentExamResponse {
         // 교과목 번호, 교과목 내 시험 순서
         private Long examId;
         private Long paperId; // 몇번째 시험지에 몇번 학생? (1,2)
-        private Integer studentNo; // 학생번호 필요 다음 버튼 클릭할때!!
         private Integer subjectNo;
         private String courseNameAndRound;
         private String subjectTitle;
@@ -230,7 +229,6 @@ public class StudentExamResponse {
             this.studentId = exam.getStudent().getId();
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
-            this.studentNo = 99;
             this.subjectNo = exam.getPaper().getSubject().getNo();
             this.courseNameAndRound = exam.getStudent().getCourse().getTitle() + "/" + exam.getStudent().getCourse().getRound() + "회차";
             this.subjectTitle = exam.getPaper().getSubject().getTitle();
@@ -254,7 +252,6 @@ public class StudentExamResponse {
             ResultDTO dto = new ResultDTO();
             dto.setExamId(0L);
             dto.setPaperId(mainPaper.getId());
-            dto.setStudentNo(99); // 미지정
             dto.setSubjectNo(mainPaper.getSubject().getNo());
             dto.setCourseNameAndRound(student.getCourse().getTitle() + "/" + student.getCourse().getRound() + "회차");
             dto.setSubjectTitle(mainPaper.getSubject().getTitle());
@@ -274,15 +271,16 @@ public class StudentExamResponse {
         }
     }
 
-    // 학생이 보는거니까, 연번, 이전, 다음, 미이수 결과 보는 번호 같은거 다 지우자.
+
     @Data
-    public static class ResultDetailDTO {
+    public static class RubricResultDetailDTO {
         private Long examId;
         private Long paperId;
         private String studentName;
         private String teacherName;
         private String evaluationDate; // 평가일 (subject)
-        private String loc; // 평가장소 (임시)
+        private String evaluationRoom;
+        private String evaluationDevice;
         private String subjectTitle; // 교과목 (subject)
         private List<String> subjectElements;
         private List<AnswerDTO> answers;
@@ -290,21 +288,24 @@ public class StudentExamResponse {
         private String examState;
         private String reExamReason;
         private String examPassState;
+        private Double manjumScore;
         private Double score;
+        private Double finalScore;
+        private String submitLink;
         private String teacherComment;
         private Integer grade;
         private String teacherSign;
         private String studentSign;
-        private Boolean isStudentSign;
         private Boolean isAbsent;
 
-        public ResultDetailDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher) {
+        public RubricResultDetailDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher) {
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
             this.studentName = exam.getStudent().getName();
             this.teacherName = exam.getTeacherName();
             this.evaluationDate = exam.getPaper().getEvaluationDate().toString();
-            this.loc = "3호";
+            this.evaluationRoom = exam.getPaper().getEvaluationRoom();
+            this.evaluationDevice = exam.getPaper().getEvaluationDevice();
             this.subjectTitle = exam.getPaper().getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
             this.answers = exam.getExamAnswers().stream().map(AnswerDTO::new).toList();
@@ -312,12 +313,14 @@ public class StudentExamResponse {
             this.examState = exam.getExamState();
             this.reExamReason = exam.getReExamReason();
             this.examPassState = exam.getPassState();
+            this.manjumScore = exam.getManjumScore();
             this.score = exam.getScore();
+            this.finalScore = exam.getFinalScore();
+            this.submitLink = exam.getSubmitLink();
             this.teacherComment = exam.getTeacherComment();
             this.grade = exam.getGrade();
             this.teacherSign = teacher.getSign();
             this.studentSign = exam.getStudentSign();
-            this.isStudentSign = exam.getStudentSign() == null ? false : true;
             this.isAbsent = exam.getReExamReason().equals("결석");
         }
 
@@ -327,10 +330,12 @@ public class StudentExamResponse {
             private Long questionId;
             private Integer no;
             private String title;
-            private Integer point;
-            private Integer answerNumber; // 정답 번호
+            private Integer totalPoint; // 배점
             private Integer selectedOptionNo; // 학생 선택 번호
             private Integer studentPoint;
+            private String codeReviewLink;
+            private String codeReviewPRLink;
+            private List<String> scenarios;
             private List<OptionDTO> options;
 
             public AnswerDTO(ExamAnswer answer) {
@@ -338,13 +343,117 @@ public class StudentExamResponse {
                 this.questionId = answer.getQuestion().getId();
                 this.no = answer.getQuestion().getNo();
                 this.title = answer.getQuestion().getTitle();
-                this.point = answer.getEarnedPoint();
+
                 QuestionOption _option = answer.getQuestion().getQuestionOptions().stream()
                         .max(Comparator.comparingInt(QuestionOption::getPoint))
                         .orElse(null);
+                this.totalPoint = _option.getPoint();
+                this.codeReviewLink = answer.getCodeReviewLink();
+                this.codeReviewPRLink = answer.getCodeReviewPRLink();
+                this.scenarios = MyUtil.parseMultilineWithoutHyphen(answer.getQuestion().getScenario());
+                this.selectedOptionNo = answer.getSelectedOptionNo();
+                this.studentPoint = answer.getEarnedPoint();
+                this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new OptionDTO(option, selectedOptionNo)).toList();
+            }
+
+            @Data
+            class OptionDTO {
+                private Long optionId;
+                private Integer no;
+                private String rubricItem;
+                private Boolean isSelect; // 해당 옵션이 선택되었는지 여부
+                private Integer point;
+
+                public OptionDTO(QuestionOption option, Integer selectedOptionNo) {
+                    this.optionId = option.getId();
+                    this.no = option.getNo();
+                    this.rubricItem = option.getRubricItem();
+                    this.isSelect = no.equals(selectedOptionNo);
+                    this.point = option.getPoint();
+                }
+            }
+        }
+    }
+
+
+    // 학생이 보는거니까, 연번, 이전, 다음, 미이수 결과 보는 번호 같은거 다 지우자.
+    @Data
+    public static class McqResultDetailDTO {
+        private Long examId;
+        private Long paperId;
+        private String studentName;
+        private String teacherName;
+        private String evaluationDate; // 평가일 (subject)
+        private String evaluationRoom;
+        private String evaluationDevice;
+        private String subjectTitle; // 교과목 (subject)
+        private List<String> subjectElements;
+        private List<AnswerDTO> answers;
+        private Integer questionCount;
+        private String examState;
+        private String reExamReason;
+        private String examPassState;
+        private Double score;
+        private Double manjumScore;
+        private Double finalScore;
+        private String teacherComment;
+        private Integer grade;
+        private String teacherSign;
+        private String studentSign;
+        private Boolean isAbsent;
+
+        public McqResultDetailDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher) {
+            this.examId = exam.getId();
+            this.paperId = exam.getPaper().getId();
+            this.studentName = exam.getStudent().getName();
+            this.teacherName = exam.getTeacherName();
+            this.evaluationDate = exam.getPaper().getEvaluationDate().toString();
+            this.evaluationRoom = exam.getPaper().getEvaluationRoom();
+            this.evaluationDevice = exam.getPaper().getEvaluationDevice();
+            this.subjectTitle = exam.getPaper().getSubject().getTitle();
+            this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
+            this.answers = exam.getExamAnswers().stream().map(AnswerDTO::new).toList();
+            this.questionCount = exam.getPaper().getQuestions().size();
+            this.examState = exam.getExamState();
+            this.reExamReason = exam.getReExamReason();
+            this.examPassState = exam.getPassState();
+            this.manjumScore = exam.getManjumScore();
+            this.score = exam.getScore();
+            this.finalScore = exam.getFinalScore();
+            this.teacherComment = exam.getTeacherComment();
+            this.grade = exam.getGrade();
+            this.teacherSign = teacher.getSign();
+            this.studentSign = exam.getStudentSign();
+            this.isAbsent = exam.getReExamReason().equals("결석");
+        }
+
+        @Data
+        class AnswerDTO {
+            private Long answerId;
+            private Long questionId;
+            private Integer no;
+            private String title;
+            private Integer totalPoint;
+            private Integer answerNumber; // 정답 번호
+            private Integer selectedOptionNo; // 학생 선택 번호
+            private Integer studentPoint;
+            private String stimulusImg;
+            private List<OptionDTO> options;
+
+            public AnswerDTO(ExamAnswer answer) {
+                this.answerId = answer.getId();
+                this.questionId = answer.getQuestion().getId();
+                this.no = answer.getQuestion().getNo();
+                this.title = answer.getQuestion().getTitle();
+
+                this.stimulusImg = answer.getQuestion().getStimulusImg();
+                QuestionOption _option = answer.getQuestion().getQuestionOptions().stream()
+                        .max(Comparator.comparingInt(QuestionOption::getPoint))
+                        .orElse(null);
+                this.totalPoint = _option.getPoint(); // 배점
                 this.answerNumber = _option.getNo();
                 this.selectedOptionNo = answer.getSelectedOptionNo();
-                this.studentPoint = answer.getIsRight() ? point : 0;
+                this.studentPoint = answer.getEarnedPoint();
                 this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new OptionDTO(option, selectedOptionNo)).toList();
             }
 

@@ -1,7 +1,6 @@
 {{> layout/header}}
 
 <style>
-    /* 공통 카드 스타일 */
     .paper-list-card {
         background: #ffffff;
         border-radius: 16px;
@@ -9,6 +8,20 @@
         padding: 2.5rem;
         max-width: 1200px;
         margin: 0 auto;
+    }
+
+    .page-title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #212529;
+        margin-bottom: 2rem;
+        font-family: 'Noto Sans KR', sans-serif;
+        letter-spacing: -0.5px;
+    }
+
+    input[type="radio"]:checked {
+        accent-color: #007bff;
     }
 
     .detail-info-section {
@@ -21,24 +34,60 @@
         font-size: 1rem;
     }
 
-
-    .text-end {
-        font-size: 0.85rem;
-        line-height: 1.2;
-        color: #6c757d;
+    .sign-table {
+        border-collapse: collapse;
+        font-size: 0.95rem;
     }
 
-    .card .card-title {
+    .sign-table td {
+        border: 1px solid #ccc;
+        padding: 0.5rem;
+        text-align: center;
+    }
+
+    .sign-header {
+        background-color: #f1f3f5;
+        font-weight: bold;
+        color: #212529;
+    }
+
+    .sign-box {
+        height: 80px;
+        width: 120px;
+        background-color: #ffffff;
+    }
+
+    .sign-fit {
+        max-height: 80px;
+        max-width: 100%;
+    }
+
+    .question-card {
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .question-card .card-title {
         font-size: 1.15rem;
         font-weight: bold;
         color: #212529;
-        margin-bottom: 1rem;
     }
 
     .badge {
         font-size: 0.85rem;
-        padding: 0.5em 0.8em;
+        padding: 0.45em 0.8em;
         border-radius: 0.35rem;
+    }
+
+    .img-fluid {
+        max-height: 200px;
+        border-radius: 8px;
+        border: 1px solid #f0f0f0;
+        padding: 5px;
+        background-color: #fff;
     }
 
     .form-check {
@@ -46,89 +95,45 @@
     }
 
     .form-check-input {
-        margin-top: 0.3em;
+        margin-top: 0.35em;
     }
 
     .form-check label {
         margin-bottom: 0;
+        line-height: 1.4;
     }
 
-    .img-fluid {
-        border-radius: 8px;
-        border: 1px solid #f0f0f0;
-        padding: 5px;
-        background-color: #fff;
-        max-height: 200px;
-    }
-
-    .exam-body {
-        border: 1px solid #dee2e6;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
-    }
-
-    .card-header {
-        background-color: #f8f9fa;
-        font-weight: bold;
-        border-bottom: 1px solid #dee2e6;
-    }
-
-    .card-footer {
-        background-color: #f8f9fa;
-        border-top: 1px solid #dee2e6;
-    }
-
-    .sign-table {
-        border-collapse: collapse;
-    }
-
-    .sign-header {
-        font-weight: 600;
-        font-size: 0.9rem;
-        padding: 0.5rem;
-        text-align: center;
-        background-color: #f1f3f5;
-    }
-
-    .sign-box {
-        width: 100px;
-        height: 60px;
-        text-align: center;
-        border: 1px solid #ced4da;
-    }
-
-    .sign-fit {
-        width: auto;
-        height: 100%;
-        object-fit: contain;
-    }
-
-    .pagination .page-link {
-        border-radius: 8px;
-        margin: 0 4px;
-        min-width: 40px;
-        text-align: center;
+    textarea[readonly] {
+        background-color: #f8f9fa !important;
+        resize: none;
     }
 </style>
 
+<!-- 학생 서명 모달 -->
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">서명하세요</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body d-flex justify-content-center">
+                <canvas id="signature-pad" width="400px" height="400px"></canvas>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="saveSignature()" class="btn btn-outline-primary" data-bs-dismiss="modal">
+                    사인
+                </button>
+                <button type="button" onclick="cancelSignature()" class="btn btn-outline-primary"
+                        data-bs-dismiss="modal">취소
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container mt-5 mb-5">
     <div class="paper-list-card">
-
-        <ul class="pagination d-flex justify-content-end">
-            {{#model.prevIndex}}
-                <li class="page-item"><a class="page-link"
-                                         href="/api/document-menu/subject/{{model.subjectId}}/no4?currentIndex={{model.prevIndex}}
-                    ">이전학생</a>
-                </li>
-            {{/model.prevIndex}}
-
-            {{#model.nextIndex}}
-                <li class="page-item"><a class="page-link"
-                                         href="/api/document-menu/subject/{{model.subjectId}}/no4?currentIndex={{model.nextIndex}}
-                    ">다음학생</a>
-                </li>
-            {{/model.nextIndex}}
-        </ul>
 
         <div class="d-flex justify-content-between detail-info-section">
             <div>
@@ -143,31 +148,31 @@
                 <strong>총점</strong> : {{model.score}} / <strong>백분율</strong> : {{model.finalScore}}<br>
                 <strong>수준</strong> : {{model.grade}} <br>
                 <strong>통과여부</strong> : {{model.examPassState}} <br>
-                <strong>평가유형</strong> : {{model.examState}} <br>
             </div>
             <div>
-                <div class="text-end mb-3">연번 : {{model.studentNo}}</div>
-                <div class="d-flex">
-                    <table class="sign-table">
-                        <tr>
-                            <td class="sign-header">훈련교사</td>
-                            <td class="sign-header">훈련생</td>
-                        </tr>
-                        <tr>
-                            <td class="sign-box">
-                                <img class="sign-fit" src="{{model.teacherSign}}">
-                            </td>
-                            <td class="sign-box">
-                                {{#model.studentSign}}
-                                    <img class="sign-fit" src="{{model.studentSign}}">
-                                {{/model.studentSign}}
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                <table class="sign-table">
+                    <tr>
+                        <td class="sign-header">훈련교사</td>
+                        <td class="sign-header">훈련생</td>
+                    </tr>
+                    <tr>
+                        <td class="sign-box">
+                            <img class="sign-fit" src="{{model.teacherSign}}">
+                        </td>
+                        <td class="sign-box">
+                            {{#model.studentSign}}
+                                <img class="sign-fit" src="{{model.studentSign}}">
+                            {{/model.studentSign}}
+                            {{^model.studentSign}}
+                                <div class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#myModal">
+                                    사인하기
+                                </div>
+                            {{/model.studentSign}}
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
-
 
         <!-- 학생 제출 자료 -->
         <div class="card mb-4 border border-secondary-subtle shadow-sm">
@@ -251,14 +256,75 @@
         <div class="card">
             <div class="card-header">총평</div>
             <div class="card-body">
-                <textarea id="teacherComment" class="form-control" rows="5">{{model.teacherComment}}</textarea>
-            </div>
-            <div class="card-footer d-flex justify-content-end">
-                <button type="button" class="btn btn-primary" onclick="sendAnswer({{model.examId}})">총평저장</button>
+                <textarea id="teacherComment" class="form-control" rows="5" readonly>{{model.teacherComment}}</textarea>
             </div>
         </div>
-
     </div>
 </div>
+
+<script>
+    const canvas = document.getElementById('signature-pad');
+    const context = canvas.getContext('2d');
+    context.lineWidth = 4;
+    context.strokeStyle = '#000000';
+
+    let drawing = false, outside = false, lastX = 0, lastY = 0;
+
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', e => {
+        if (drawing) stopDrawing(e, true);
+    });
+    canvas.addEventListener('mouseenter', e => {
+        if (outside && drawing) startDrawing(e, true);
+    });
+
+    function cancelSignature() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function startDrawing(e, continueDrawing = false) {
+        drawing = true;
+        if (!continueDrawing) {
+            lastX = e.offsetX;
+            lastY = e.offsetY;
+        }
+    }
+
+    function draw(e) {
+        if (!drawing) return;
+        context.beginPath();
+        context.moveTo(lastX, lastY);
+        context.lineTo(e.offsetX, e.offsetY);
+        context.stroke();
+        lastX = e.offsetX;
+        lastY = e.offsetY;
+    }
+
+    function stopDrawing(e, leftCanvas = false) {
+        if (!leftCanvas) drawing = false;
+        outside = leftCanvas;
+    }
+
+    function saveSignature() {
+        const dataUrl = canvas.toDataURL();
+        const requestBody = {
+            examId: {{model.examId}},
+            sign: dataUrl
+        };
+
+        $.ajax({
+            url: `/api/student/exam/sign`,
+            method: "PUT",
+            data: JSON.stringify(requestBody),
+            contentType: "application/json; charset=utf-8"
+        }).done(() => location.reload())
+                .fail(res => {
+                    alert(res.responseJSON.msg);
+                    console.log(res.responseJSON.msg);
+                });
+    }
+</script>
 
 {{> layout/footer}}

@@ -34,7 +34,6 @@
         font-size: 1rem;
     }
 
-
     .sign-table {
         border-collapse: collapse;
         font-size: 0.95rem;
@@ -110,25 +109,31 @@
     }
 </style>
 
+<!-- 학생 서명 모달 -->
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">서명하세요</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body d-flex justify-content-center">
+                <canvas id="signature-pad" width="400px" height="400px"></canvas>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="saveSignature()" class="btn btn-outline-primary" data-bs-dismiss="modal">
+                    사인
+                </button>
+                <button type="button" onclick="cancelSignature()" class="btn btn-outline-primary"
+                        data-bs-dismiss="modal">취소
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container mt-5 mb-5">
     <div class="paper-list-card">
-        <ul class="pagination d-flex justify-content-end">
-            {{#model.prevIndex}}
-                <li class="page-item"><a class="page-link"
-                                         href="/api/document-menu/subject/{{model.subjectId}}/no4?currentIndex={{model.prevIndex}}
-                    ">이전학생</a>
-                </li>
-            {{/model.prevIndex}}
-
-            {{#model.nextIndex}}
-                <li class="page-item"><a class="page-link"
-                                         href="/api/document-menu/subject/{{model.subjectId}}/no4?currentIndex={{model.nextIndex}}
-                    ">다음학생</a>
-                </li>
-            {{/model.nextIndex}}
-        </ul>
-
-        <h1 class="page-title">개인별평가표</h1>
 
         <div class="d-flex justify-content-between detail-info-section">
             <div>
@@ -143,10 +148,8 @@
                 <strong>총점</strong> : {{model.score}} / <strong>백분율</strong> : {{model.finalScore}}<br>
                 <strong>수준</strong> : {{model.grade}} <br>
                 <strong>통과여부</strong> : {{model.examPassState}} <br>
-                <strong>평가유형</strong> : {{model.examState}} <br>
             </div>
             <div>
-                <div class="d-flex justify-content-end mb-3">연번 : {{model.no}}</div>
                 <table class="sign-table">
                     <tr>
                         <td class="sign-header">훈련교사</td>
@@ -157,9 +160,14 @@
                             <img class="sign-fit" src="{{model.teacherSign}}">
                         </td>
                         <td class="sign-box">
-                            {{#model.isStudentSign}}
+                            {{#model.studentSign}}
                                 <img class="sign-fit" src="{{model.studentSign}}">
-                            {{/model.isStudentSign}}
+                            {{/model.studentSign}}
+                            {{^model.studentSign}}
+                                <div class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#myModal">
+                                    사인하기
+                                </div>
+                            {{/model.studentSign}}
                         </td>
                     </tr>
                 </table>
@@ -176,7 +184,6 @@
                             <small class="text-muted">점수: {{studentPoint}}점</small>
                         </div>
                     </div>
-
                     <div class="badge bg-secondary mb-3">배점: {{totalPoint}}점</div>
 
                     {{#stimulusImg}}
@@ -188,9 +195,9 @@
                     <div>
                         {{#options}}
                             <div class="form-check mb-2 d-flex align-items-center">
-                                <input class="form-check-input me-2 optionNo" type="radio"
-                                       name="question-{{questionId}}"
-                                       value="{{no}}" {{#isSelect}}checked{{/isSelect}} disabled>
+                                <input class="form-check-input me-2" type="radio"
+                                       name="question-{{questionId}}" value="{{no}}"
+                                       {{#isSelect}}checked{{/isSelect}} disabled>
                                 <label>{{no}}. {{content}}</label>
                             </div>
                         {{/options}}
@@ -202,10 +209,75 @@
         <div class="card">
             <div class="card-header fw-bold">총평</div>
             <div class="card-body">
-                <textarea id="teacherComment" class="form-control" rows="4" readonly>{{model.teacherComment}}</textarea>
+                <textarea class="form-control" rows="4" readonly>{{model.teacherComment}}</textarea>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    const canvas = document.getElementById('signature-pad');
+    const context = canvas.getContext('2d');
+    context.lineWidth = 4;
+    context.strokeStyle = '#000000';
+
+    let drawing = false, outside = false, lastX = 0, lastY = 0;
+
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', e => {
+        if (drawing) stopDrawing(e, true);
+    });
+    canvas.addEventListener('mouseenter', e => {
+        if (outside && drawing) startDrawing(e, true);
+    });
+
+    function cancelSignature() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function startDrawing(e, continueDrawing = false) {
+        drawing = true;
+        if (!continueDrawing) {
+            lastX = e.offsetX;
+            lastY = e.offsetY;
+        }
+    }
+
+    function draw(e) {
+        if (!drawing) return;
+        context.beginPath();
+        context.moveTo(lastX, lastY);
+        context.lineTo(e.offsetX, e.offsetY);
+        context.stroke();
+        lastX = e.offsetX;
+        lastY = e.offsetY;
+    }
+
+    function stopDrawing(e, leftCanvas = false) {
+        if (!leftCanvas) drawing = false;
+        outside = leftCanvas;
+    }
+
+    function saveSignature() {
+        const dataUrl = canvas.toDataURL();
+        const requestBody = {
+            examId: {{model.examId}},
+            sign: dataUrl
+        };
+
+        $.ajax({
+            url: `/api/student/exam/sign`,
+            method: "PUT",
+            data: JSON.stringify(requestBody),
+            contentType: "application/json; charset=utf-8"
+        }).done(() => location.reload())
+                .fail(res => {
+                    alert(res.responseJSON.msg);
+                    console.log(res.responseJSON.msg);
+                });
+    }
+</script>
 
 {{> layout/footer}}

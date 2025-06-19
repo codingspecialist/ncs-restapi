@@ -138,8 +138,11 @@ public class ExamService {
         examRepository.save(exam);
     }
 
+    // 총평 남기기 or 루브릭 채점하기
     @Transactional
     public void 강사_총평남기기(Long examId, ExamRequest.UpdateDTO reqDTO) {
+
+        System.out.println("받은 점수표 : " + reqDTO);
         Exam examPS = examRepository.findById(examId)
                 .orElseThrow(() -> new Exception404("응시한 시험이 존재하지 않아요"));
 
@@ -153,7 +156,7 @@ public class ExamService {
             });
         });
 
-        // 4. 시험점수, 수준, 통과여부 업데이트 하기
+        // 4. 시험점수, 수준, 통과여부 업데이트 하기 (이 부분이 주관식 업데이트할때 오류남 - 정답이 여러개니까 로직 다시 짜기)
         double score = examAnswers.stream()
                 .mapToInt(value -> {
                     if (value.getIsRight()) {
@@ -173,6 +176,8 @@ public class ExamService {
         if (examPS.getPaper().isReEvaluation()) {
             score = score * examPS.getSubject().getScorePolicy();
         }
+
+        System.out.println("시험지 총점 15점 나와야함 : " + examPS.getPaper().sumQuestionPoints());
 
         // 6. 점수 입력 수준 입력
         examPS.updatePointAndGrade(score, examPS.getPaper().sumQuestionPoints());
@@ -223,6 +228,7 @@ public class ExamService {
                 }
             });
         });
+
 
         examAnswerRepository.saveAll(examAnswerList);
     }

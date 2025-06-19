@@ -293,7 +293,8 @@ public class DocumentResponse {
             this.evaluationRoom = paper.getEvaluationRoom();
             //this.submissionFormats = MyUtil.parseMultilineWithoutHyphen(paper.getSubmissionFormat());
             // TODO (결시자, 재평가자야 0.9 프로 Subject에서 받기)
-            this.scorePolicies = Arrays.asList("본평가 배점 : 평가점수 X 1.0", "재평가 배점 : 평가점수 X 0.9", "결시자 배점 : 평가점수 X 0.9");
+            double scorePolicy = paper.getSubject().getScorePolicy();
+            this.scorePolicies = Arrays.asList("본평가 배점 : 평가점수 X 1.0", "재평가 배점 : 평가점수 X " + scorePolicy, "결시자 배점 : 평가점수 X " + scorePolicy);
 
             this.subjectElements = subject.getElements().stream().map(subjectElement -> subjectElement.getSubtitle()).toList();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
@@ -382,7 +383,6 @@ public class DocumentResponse {
             private Long questionId;
             private Integer no;
             private String title;
-            private String scenarioLink;
             private List<String> scenarios; // 가이드 요약본
             private List<OptionDTO> options;
 
@@ -390,7 +390,6 @@ public class DocumentResponse {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-                //this.scenarioLink = question.getScenarioLink();
                 this.scenarios = MyUtil.parseMultiline(question.getScenario());
                 this.options = question.getQuestionOptions().stream().map(QuestionDTO.OptionDTO::new).toList();
             }

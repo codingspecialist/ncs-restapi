@@ -20,6 +20,7 @@ public class CourseSubjectRequest {
         private Integer grade;       // 수준
         private Integer totalTime;   // 능력단위 시간
         private Integer no;          // 순번
+        private Double scorePolicy;
         private LearningWay learningWay;  // "이론", "실습", "이론+실습"
         private LocalDate startDate;
         private LocalDate endDate;
@@ -37,6 +38,7 @@ public class CourseSubjectRequest {
                     .learningWay(learningWay)   // ✅ enum으로 변환
                     .startDate(startDate)
                     .endDate(endDate)
+                    .scorePolicy(scorePolicy)
                     .course(course)
                     .build();
         }

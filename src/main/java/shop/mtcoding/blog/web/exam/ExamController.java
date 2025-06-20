@@ -48,9 +48,9 @@ public class ExamController {
         return "exam/subject-list";
     }
 
-    @GetMapping("/api/exam-menu/subject/{subjectId}/exam")
-    public String teacherResult(Model model, @PathVariable("subjectId") Long subjectId) {
-        var modelData = examService.강사_교과목별시험결과(subjectId);
+    @GetMapping("/api/exam-menu/course/{courseId}/subject/{subjectId}/exam")
+    public String teacherResult(Model model, @PathVariable("courseId") Long courseId, @PathVariable("subjectId") Long subjectId) {
+        var modelData = examService.강사_교과목별시험결과(courseId, subjectId);
         model.addAttribute("models", modelData);
         return "exam/list";
     }

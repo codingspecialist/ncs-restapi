@@ -42,11 +42,11 @@ public class ExamService {
     private final ExamQueryRepository examQueryRepository;
 
 
-    public List<ExamModel.Result> 강사_교과목별시험결과(Long subjectId) {
+    public List<ExamModel.Result> 강사_교과목별시험결과(Long courseId, Long subjectId) {
         Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
                 .orElseThrow(() -> new Exception404("본평가 시험지가 존재하지 않아요"));
 
-        List<ExamModel.Result> rawList = examQueryRepository.findExamResult(subjectId);
+        List<ExamModel.Result> rawList = examQueryRepository.findExamResult(subjectId, courseId);
 
         List<ExamModel.Result> modelData = rawList.stream()
                 .map(r -> r.examId() == null ?
@@ -75,6 +75,10 @@ public class ExamService {
 
         return new ExamModel.ExamItems(examListPS);
     }
+
+    // boss 로그인 시나리오
+    // 과정 2
+    // 학생 9
 
     public ExamModel.PaperItems 학생_응시가능한시험지목록(User sessionUser) {
         Long courseId = sessionUser.getStudent().getCourse().getId();
@@ -210,6 +214,10 @@ public class ExamService {
         Student student = studentRepository.findByUserId(sessionUser.getId());
 
         // 2. Exam 생성
+//        private Long paperId;
+//        private String teacherName;
+//        private String submitLink;
+//        private List<StudentExamRequest.RubricSaveDTO.AnswerDTO> answers;
         Exam exam = reqDTO.toEntity(paper, student, "채점중", 0.0, 0, "");
 
         Exam examPS = examRepository.save(exam);

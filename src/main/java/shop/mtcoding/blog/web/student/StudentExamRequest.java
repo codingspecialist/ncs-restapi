@@ -47,6 +47,8 @@ public class StudentExamRequest {
                     .subject(paper.getSubject())
                     .student(student)
                     .teacherName(teacherName)
+                    .submitLink(submitLink)
+                    .teacherComment("")
                     .passState(passState)
                     .score(score)
                     .grade(grade)
@@ -54,6 +56,7 @@ public class StudentExamRequest {
                     .reExamReason(reExamReason)
                     .standby(false)
                     .finalScore(0.0)
+                    .manjumScore(paper.sumQuestionPoints())
                     .build();
         }
     }

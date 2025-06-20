@@ -111,7 +111,8 @@
                 </thead>
                 <tbody>
                 {{#models}}
-                    <tr class="click-tr" onclick="location.href='/api/exam-menu/subject/{{subjectId}}/exam'">
+                    <tr class="click-tr"
+                        onclick="location.href='/api/exam-menu/course/{{courseId}}/subject/{{subjectId}}/exam'">
                         <td>{{no}}</td>
                         <td>{{code}}</td>
                         <td>{{title}}</td>

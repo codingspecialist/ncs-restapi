@@ -13,7 +13,7 @@ import java.util.List;
 public class ExamQueryRepository {
     private final EntityManager em;
 
-    public List<ExamModel.Result> findExamResult(Long subjectId) {
+    public List<ExamModel.Result> findExamResult(Long subjectId, Long courseId) {
         String sql = """
                     SELECT 
                       e.id,
@@ -34,11 +34,13 @@ public class ExamQueryRepository {
                       AND e.subject_id = ?
                       AND e.is_use = true
                     LEFT JOIN subject_tb sb ON e.subject_id = sb.id
+                    where s.course_id = ?
                     ORDER BY s.name
                 """;
 
         Query query = em.createNativeQuery(sql);
         query.setParameter(1, subjectId);
+        query.setParameter(2, courseId);
 
         List<Object[]> rows = query.getResultList();
         List<ExamModel.Result> resultList = new ArrayList<>();

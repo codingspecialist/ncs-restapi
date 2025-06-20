@@ -228,52 +228,50 @@
 
 
 <script>
-    function sendAnswer() {
+    async function sendAnswer() {
         const paperId = "{{model.paperId}}";
         const teacherName = "{{model.teacherName}}";
         const submitLink = document.querySelector("#answer-submitLink").value.trim();
 
-        let requestBody = {
-            paperId: paperId,
-            teacherName: teacherName,
-            submitLink: submitLink,
-            answers: []
-        };
+        if (!submitLink) {
+            alert("제출 링크는 필수입니다.");
+            return;
+        }
 
-        const questionCards = document.querySelectorAll(".question-card");
-
-        questionCards.forEach(card => {
-            const questionNo = card.querySelector(".questionNo").value;
-            const codeReviewInput = card.querySelector(".codeReviewLink");
-            const codeReviewLink = codeReviewInput && codeReviewInput.value.trim() !== ""
-                    ? codeReviewInput.value.trim()
-                    : null;
-
-            requestBody.answers.push({
-                questionNo: Number(questionNo),
-                codeReviewLink: codeReviewLink
-            });
+        const answers = Array.from(document.querySelectorAll(".question-card")).map(card => {
+            const questionNo = Number(card.querySelector(".questionNo").value);
+            const codeReviewLink = card.querySelector(".codeReviewLink")?.value.trim() || null;
+            return {questionNo, codeReviewLink};
         });
 
-        fetch("/api/student/exam/rubric", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(requestBody)
-        })
-                .then(res => {
-                    if (!res.ok) return res.json().then(err => Promise.reject(err));
-                    return res.json();
-                })
-                .then(res => {
-                    console.log("제출 성공", res);
-                    location.href = "/api/student/paper";
-                })
-                .catch(err => {
-                    alert(err.msg || "제출 중 오류가 발생했습니다.");
-                });
+        const payload = {
+            paperId,
+            teacherName,
+            submitLink,
+            answers
+        };
+
+        try {
+            const response = await fetch("/api/student/exam/rubric", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.msg || "제출 실패");
+            }
+
+            const result = await response.json();
+            console.log("제출 성공", result);
+            location.href = "/api/student/paper";
+
+        } catch (error) {
+            alert(error.message);
+        }
     }
+
 </script>
 
 

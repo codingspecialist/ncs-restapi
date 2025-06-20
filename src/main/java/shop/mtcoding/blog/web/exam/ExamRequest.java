@@ -32,7 +32,8 @@ public class ExamRequest {
                         .filter(QuestionOption::getIsRight) // 정답 후보들만 필터링
                         .anyMatch(option -> option.getNo().equals(selectedOptionNo)); // 수험생의 선택과 일치하는지
 
-                answer.update(selectedOptionNo, isRight, codeReviewPRLink);
+                String finalReviewLink = (codeReviewPRLink != null && codeReviewPRLink.trim().isEmpty()) ? null : codeReviewPRLink;
+                answer.update(selectedOptionNo, isRight, finalReviewLink);
 
                 answer.autoGrade();
             }

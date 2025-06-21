@@ -8,6 +8,7 @@
     .section-title {
         font-weight: bold;
         margin-top: 2rem;
+        color: #343a40;
     }
 
     .page-title {
@@ -20,72 +21,101 @@
         letter-spacing: -0.5px;
     }
 
-    /* 외부 테이블 */
     .rubric-table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 1rem;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
     }
 
     .rubric-table th,
     .rubric-table td {
-        border: 1px solid #ccc;
-        padding: 12px 14px;
+        border: 1px solid #dee2e6;
+        padding: 16px 20px;
         font-size: 15px;
         vertical-align: top;
     }
 
     .rubric-table th {
-        background-color: #c4d2d9;
+        background-color: #f1f3f5;
         text-align: center;
-        font-weight: bold;
-        white-space: nowrap;
+        font-weight: 600;
+        color: #495057;
     }
 
     .rubric-table td:first-child {
-        width: 220px;
-        background-color: #f4f6f8;
-        font-weight: bold;
+        width: 240px;
+        background-color: #f9fafb;
+        font-weight: 600;
+        color: #343a40;
     }
 
-    /* 내부 루브릭표 */
     .inner-rubric-table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 13px;
-        background-color: #f8f9fa;
+        font-size: 14px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
     }
 
     .inner-rubric-table th,
     .inner-rubric-table td {
-        border: 1px solid #ddd;
-        padding: 6px 10px;
-        line-height: 1.4;
-        text-align: left;
+        border: 1px solid #e9ecef;
+        padding: 10px 14px;
+        line-height: 1.5;
     }
 
     .inner-rubric-table th {
-        background-color: #e9ecef;
-        font-weight: bold;
+        background-color: #f8f9fa;
+        font-weight: 600;
         text-align: center;
-        white-space: nowrap;
+        color: #495057;
     }
 
     .inner-rubric-table td:first-child {
-        width: 60px;
+        width: 80px;
         text-align: center;
-        background-color: #fff;
+        font-weight: bold;
+        background-color: #f1f3f5;
     }
 
-    .note {
-        color: red;
-        margin-top: 1rem;
-        font-weight: 500;
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #ced4da;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
+
+    .custom-table th {
+        background-color: #e9ecef;
+        font-weight: bold;
+        text-align: center;
+        padding: 14px 18px;
+        border: 1px solid #ced4da;
+        color: #343a40;
+    }
+
+    .custom-table td {
+        padding: 16px 20px;
+        border: 1px solid #dee2e6;
+        background-color: #ffffff;
+        font-size: 15px;
+    }
+
+    .custom-table td.text-start {
+        text-align: left;
+        color: #495057;
+    }
+
+
 </style>
 
 <div class="container p-5">
-
     <div class="page-title">
         <h1>평가기준</h1>
     </div>
@@ -97,7 +127,7 @@
 
     <div class="mb-4">
         <h5 class="section-title">※ 교과목 및 세부내용</h5>
-        <table class="table table-bordered">
+        <table class="custom-table">
             <thead>
             <tr>
                 <th>교과목</th>

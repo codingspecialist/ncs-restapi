@@ -383,5 +383,6 @@ insert into exam_answer_tb
 (exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
 values (6, false, 11, 2, null, now(), 0);
 insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
-values (6, false, 12, 3, null, now(), 0);
+(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point, code_review_link)
+values (6, false, 12, 3, null, now(), 0,
+        'https://github.com/metacoding-books/aws-v2/blob/master/src/main/java/site/metacoding/awsv2/HelloController.java');

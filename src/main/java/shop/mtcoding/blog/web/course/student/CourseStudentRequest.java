@@ -15,7 +15,7 @@ public class CourseStudentRequest {
         public Student toEntity(Course course, String authCode) {
             return Student.builder()
                     .birthday(birthday)
-                    .studentStatus(StudentStatus.ENROLLED)
+                    .studentStatus(StudentStatus.ENROLL)
                     .name(name)
                     .course(course)
                     .authCode(authCode)

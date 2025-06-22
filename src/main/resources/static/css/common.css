@@ -85,7 +85,6 @@
 }
 
 .table-responsive .table {
-    border: none;
     margin-bottom: 0;
 }
 
@@ -97,6 +96,44 @@
     color: #495057;
     padding: 1rem 0.75rem;
     white-space: nowrap;
+    text-align: left;
+}
+
+/* 모든 th 요소 왼쪽 정렬 */
+.table th {
+    text-align: left !important;
+}
+
+/* table-bordered 테이블의 th도 동일하게 적용 */
+.table-bordered th {
+    text-align: left !important;
+}
+
+/* table-bordered 테이블 스타일 통일 - 더 연한 테두리 */
+.table-bordered,
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #e9ecef !important;
+}
+
+/* 테이블 하단 테두리 보이게 수정 */
+.table tbody tr:last-child td {
+    border-bottom: 1px solid #e9ecef !important;
+}
+
+.table-bordered tbody tr:last-child td {
+    border-bottom: 1px solid #e9ecef !important;
+}
+
+/* Bootstrap 기본 검은색 테두리 제거 */
+.table-bordered,
+.table-bordered>thead>tr>th,
+.table-bordered>tbody>tr>th,
+.table-bordered>tfoot>tr>th,
+.table-bordered>thead>tr>td,
+.table-bordered>tbody>tr>td,
+.table-bordered>tfoot>tr>td {
+    border-color: #e9ecef !important;
 }
 
 /* 테이블 바디 */
@@ -217,6 +254,7 @@
     border: 1px solid #dee2e6;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    margin-bottom: 1rem;
 }
 
 .question-card .card-header {
@@ -234,6 +272,7 @@
     color: #212529;
     font-weight: bold;
     margin-bottom: 1rem;
+    font-size: 1.15rem;
 }
 
 .question-card .badge {
@@ -248,6 +287,19 @@
     padding: 5px;
     background-color: #fff;
     max-height: 200px;
+}
+
+.question-card .form-check {
+    font-size: 0.95rem;
+}
+
+.question-card .form-check-input {
+    margin-top: 0.3em;
+}
+
+.question-card .form-check label {
+    margin-bottom: 0;
+    line-height: 1.4;
 }
 
 /* ===== 공통 페이징 ===== */

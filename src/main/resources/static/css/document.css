@@ -292,51 +292,8 @@
     margin: 0;
 }
 
-/* 개별 문제 카드 스타일 */
-.question-card {
-    border: 1px solid #dee2e6;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
-}
-
-.question-card .card-header {
-    background-color: #f8f9fa;
-    font-weight: bold;
-    border-bottom: 1px solid #dee2e6;
-    padding: 1rem 1.25rem;
-}
-
-.question-card .card-title {
-    color: #212529;
-    font-weight: bold;
-    margin-bottom: 1rem;
-}
-
-.question-card .badge {
-    font-size: 0.85rem;
-    padding: 0.5em 0.8em;
-    border-radius: 0.35rem;
-}
-
-.question-card .form-check {
-    font-size: 0.95rem;
-}
-
-.question-card .form-check-input {
-    margin-top: 0.3em;
-}
-
-.question-card .form-check label {
-    margin-bottom: 0;
-}
-
-.question-card .img-fluid {
-    border-radius: 8px;
-    border: 1px solid #f0f0f0;
-    padding: 5px;
-    background-color: #fff;
-    max-height: 200px;
-}
+/* 개별 문제 카드 스타일 - common.css로 이동됨 */
+/* .question-card 관련 스타일 제거 */
 
 /* 서명 관련 스타일 */
 .signature-img {
@@ -362,7 +319,6 @@
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background-color: #007bff;
     color: white;
     text-align: center;
     line-height: 24px;

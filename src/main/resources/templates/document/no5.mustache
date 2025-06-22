@@ -1,15 +1,53 @@
 {{> layout/header}}
 
 <style>
+    /* no5.mustache 전용 테이블 스타일 - 모든 테두리 색상 통일 */
+    .table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 0;
+        border: 1px solid #dee2e6;
+    }
+
     .table th,
     .table td {
         padding: 0.5rem;
         vertical-align: middle;
         text-align: center;
+        border: 1px solid #dee2e6;
     }
 
     .table th {
         background-color: #f8f9fa;
+        font-weight: bold;
+        text-align: center !important;
+    }
+
+    /* 테이블 외곽 테두리 */
+    .table {
+        border: 1px solid #dee2e6;
+    }
+
+    /* 테이블 헤더 하단 테두리 */
+    .table thead th {
+        border-bottom: 1px solid #dee2e6;
+        text-align: center !important;
+    }
+
+    /* 테이블 바디 마지막 행 하단 테두리 */
+    .table tbody tr:last-child td {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    /* 테이블 첫 번째 열과 마지막 열의 좌우 테두리 */
+    .table th:first-child,
+    .table td:first-child {
+        border-left: 1px solid #dee2e6;
+    }
+
+    .table th:last-child,
+    .table td:last-child {
+        border-right: 1px solid #dee2e6;
     }
 
     .page-title {
@@ -100,9 +138,9 @@
         <tr>
             <th>작성자</th>
             <td>
-                <span class="content">
+                <span class="content" style="display: flex; align-items: center; justify-content: center; gap: 5px; position: relative;">
                 {{model.author}} <span class="signature">(인)</span>
-                <img src="{{model.sign}}" class="signature-img" alt="signature">
+                <img src="{{model.sign}}" class="signature-img" alt="signature" style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%);">
                 </span>
             </td>
 
@@ -144,14 +182,12 @@
         </div>
     </div>
 
-    <div class="content-section">
+    <div class="content-section mb-3">
         <p><strong>* 첨부 - 평가결과보고서, 실시증빙, 훈련생개별평가(평가채점표, 평가물)</strong></p>
         <p>평가결과 일체 및 원본 데이터 제출 완료.</p>
     </div>
-
-    <div class="text-end mt-4">
-        <p>끝.</p>
-    </div>
 </div>
 
-{{> layout/footer}}
+</main>
+</body>
+</html>

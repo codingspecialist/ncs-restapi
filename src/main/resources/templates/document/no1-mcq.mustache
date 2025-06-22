@@ -1,4 +1,25 @@
 {{> layout/header}}
+<style>
+    .table th {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table th {
+        background-color: #c4d2d9;
+    }
+
+    .page-title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #212529;
+        margin-bottom: 2rem;
+        font-family: 'Noto Sans KR', sans-serif;
+        letter-spacing: -0.5px;
+    }
+
+</style>
 
 <div class="container p-5">
 
@@ -112,7 +133,7 @@
                                 <td>{{title}} ({{point}}점)</td>
                                 <td>
                                     {{#options}}
-                                        {{no}}. {{content}}  <input type="radio" {{#isRight}}checked{{/isRight}}><br>
+                                        {{no}}. {{content}}<input type="radio" {{#isRight}}checked{{/isRight}}><br>
                                     {{/options}}
                                 </td>
                             </tr>

@@ -73,7 +73,7 @@
                                 <td>{{startDate}}</td>
                                 <td>{{endDate}}</td>
                                 <td>{{evaluationDate}}</td>
-                                <td>{{reEvaluationDate}}</td>
+                                <td>{{revaluationDate}}</td>
                             </tr>
                         {{/model.subjects}}
                         </tbody>
@@ -86,30 +86,26 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th>연번</th>
-                            <th>학생ID</th>
-                            <th>학생명</th>
-                            <th>생년월일</th>
-                            <th>성별</th>
-                            <th>연락처</th>
-                            <th>이메일</th>
-                            <th>주소</th>
-                            <th>수료여부</th>
-                            <th>총평</th>
+                            <th style="width: 10%">이름</th>
+                            <th style="width: 7%">생일</th>
+                            <th style="width: 7%">상태</th>
+                            <th style="width: 10%">중탈날짜</th>
+                            <th style="width: 10%">중탈이유</th>
+                            <th style="width: 7%">훈련수준</th>
+                            <th style="width: 7%">인증</th>
+                            <th style="width: 42%">학생총평</th>
                         </tr>
                         </thead>
                         <tbody>
                         {{#model.students}}
                             <tr>
-                                <td>{{no}}</td>
-                                <td>{{code}}</td>
                                 <td>{{name}}</td>
-                                <td>{{birth}}</td>
-                                <td>{{gender}}</td>
-                                <td>{{phone}}</td>
-                                <td>{{email}}</td>
-                                <td>{{address}}</td>
+                                <td>{{birthday}}</td>
                                 <td>{{studentStatus}}</td>
+                                <td>{{dropOutDate}}</td>
+                                <td>{{dropOutReason}}</td>
+                                <td>{{grade}}</td>
+                                <td>{{authCode}}</td>
                                 <td class="comment-cell">{{comment}}</td>
                             </tr>
                         {{/model.students}}
@@ -119,7 +115,19 @@
             </div>
 
         </div>
+
     </div>
+
 </div>
+
+<script>
+    // 부트스트랩 탭 활성화 로직
+    // 페이지 로드 시 tabNum 값에 따라 탭 활성화
+    document.addEventListener('DOMContentLoaded', function () {
+        let selectedTabNum = document.getElementById("tabNum").value;
+        let myTab = new bootstrap.Tab(document.getElementById(selectedTabNum == 0 ? 'subject-tab' : 'student-tab'));
+        myTab.show();
+    });
+</script>
 
 {{> layout/footer}}

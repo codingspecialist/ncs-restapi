@@ -442,32 +442,54 @@ body {
     font-family: 'Noto Sans KR', sans-serif;
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 main {
-    min-height: calc(100vh - 200px);
+    flex: 1 0 auto;
 }
 
 footer {
+    flex-shrink: 0;
     background-color: #f8f9fa;
     border-top: 1px solid #dee2e6;
-    padding: 2rem 0;
-    margin-top: auto;
+    padding: 2rem 1rem;
+    text-align: center;
+    font-size: 0.95rem;
+    color: #6c757d;
 }
 
 footer h6 {
-    color: #495057;
-    font-weight: 600;
-    margin-bottom: 1rem;
+    font-weight: bold;
+    color: #343a40;
+    margin-bottom: 0.5rem;
 }
 
 .footer-btn {
+    margin: 0.25rem;
+    font-size: 0.875rem;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
     background-color: #007bff;
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
     text-decoration: none;
     display: inline-block;
-    margin-top: 0.5rem;
+}
+
+/* ===== Index 페이지 전용 스타일 ===== */
+
+/* Index 페이지에서 footer가 가려지지 않도록 여백 확보 */
+.index-container {
+    padding-bottom: 2rem;
+}
+
+/* 튜토리얼 영상 섹션 아래 여백 */
+.tutorial-section {
+    margin-bottom: 2rem;
 }
 
 /* ===== 캔버스/모달 ===== */

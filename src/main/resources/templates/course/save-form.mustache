@@ -1,104 +1,5 @@
 {{> layout/header}}
 
-<style>
-    .subject-form-card {
-        background: #ffffff;
-        border-radius: 16px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-        padding: 2.5rem;
-        max-width: 900px;
-        margin: 0 auto;
-    }
-
-    .subject-form-card .card-header {
-        background-color: transparent;
-        font-size: 1.5rem;
-        font-weight: bold;
-        border-bottom: 2px solid #eee;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-    }
-
-    .form-label {
-        font-weight: 600;
-        margin-bottom: 0.3rem;
-    }
-
-    .form-control, .form-select {
-        border-radius: 10px;
-    }
-
-    .btn-primary {
-        padding: 0.75rem;
-        font-weight: bold;
-        font-size: 1rem;
-        border-radius: 12px;
-    }
-
-    .form-section {
-        margin-bottom: 1.4rem;
-    }
-
-    .teacher-dnd-section {
-        background-color: #f5f7fa;
-        border-radius: 12px;
-        padding: 20px;
-        margin-top: 30px;
-        margin-bottom: 30px;
-        box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
-    }
-
-    .teacher-box-container {
-        display: flex;
-        justify-content: space-between;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
-
-    .teacher-box {
-        flex: 1;
-        min-width: 250px;
-        background-color: #ffffff;
-        border: 2px dashed #d3d3d3;
-        border-radius: 12px;
-        padding: 15px;
-        min-height: 240px;
-        overflow-y: auto;
-        transition: background-color 0.3s;
-    }
-
-    .teacher-box:hover {
-        background-color: #f0f8ff;
-    }
-
-    .teacher-box b {
-        display: block;
-        font-size: 16px;
-        margin-bottom: 12px;
-        color: #343a40;
-    }
-
-    .teacher-item {
-        background-color: #e9ecef;
-        border: 1px solid #ced4da;
-        border-radius: 8px;
-        padding: 8px 12px;
-        margin-bottom: 6px;
-        cursor: grab;
-        font-size: 14px;
-        color: #495057;
-    }
-
-    .teacher-item:hover {
-        background-color: #dee2e6;
-    }
-
-    .all-teacher-list {
-        max-height: 130px;
-        overflow-y: auto;
-    }
-</style>
-
 <div class="container mt-5 mb-5">
     <div class="subject-form-card">
         <div class="card-header">과정 등록</div>
@@ -165,7 +66,7 @@
                                oninput="filterTeachers(this.value)">
                         <div id="all-teacher-list" class="all-teacher-list">
                             {{#models}}
-                                <div class="teacher-item" draggable="true" data-id="{{id}}" data-name="{{teacherName}}">
+                                <div class="teacher-item js-teacher-item" draggable="true" data-id="{{id}}" data-name="{{teacherName}}">
                                     {{nameAndUsername}}
                                 </div>
                             {{/models}}
@@ -191,67 +92,63 @@
     let dragged;
 
     document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.teacher-item').forEach(item => {
+        document.querySelectorAll('.js-teacher-item').forEach(item => {
             item.addEventListener('dragstart', (e) => dragged = e.target);
         });
     });
 
     ['#all-teachers', '#main-teacher', '#sub-teachers'].forEach(selector => {
         const box = document.querySelector(selector);
+        box.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
 
-        box.addEventListener('dragover', e => e.preventDefault());
+        box.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (dragged) {
+                const targetBox = e.currentTarget;
+                const draggedId = dragged.getAttribute('data-id');
+                const draggedName = dragged.getAttribute('data-name');
 
-        box.addEventListener('drop', () => {
-            const draggedFrom = dragged.parentElement.id;
-            const mainBox = document.querySelector('#main-teacher');
-            const subBox = document.querySelector('#sub-teachers');
-            const allBox = document.querySelector('#all-teacher-list');
-            const currentMain = mainBox.querySelector('.teacher-item');
+                // 메인 강사 박스에 드롭된 경우
+                if (targetBox.id === 'main-teacher') {
+                    // 기존 메인 강사 제거
+                    const existingMainTeacher = targetBox.querySelector('.teacher-item');
+                    if (existingMainTeacher) {
+                        document.getElementById('all-teachers').querySelector('.all-teacher-list').appendChild(existingMainTeacher);
+                    }
 
-            if (selector === '#main-teacher') {
-                if (mainBox.contains(dragged)) return;
-                if (currentMain) {
-                    (draggedFrom === 'sub-teachers' ? subBox : allBox).appendChild(currentMain);
+                    // 새 메인 강사 추가
+                    targetBox.appendChild(dragged);
+                    document.getElementById('mainTeacherInput').value = draggedId;
+                    document.getElementById('mainTeacherNameInput').value = draggedName;
                 }
-                mainBox.innerHTML = '<b>메인 강사 (1명)</b>';
-                mainBox.appendChild(dragged);
-            } else if (selector === '#sub-teachers') {
-                if (subBox.contains(dragged) || mainBox.contains(dragged)) return;
-                subBox.appendChild(dragged);
-            } else {
-                if (allBox.contains(dragged)) return;
-                allBox.appendChild(dragged);
+                // 보조 강사 박스에 드롭된 경우
+                else if (targetBox.id === 'sub-teachers') {
+                    targetBox.appendChild(dragged);
+                }
+                // 전체 강사 목록으로 돌아간 경우
+                else if (targetBox.id === 'all-teachers') {
+                    targetBox.querySelector('.all-teacher-list').appendChild(dragged);
+                    // 메인 강사에서 제거된 경우 hidden 필드 초기화
+                    if (document.getElementById('mainTeacherInput').value === draggedId) {
+                        document.getElementById('mainTeacherInput').value = '';
+                        document.getElementById('mainTeacherNameInput').value = '';
+                    }
+                }
             }
-
-            updateHiddenInputs();
         });
     });
 
-    function updateHiddenInputs() {
-        const main = document.querySelector('#main-teacher .teacher-item');
-        const subs = document.querySelectorAll('#sub-teachers .teacher-item');
-
-        document.querySelector('#mainTeacherInput').value = main ? main.dataset.id : '';
-        document.querySelector('#mainTeacherNameInput').value = main ? main.dataset.name : '';
-
-        document.querySelectorAll('input[name="subTeacherIds"]').forEach(el => el.remove());
-
-        const form = document.querySelector('#courseForm');
-        subs.forEach(sub => {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'subTeacherIds';
-            input.value = sub.dataset.id;
-            form.appendChild(input);
-        });
-    }
-
-    function filterTeachers(keyword) {
-        keyword = keyword.trim().toLowerCase();
-        const items = document.querySelectorAll('#all-teacher-list .teacher-item');
-        items.forEach(item => {
-            const name = item.dataset.name.toLowerCase();
-            item.style.display = name.includes(keyword) ? 'block' : 'none';
+    function filterTeachers(searchTerm) {
+        const teacherItems = document.querySelectorAll('.js-teacher-item');
+        teacherItems.forEach(item => {
+            const teacherName = item.textContent.toLowerCase();
+            if (teacherName.includes(searchTerm.toLowerCase())) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
         });
     }
 </script>

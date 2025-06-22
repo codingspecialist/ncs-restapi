@@ -1,0 +1,246 @@
+/* ===== 과정 관련 스타일 ===== */
+
+/* 과정 목록/상세 페이지 카드 */
+.paper-list-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    padding: 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.paper-list-card .list-header {
+    background-color: transparent;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-bottom: 2px solid #eee;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* 과정 요약 정보 */
+.course-summary-info {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+    color: #495057;
+}
+
+/* ===== 과정 탭 스타일 ===== */
+
+/* 탭 스타일 */
+.nav-tabs {
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+.nav-tabs .nav-item .nav-link {
+    border-radius: 8px 8px 0 0;
+    margin-right: 5px;
+    border: 1px solid #dee2e6;
+    border-bottom: none;
+    color: #495057;
+    font-weight: 600;
+    background-color: #f8f9fa;
+    transition: all 0.2s ease-in-out;
+}
+
+.nav-tabs .nav-item .nav-link.active {
+    background-color: #ffffff;
+    color: #007bff;
+    border-color: #dee2e6;
+    border-bottom-color: #ffffff;
+}
+
+.tab-content {
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 16px 16px;
+    padding: 1.5rem;
+    background-color: #ffffff;
+    overflow: hidden;
+}
+
+/* ===== 과정 폼 스타일 ===== */
+
+/* 과정 폼 카드 */
+.subject-form-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    padding: 2.5rem;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.subject-form-card .card-header {
+    background-color: transparent;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-bottom: 2px solid #eee;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+}
+
+/* 폼 요소 */
+.form-label {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.form-control,
+.form-select {
+    border-radius: 10px;
+}
+
+.form-section {
+    margin-bottom: 1.4rem;
+}
+
+/* ===== 강사 드래그 앤 드롭 ===== */
+
+/* 강사 드래그 앤 드롭 */
+.teacher-dnd-section {
+    background-color: #f5f7fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.teacher-box-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.teacher-box {
+    flex: 1;
+    min-width: 250px;
+    background-color: #ffffff;
+    border: 2px dashed #d3d3d3;
+    border-radius: 12px;
+    padding: 15px;
+    min-height: 240px;
+    overflow-y: auto;
+    transition: background-color 0.3s;
+}
+
+.teacher-box:hover {
+    background-color: #f0f8ff;
+}
+
+.teacher-box b {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 12px;
+    color: #343a40;
+}
+
+.teacher-item {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    cursor: grab;
+    font-size: 14px;
+    color: #495057;
+}
+
+.teacher-item:hover {
+    background-color: #dee2e6;
+}
+
+.all-teacher-list {
+    max-height: 130px;
+    overflow-y: auto;
+}
+
+/* ===== 학생 총평 컬럼 ===== */
+
+/* 학생 총평 컬럼 */
+.comment-cell {
+    white-space: normal !important;
+    word-break: break-all;
+    max-width: 250px;
+}
+
+/* ===== 과정 요소 아이템 ===== */
+
+/* 과정 요소 아이템 */
+.subject-element-item {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.subject-element-item:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
+/* ===== 과정 목록 테이블 스타일 ===== */
+
+/* 테이블 스타일 */
+.table {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* table-responsive 컨테이너에 border-radius 적용 */
+.table-responsive {
+    border-radius: 10px;
+    overflow-x: auto;
+    border: 1px solid #dee2e6;
+}
+
+/* .table-responsive 안에 있는 .table에 추가 border 없애기 */
+.table-responsive .table {
+    border: none;
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+    padding: 1rem 0.75rem;
+    white-space: nowrap;
+}
+
+.table tbody tr {
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.table tbody tr:hover {
+    background-color: #f0f8ff;
+}
+
+.table tbody td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    border-top: 1px solid #dee2e6;
+    white-space: nowrap;
+}
+
+/* 버튼 스타일 */
+.btn-primary {
+    padding: 0.75rem 1.25rem;
+    font-weight: bold;
+    font-size: 1rem;
+    border-radius: 12px;
+    width: auto;
+}

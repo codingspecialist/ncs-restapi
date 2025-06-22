@@ -1,57 +1,5 @@
 {{> layout/header}}
 
-<style>
-    .paper-form-card {
-        background: #ffffff;
-        border-radius: 16px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-        padding: 2.5rem;
-        max-width: 840px;
-        margin: 0 auto;
-    }
-
-    .paper-form-card .card-header {
-        background-color: transparent;
-        font-size: 1.5rem;
-        font-weight: bold;
-        border-bottom: 2px solid #eee;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-    }
-
-    .form-label {
-        font-weight: 600;
-        margin-bottom: 0.3rem;
-    }
-
-    .form-control,
-    .form-select {
-        border-radius: 10px;
-    }
-
-    .btn-primary {
-        padding: 0.75rem;
-        font-weight: bold;
-        font-size: 1rem;
-        border-radius: 12px;
-        width: 100%; /* 버튼 너비를 100%로 설정 */
-    }
-
-    .form-section {
-        margin-bottom: 1.4rem; /* 일관된 섹션 간격 */
-    }
-
-    /* 서명 패드 스타일 */
-    #signature-pad {
-        border: 1px solid #dee2e6; /* 캔버스 테두리 추가 */
-        border-radius: 10px;
-        background-color: #f8f9fa; /* 캔버스 배경색 */
-        display: block; /* 가운데 정렬을 위해 */
-        margin: 0 auto; /* 캔버스 가운데 정렬 */
-        max-width: 100%; /* 반응형 */
-    }
-</style>
-
 <div class="container mt-5 mb-5">
     <div class="paper-form-card">
         <div class="card-header">선생님 안녕하세요. 사인을 저장해주세요.</div>
@@ -197,7 +145,6 @@
             console.error("사인 저장 에러:", xhr);
         });
     }
-
 </script>
 
 {{> layout/footer}}

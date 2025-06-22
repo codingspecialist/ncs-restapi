@@ -1,58 +1,6 @@
 {{> layout/header}}
 <input type="hidden" id="paperId" value="{{model.paperId}}">
 
-<style>
-    .paper-form-card {
-        background: #ffffff;
-        border-radius: 16px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-        padding: 2.5rem;
-        max-width: 840px;
-        margin: 0 auto;
-    }
-
-    .form-label {
-        font-weight: 600;
-        margin-bottom: 0.3rem;
-    }
-
-    .form-control,
-    .form-select {
-        border-radius: 10px;
-    }
-
-    .btn-primary {
-        padding: 0.75rem;
-        font-weight: bold;
-        font-size: 1rem;
-        border-radius: 12px;
-        width: 100%;
-    }
-
-    .form-section {
-        margin-bottom: 1.5rem;
-    }
-
-    .questionItem {
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 1rem;
-        background-color: #f9f9f9;
-        margin-top: 1rem;
-    }
-
-    /* 첫 번째 questionItem 위에는 마진 없음 */
-    .questionItem:first-child {
-        margin-top: 0;
-    }
-
-    /* rubric-box의 기본 상태는 숨김 */
-    .rubric-box {
-        margin-top: 0.75rem;
-        display: none; /* 이 부분이 CSS에 추가되었습니다. */
-    }
-</style>
-
 <div class="container mt-5 mb-5">
     <div class="paper-form-card">
         <form id="questionForm" enctype="multipart/form-data">
@@ -99,22 +47,22 @@
     function addOption(no = optionCounter) {
         const box = document.querySelector("#questionBox");
         const div = document.createElement("div");
-        div.className = "questionItem";
+        div.className = "js-question-item";
         div.innerHTML = `
-            <input type="hidden" class="optionNo" value="${no}">
+            <input type="hidden" class="js-option-no" value="${no}">
             <div class="mb-2">
                 <label class="form-label">옵션 내용</label>
-                <input type="text" class="form-control optionContent" placeholder="옵션 내용 입력">
+                <input type="text" class="form-control js-option-content" placeholder="옵션 내용 입력">
             </div>
             <div class="form-check">
-                <input type="checkbox" class="form-check-input optionCorrect" id="correct-${no}">
+                <input type="checkbox" class="form-check-input js-option-correct" id="correct-${no}">
                 <label class="form-check-label" for="correct-${no}">정답으로 설정</label>
             </div>
-            <div class="rubric-box">
+            <div class="js-rubric-box">
                 <label class="form-label">정답 루브릭 설명</label>
-                <input type="text" class="form-control optionRubric" placeholder="정답 기준 설명">
+                <input type="text" class="form-control js-option-rubric" placeholder="정답 기준 설명">
                 <label class="form-label mt-2">배점</label>
-                <input type="number" class="form-control optionPoint" placeholder="예: 10" min="1">
+                <input type="number" class="form-control js-option-point" placeholder="예: 10" min="1">
             </div>
         `;
         box.appendChild(div);
@@ -126,17 +74,17 @@
     };
 
     document.addEventListener("change", (e) => {
-        if (e.target.classList.contains("optionCorrect")) {
+        if (e.target.classList.contains("js-option-correct")) {
             const clickedCheckbox = e.target;
-            const checkboxes = document.querySelectorAll(".optionCorrect");
+            const checkboxes = document.querySelectorAll(".js-option-correct");
 
             // 1. 모든 체크박스의 루브릭 박스를 숨기고 값을 초기화합니다.
             //    그리고 클릭된 체크박스를 제외한 나머지는 체크를 해제합니다.
             checkboxes.forEach(cb => {
-                const item = cb.closest(".questionItem");
-                const rubricBox = item.querySelector(".rubric-box");
-                const rubricInput = item.querySelector(".optionRubric");
-                const pointInput = item.querySelector(".optionPoint");
+                const item = cb.closest(".js-question-item");
+                const rubricBox = item.querySelector(".js-rubric-box");
+                const rubricInput = item.querySelector(".js-option-rubric");
+                const pointInput = item.querySelector(".js-option-point");
 
                 // 모든 루브릭 박스를 숨기고 값 초기화
                 rubricBox.style.display = "none";
@@ -151,8 +99,8 @@
 
             // 2. 이제 클릭된 체크박스가 'checked' 상태라면 해당 루브릭 박스만 보이게 합니다.
             if (clickedCheckbox.checked) {
-                const item = clickedCheckbox.closest(".questionItem");
-                const rubricBox = item.querySelector(".rubric-box");
+                const item = clickedCheckbox.closest(".js-question-item");
+                const rubricBox = item.querySelector(".js-rubric-box");
                 rubricBox.style.display = "block";
             }
             // 만약 클릭된 체크박스가 checked가 아니라면 (사용자가 직접 해제한 경우),
@@ -178,14 +126,14 @@
             });
         });
 
-        const optionItems = document.querySelectorAll("#questionBox .questionItem");
+        const optionItems = document.querySelectorAll("#questionBox .js-question-item");
 
         for (const item of optionItems) {
-            const optionNo = item.querySelector(".optionNo").value;
-            const optionContent = item.querySelector(".optionContent").value;
-            const isCorrect = item.querySelector(".optionCorrect").checked;
-            const rubricItem = item.querySelector(".optionRubric").value;
-            const pointValue = item.querySelector(".optionPoint").value;
+            const optionNo = item.querySelector(".js-option-no").value;
+            const optionContent = item.querySelector(".js-option-content").value;
+            const isCorrect = item.querySelector(".js-option-correct").checked;
+            const rubricItem = item.querySelector(".js-option-rubric").value;
+            const pointValue = item.querySelector(".js-option-point").value;
 
             formData.options.push({
                 optionNo: optionNo,
@@ -198,14 +146,27 @@
         // 서버 전송 로직 추가
         fetch(`/api/paper-menu/paper/${formData.paperId}/question/save`, {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+                "Content-Type": "application/json; charset=utf-8"
+            },
             body: JSON.stringify(formData)
-        }).then(async res => {
-            if (!res.ok) throw new Error((await res.json()).msg);
-            location.href = `/api/paper-menu/paper/${formData.paperId}`;
-        }).catch(err => {
-            alert(err.message);
-        });
+        })
+            .then(response => {
+                if (response.ok) {
+                    location.href = `/api/paper-menu/paper/${formData.paperId}`;
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data) {
+                    alert(data.msg);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("문제 등록 중 오류가 발생했습니다.");
+            });
     }
 
     function convertFileToBase64(fileInput, callback) {
@@ -214,8 +175,12 @@
             callback("");
             return;
         }
+
         const reader = new FileReader();
-        reader.onload = () => callback(reader.result);
+        reader.onload = function (e) {
+            const base64 = e.target.result.split(',')[1];
+            callback(base64);
+        };
         reader.readAsDataURL(file);
     }
 </script>

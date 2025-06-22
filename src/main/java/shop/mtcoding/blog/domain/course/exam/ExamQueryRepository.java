@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import shop.mtcoding.blog.domain.course.student.StudentStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +26,10 @@ public class ExamQueryRepository {
                       e.grade,
                       e.pass_state,
                       e.re_exam_reason,
-                      e.standby,
+                      e.grading_complete,
                       s.id AS student_id,
                       e.paper_id AS paper_id,
+                      s.student_status
                     FROM exam_tb e
                     RIGHT OUTER JOIN student_tb s
                       ON s.id = e.student_id
@@ -55,14 +57,15 @@ public class ExamQueryRepository {
             Integer grade = row[6] != null ? ((Number) row[6]).intValue() : null;
             String passState = (String) row[7];
             String reExamReason = row[8] != null ? row[8].toString() : "";
-            Boolean standby = (Boolean) row[9];
+            Boolean gradingComplete = (Boolean) row[9];
             Long studentId = row[10] != null ? ((Number) row[10]).longValue() : null;
             Long paperId = row[11] != null ? ((Number) row[11]).longValue() : null;
-            Boolean isAbsent = false;
+            String studentStatus = (String) row[12];
+            Boolean isAbsent = score == null;
 
             resultList.add(new ExamModel.Result(examId,
                     studentName, subjectTitle, examState, teacherName,
-                    score, grade, passState, reExamReason, studentId, paperId, isAbsent, standby
+                    score, grade, passState, reExamReason, studentId, paperId, StudentStatus.valueOf(studentStatus), isAbsent, gradingComplete
             ));
 
 

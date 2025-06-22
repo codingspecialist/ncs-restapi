@@ -54,7 +54,7 @@ public class StudentExamRequest {
                     .grade(grade)
                     .examState(paper.getPaperType().toKorean())
                     .reExamReason(reExamReason)
-                    .standby(false)
+                    .gradingComplete(false)
                     .finalScore(0.0)
                     .manjumScore(paper.sumQuestionPoints())
                     .build();
@@ -113,7 +113,7 @@ public class StudentExamRequest {
                     .grade(grade)
                     .examState(paper.getPaperType().toKorean())
                     .reExamReason(reExamReason)
-                    .standby(true)
+                    .gradingComplete(true)
                     .finalScore(0.0)
                     .build();
         }

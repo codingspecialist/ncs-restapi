@@ -62,6 +62,7 @@ public class ExamService {
                                 "",
                                 r.studentId(),
                                 paperPS.getId(),
+                                r.studentStatus(),
                                 true, true)
                         : r
                 ).toList();

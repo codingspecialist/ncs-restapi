@@ -69,7 +69,7 @@ public class Exam {
 
     // ------------- 객관식이 아닐때 받아야함
     private String submitLink;
-    private Boolean standby; // 채점중 (false, true)
+    private Boolean gradingComplete; // (true 채점완료, false 채점안됨)
 
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
     private List<ExamAnswer> examAnswers = new ArrayList<>();
@@ -116,7 +116,7 @@ public class Exam {
             passState = "미통과";
             reExamReason = "60점미만";
         }
-        standby = true;
+        gradingComplete = true;
     }
 
     public void setNotUse() {
@@ -139,14 +139,14 @@ public class Exam {
                 .passState("미통과")
                 .isUse(true)
                 .grade(1)
-                .standby(true)
+                .gradingComplete(false)
                 .finalScore(0.0)
                 .manjumScore(manjumScore)
                 .build();
     }
 
     @Builder
-    public Exam(Double manjumScore, Long id, Student student, String teacherName, Subject subject, Paper paper, String examState, String reExamReason, String passState, Double score, Integer grade, Boolean isUse, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, Boolean standby, LocalDateTime createdAt, Double finalScore) {
+    public Exam(Double manjumScore, Long id, Student student, String teacherName, Subject subject, Paper paper, String examState, String reExamReason, String passState, Double score, Integer grade, Boolean isUse, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, Boolean gradingComplete, LocalDateTime createdAt, Double finalScore) {
         this.manjumScore = manjumScore;
         this.id = id;
         this.student = student;
@@ -164,7 +164,7 @@ public class Exam {
         this.teacherComment = teacherComment;
         this.commentUpdatedAt = commentUpdatedAt;
         this.submitLink = submitLink;
-        this.standby = standby;
+        this.gradingComplete = gradingComplete;
         this.createdAt = createdAt;
         this.finalScore = finalScore;
     }

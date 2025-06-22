@@ -1,5 +1,6 @@
 package shop.mtcoding.blog.domain.course.exam;
 
+import shop.mtcoding.blog.domain.course.student.StudentStatus;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
@@ -35,8 +36,9 @@ public class ExamModel {
             String reExamReason,
             Long studentId,
             Long paperId,
+            StudentStatus studentStatus,
             Boolean isAbsent,
-            Boolean standby
+            Boolean gradingComplete
     ) {
     }
 }

@@ -228,7 +228,7 @@ public class ExamResponse {
 
     @Data
     public static class ResultRubricDetailDTO {
-        private Boolean standby;
+        private Boolean gradingComplete;
         private Long examId;
         private Long paperId;
         private String studentName;
@@ -259,7 +259,7 @@ public class ExamResponse {
         private Long originExamId;
 
         public ResultRubricDetailDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher, Long prevExamId, Long nextExamId, Integer currentIndex, Long originExamId) {
-            this.standby = exam.getStandby();
+            this.gradingComplete = exam.getGradingComplete();
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
             this.studentName = exam.getStudent().getName();

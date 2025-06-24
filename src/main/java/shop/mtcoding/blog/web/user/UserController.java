@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import shop.mtcoding.blog.core.errors.exception.api.Exception401;
 import shop.mtcoding.blog.core.utils.ApiUtil;
+import shop.mtcoding.blog.domain.user.SessionUser;
 import shop.mtcoding.blog.domain.user.User;
-import shop.mtcoding.blog.domain.user.UserModel;
 import shop.mtcoding.blog.domain.user.UserService;
 import shop.mtcoding.blog.domain.user.UserType;
 
@@ -59,10 +59,8 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(UserRequest.LoginDTO reqDTO) {
-        UserModel.Session modelData = userService.로그인(reqDTO);
-        session.setAttribute("sessionUser", modelData.user());
-
-        return ResponseEntity.ok();
+        SessionUser sessionUser = userService.로그인(reqDTO);
+        return ResponseEntity.ok(sessionUser);
     }
 
     @GetMapping("/logout")

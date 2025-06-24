@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import shop.mtcoding.blog.core.errors.exception.api.Exception401;
 import shop.mtcoding.blog.core.utils.JwtEnum;
 import shop.mtcoding.blog.core.utils.JwtUtil;
+import shop.mtcoding.blog.domain.user.SessionUser;
 import shop.mtcoding.blog.domain.user.User;
 import shop.mtcoding.blog.domain.user.student.StudentRepository;
 import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
@@ -40,13 +41,7 @@ public class JwtAuthorizationFilter implements Filter {
 
         try {
             User user = JwtUtil.verify(jwt);
-
-            SessionUser sessionUser = switch (user.getRole()) {
-                case STUDENT -> studentRepository.findByUserId(user.getId()).orElseThrow();
-                case TEACHER -> teacherRepository.findByUserId(user.getId()).orElseThrow();
-                default -> throw new RuntimeException("지원하지 않는 역할입니다");
-            };
-
+            SessionUser sessionUser = new SessionUser(user.getId(), user.getRole(), jwt, null);
             request.setAttribute("sessionUser", sessionUser);
             chain.doFilter(request, response);
         } catch (SignatureVerificationException | JWTDecodeException e) {

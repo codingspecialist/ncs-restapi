@@ -24,22 +24,14 @@ public class UserService {
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
 
-    public UserModel.Session 로그인(UserRequest.LoginDTO reqDTO) {
+    public SessionUser 로그인(UserRequest.LoginDTO reqDTO) {
         User userET = userRepository.findByUsernameAndPassword(reqDTO.getUsername(), reqDTO.getPassword())
                 .orElseThrow(() -> new Exception401("인증되지 않았습니다"));
-
-        SessionUser sessionUser = switch (userET.getRole()) {
-            case STUDENT -> studentRepository.findByUserId(userET.getId())
-                    .orElseThrow(() -> new Exception401("학생 정보가 없습니다"));
-            case TEACHER -> teacherRepository.findByUserId(userET.getId())
-                    .orElseThrow(() -> new Exception401("강사 정보가 없습니다"));
-            default -> throw new Exception401("알 수 없는 역할입니다: " + userET.getRole());
-        };
 
         String accessToken = JwtUtil.create(userET);
         String refreshToken = JwtUtil.createRefresh(userET);
 
-        return new UserModel.Session(sessionUser, accessToken, refreshToken);
+        return new SessionUser(userET.getId(), userET.getRole(), accessToken, refreshToken);
     }
 
 

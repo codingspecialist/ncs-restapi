@@ -184,7 +184,7 @@ public class ExamResponse {
             private Long questionId;
             private Integer no;
             private String title;
-            private String stimulusImg;
+            private String exContent;
             private Integer totalPoint; // 점수
             private Integer answerNumber; // 정답 번호
             private Integer selectedOptionNo; // 학생 선택 번호
@@ -196,7 +196,7 @@ public class ExamResponse {
                 this.questionId = answer.getQuestion().getId();
                 this.no = answer.getQuestion().getNo();
                 this.title = answer.getQuestion().getTitle();
-                this.stimulusImg = answer.getQuestion().getStimulusImg();
+                this.exContent = answer.getQuestion().getExContent();
                 // 객관식일때는, isRight인것의 점수를 가져오면 되는데, 객관식이 아닐때는, 정답이 여러개일수 있기 때문에 가장 높은점수를 가져와야 해서 아래 코드 필수임
                 QuestionOption _option = answer.getQuestion().getQuestionOptions().stream()
                         .max(Comparator.comparingInt(QuestionOption::getPoint))

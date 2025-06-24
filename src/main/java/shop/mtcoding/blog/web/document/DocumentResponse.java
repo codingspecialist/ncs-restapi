@@ -443,7 +443,7 @@ public class DocumentResponse {
             private Long questionId;
             private Integer no;
             private String title;
-            private String stimulusImg;
+            private String exContent;
             private Integer totalPoint; // 배점
             private List<OptionDTO> options;
 
@@ -451,7 +451,7 @@ public class DocumentResponse {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-                this.stimulusImg = question.getStimulusImg();
+                this.exContent = question.getExContent();
                 this.totalPoint = question.getQuestionOptions()
                         .stream()
                         .mapToInt(o -> o.getPoint())
@@ -551,7 +551,7 @@ public class DocumentResponse {
             private Integer answerNumber; // 정답 번호
             private Integer selectedOptionNo; // 학생 선택 번호
             private Integer studentPoint;
-            private String stimulusImg;
+            private String exContent;
             private List<OptionDTO> options;
 
             public AnswerDTO(ExamAnswer answer) {
@@ -566,7 +566,7 @@ public class DocumentResponse {
                 this.answerNumber = _option.getNo();
                 this.selectedOptionNo = answer.getSelectedOptionNo();
                 this.studentPoint = answer.getEarnedPoint();
-                this.stimulusImg = answer.getQuestion().getStimulusImg();
+                this.exContent = answer.getQuestion().getExContent();
                 this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new AnswerDTO.OptionDTO(option, selectedOptionNo)).toList();
             }
 

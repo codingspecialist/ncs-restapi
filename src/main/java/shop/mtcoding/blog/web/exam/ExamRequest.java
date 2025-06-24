@@ -1,7 +1,7 @@
 package shop.mtcoding.blog.web.exam;
 
 import lombok.Data;
-import shop.mtcoding.blog.core.errors.exception.api.ApiException400;
+import shop.mtcoding.blog.core.errors.exception.api.Exception400;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
@@ -25,7 +25,7 @@ public class ExamRequest {
 
             public void update(Question question, ExamAnswer answer) {
                 if (selectedOptionNo == null) {
-                    throw new ApiException400("모든 문제에 대한 답안을 제출해야 됩니다");
+                    throw new Exception400("모든 문제에 대한 답안을 제출해야 됩니다");
                 }
 
                 boolean isRight = question.getQuestionOptions().stream()

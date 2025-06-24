@@ -129,41 +129,41 @@ values (3, now(), 'ORIGINAL', '2024-06-08', 'PROJECT', '인터넷 가능한 PC',
 - 통합테스트');
 
 -- 1번 시험지의 문제 2개 (1,2)
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
-values (1, '다음 중 for문 설명으로 틀린것은?', 1, now(), 1, '/img/ex.png');
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
-values (2, '다음 중 while문 설명으로 틀린것은?', 1, now(), 2, '/img/ex.png');
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
+values (1, '다음 중 for문 설명으로 틀린것은?', 1, now(), 1, 'ex)지문(보기) 영역입니다.');
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
+values (2, '다음 중 while문 설명으로 틀린것은?', 1, now(), 2, 'ex)지문(보기) 영역입니다.');
 
 -- 2번 시험지의 문제 5개 (3,4,5,6,7)
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
 values (1, '다음 중 select 설명으로 틀린것은?', 2, now(), 3, null);
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
 values (2, '다음 중 insert 설명으로 틀린것은?', 2, now(), 4, null);
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
 values (3, '다음 중 update 설명으로 틀린것은?', 2, now(), 5, null);
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
 values (4, '다음 중 delete 설명으로 틀린것은?', 2, now(), 6, null);
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
 values (5, '다음 중 dml 설명으로 틀린것은?', 2, now(), 7, null);
 
 -- 3번 시험지의 문제 2개 (8,9)
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
-values (1, '다음 중 스레드 설명으로 틀린것은?', 3, now(), 1, '/img/ex.png');
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, stimulus_img)
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
+values (1, '다음 중 스레드 설명으로 틀린것은?', 3, now(), 1, 'ex)지문(보기) 영역입니다.');
+insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
 values (2, '다음 중 소켓 설명으로 틀린것은?', 3, now(), 2, null);
 
 -- 4번 시험지의 문제 1개 (10)
-INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_img, title, scenario)
+INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, ex_content, title, scenario)
 VALUES (1, now(), 4, 8, NULL, '백엔드 설계능력',
         '온라인 강의 플랫폼의 강의 등록 기능을 설계하시오.
 - 요구사항: 강의명, 강사명, 가격, 소개글 등록
 - 기술조건: MVC 패턴 기반 설계, 도메인 모델 작성, RESTful API 구조 명세');
-INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_img, title, scenario)
+INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, ex_content, title, scenario)
 VALUES (2, now(), 4, 9, NULL, 'RestAPI 구현능력', '블로그 서비스의 게시글 CRUD API를 구현하시오.
 - 요구사항: 게시글 등록/조회/수정/삭제
 - 기술조건: Spring Boot 기반 REST API, 예외 처리 및 응답 메시지 통일
 ');
-INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, stimulus_img, title, scenario)
+INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, ex_content, title, scenario)
 VALUES (3, now(), 4, 10, NULL, '커뮤니케이션능력',
         '팀 프로젝트 회의록을 작성하고, 팀원들과 공유 및 피드백을 주고받는 시나리오를 설명하시오.
 - 요구사항: 회의록 작성 → 피드백 공유 → 수정본 반영

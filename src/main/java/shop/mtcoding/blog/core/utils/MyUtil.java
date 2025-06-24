@@ -1,7 +1,7 @@
 package shop.mtcoding.blog.core.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import shop.mtcoding.blog.core.errors.exception.Exception500;
+import shop.mtcoding.blog.core.errors.exception.api.Exception500;
 import shop.mtcoding.blog.domain.course.CourseStatus;
 
 import java.nio.file.Files;

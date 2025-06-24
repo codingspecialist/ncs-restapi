@@ -1,7 +1,7 @@
 package shop.mtcoding.blog.web.student;
 
 import lombok.Data;
-import shop.mtcoding.blog.core.errors.exception.api.ApiException400;
+import shop.mtcoding.blog.core.errors.exception.api.Exception400;
 import shop.mtcoding.blog.domain.course.exam.Exam;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.student.Student;
@@ -76,14 +76,14 @@ public class StudentExamRequest {
             // 채점 및 엔티티 변환
             public ExamAnswer toEntity(Question question, Exam exam) {
                 if (selectedOptionNo == null) {
-                    throw new ApiException400("모든 문제에 대한 답안을 제출해야 됩니다");
+                    throw new Exception400("모든 문제에 대한 답안을 제출해야 됩니다");
                 }
 
                 // 선택한 보기 찾기
                 QuestionOption selectedOption = question.getQuestionOptions().stream()
                         .filter(opt -> opt.getNo().equals(selectedOptionNo))
                         .findFirst()
-                        .orElseThrow(() -> new ApiException400("해당 보기 번호가 존재하지 않습니다"));
+                        .orElseThrow(() -> new Exception400("해당 보기 번호가 존재하지 않습니다"));
 
                 // earnedPoint: 정답일 경우 해당 보기에 설정된 점수, 오답일 경우 0점
                 int earnedPoint = selectedOption.getIsRight() ? selectedOption.getPoint() : 0;

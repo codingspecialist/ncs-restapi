@@ -3,9 +3,7 @@ package shop.mtcoding.blog.domain.course.subject.paper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.mtcoding.blog.core.errors.exception.Exception404;
-import shop.mtcoding.blog.core.errors.exception.api.ApiException404;
-import shop.mtcoding.blog.core.utils.MyUtil;
+import shop.mtcoding.blog.core.errors.exception.api.Exception404;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.SubjectRepository;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
@@ -48,13 +46,13 @@ public class PaperService {
     @Transactional
     public void 시험지등록(Long subjectId, PaperRequest.SaveDTO reqDTO) {
         Subject subjectPS = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new ApiException404("해당 교과목을 찾을 수 없어요"));
+                .orElseThrow(() -> new Exception404("해당 교과목을 찾을 수 없어요"));
 
         // ORIGINAL 유형이면 해당 교과목에 이미 존재하는지 확인
         if (reqDTO.getPaperType() == PaperType.ORIGINAL) {
             boolean exists = paperRepository.existsBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL);
             if (exists) {
-                throw new ApiException404("해당 교과목에는 이미 본평가(ORIGINAL) 시험지가 존재합니다.");
+                throw new Exception404("해당 교과목에는 이미 본평가(ORIGINAL) 시험지가 존재합니다.");
             }
         }
 
@@ -64,26 +62,13 @@ public class PaperService {
     @Transactional
     public void 문제등록(PaperRequest.QuestionSaveDTO reqDTO) {
         Paper paper = paperRepository.findById(reqDTO.getPaperId())
-                .orElseThrow(() -> new ApiException404("시험지가 존재하지 않아요"));
+                .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
         SubjectElement subjectElement = subjectElementRepository.findById(reqDTO.getElementId())
-                .orElseThrow(() -> new ApiException404("능력단위 요소가 존재하지 않아요"));
-
-        EvaluationWay evalWay = paper.getEvaluationWay();
-
-        String imgPath = null;
-
-        // ✅ 객관식일 때
-        if (evalWay == EvaluationWay.MCQ) {
-            // 이미지 처리 (선택)
-            if (reqDTO.getStimulusFileBase64() != null && !reqDTO.getStimulusFileBase64().isBlank()) {
-                imgPath = MyUtil.fileWrite(reqDTO.getStimulusFileBase64());
-            }
-        }
-
+                .orElseThrow(() -> new Exception404("능력단위 요소가 존재하지 않아요"));
 
         // 저장
-        Question question = questionRepository.save(reqDTO.toEntity(paper, subjectElement, imgPath));
+        Question question = questionRepository.save(reqDTO.toEntity(paper, subjectElement));
         List<QuestionOption> options = reqDTO.getOptions().stream()
                 .map(opt -> opt.toEntity(question))
                 .toList();

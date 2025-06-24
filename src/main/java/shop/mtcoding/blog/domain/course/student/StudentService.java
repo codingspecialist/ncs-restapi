@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.mtcoding.blog.core.errors.exception.Exception404;
+import shop.mtcoding.blog.core.errors.exception.api.Exception404;
 import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.CourseRepository;

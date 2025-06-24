@@ -141,7 +141,7 @@ public class PaperResponse {
             private Long questionId;
             private Integer no;
             private String title;
-            private String stimulusImg;
+            private String exContent;
             private Integer totalPoint; // 배점
             private List<OptionDTO> options;
 
@@ -149,7 +149,7 @@ public class PaperResponse {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-                this.stimulusImg = question.getStimulusImg();
+                this.exContent = question.getExContent();
                 this.totalPoint = question.getQuestionOptions()
                         .stream()
                         .mapToInt(o -> o.getPoint())

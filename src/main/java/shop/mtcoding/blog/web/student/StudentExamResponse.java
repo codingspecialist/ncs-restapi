@@ -95,7 +95,7 @@ public class StudentExamResponse {
             private Integer no;
             private String title;
             private Integer totalPoint;
-            private String stimulusImg;
+            private String exContent;
             private List<OptionDTO> options;
 
             public QuestionDTO(Question question) {
@@ -103,7 +103,7 @@ public class StudentExamResponse {
                 this.no = question.getNo();
                 this.title = question.getTitle();
                 this.totalPoint = question.getQuestionOptions().stream().mapToInt(option -> option.getPoint()).max().getAsInt();
-                this.stimulusImg = question.getStimulusImg();
+                this.exContent = question.getExContent();
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
             }
 
@@ -437,7 +437,7 @@ public class StudentExamResponse {
             private Integer answerNumber; // 정답 번호
             private Integer selectedOptionNo; // 학생 선택 번호
             private Integer studentPoint;
-            private String stimulusImg;
+            private String exContent;
             private List<OptionDTO> options;
 
             public AnswerDTO(ExamAnswer answer) {
@@ -446,7 +446,7 @@ public class StudentExamResponse {
                 this.no = answer.getQuestion().getNo();
                 this.title = answer.getQuestion().getTitle();
 
-                this.stimulusImg = answer.getQuestion().getStimulusImg();
+                this.exContent = answer.getQuestion().getExContent();
                 QuestionOption _option = answer.getQuestion().getQuestionOptions().stream()
                         .max(Comparator.comparingInt(QuestionOption::getPoint))
                         .orElse(null);

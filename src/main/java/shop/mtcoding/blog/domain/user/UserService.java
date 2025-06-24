@@ -3,9 +3,10 @@ package shop.mtcoding.blog.domain.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.mtcoding.blog.core.errors.exception.Exception400;
-import shop.mtcoding.blog.core.errors.exception.Exception401;
-import shop.mtcoding.blog.core.errors.exception.Exception403;
+import shop.mtcoding.blog.core.errors.exception.api.Exception400;
+import shop.mtcoding.blog.core.errors.exception.api.Exception401;
+import shop.mtcoding.blog.core.errors.exception.api.Exception403;
+import shop.mtcoding.blog.core.utils.JwtUtil;
 import shop.mtcoding.blog.domain.course.student.Student;
 import shop.mtcoding.blog.domain.course.student.StudentRepository;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
@@ -23,10 +24,14 @@ public class UserService {
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
 
-    public User 로그인(UserRequest.LoginDTO reqDTO) {
+    public UserModel.Session 로그인(UserRequest.LoginDTO reqDTO) {
         User userPS = userRepository.findByUsernameAndPassword(reqDTO.getUsername(), reqDTO.getPassword())
                 .orElseThrow(() -> new Exception401("인증되지 않았습니다"));
-        return userPS; // student, teacher 정보 포함
+
+        String accessToken = JwtUtil.create(userPS);
+        String refreshToken = JwtUtil.createRefresh(userPS);
+
+        return new UserModel.Session(userPS, accessToken, refreshToken); // student, teacher 정보 포함
     }
 
     @Transactional

@@ -23,16 +23,16 @@ public class PaperRequest {
         private String questionTitle;
 
         // 둘 중 택일로 받음
-        private String stimulusFileBase64;
+        private String exContent;
         private String scenario;
 
         private List<OptionDTO> options;
 
-        public Question toEntity(Paper paper, SubjectElement element, String imagePath) {
+        public Question toEntity(Paper paper, SubjectElement element) {
             return Question.builder()
                     .no(questionNo)
                     .title(questionTitle)
-                    .stimulusImg(Optional.ofNullable(imagePath).filter(s -> !s.isBlank()).orElse(null))
+                    .exContent(exContent)
                     .scenario(Optional.ofNullable(scenario).filter(s -> !s.isBlank()).orElse(null))
                     .paper(paper)
                     .subjectElement(element)

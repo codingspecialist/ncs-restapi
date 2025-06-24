@@ -18,8 +18,7 @@ public class Teacher {
     private Long id;
 
     @Lob
-    private String sign; // 선생님이라면 서명 (base64 저장)
-
+    private String sign; // base64 image
     private String name;
 
     @CreationTimestamp
@@ -36,5 +35,4 @@ public class Teacher {
         this.name = name;
         this.createdAt = createdAt;
     }
-
 }

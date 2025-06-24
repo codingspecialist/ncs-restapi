@@ -2,7 +2,7 @@ package shop.mtcoding.blog.domain.user.student;
 
 public enum StudentStatus {
     EMPLOY,     // 취업
-    DROPOUT,      // 중도탈락
+    DROPOUT,    // 중도탈락
     ENROLL;     // 재학중
 
     public String toKorean() {

@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.mtcoding.blog.core.errors.exception.api.*;
-import shop.mtcoding.blog.core.utils.ApiUtil;
 
 // RuntimeException이 터지면 해당 파일로 오류가 모인다
 @Slf4j

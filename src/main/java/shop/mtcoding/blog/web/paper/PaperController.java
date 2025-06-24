@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import shop.mtcoding.blog.core.utils.ApiUtil;
 import shop.mtcoding.blog.domain.course.CourseModel;
 import shop.mtcoding.blog.domain.course.CourseService;
 import shop.mtcoding.blog.domain.course.subject.SubjectModel;

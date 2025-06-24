@@ -24,7 +24,7 @@ public class User {
     private String email;
     @Enumerated(EnumType.STRING)
     private UserType role; // 학생, 강사, 직원, 팀장, 원장
-    @CreationTimestamp // pc -> db (날짜주입)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @OneToOne

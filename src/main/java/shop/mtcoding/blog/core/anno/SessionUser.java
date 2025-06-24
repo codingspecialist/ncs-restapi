@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.core.config;
+package shop.mtcoding.blog.core.anno;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -42,18 +42,14 @@ public class UserRequest {
         private String name;
         private UserType role;
         private Long courseId; // 학생일때만 받음
-        private String authCode; // 학생일때만 받음
         private String birthday; // 학생일때만 받음
 
-        public User toEntity() {
-            Course course = Course.builder()
-                    .id(courseId)
-                    .build();
+        public User toEntity(Course course, String authCode) {
             Student student = Student.builder()
                     .studentStatus(StudentStatus.ENROLL)
                     .course(course)
-                    .authCode(authCode)
                     .birthday(birthday)
+                    .authCode(authCode)
                     .isVerified(false)
                     .name(name)
                     .build();

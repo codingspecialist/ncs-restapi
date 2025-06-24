@@ -1,7 +1,7 @@
 package shop.mtcoding.blog.core.errors.exception.api;
 
 import org.springframework.http.HttpStatus;
-import shop.mtcoding.blog.core.utils.ApiUtil;
+import shop.mtcoding.blog.core.utils.Resp;
 
 public class Exception500 extends RuntimeException {
 
@@ -9,8 +9,8 @@ public class Exception500 extends RuntimeException {
         super(msg);
     }
 
-    public ApiUtil body() {
-        return new ApiUtil(500, getMessage());
+    public Resp body() {
+        return Resp.fail(500, getMessage());
     }
 
     public HttpStatus status() {

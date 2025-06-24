@@ -5,45 +5,29 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import shop.mtcoding.blog.core.utils.Resp;
 import shop.mtcoding.blog.domain.course.CourseModel;
 import shop.mtcoding.blog.domain.course.CourseService;
 import shop.mtcoding.blog.domain.user.User;
-import shop.mtcoding.blog.domain.user.teacher.TeacherModel;
-import shop.mtcoding.blog.domain.user.teacher.TeacherService;
-
-import java.util.List;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class CourseController {
 
     private final HttpSession session;
     private final CourseService courseService;
-    private final TeacherService teacherService;
 
     @GetMapping("/api/course-menu/course")
-    public String items(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
+    public ResponseEntity<?> items(@PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         User sessionUser = (User) session.getAttribute("sessionUser");
 
         CourseModel.Slice slice = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
         CourseResponse.ListDTO respDTO = new CourseResponse.ListDTO(slice.coursePG());
-        model.addAttribute("model", respDTO);
 
-        return "course/list";
-    }
-
-    @GetMapping("/api/course-menu/course/save-form")
-    public String saveForm(Model model) {
-        TeacherModel.Items items = teacherService.강사목록();
-        List<CourseResponse.TeacherDTO> respDTOs = items.teachers().stream().map(CourseResponse.TeacherDTO::new).toList();
-        model.addAttribute("models", respDTOs);
-        return "course/save-form";
+        return ResponseEntity.ok(Resp.ok(respDTO));
     }
 
 

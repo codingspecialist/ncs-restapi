@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.web.student;
+package shop.mtcoding.blog.web.student.exam;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;

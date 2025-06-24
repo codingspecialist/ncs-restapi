@@ -23,7 +23,7 @@ import shop.mtcoding.blog.domain.user.student.StudentRepository;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
 import shop.mtcoding.blog.web.exam.ExamRequest;
-import shop.mtcoding.blog.web.student.StudentExamRequest;
+import shop.mtcoding.blog.web.student.exam.StudentExamRequest;
 
 import java.util.*;
 import java.util.stream.Collectors;

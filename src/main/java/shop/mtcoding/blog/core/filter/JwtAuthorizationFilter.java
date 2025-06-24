@@ -15,8 +15,7 @@ import shop.mtcoding.blog.core.utils.JwtEnum;
 import shop.mtcoding.blog.core.utils.JwtUtil;
 import shop.mtcoding.blog.domain.user.SessionUser;
 import shop.mtcoding.blog.domain.user.User;
-import shop.mtcoding.blog.domain.user.student.StudentRepository;
-import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
+import shop.mtcoding.blog.domain.user.UserRepository;
 
 import java.io.IOException;
 
@@ -24,8 +23,8 @@ import java.io.IOException;
 @Component
 public class JwtAuthorizationFilter implements Filter {
 
-    private final StudentRepository studentRepository;
-    private final TeacherRepository teacherRepository;
+    // 추후 세션에 정보 필요하면 조회하기
+    private final UserRepository userRepository;
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)

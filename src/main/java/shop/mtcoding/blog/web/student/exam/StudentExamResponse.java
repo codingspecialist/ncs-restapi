@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.web.student;
+package shop.mtcoding.blog.web.student.exam;
 
 import lombok.Data;
 import shop.mtcoding.blog.core.utils.MyUtil;

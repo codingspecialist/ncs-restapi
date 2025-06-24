@@ -39,7 +39,7 @@ public class ExamAnswer {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    public void autoGrade() {
+    public void autoMcqGrade() {
         // 1. 선택한 번호에 해당하는 옵션 찾기
         QuestionOption selectedOption = question.getQuestionOptions()
                 .stream()
@@ -60,7 +60,7 @@ public class ExamAnswer {
     }
 
 
-    public void update(Integer selectedOptionNo, Boolean isRight, String codeReviewPRLink) {
+    public void manualRubricGrade(Integer selectedOptionNo, Boolean isRight, String codeReviewPRLink) {
         this.selectedOptionNo = selectedOptionNo;
         this.isRight = isRight;
         this.codeReviewPRLink = codeReviewPRLink;

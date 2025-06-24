@@ -10,6 +10,7 @@ import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.student.Student;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
+import shop.mtcoding.blog.domain.user.teacher.Teacher;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,33 +33,24 @@ public class Exam {
     private Student student;
 
     // 시험 담당 강사
-    private String teacherName;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Teacher teacher;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Subject subject;
 
     // 시험지
     @ManyToOne(fetch = FetchType.LAZY)
-    private Paper paper;
+    private Paper paper; // paperType은 여기서 확인
 
-    // 학생이 같은 과목에 본평가만 볼 수 있다 (통과)
-    // 학생이 같은 과목에 재평가만 볼 수 있다 (결석)
-    // 학생이 같은 과목에 본평가와, 재평가를 볼 수 있다 (본평가 점수 60점 미만 = 미통과)
-    // 점수 통계낼때나, 보여줄때 재평가가 있으면 재평가로 보여줘야 한다.
-    // 재평가는 통과할 때까지 다시 친다.
-
-    private String examState; // 본평가, 재평가 (paperType)
-    private String reExamReason; // 결석 or 미통과(60점미만) - 재평가이유
-
-    private String passState; // 통과, 미통과, 결석, 미응시
-
-    private Double manjumScore; // 시험 만점 점수
-    private Double score; // 시험결과 점수 (재평가라면 10% 감점)
-    private Double finalScore; // 감점 후 백분율까지된 점수
+    private String resultState; // 통과, 미통과(60점미만), 결석, 미응시
+    private Double resultScore; // 시험결과 점수 (재평가라면 10% 감점)
+    private Double percentScore; // 감점 후 백분율까지된 점수
     private Integer grade; // 시험결과 수준
+    private Boolean isUse; // default true 사용유무 (본평가를 쳤는데, 재평가를 치게 되면 본평가는 false)
 
-    // default : true
-    private Boolean isUse; // 사용유무 (본평가를 쳤는데, 재평가를 치게 되면 본평가는 false로 변경됨)
+    private String paperTypeCopy; // 본평가,재평가
+    private Double totalPointCopy; // 만점 점수
 
     @Lob
     private String studentSign;
@@ -71,15 +63,39 @@ public class Exam {
     private String submitLink;
     private Boolean gradingComplete; // (true 채점완료, false 채점안됨)
 
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
     private List<ExamAnswer> examAnswers = new ArrayList<>();
 
+    // TODO : 반대방향 setter 필요
     public void addAnswer(ExamAnswer answer) {
         this.examAnswers.add(answer);
     }
 
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+    @Builder
+    public Exam(Long id, Student student, Teacher teacher, Subject subject, Paper paper, String resultState, Double resultScore, Double percentScore, Integer grade, Boolean isUse, String paperTypeCopy, Double totalPointCopy, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, Boolean gradingComplete, LocalDateTime createdAt) {
+        this.id = id;
+        this.student = student;
+        this.teacher = teacher;
+        this.subject = subject;
+        this.paper = paper;
+        this.resultState = resultState;
+        this.resultScore = resultScore;
+        this.percentScore = percentScore;
+        this.grade = grade;
+        this.isUse = isUse;
+        this.paperTypeCopy = paperTypeCopy;
+        this.totalPointCopy = totalPointCopy;
+        this.studentSign = studentSign;
+        this.studentSignUpdatedAt = studentSignUpdatedAt;
+        this.teacherComment = teacherComment;
+        this.commentUpdatedAt = commentUpdatedAt;
+        this.submitLink = submitLink;
+        this.gradingComplete = gradingComplete;
+        this.createdAt = createdAt;
+    }
 
     public void updateSign(String studentSign) {
         this.studentSign = studentSign;
@@ -91,30 +107,26 @@ public class Exam {
         this.commentUpdatedAt = LocalDateTime.now(); // 총평 남겼다는 인증 시간
     }
 
-    public void updatePointAndGrade(Double score, Double sumQuestionPoints) {
-        this.manjumScore = sumQuestionPoints;
-        this.score = score;
+    public void updatePointAndGrade(Double resultScore) {
+        this.resultScore = resultScore;
+        this.percentScore = MyUtil.scaleTo100(resultScore, paper.getTotalPoint());
 
-        this.finalScore = MyUtil.scaleTo100(score, manjumScore);
-
-        if (finalScore >= 90) {
+        if (percentScore >= 90) {
             grade = 5;
-        } else if (finalScore >= 80) {
+        } else if (percentScore >= 80) {
             grade = 4;
-        } else if (finalScore >= 70) {
+        } else if (percentScore >= 70) {
             grade = 3;
-        } else if (finalScore >= 60) {
+        } else if (percentScore >= 60) {
             grade = 2;
         } else {
             grade = 1;
         }
 
         if (grade > 1) {
-            passState = "통과";
-            reExamReason = "";
+            resultState = "통과";
         } else {
-            passState = "미통과";
-            reExamReason = "60점미만";
+            resultState = "미통과(60점미만)";
         }
         gradingComplete = true;
     }
@@ -123,49 +135,21 @@ public class Exam {
         this.isUse = false;
     }
 
-    public static Exam createAbsentExam(Student student, Paper paper) {
-
-        Double manjumScore = paper.sumQuestionPoints();
-
+    // 결석, 미응시
+    public static Exam createBlankExam(Student student, Paper paper, String reason) {
         return Exam.builder()
                 .student(student)
                 .paper(paper)
                 .subject(paper.getSubject())
-                .teacherName(paper.getSubject().getTeacherName())
-                .examState(paper.getPaperType().toKorean()) // 본평가 or 재평가
-                .reExamReason("결석")
-                .teacherComment("결석")
-                .score(0.0)
-                .passState("미통과")
+                .teacher(paper.getSubject().getTeacher())
+                .teacherComment(reason)
+                .resultScore(0.0)
+                .resultState(reason)
                 .isUse(true)
                 .grade(1)
-                .gradingComplete(false)
-                .finalScore(0.0)
-                .manjumScore(manjumScore)
+                .gradingComplete(true) // 채점완료
+                .percentScore(0.0)
                 .build();
     }
 
-    @Builder
-    public Exam(Double manjumScore, Long id, Student student, String teacherName, Subject subject, Paper paper, String examState, String reExamReason, String passState, Double score, Integer grade, Boolean isUse, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, Boolean gradingComplete, LocalDateTime createdAt, Double finalScore) {
-        this.manjumScore = manjumScore;
-        this.id = id;
-        this.student = student;
-        this.teacherName = teacherName;
-        this.subject = subject;
-        this.paper = paper;
-        this.examState = examState;
-        this.reExamReason = reExamReason;
-        this.passState = passState;
-        this.score = score;
-        this.grade = grade;
-        this.isUse = isUse;
-        this.studentSign = studentSign;
-        this.studentSignUpdatedAt = studentSignUpdatedAt;
-        this.teacherComment = teacherComment;
-        this.commentUpdatedAt = commentUpdatedAt;
-        this.submitLink = submitLink;
-        this.gradingComplete = gradingComplete;
-        this.createdAt = createdAt;
-        this.finalScore = finalScore;
-    }
 }

@@ -10,6 +10,7 @@ import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
+import shop.mtcoding.blog.domain.course.subject.paper.question.rubric.QuestionRubric;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 
 import java.util.Arrays;
@@ -98,42 +99,63 @@ public class DocumentResponse {
     }
 
     @Data
-    public static class No2DTO {
+    public static class No2McqDTO {
         private String subjectPurpose; // 훈련목표
         private String subjectTitle; // 교과목명
         private List<String> subjectElements; // 세부내용들
-        private List<Integer> menus;
         private List<QuestionDTO> questions;
 
-        public No2DTO(Subject subject, List<Question> questions) {
+        public No2McqDTO(Subject subject, List<Question> questions) {
             this.subjectPurpose = subject.getPurpose();
             this.subjectTitle = subject.getTitle();
-            this.subjectElements = subject.getElements().stream().map(SubjectElement::getSubtitle).toList();
-            this.menus = questions.get(0).getQuestionOptions().stream()
-                    .filter(option -> option.getRubricItem() != null)
-                    .map(QuestionOption::getPoint).toList();
+            this.subjectElements = subject.getElements().stream().map(SubjectElement::getTitle).toList();
             this.questions = questions.stream().map(question -> new QuestionDTO(question)).toList();
         }
 
         @Data
         class QuestionDTO {
-            private String subjectElementPurpose;
-            private List<RubricDTO> rubricItems;
+            private String criterion; // 평가기준
+            private Integer point; // 점수
 
             public QuestionDTO(Question question) {
-                this.subjectElementPurpose = question.getSubjectElement().getSubjectElementPurpose();
-                this.rubricItems = question.getQuestionOptions().stream()
-                        .filter(option -> option.getRubricItem() != null)
+                this.criterion = question.getSubjectElement().getCriterion();
+                this.point = question.getMcqs().stream().mapToInt(value -> value.getPoint()).max().getAsInt();
+            }
+        }
+    }
+
+    @Data
+    public static class No2RubricDTO {
+        private String subjectPurpose; // 훈련목표
+        private String subjectTitle; // 교과목명
+        private List<String> subjectElements; // 세부내용들
+        private List<QuestionDTO> questions;
+
+        public No2RubricDTO(Subject subject, List<Question> questions) {
+            this.subjectPurpose = subject.getPurpose();
+            this.subjectTitle = subject.getTitle();
+            this.subjectElements = subject.getElements().stream().map(SubjectElement::getTitle).toList();
+            this.questions = questions.stream().map(question -> new QuestionDTO(question)).toList();
+        }
+
+        @Data
+        class QuestionDTO {
+            private String criterion; // 평가기준
+            private List<RubricDTO> rubrics; // 평가기준에 대한 루브릭들
+
+            public QuestionDTO(Question question) {
+                this.criterion = question.getSubjectElement().getCriterion();
+                this.rubrics = question.getRubrics().stream()
                         .map(RubricDTO::new).toList();
             }
 
             @Data
             class RubricDTO {
-                private String rubricItem;
+                private String content;
                 private Integer point;
 
-                public RubricDTO(QuestionOption option) {
-                    this.rubricItem = option.getRubricItem();
+                public RubricDTO(QuestionRubric option) {
+                    this.content = option.getContent();
                     this.point = option.getPoint();
                 }
             }
@@ -182,9 +204,9 @@ public class DocumentResponse {
         private String evaluationDevice;
         private String evaluationRoom;
 
-        private String pblScenarioGuideLink;
+        private String rubricScenarioGuideLink;
         private List<String> optionScenarios; // 가이드 요약본
-        private List<String> pblSubmitFormats; // 제출항목 (notion)
+        private List<String> rubricSubmitFormats; // 제출항목 (notion)
 
         private List<String> scorePolicies;
         private List<String> subjectElements;
@@ -205,11 +227,11 @@ public class DocumentResponse {
             this.evaluationDevice = paper.getEvaluationDevice();
             this.evaluationRoom = paper.getEvaluationRoom();
 
-            this.pblScenarioGuideLink = paper.getPblScenarioGuideLink();
+            this.rubricScenarioGuideLink = paper.getrubricScenarioGuideLink();
             this.optionScenarios = paper.getQuestions().stream()
                     .map(question -> MyUtil.extractFirstLine(question.getScenario()))
                     .toList();
-            this.pblSubmitFormats = MyUtil.parseMultilineWithoutHyphen(paper.getPblSubmitFormat());
+            this.rubricSubmitFormats = MyUtil.parseMultilineWithoutHyphen(paper.getrubricSubmitFormat());
 
             // TODO (결시자, 재평가자야 0.9 프로 Subject에서 받기)
             this.scorePolicies = Arrays.asList("본평가 배점 : 평가점수 X 1.0", "재평가 배점 : 평가점수 X 0.9", "결시자 배점 : 평가점수 X 0.9");
@@ -238,7 +260,7 @@ public class DocumentResponse {
                         .orElse(null);
                 this.point = _option.getPoint();
                 this.answerNumber = _option.getNo();
-                this.questionPurpose = question.getSubjectElement().getSubjectElementPurpose();
+                this.questionPurpose = question.getSubjectElement().getPurpose();
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
             }
 
@@ -320,7 +342,7 @@ public class DocumentResponse {
                         .orElse(null);
                 this.point = _option.getPoint();
                 this.answerNumber = _option.getNo();
-                this.questionPurpose = question.getSubjectElement().getSubjectElementPurpose();
+                this.questionPurpose = question.getSubjectElement().getPurpose();
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
             }
 
@@ -348,12 +370,12 @@ public class DocumentResponse {
         private String subjectTitle; // 교과목 (subject)
         private Integer questionCount;
 
-        private String pblTitle;
-        private String pblScenario;
-        private String pblScenarioGuideLink;
-        private List<String> pblSubmitFormats; // 제출항목 (notion)
-        private String pblSubmitTemplateLink; // 제출항목 복제 템플릿 (선택)
-        private List<String> pblChallenges; // 도전과제
+        private String rubricTitle;
+        private String rubricScenario;
+        private String rubricScenarioGuideLink;
+        private List<String> rubricSubmitFormats; // 제출항목 (notion)
+        private String rubricSubmitTemplateLink; // 제출항목 복제 템플릿 (선택)
+        private List<String> rubricChallenges; // 도전과제
 
         private String teacherSign;
         private Integer grade;
@@ -367,12 +389,12 @@ public class DocumentResponse {
             this.subjectTitle = paper.getSubject().getTitle();
             this.questionCount = questions.size();
 
-            this.pblTitle = paper.getPblTitle();
-            this.pblScenario = paper.getPblScenario();
-            this.pblScenarioGuideLink = paper.getPblScenarioGuideLink();
-            this.pblSubmitFormats = MyUtil.parseMultilineWithoutHyphen(paper.getPblSubmitFormat());
-            this.pblSubmitTemplateLink = paper.getPblSubmitTemplateLink();
-            this.pblChallenges = MyUtil.parseMultilineWithoutHyphen(paper.getPblChallenge());
+            this.rubricTitle = paper.getrubricTitle();
+            this.rubricScenario = paper.getrubricScenario();
+            this.rubricScenarioGuideLink = paper.getrubricScenarioGuideLink();
+            this.rubricSubmitFormats = MyUtil.parseMultilineWithoutHyphen(paper.getrubricSubmitFormat());
+            this.rubricSubmitTemplateLink = paper.getrubricSubmitTemplateLink();
+            this.rubricChallenges = MyUtil.parseMultilineWithoutHyphen(paper.getrubricChallenge());
             this.teacherSign = teacher.getSign();
             this.grade = paper.getSubject().getGrade();
             this.questions = questions.stream().map(QuestionDTO::new).toList();

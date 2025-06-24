@@ -71,12 +71,19 @@ public class CourseService {
         return new CourseModel.Slice(coursePG);
     }
 
-    public CourseModel.Detail 과정상세(Long courseId) {
+    public CourseModel.Detail 과정상세_교과목들_학생들(Long courseId) {
         Course coursePS = courseRepository.findById(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
 
         List<Subject> subjectListPS = subjectRepository.findAllByCourseId(coursePS.getId());
         List<Student> studentListPS = studentRepository.findAllByCourseId(coursePS.getId());
         return new CourseModel.Detail(coursePS, subjectListPS, studentListPS);
+    }
+
+    public CourseModel.Item 과정상세(Long courseId) {
+        Course coursePS = courseRepository.findById(courseId)
+                .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
+
+        return new CourseModel.Item(coursePS);
     }
 }

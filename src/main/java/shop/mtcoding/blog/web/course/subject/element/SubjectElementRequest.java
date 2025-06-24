@@ -4,19 +4,19 @@ import lombok.Data;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 
-public class CourseElementRequest {
+public class SubjectElementRequest {
 
     @Data
-    public static class SaveDTO {
+    public static class Save {
         private Integer no;
         private String subtitle;
-        private String subjectElementPurpose;
+        private String purpose;
 
         public SubjectElement toEntity(Subject subject) {
             return SubjectElement.builder()
                     .no(no)
                     .subtitle(subtitle)
-                    .subjectElementPurpose(subjectElementPurpose)
+                    .purpose(purpose)
                     .subject(subject)
                     .build();
         }

@@ -72,13 +72,13 @@ public class PaperRequest {
 
         private EvaluationWay evaluationWay; // 객관식. 서술형. 작업형. 프로젝트형
 
-        // PBL 관련 항목 (null 가능)
-        private String pblTitle;
-        private String pblScenario;
-        private String pblScenarioGuideLink;
-        private String pblChallenge;
-        private String pblSubmitFormat;
-        private String pblSubmitTemplateLink;
+        // rubric 관련 항목 (null 가능)
+        private String rubricTitle;
+        private String rubricScenario;
+        private String rubricScenarioGuideLink;
+        private String rubricChallenge;
+        private String rubricSubmitFormat;
+        private String rubricSubmitTemplateLink;
 
         public Paper toEntity(Subject subject) {
             return Paper.builder()
@@ -88,12 +88,12 @@ public class PaperRequest {
                     .evaluationWay(evaluationWay)
                     .evaluationRoom(evaluationRoom)
                     .evaluationDevice(evaluationDevice)
-                    .pblTitle(pblTitle != null && !pblTitle.isBlank() ? pblTitle : null)
-                    .pblScenario(pblScenario != null && !pblScenario.isBlank() ? pblScenario : null)
-                    .pblScenarioGuideLink(pblScenarioGuideLink != null && !pblScenarioGuideLink.isBlank() ? pblScenarioGuideLink : null)
-                    .pblChallenge(pblChallenge != null && !pblChallenge.isBlank() ? pblChallenge : null)
-                    .pblSubmitFormat(pblSubmitFormat != null && !pblSubmitFormat.isBlank() ? pblSubmitFormat : null)
-                    .pblSubmitTemplateLink(pblSubmitTemplateLink != null && !pblSubmitTemplateLink.isBlank() ? pblSubmitTemplateLink : null)
+                    .rubricTitle(rubricTitle != null && !rubricTitle.isBlank() ? rubricTitle : null)
+                    .rubricScenario(rubricScenario != null && !rubricScenario.isBlank() ? rubricScenario : null)
+                    .rubricScenarioGuideLink(rubricScenarioGuideLink != null && !rubricScenarioGuideLink.isBlank() ? rubricScenarioGuideLink : null)
+                    .rubricChallenge(rubricChallenge != null && !rubricChallenge.isBlank() ? rubricChallenge : null)
+                    .rubricSubmitFormat(rubricSubmitFormat != null && !rubricSubmitFormat.isBlank() ? rubricSubmitFormat : null)
+                    .rubricSubmitTemplateLink(rubricSubmitTemplateLink != null && !rubricSubmitTemplateLink.isBlank() ? rubricSubmitTemplateLink : null)
                     .build();
         }
     }

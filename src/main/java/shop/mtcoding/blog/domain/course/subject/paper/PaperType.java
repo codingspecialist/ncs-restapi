@@ -19,7 +19,7 @@ public enum PaperType {
         };
     }
 
-    public boolean isReEvaluation() {
+    public boolean isReTest() {
         return this == RETEST;
     }
 }

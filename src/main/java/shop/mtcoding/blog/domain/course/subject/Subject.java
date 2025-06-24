@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
+import shop.mtcoding.blog.domain.user.teacher.Teacher;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,8 +24,14 @@ public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer no; // 과정 내 순번
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Teacher teacher;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Course course;
+
+    private Integer no; // 과정 내 순번
     private String code; // 교과목 ID (능력단위코드)
     private String title; // 교과목명 (능력단위명)
     private String purpose; // 교과목 목표
@@ -35,7 +42,6 @@ public class Subject {
     private Integer grade; // 교과목 수준
     private Integer totalTime; // 교과목 시간
 
-
     @Enumerated(EnumType.STRING)
     private LearningWay learningWay; // 교수 학습 방법
 
@@ -43,10 +49,6 @@ public class Subject {
 
     private LocalDate startDate;
     private LocalDate endDate;
-    private String teacherName;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Course course;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -66,21 +68,21 @@ public class Subject {
     }
 
     @Builder
-    public Subject(LocalDateTime createdAt, Course course, String teacherName, LocalDate endDate, LocalDate startDate, Double scorePolicy, LearningWay learningWay, Integer totalTime, Integer grade, NcsType ncsType, String purpose, String title, String code, Integer no, Long id) {
-        this.createdAt = createdAt;
-        this.course = course;
-        this.teacherName = teacherName;
-        this.endDate = endDate;
-        this.startDate = startDate;
-        this.scorePolicy = scorePolicy;
-        this.learningWay = learningWay;
-        this.totalTime = totalTime;
-        this.grade = grade;
-        this.ncsType = ncsType;
-        this.purpose = purpose;
-        this.title = title;
-        this.code = code;
-        this.no = no;
+    public Subject(Long id, Teacher teacher, Course course, Integer no, String code, String title, String purpose, NcsType ncsType, Integer grade, Integer totalTime, LearningWay learningWay, Double scorePolicy, LocalDate startDate, LocalDate endDate, LocalDateTime createdAt) {
         this.id = id;
+        this.teacher = teacher;
+        this.course = course;
+        this.no = no;
+        this.code = code;
+        this.title = title;
+        this.purpose = purpose;
+        this.ncsType = ncsType;
+        this.grade = grade;
+        this.totalTime = totalTime;
+        this.learningWay = learningWay;
+        this.scorePolicy = scorePolicy;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.createdAt = createdAt;
     }
 }

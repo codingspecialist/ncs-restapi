@@ -7,7 +7,7 @@ import shop.mtcoding.blog.core.errors.exception.api.Exception400;
 import shop.mtcoding.blog.core.errors.exception.api.Exception404;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.SubjectRepository;
-import shop.mtcoding.blog.web.course.subject.element.CourseElementRequest;
+import shop.mtcoding.blog.web.course.subject.element.SubjectElementRequest;
 
 import java.util.HashSet;
 import java.util.List;
@@ -21,22 +21,21 @@ public class SubjectElementService {
 
     public SubjectElementModel.Items 교과목요소목록(Long subjectId) {
 
-        Subject subjectPS = subjectRepository.findById(subjectId)
+        Subject subjectPS = subjectRepository.findByIdWithElements(subjectId)
                 .orElseThrow(() -> new Exception404("해당 교과목을 찾을 수 없습니다"));
 
-        List<SubjectElement> subjectElementListPS = subjectElementRepository.findAllBySubjectId(subjectId);
-        return new SubjectElementModel.Items(subjectPS, subjectElementListPS);
+        return new SubjectElementModel.Items(subjectPS);
     }
 
     @Transactional
-    public void 교과목요소전체등록(Long subjectId, List<CourseElementRequest.SaveDTO> reqDTOs) {
+    public void 교과목요소전체등록(Long subjectId, List<SubjectElementRequest.Save> reqDTOs) {
         // 1. 교과목 존재확인
         Subject subjectPS = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new Exception404("해당 교과목을 찾을 수 없습니다"));
 
         // 2. 중복 순번 조회 (한 번의 쿼리로!)
         List<Integer> requestedNos = reqDTOs.stream()
-                .map(CourseElementRequest.SaveDTO::getNo)
+                .map(SubjectElementRequest.Save::getNo)
                 .toList();
 
         List<Integer> existingNos = subjectElementRepository.findNosBySubjectIdAndNoIn(subjectId, requestedNos);

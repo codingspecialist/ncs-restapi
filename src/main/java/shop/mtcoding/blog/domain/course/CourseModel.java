@@ -7,6 +7,9 @@ import shop.mtcoding.blog.domain.course.subject.Subject;
 import java.util.List;
 
 public class CourseModel {
+    public record Item(Course course) {
+    }
+
     public record Detail(Course course, List<Subject> subjects, List<Student> students) {
     }
 

@@ -2,8 +2,8 @@ package shop.mtcoding.blog.web.course.student;
 
 import lombok.Data;
 import shop.mtcoding.blog.domain.course.Course;
-import shop.mtcoding.blog.domain.course.student.Student;
-import shop.mtcoding.blog.domain.course.student.StudentStatus;
+import shop.mtcoding.blog.domain.user.student.Student;
+import shop.mtcoding.blog.domain.user.student.StudentStatus;
 
 public class CourseStudentRequest {
 

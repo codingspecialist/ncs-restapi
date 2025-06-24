@@ -8,8 +8,6 @@ import shop.mtcoding.blog.core.errors.exception.api.Exception404;
 import shop.mtcoding.blog.core.errors.exception.api.Exception500;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswerRepository;
-import shop.mtcoding.blog.domain.course.student.Student;
-import shop.mtcoding.blog.domain.course.student.StudentRepository;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElementRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
@@ -20,6 +18,8 @@ import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionRepositor
 import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
 import shop.mtcoding.blog.domain.user.User;
 import shop.mtcoding.blog.domain.user.UserType;
+import shop.mtcoding.blog.domain.user.student.Student;
+import shop.mtcoding.blog.domain.user.student.StudentRepository;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
 import shop.mtcoding.blog.web.exam.ExamRequest;

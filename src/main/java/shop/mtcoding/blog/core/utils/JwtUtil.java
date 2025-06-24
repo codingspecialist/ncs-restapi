@@ -4,38 +4,39 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import shop.mtcoding.blog.domain.user.User;
+import shop.mtcoding.blog.domain.user.UserType;
 
 import java.util.Date;
 
 public class JwtUtil {
-    public static String createRefresh(User user) {
-        String jwt = JWT.create()
-                .withSubject("blog")
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 30))
-                .withClaim("id", user.getId())
-                .withClaim("username", user.getUsername())
-                .sign(Algorithm.HMAC512("metacoding"));
-        return jwt;
-    }
 
     public static String create(User user) {
-        String jwt = JWT.create()
-                .withSubject("blog")
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
-                .withClaim("id", user.getId())
-                .withClaim("username", user.getUsername())
-                .sign(Algorithm.HMAC512("metacoding"));
-        return jwt;
+        return JWT.create()
+                .withSubject("accessToken")
+                .withClaim("userId", user.getId())
+                .withClaim("role", user.getRole().name())
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // 30분
+                .sign(Algorithm.HMAC512("METACODING"));
     }
 
+    public static String createRefresh(User user) {
+        return JWT.create()
+                .withSubject("refreshToken")
+                .withClaim("userId", user.getId())
+                .withClaim("role", user.getRole().name())
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 14)) // 2주
+                .sign(Algorithm.HMAC512("METACODING"));
+    }
+
+
     public static User verify(String jwt) {
-        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512("metacoding")).build().verify(jwt);
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512("METACODING")).build().verify(jwt);
         Long id = decodedJWT.getClaim("id").asLong();
-        String username = decodedJWT.getClaim("username").asString();
+        String role = decodedJWT.getClaim("role").asString();
 
         return User.builder()
                 .id(id)
-                .username(username)
+                .role(UserType.valueOf(role))
                 .build();
     }
 }

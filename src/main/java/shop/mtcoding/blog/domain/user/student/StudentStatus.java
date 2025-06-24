@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.domain.course.student;
+package shop.mtcoding.blog.domain.user.student;
 
 public enum StudentStatus {
     EMPLOY,     // 취업

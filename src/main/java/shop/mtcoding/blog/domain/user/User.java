@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import shop.mtcoding.blog.domain.course.student.Student;
+import shop.mtcoding.blog.domain.user.student.Student;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 
 import java.time.LocalDateTime;
@@ -27,28 +27,12 @@ public class User {
     @CreationTimestamp // pc -> db (날짜주입)
     private LocalDateTime createdAt;
 
-    /// //////////////////////////////////////////// 단순 조회용도!!!!!!!!!!!!!!!!!!!
-    // 이건 캐스캐이드 저장 불가능함 (FK가 이쪽에 없고, 반대방향에 있음)
-    // @Column(unique = true) // OneToOne은 UK가 기본적용됨.
-    @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
-    private Student student; // role이 student이면 연결된 객체 필요!! 선생이 먼저 학생을 등록해야 가입가능
+    @OneToOne
+    private Student student;
 
-    @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToOne
     private Teacher teacher;
 
-    // 영속화는 불가능 (객체에 연결만)
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-    }
-
-    // 영속화는 불가능 (객체에 연결만)
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    /// //////////////////////////////////////////////////////////////////////////
 
     @Builder
     public User(Long id, String username, String password, String email, UserType role, LocalDateTime createdAt, Student student, Teacher teacher) {

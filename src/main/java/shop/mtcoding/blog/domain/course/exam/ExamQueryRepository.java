@@ -4,7 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import shop.mtcoding.blog.domain.course.student.StudentStatus;
+import shop.mtcoding.blog.domain.user.student.StudentStatus;
 
 import java.util.ArrayList;
 import java.util.List;

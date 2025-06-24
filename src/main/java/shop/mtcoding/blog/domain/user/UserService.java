@@ -7,8 +7,8 @@ import shop.mtcoding.blog.core.errors.exception.api.Exception400;
 import shop.mtcoding.blog.core.errors.exception.api.Exception401;
 import shop.mtcoding.blog.core.errors.exception.api.Exception403;
 import shop.mtcoding.blog.core.utils.JwtUtil;
-import shop.mtcoding.blog.domain.course.student.Student;
-import shop.mtcoding.blog.domain.course.student.StudentRepository;
+import shop.mtcoding.blog.domain.user.student.Student;
+import shop.mtcoding.blog.domain.user.student.StudentRepository;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
 import shop.mtcoding.blog.web.user.UserRequest;
@@ -25,14 +25,23 @@ public class UserService {
     private final TeacherRepository teacherRepository;
 
     public UserModel.Session 로그인(UserRequest.LoginDTO reqDTO) {
-        User userPS = userRepository.findByUsernameAndPassword(reqDTO.getUsername(), reqDTO.getPassword())
+        User userET = userRepository.findByUsernameAndPassword(reqDTO.getUsername(), reqDTO.getPassword())
                 .orElseThrow(() -> new Exception401("인증되지 않았습니다"));
 
-        String accessToken = JwtUtil.create(userPS);
-        String refreshToken = JwtUtil.createRefresh(userPS);
+        SessionUser sessionUser = switch (userET.getRole()) {
+            case STUDENT -> studentRepository.findByUserId(userET.getId())
+                    .orElseThrow(() -> new Exception401("학생 정보가 없습니다"));
+            case TEACHER -> teacherRepository.findByUserId(userET.getId())
+                    .orElseThrow(() -> new Exception401("강사 정보가 없습니다"));
+            default -> throw new Exception401("알 수 없는 역할입니다: " + userET.getRole());
+        };
 
-        return new UserModel.Session(userPS, accessToken, refreshToken); // student, teacher 정보 포함
+        String accessToken = JwtUtil.create(userET);
+        String refreshToken = JwtUtil.createRefresh(userET);
+
+        return new UserModel.Session(sessionUser, accessToken, refreshToken);
     }
+
 
     @Transactional
     public User 강사회원가입(UserRequest.JoinDTO reqDTO) {

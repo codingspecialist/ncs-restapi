@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.domain.course.student;
+package shop.mtcoding.blog.domain.user.student;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.domain.course.Course;
-import shop.mtcoding.blog.domain.user.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,9 +18,6 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Course course;
@@ -41,23 +37,16 @@ public class Student {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    public Boolean checkNameAndBirthday(String name, String birthday) {
-        if (this.name.equals(name) && this.birthday.equals(birthday)) return true;
-        else return false;
-    }
-
-    public void setVerified(User user) {
+    public void setVerified() {
         this.isVerified = true;
         this.authCode = null;
-        this.user = user;
     }
 
     @Builder
-    public Student(Long id, User user, String name, Course course, String birthday, LocalDate dropOutDate, String dropOutReason, String comment, Integer grade, StudentStatus studentStatus, String authCode, Boolean isVerified, LocalDateTime createdAt) {
+    public Student(Long id, Course course, String name, String birthday, LocalDate dropOutDate, String dropOutReason, String comment, Integer grade, StudentStatus studentStatus, String authCode, Boolean isVerified, LocalDateTime createdAt) {
         this.id = id;
-        this.user = user;
-        this.name = name;
         this.course = course;
+        this.name = name;
         this.birthday = birthday;
         this.dropOutDate = dropOutDate;
         this.dropOutReason = dropOutReason;

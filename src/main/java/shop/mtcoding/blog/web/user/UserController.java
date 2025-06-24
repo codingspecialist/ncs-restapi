@@ -23,15 +23,6 @@ public class UserController {
     private final UserService userService;
     private final HttpSession session;
 
-    @GetMapping("/join-form")
-    public String joinForm() {
-        return "user/join-form";
-    }
-
-    @GetMapping("/login-form")
-    public String loginForm() {
-        return "user/login-form";
-    }
 
     @PostMapping("/join")
     public String join(UserRequest.JoinDTO reqDTO) {
@@ -67,17 +58,11 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(UserRequest.LoginDTO reqDTO) {
+    public ResponseEntity<?> login(UserRequest.LoginDTO reqDTO) {
         UserModel.Session modelData = userService.로그인(reqDTO);
         session.setAttribute("sessionUser", modelData.user());
 
-        if (UserType.STUDENT.equals(modelData.user().getRole())) {
-            session.setAttribute("isStudent", true);
-            return "redirect:/api/student/paper";
-        } else {
-            session.setAttribute("isStudent", false);
-            return "redirect:/api/course-menu/course";
-        }
+        return ResponseEntity.ok();
     }
 
     @GetMapping("/logout")

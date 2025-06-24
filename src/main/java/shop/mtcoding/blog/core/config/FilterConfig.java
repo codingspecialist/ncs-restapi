@@ -1,32 +1,34 @@
 package shop.mtcoding.blog.core.config;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import shop.mtcoding.blog.core.filter.CorsFilter;
 import shop.mtcoding.blog.core.filter.JwtAuthorizationFilter;
 
-@Slf4j
+@RequiredArgsConstructor
 @Configuration
 public class FilterConfig {
 
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
+    private final CorsFilter corsFilter;
+
     @Bean
     public FilterRegistrationBean<CorsFilter> corsFilter() {
-        FilterRegistrationBean<CorsFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new CorsFilter());
-        registrationBean.addUrlPatterns("/*"); // 모든 요청에 적용
-        registrationBean.setOrder(0); // 필터 순서 설정
-        return registrationBean;
+        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>();
+        bean.setFilter(corsFilter);
+        bean.addUrlPatterns("/*");
+        bean.setOrder(0);
+        return bean;
     }
 
     @Bean
-    FilterRegistrationBean<JwtAuthorizationFilter> jwtAuthorizationFilter() {
+    public FilterRegistrationBean<JwtAuthorizationFilter> jwtAuthorizationFilter() {
         FilterRegistrationBean<JwtAuthorizationFilter> bean =
-                new FilterRegistrationBean<>(new JwtAuthorizationFilter());
+                new FilterRegistrationBean<>(jwtAuthorizationFilter);
         bean.addUrlPatterns("/api/*");
         bean.setOrder(1);
         return bean;
     }
-
 }

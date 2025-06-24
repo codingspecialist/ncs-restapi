@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.domain.course.student;
+package shop.mtcoding.blog.domain.user.student;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

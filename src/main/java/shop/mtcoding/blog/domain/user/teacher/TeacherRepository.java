@@ -12,7 +12,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     @Query("select tc from Teacher tc join fetch tc.user u")
     List<Teacher> findAllWithUser();
 
-    Teacher findByUserId(@Param("userId") Long userId);
+    Optional<Teacher> findByUserId(Long userId);
 
     @Query("select tc from Teacher tc join fetch tc.user u where tc.name = :name")
     Optional<Teacher> findByName(@Param("name") String name);

@@ -15,14 +15,14 @@ public class UserController {
     @PostMapping("/teachers/join")
     public ResponseEntity<?> teacherJoin(UserRequest.TeacherJoin reqDTO) {
         var modelData = userService.강사_회원가입(reqDTO);
-        var respDTO = new UserResponse.Session(modelData.user());
+        var respDTO = new UserResponse.Item(modelData.user());
         return ResponseEntity.ok(Resp.ok(respDTO));
     }
 
     @PostMapping("/students/join")
     public ResponseEntity<?> studentJoin(UserRequest.StudentJoin reqDTO) {
         var modelData = userService.학생_회원가입(reqDTO);
-        var respDTO = new UserResponse.Session(modelData.user());
+        var respDTO = new UserResponse.Item(modelData.user());
         return ResponseEntity.ok(Resp.ok(respDTO));
     }
 

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "question_rubric_tb",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"no", "question_id"})})
-public class QuestionRubric {
+public class RubricOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,7 +31,7 @@ public class QuestionRubric {
     private LocalDateTime createdAt;
 
     @Builder
-    public QuestionRubric(Long id, Integer no, String content, Question question, Integer point, LocalDateTime createdAt) {
+    public RubricOption(Long id, Integer no, String content, Question question, Integer point, LocalDateTime createdAt) {
         this.id = id;
         this.no = no;
         this.content = content;

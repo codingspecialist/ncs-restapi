@@ -8,8 +8,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.core.errors.exception.api.Exception500;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
-import shop.mtcoding.blog.domain.course.subject.paper.question.mcq.QuestionMcq;
-import shop.mtcoding.blog.domain.course.subject.paper.question.rubric.QuestionRubric;
+import shop.mtcoding.blog.domain.course.subject.paper.question.mcq.McqOption;
+import shop.mtcoding.blog.domain.course.subject.paper.question.rubric.RubricOption;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,10 +43,10 @@ public class Question {
     private QuestionType type; // Enum(MCQ, RUBRIC)
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    private List<QuestionRubric> rubrics = new ArrayList<>();
+    private List<RubricOption> rubrics = new ArrayList<>();
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    private List<QuestionMcq> mcqs = new ArrayList<>();
+    private List<McqOption> mcqs = new ArrayList<>();
 
     @Builder
     public Question(Long id, Integer no, String title, String exContent, String exScenario, SubjectElement subjectElement, Paper paper, LocalDateTime createdAt, QuestionType type) {
@@ -61,12 +61,12 @@ public class Question {
         this.type = type;
     }
 
-    public void addRubric(QuestionRubric rubric) {
+    public void addRubric(RubricOption rubric) {
         this.rubrics.add(rubric);
         rubric.setQuestion(this); // 연관관계의 주인 쪽도 세팅
     }
 
-    public void addMcq(QuestionMcq mcq) {
+    public void addMcq(McqOption mcq) {
         this.mcqs.add(mcq);
         mcq.setQuestion(this); // 연관관계의 주인 쪽도 세팅
     }

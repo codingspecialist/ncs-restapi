@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.domain.course.exam.Exam;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
-import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
+import shop.mtcoding.blog.domain.course.subject.paper.question.mcq.McqOption;
 
 import java.time.LocalDateTime;
 
@@ -39,9 +39,23 @@ public class ExamAnswer {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Builder
+    public ExamAnswer(Long id, Exam exam, Question question, Integer questionNo, Integer selectedOptionNo, Integer earnedPoint, Boolean isRight, String codeReviewLink, LocalDateTime createdAt, String codeReviewPRLink) {
+        this.id = id;
+        this.exam = exam;
+        this.question = question;
+        this.questionNo = questionNo;
+        this.selectedOptionNo = selectedOptionNo;
+        this.earnedPoint = earnedPoint;
+        this.isRight = isRight;
+        this.codeReviewLink = codeReviewLink;
+        this.createdAt = createdAt;
+        this.codeReviewPRLink = codeReviewPRLink;
+    }
+
     public void autoMcqGrade() {
         // 1. 선택한 번호에 해당하는 옵션 찾기
-        QuestionOption selectedOption = question.getQuestionOptions()
+        McqOption selectedOption = question.getMcqs()
                 .stream()
                 .filter(option -> option.getNo().equals(this.selectedOptionNo))
                 .findFirst()
@@ -63,20 +77,6 @@ public class ExamAnswer {
     public void manualRubricGrade(Integer selectedOptionNo, Boolean isRight, String codeReviewPRLink) {
         this.selectedOptionNo = selectedOptionNo;
         this.isRight = isRight;
-        this.codeReviewPRLink = codeReviewPRLink;
-    }
-
-    @Builder
-    public ExamAnswer(Long id, Exam exam, Question question, Integer questionNo, Integer selectedOptionNo, Integer earnedPoint, Boolean isRight, String codeReviewLink, LocalDateTime createdAt, String codeReviewPRLink) {
-        this.id = id;
-        this.exam = exam;
-        this.question = question;
-        this.questionNo = questionNo;
-        this.selectedOptionNo = selectedOptionNo;
-        this.earnedPoint = earnedPoint;
-        this.isRight = isRight;
-        this.codeReviewLink = codeReviewLink;
-        this.createdAt = createdAt;
         this.codeReviewPRLink = codeReviewPRLink;
     }
 }

@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.domain.course.exam.Exam;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.mcq.McqOption;
+import shop.mtcoding.blog.domain.course.subject.paper.question.rubric.RubricOption;
 
 import java.time.LocalDateTime;
 
@@ -53,9 +54,10 @@ public class ExamAnswer {
         this.codeReviewPRLink = codeReviewPRLink;
     }
 
+    // 시스템이 자동 채점
     public void autoMcqGrade() {
         // 1. 선택한 번호에 해당하는 옵션 찾기
-        McqOption selectedOption = question.getMcqs()
+        McqOption selectedOption = question.getMcqOptions()
                 .stream()
                 .filter(option -> option.getNo().equals(this.selectedOptionNo))
                 .findFirst()
@@ -73,10 +75,25 @@ public class ExamAnswer {
         this.isRight = selectedOption.getPoint() > 0; // 0점이면 오답으로 처리
     }
 
+    // 강사가 수동 채점
+    public void manualRubricGrade(String codeReviewPRLink) {
+        // 1. 선택한 번호에 해당하는 옵션 찾기
+        RubricOption selectedOption = question.getRubricOptions()
+                .stream()
+                .filter(option -> option.getNo().equals(this.selectedOptionNo))
+                .findFirst()
+                .orElse(null);
 
-    public void manualRubricGrade(Integer selectedOptionNo, Boolean isRight, String codeReviewPRLink) {
-        this.selectedOptionNo = selectedOptionNo;
-        this.isRight = isRight;
+        // 2. 해당 옵션이 없을 경우
+        if (selectedOption == null) {
+            this.isRight = false;
+            this.earnedPoint = 0;
+            return;
+        }
+
+        // 3. 점수 계산: 선택한 보기의 점수
         this.codeReviewPRLink = codeReviewPRLink;
+        this.earnedPoint = selectedOption.getPoint();
+        this.isRight = selectedOption.getPoint() > 0; // 0점이면 오답으로 처리
     }
 }

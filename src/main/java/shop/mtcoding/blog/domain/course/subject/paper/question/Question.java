@@ -40,16 +40,16 @@ public class Question {
     private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
-    private QuestionType type; // Enum(MCQ, RUBRIC)
+    private QuestionType questionType; // Enum(MCQ, RUBRIC)
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    private List<RubricOption> rubrics = new ArrayList<>();
+    private List<RubricOption> rubricOptions = new ArrayList<>();
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    private List<McqOption> mcqs = new ArrayList<>();
+    private List<McqOption> mcqOptions = new ArrayList<>();
 
     @Builder
-    public Question(Long id, Integer no, String title, String exContent, String exScenario, SubjectElement subjectElement, Paper paper, LocalDateTime createdAt, QuestionType type) {
+    public Question(Long id, Integer no, String title, String exContent, String exScenario, SubjectElement subjectElement, Paper paper, LocalDateTime createdAt, QuestionType questionType) {
         this.id = id;
         this.no = no;
         this.title = title;
@@ -58,26 +58,26 @@ public class Question {
         this.subjectElement = subjectElement;
         this.paper = paper;
         this.createdAt = createdAt;
-        this.type = type;
+        this.questionType = questionType;
     }
 
     public void addRubric(RubricOption rubric) {
-        this.rubrics.add(rubric);
+        this.rubricOptions.add(rubric);
         rubric.setQuestion(this); // 연관관계의 주인 쪽도 세팅
     }
 
     public void addMcq(McqOption mcq) {
-        this.mcqs.add(mcq);
+        this.mcqOptions.add(mcq);
         mcq.setQuestion(this); // 연관관계의 주인 쪽도 세팅
     }
 
     public List<?> getOptions() {
-        if (this.type == QuestionType.MCQ) {
-            return mcqs;
-        } else if (this.type == QuestionType.RUBRIC) {
-            return rubrics;
+        if (this.questionType == QuestionType.MCQ) {
+            return mcqOptions;
+        } else if (this.questionType == QuestionType.RUBRIC) {
+            return rubricOptions;
         } else {
-            throw new Exception500("Unknown question type: " + type);
+            throw new Exception500("Unknown question type: " + questionType);
         }
     }
 }

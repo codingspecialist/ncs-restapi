@@ -9,6 +9,7 @@ import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
+import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionType;
 import shop.mtcoding.blog.domain.user.student.Student;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 
@@ -52,6 +53,7 @@ public class Exam {
 
     private String paperTypeCopy; // 본평가,재평가
     private Double totalPointCopy; // 만점 점수
+    private String questionTypeCopy; // 객관식 or 루브릭
 
     @Lob
     private String studentSign;
@@ -76,7 +78,7 @@ public class Exam {
     }
 
     @Builder
-    public Exam(Long id, Student student, Teacher teacher, Subject subject, Paper paper, ExamResultState resultState, Double resultScore, Double percentScore, Integer grade, Boolean isUse, String paperTypeCopy, Double totalPointCopy, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, Boolean gradingComplete, LocalDateTime createdAt) {
+    public Exam(Long id, Student student, Teacher teacher, Subject subject, Paper paper, ExamResultState resultState, Double resultScore, Double percentScore, Integer grade, Boolean isUse, String paperTypeCopy, Double totalPointCopy, String questionTypeCopy, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, Boolean gradingComplete, LocalDateTime createdAt) {
         this.id = id;
         this.student = student;
         this.teacher = teacher;
@@ -89,6 +91,7 @@ public class Exam {
         this.isUse = isUse;
         this.paperTypeCopy = paperTypeCopy;
         this.totalPointCopy = totalPointCopy;
+        this.questionTypeCopy = questionTypeCopy;
         this.studentSign = studentSign;
         this.studentSignUpdatedAt = studentSignUpdatedAt;
         this.teacherComment = teacherComment;
@@ -151,6 +154,14 @@ public class Exam {
                 .gradingComplete(true) // 채점완료
                 .percentScore(0.0)
                 .build();
+    }
+
+    public QuestionType getQuestionType() {
+        if (QuestionType.valueOf(questionTypeCopy) == QuestionType.MCQ) {
+            return QuestionType.MCQ;
+        } else {
+            return QuestionType.RUBRIC;
+        }
     }
 
 }

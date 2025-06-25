@@ -40,6 +40,14 @@ public class RubricOption {
         this.createdAt = createdAt;
     }
 
+    public Integer getPointBySelectedOptionNo(int selectedOptionNo) {
+        if (selectedOptionNo == this.no) {
+            return point;
+        } else {
+            return 0;
+        }
+    }
+
     public void setQuestion(Question question) {
         this.question = question;
     }

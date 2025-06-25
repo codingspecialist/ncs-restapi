@@ -15,6 +15,7 @@ import shop.mtcoding.blog.domain.course.subject.paper.PaperRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperType;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionRepository;
+import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionType;
 import shop.mtcoding.blog.domain.user.User;
 import shop.mtcoding.blog.domain.user.UserType;
 import shop.mtcoding.blog.domain.user.student.Student;
@@ -147,8 +148,6 @@ public class ExamService {
     // 총평 남기기 or 루브릭 채점하기
     @Transactional
     public void 강사_총평남기기(Long examId, ExamRequest.UpdateDTO reqDTO) {
-
-        System.out.println("받은 점수표 : " + reqDTO);
         Exam examPS = examRepository.findById(examId)
                 .orElseThrow(() -> new Exception404("응시한 시험이 존재하지 않아요"));
 
@@ -162,19 +161,19 @@ public class ExamService {
             });
         });
 
-        // 4. 시험점수, 수준, 통과여부 업데이트 하기 (이 부분이 주관식 업데이트할때 오류남 - 정답이 여러개니까 로직 다시 짜기)
-        double score = examAnswers.stream()
-                .mapToInt(answer -> {
-                    Integer selectedOptionNo = answer.getSelectedOptionNo(); // 사용자가 고른 번호
-                    List<QuestionOption> options = answer.getQuestion().getQuestionOptions();
+        double resultScore = 0;
 
-                    return options.stream()
-                            .filter(opt -> opt.getNo().equals(selectedOptionNo))
-                            .mapToInt(QuestionOption::getPoint)
-                            .findFirst()
-                            .orElse(0);
-                })
-                .sum();
+        if (examPS.getQuestionType() == QuestionType.MCQ) {
+            resultScore = examAnswers.stream().mapToInt(answer -> {
+                answer.autoMcqGrade();
+                return answer.getEarnedPoint();
+            }).sum();
+        } else {
+            resultScore = examAnswers.stream().mapToInt(answer -> {
+                answer.manualRubricGrade();
+            }).sum();
+        }
+
 
         // 5. 재평가지로 시험쳤으면 10%, 20% 등등
         if (examPS.getPaper().isReEvaluation()) {

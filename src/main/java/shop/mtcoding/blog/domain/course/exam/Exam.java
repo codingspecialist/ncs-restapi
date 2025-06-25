@@ -43,7 +43,8 @@ public class Exam {
     @ManyToOne(fetch = FetchType.LAZY)
     private Paper paper; // paperType은 여기서 확인
 
-    private String resultState; // 통과, 미통과(60점미만), 결석, 미응시
+    @Enumerated(EnumType.STRING)
+    private ExamResultState resultState; // 통과, 미통과(60점미만), 결석, 미응시
     private Double resultScore; // 시험결과 점수 (재평가라면 10% 감점)
     private Double percentScore; // 감점 후 백분율까지된 점수
     private Integer grade; // 시험결과 수준
@@ -75,7 +76,7 @@ public class Exam {
     }
 
     @Builder
-    public Exam(Long id, Student student, Teacher teacher, Subject subject, Paper paper, String resultState, Double resultScore, Double percentScore, Integer grade, Boolean isUse, String paperTypeCopy, Double totalPointCopy, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, Boolean gradingComplete, LocalDateTime createdAt) {
+    public Exam(Long id, Student student, Teacher teacher, Subject subject, Paper paper, ExamResultState resultState, Double resultScore, Double percentScore, Integer grade, Boolean isUse, String paperTypeCopy, Double totalPointCopy, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, Boolean gradingComplete, LocalDateTime createdAt) {
         this.id = id;
         this.student = student;
         this.teacher = teacher;
@@ -124,9 +125,9 @@ public class Exam {
         }
 
         if (grade > 1) {
-            resultState = "통과";
+            resultState = ExamResultState.PASS;
         } else {
-            resultState = "미통과(60점미만)";
+            resultState = ExamResultState.FAIL;
         }
         gradingComplete = true;
     }
@@ -136,15 +137,15 @@ public class Exam {
     }
 
     // 결석, 미응시
-    public static Exam createBlankExam(Student student, Paper paper, String reason) {
+    public static Exam createBlankExam(Student student, Paper paper, ExamResultState resultState) {
         return Exam.builder()
                 .student(student)
                 .paper(paper)
                 .subject(paper.getSubject())
                 .teacher(paper.getSubject().getTeacher())
-                .teacherComment(reason)
+                .teacherComment(resultState.toKorean())
                 .resultScore(0.0)
-                .resultState(reason)
+                .resultState(resultState)
                 .isUse(true)
                 .grade(1)
                 .gradingComplete(true) // 채점완료

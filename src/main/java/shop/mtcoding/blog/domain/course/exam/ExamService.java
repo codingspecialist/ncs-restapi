@@ -15,7 +15,6 @@ import shop.mtcoding.blog.domain.course.subject.paper.PaperRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperType;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionRepository;
-import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
 import shop.mtcoding.blog.domain.user.User;
 import shop.mtcoding.blog.domain.user.UserType;
 import shop.mtcoding.blog.domain.user.student.Student;
@@ -55,7 +54,7 @@ public class ExamService {
                                 r.studentName(),
                                 paperPS.getSubject().getTitle(),
                                 "본평가",
-                                paperPS.getSubject().getTeacherName(),
+                                paperPS.getSubject().getTeacher().getName(),
                                 0.0,
                                 1,
                                 "미응시",
@@ -93,11 +92,13 @@ public class ExamService {
 
         // 3. 재평가 허용 대상 subjectId 추출
         Set<Long> eligibleRetestSubjectIds = myExams.stream()
-                .filter(exam -> !exam.getPaper().isReEvaluation())
+                .filter(exam -> !exam.getPaper().isReTest())
                 .filter(exam -> {
-                    boolean lowScore = exam.getScore() != null && exam.getScore() < 60;
-                    boolean badReason = "미통과".equals(exam.getReExamReason()) || "결석".equals(exam.getReExamReason());
-                    return lowScore || badReason;
+                    boolean reTestReason = exam.getResultState() == ExamResultState.FAIL
+                            || exam.getResultState() == ExamResultState.ABSENT
+                            || exam.getResultState() == ExamResultState.NOT_TAKEN;
+
+                    return reTestReason;
                 })
                 .map(exam -> exam.getPaper().getSubject().getId())
                 .collect(Collectors.toSet());
@@ -105,9 +106,9 @@ public class ExamService {
         // 4. 시험지 필터링
         List<Paper> filteredPapers = allPapers.stream()
                 .filter(paper -> {
-                    if (!paper.isReEvaluation()) {
+                    if (!paper.isReTest()) {
                         return true; // 본평가는 항상 노출
-                    } else if (paper.isReEvaluation()) {
+                    } else if (paper.isReTest()) {
                         Long subjectId = paper.getSubject().getId();
                         return eligibleRetestSubjectIds.contains(subjectId); // 조건 충족 시에만 노출
                     }
@@ -137,7 +138,7 @@ public class ExamService {
                 .orElseThrow(() -> new Exception404("시험지를 찾을 수 없습니다."));
 
         // 3. 결석 시험 생성
-        Exam exam = Exam.createAbsentExam(student, paper);
+        Exam exam = Exam.createBlankExam(student, paper, ExamResultState.ABSENT);
 
         // 4. 저장
         examRepository.save(exam);

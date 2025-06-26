@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "question_mcq_tb",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"no", "question_id"})})
-public class McqOption {
+public class QuestionMcqOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,7 +34,7 @@ public class McqOption {
     private LocalDateTime createdAt;
 
     @Builder
-    public McqOption(Long id, Integer no, String content, Question question, Integer point, LocalDateTime createdAt) {
+    public QuestionMcqOption(Long id, Integer no, String content, Question question, Integer point, LocalDateTime createdAt) {
         this.id = id;
         this.no = no;
         this.content = content;

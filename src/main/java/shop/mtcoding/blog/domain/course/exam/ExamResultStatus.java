@@ -4,7 +4,8 @@ public enum ExamResultStatus {
     PASS("통과"),
     FAIL("미통과(60점미만)"),
     ABSENT("결석"),
-    NOT_TAKEN("미응시");
+    NOT_TAKEN("미응시"),
+    NOT_GRADED("채점전");
 
     private final String korean;
 

@@ -10,7 +10,7 @@ import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
-import shop.mtcoding.blog.domain.course.subject.paper.question.rubric.RubricOption;
+import shop.mtcoding.blog.domain.course.subject.paper.question.rubric.QuestionRubricOption;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 
 import java.util.Arrays;
@@ -154,7 +154,7 @@ public class DocumentResponse {
                 private String content;
                 private Integer point;
 
-                public RubricDTO(RubricOption option) {
+                public RubricDTO(QuestionRubricOption option) {
                     this.content = option.getContent();
                     this.point = option.getPoint();
                 }

@@ -8,8 +8,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.core.errors.exception.api.Exception500;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
-import shop.mtcoding.blog.domain.course.subject.paper.question.mcq.McqOption;
-import shop.mtcoding.blog.domain.course.subject.paper.question.rubric.RubricOption;
+import shop.mtcoding.blog.domain.course.subject.paper.question.mcq.QuestionMcqOption;
+import shop.mtcoding.blog.domain.course.subject.paper.question.rubric.QuestionRubricOption;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,17 +39,14 @@ public class Question {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Enumerated(EnumType.STRING)
-    private QuestionType questionType; // Enum(MCQ, RUBRIC)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private List<QuestionRubricOption> rubricOptions = new ArrayList<>();
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    private List<RubricOption> rubricOptions = new ArrayList<>();
-
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    private List<McqOption> mcqOptions = new ArrayList<>();
+    private List<QuestionMcqOption> mcqOptions = new ArrayList<>();
 
     @Builder
-    public Question(Long id, Integer no, String title, String exContent, String exScenario, SubjectElement subjectElement, Paper paper, LocalDateTime createdAt, QuestionType questionType) {
+    public Question(Long id, Integer no, String title, String exContent, String exScenario, SubjectElement subjectElement, Paper paper, LocalDateTime createdAt) {
         this.id = id;
         this.no = no;
         this.title = title;
@@ -58,26 +55,25 @@ public class Question {
         this.subjectElement = subjectElement;
         this.paper = paper;
         this.createdAt = createdAt;
-        this.questionType = questionType;
     }
 
-    public void addRubric(RubricOption rubric) {
+    public void addRubric(QuestionRubricOption rubric) {
         this.rubricOptions.add(rubric);
         rubric.setQuestion(this); // 연관관계의 주인 쪽도 세팅
     }
 
-    public void addMcq(McqOption mcq) {
+    public void addMcq(QuestionMcqOption mcq) {
         this.mcqOptions.add(mcq);
         mcq.setQuestion(this); // 연관관계의 주인 쪽도 세팅
     }
 
     public List<?> getOptions() {
-        if (this.questionType == QuestionType.MCQ) {
+        if (paper.getQuestionType() == QuestionType.MCQ) {
             return mcqOptions;
-        } else if (this.questionType == QuestionType.RUBRIC) {
+        } else if (paper.getQuestionType() == QuestionType.RUBRIC) {
             return rubricOptions;
         } else {
-            throw new Exception500("Unknown question type: " + questionType);
+            throw new Exception500("Unknown question type: " + paper.getQuestionType());
         }
     }
 }

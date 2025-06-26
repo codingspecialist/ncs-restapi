@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.domain.course.exam.Exam;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
-import shop.mtcoding.blog.domain.course.subject.paper.question.mcq.McqOption;
-import shop.mtcoding.blog.domain.course.subject.paper.question.rubric.RubricOption;
+import shop.mtcoding.blog.domain.course.subject.paper.question.mcq.QuestionMcqOption;
+import shop.mtcoding.blog.domain.course.subject.paper.question.rubric.QuestionRubricOption;
 
 import java.time.LocalDateTime;
 
@@ -46,7 +46,7 @@ public class ExamAnswer {
     // 시스템이 자동 채점
     public void autoMcqGrade() {
         // 1. 선택한 번호에 해당하는 옵션 찾기
-        McqOption selectedOption = question.getMcqOptions()
+        QuestionMcqOption selectedOption = question.getMcqOptions()
                 .stream()
                 .filter(option -> option.getNo().equals(this.selectedOptionNo))
                 .findFirst()
@@ -67,7 +67,7 @@ public class ExamAnswer {
     // 강사가 수동 채점
     public void manualRubricGrade(String codeReviewPRLink) {
         // 1. 선택한 번호에 해당하는 옵션 찾기
-        RubricOption selectedOption = question.getRubricOptions()
+        QuestionRubricOption selectedOption = question.getRubricOptions()
                 .stream()
                 .filter(option -> option.getNo().equals(this.selectedOptionNo))
                 .findFirst()

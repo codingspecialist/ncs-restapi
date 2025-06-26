@@ -6,23 +6,28 @@ import java.util.List;
 
 public class ExamRequest {
 
-
+    // 강사가 총평 작성
     @Data
-    public static class UpdateDTO {
+    public static class GradeDTO {
         private String teacherComment;
-        private Boolean standby;
-        private List<AnswerDTO> answers;
+        private List<AnswerGradeDTO> answerGrades;
 
         @Data
-        public static class AnswerDTO {
+        class AnswerGradeDTO {
             private Integer answerId;
-            private Integer selectedOptionNo; // 정답 번호 (PK 아님)
-            private String codeReviewPRLink;
+            private Integer selectedOptionNo;
+            private String codeReviewPRLink; // rubric 일때만 받음
         }
     }
 
     @Data
     public static class AbsentDTO {
+        private Long studentId;
+        private Long paperId;
+    }
+
+    @Data
+    public static class NotTakenDTO {
         private Long studentId;
         private Long paperId;
     }

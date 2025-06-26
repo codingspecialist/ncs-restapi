@@ -7,12 +7,14 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
+import shop.mtcoding.blog.domain.course.exam.result.ExamResult;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
-import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionType;
+import shop.mtcoding.blog.domain.course.subject.paper.question.mcq.QuestionMcqOption;
 import shop.mtcoding.blog.domain.user.student.Student;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
+import shop.mtcoding.blog.web.exam.ExamRequest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -196,16 +198,74 @@ public class Exam {
                 .build();
     }
 
+
     public void 채점하기() {
-        // 1. 문제들
-        List<Question> questions = this.paper.getQuestions();
+        if (getQuestionType() != QuestionType.MCQ) {
+            throw new IllegalStateException("객관식 시험만 이 메서드를 호출할 수 있습니다.");
+        }
 
-        // 2. 문제에 대한 학생 답변들
-        List<ExamAnswer> answers = this.examAnswers;
+        double totalScore = 0.0;
 
-        // 3. Question안의 QuestionMcqOption들의 no와 ExamAnswer의 selectedOptionNo 를 비교해서 동일한 부분 찾기
+        for (ExamAnswer answer : this.examAnswers) {
+            QuestionMcqOption selectedOption = answer.getQuestion().getMcqOptions().stream()
+                    .filter(opt -> opt.getNo().equals(answer.getSelectedOptionNo()))
+                    .findFirst()
+                    .orElse(null);
 
+            int scoredPoint = (selectedOption != null) ? selectedOption.getPoint() : 0;
+            boolean isCorrect = scoredPoint > 0;
 
+            ExamResult result = ExamResult.builder()
+                    .examAnswer(answer)
+                    .scoredPoint(scoredPoint)
+                    .isCorrect(isCorrect)
+                    .codeReviewFeedbackPRLink(null)
+                    .build();
+
+            answer.setExamResult(result);
+            totalScore += scoredPoint;
+        }
+
+        updateTotalScoreAndGradeLevel(totalScore);
+    }
+
+    public void 채점하기(ExamRequest.GradeDTO gradeDTO) {
+        if (getQuestionType() != QuestionType.RUBRIC) {
+            throw new IllegalStateException("루브릭 시험만 이 메서드를 호출할 수 있습니다.");
+        }
+
+        double totalScore = gradeDTO.getAnswerGrades().stream()
+                .map(dto -> {
+                    ExamAnswer answer = this.examAnswers.stream()
+                            .filter(a -> a.getId().equals(dto.getAnswerId()))
+                            .findFirst()
+                            .orElseThrow(() -> new RuntimeException("해당 answerId가 존재하지 않습니다."));
+
+                    Integer selectedNo = dto.getSelectedOptionNo();
+
+                    Integer scoredPoint = answer.getQuestion().getRubricOptions().stream()
+                            .filter(opt -> opt.getNo().equals(selectedNo))
+                            .map(opt -> opt.getPoint())
+                            .findFirst()
+                            .orElse(null);
+
+                    Boolean isCorrect = (scoredPoint != null && scoredPoint > 0);
+
+                    ExamResult result = ExamResult.builder()
+                            .examAnswer(answer)
+                            .scoredPoint(scoredPoint)
+                            .isCorrect(isCorrect)
+                            .codeReviewFeedbackPRLink(dto.getCodeReviewPRLink())
+                            .build();
+
+                    answer.setExamResult(result);
+
+                    return (scoredPoint != null) ? scoredPoint : 0;
+                })
+                .reduce(0.0, Double::sum);
+
+        updateTotalScoreAndGradeLevel(totalScore);
+        updateTeacherComment(gradeDTO.getTeacherComment());
     }
 
 

@@ -1,6 +1,7 @@
 package shop.mtcoding.blog.domain.course.exam.result;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -28,5 +29,13 @@ public class ExamResult {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-
+    @Builder
+    public ExamResult(Long id, ExamAnswer examAnswer, Integer scoredPoint, Boolean isCorrect, String codeReviewFeedbackPRLink, LocalDateTime createdAt) {
+        this.id = id;
+        this.examAnswer = examAnswer;
+        this.scoredPoint = scoredPoint;
+        this.isCorrect = isCorrect;
+        this.codeReviewFeedbackPRLink = codeReviewFeedbackPRLink;
+        this.createdAt = createdAt;
+    }
 }

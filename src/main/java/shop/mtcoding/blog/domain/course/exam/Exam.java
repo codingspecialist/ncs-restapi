@@ -9,6 +9,7 @@ import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
+import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionType;
 import shop.mtcoding.blog.domain.user.student.Student;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
@@ -101,8 +102,29 @@ public class Exam {
         this.createdAt = createdAt;
     }
 
-    public static Exam createMcqExam() {
-        return null;
+    public static Exam createMcqExam(Student student, Paper paper) {
+        Exam mcqExam = Exam.builder()
+                .student(student)
+                .paper(paper)
+                .subject(paper.getSubject())
+                .teacher(paper.getSubject().getTeacher())
+                .copiedPaperType(paper.getPaperType().toString()) // ORIGINAL vs RETEST
+                .copiedQuestionType(paper.getQuestionType().toString()) // MCQ vs RUBRIC
+                .copiedMaxScore(paper.getMaxScore())
+                .resultStatus(ExamResultStatus.NOT_GRADED)
+                .isActive(true)
+                .gradeLevel(null)
+                .teacherComment(null)
+                .totalScore(null)
+                .totalScorePercent(null)
+                .studentSign(null)
+                .studentSignedAt(null)
+                .teacherCommentedAt(null)
+                .rubricSubmitLink(null)
+                .build();
+
+
+        return mcqExam;
     }
 
     // 채점전
@@ -112,7 +134,7 @@ public class Exam {
                 .paper(paper)
                 .subject(paper.getSubject())
                 .teacher(paper.getSubject().getTeacher())
-                .copiedPaperType(paper.getPaperType().toKorean()) // ORIGINAL vs RETEST
+                .copiedPaperType(paper.getPaperType().toString()) // ORIGINAL vs RETEST
                 .copiedQuestionType(paper.getQuestionType().toString()) // MCQ vs RUBRIC
                 .copiedMaxScore(paper.getMaxScore())
                 .rubricSubmitLink(rubricSubmitLink)
@@ -137,7 +159,7 @@ public class Exam {
                 .teacher(paper.getSubject().getTeacher())
                 .teacherComment(ExamResultStatus.ABSENT.toKorean())
                 .resultStatus(ExamResultStatus.ABSENT)
-                .copiedPaperType(paper.getPaperType().toKorean()) // ORIGINAL vs RETEST
+                .copiedPaperType(paper.getPaperType().toString()) // ORIGINAL vs RETEST
                 .copiedQuestionType(paper.getQuestionType().toString()) // MCQ vs RUBRIC
                 .copiedMaxScore(paper.getMaxScore())
                 .isActive(true)
@@ -160,7 +182,7 @@ public class Exam {
                 .teacher(paper.getSubject().getTeacher())
                 .teacherComment(ExamResultStatus.NOT_TAKEN.toKorean())
                 .resultStatus(ExamResultStatus.NOT_TAKEN)
-                .copiedPaperType(paper.getPaperType().toKorean()) // ORIGINAL vs RETEST
+                .copiedPaperType(paper.getPaperType().toString()) // ORIGINAL vs RETEST
                 .copiedQuestionType(paper.getQuestionType().toString()) // MCQ vs RUBRIC
                 .copiedMaxScore(paper.getMaxScore())
                 .isActive(true)
@@ -174,20 +196,32 @@ public class Exam {
                 .build();
     }
 
+    public void 채점하기() {
+        // 1. 문제들
+        List<Question> questions = this.paper.getQuestions();
 
-    public void updateSign(String studentSign) {
+        // 2. 문제에 대한 학생 답변들
+        List<ExamAnswer> answers = this.examAnswers;
+
+        // 3. Question안의 QuestionMcqOption들의 no와 ExamAnswer의 selectedOptionNo 를 비교해서 동일한 부분 찾기
+
+
+    }
+
+
+    public void updateStudentSign(String studentSign) {
         this.studentSign = studentSign;
         this.studentSignedAt = LocalDateTime.now();
     }
 
-    public void updateTeacherComment(String teacherComment) {
+    private void updateTeacherComment(String teacherComment) {
         this.teacherComment = teacherComment;
         this.teacherCommentedAt = LocalDateTime.now(); // 총평 남겼다는 인증 시간
     }
 
-    public void updatePointAndGrade(Double resultScore) {
-        this.totalScore = resultScore;
-        this.totalScorePercent = MyUtil.scaleTo100(resultScore, paper.getTotalPoint());
+    private void updateTotalScoreAndGradeLevel(Double sumPoints) {
+        this.totalScore = sumPoints;
+        this.totalScorePercent = MyUtil.scaleTo100(sumPoints, copiedMaxScore);
 
         if (totalScorePercent >= 90) {
             gradeLevel = 5;

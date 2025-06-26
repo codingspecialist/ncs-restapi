@@ -27,8 +27,7 @@ public class QuestionMcqOption {
 
     private Integer no; // 4지선답 번호
     private String content; // 4지선답 항목
-    private Integer point;
-    private Boolean isRight;
+    private Integer point; // 점수가 0이 아니면 정답임
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -40,7 +39,6 @@ public class QuestionMcqOption {
         this.content = content;
         this.question = question;
         this.point = point;
-        this.isRight = point > 0;
         this.createdAt = createdAt;
     }
 

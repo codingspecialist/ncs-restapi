@@ -95,9 +95,9 @@ public class ExamService {
         Set<Long> eligibleRetestSubjectIds = myExams.stream()
                 .filter(exam -> !exam.getPaper().isReTest())
                 .filter(exam -> {
-                    boolean reTestReason = exam.getResultState() == ExamResultState.FAIL
-                            || exam.getResultState() == ExamResultState.ABSENT
-                            || exam.getResultState() == ExamResultState.NOT_TAKEN;
+                    boolean reTestReason = exam.getResultState() == ExamResultStatus.FAIL
+                            || exam.getResultState() == ExamResultStatus.ABSENT
+                            || exam.getResultState() == ExamResultStatus.NOT_TAKEN;
 
                     return reTestReason;
                 })
@@ -139,7 +139,7 @@ public class ExamService {
                 .orElseThrow(() -> new Exception404("시험지를 찾을 수 없습니다."));
 
         // 3. 결석 시험 생성
-        Exam exam = Exam.createBlankExam(student, paper, ExamResultState.ABSENT);
+        Exam exam = Exam.createBlankExam(student, paper, ExamResultStatus.ABSENT);
 
         // 4. 저장
         examRepository.save(exam);
@@ -212,7 +212,8 @@ public class ExamService {
         Paper paper = paperRepository.findById(reqDTO.getPaperId())
                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
-        Student student = studentRepository.findByUserId(sessionUser.getId());
+        Student student = studentRepository.findByUserId(sessionUser.getId())
+                .orElseThrow(() -> new Exception404("학생을 찾을 수 없어요"));
 
         // 2. Exam 생성
 //        private Long paperId;

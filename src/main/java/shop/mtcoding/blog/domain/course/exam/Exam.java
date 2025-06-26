@@ -44,27 +44,32 @@ public class Exam {
     @ManyToOne(fetch = FetchType.LAZY)
     private Paper paper; // paperType은 여기서 확인
 
-    @Enumerated(EnumType.STRING)
-    private ExamResultState resultState; // 통과, 미통과(60점미만), 결석, 미응시
-    private Double resultScore; // 시험결과 점수 (재평가라면 10% 감점)
-    private Double percentScore; // 감점 후 백분율까지된 점수
-    private Integer grade; // 시험결과 수준
-    private Boolean isUse; // default true 사용유무 (본평가를 쳤는데, 재평가를 치게 되면 본평가는 false)
+    // TODO: 시험을 강제로 만드는 생성자와 시험을 쳤을때 만드는 생성자 2개 팩토리로 만들 필요가 있음!!
 
-    private String paperTypeCopy; // 본평가,재평가
-    private Double totalPointCopy; // 만점 점수
-    private String questionTypeCopy; // 객관식 or 루브릭
+    @Enumerated(EnumType.STRING)
+    private ExamResultStatus resultStatus; // 통과, 미통과(60점미만), 결석, 미응시
+    private Double totalScore; // 시험결과 점수 (재평가라면 10% 감점)
+    private Double totalScorePercent; // 감점 후 백분율까지된 점수
+    private Boolean isScoreFinalized; // (true 채점완료, false 채점안됨)
+
+    private Integer gradeLevel; // 시험결과 수준
+
+    private Boolean isActive; // default true 사용유무 (본평가를 쳤는데, 재평가를 치게 되면 본평가는 false)
+
+    private String copiedPaperType; // 본평가,재평가
+    private Double copiedTotalPoint; // 만점 점수
+    private String copiedQuestionType; // 객관식 or 루브릭
 
     @Lob
     private String studentSign;
-    private LocalDateTime studentSignUpdatedAt;
+    private LocalDateTime studentSignedAt;
 
     private String teacherComment;
-    private LocalDateTime commentUpdatedAt;
+    private LocalDateTime teacherCommentedAt;
 
     // ------------- 객관식이 아닐때 받아야함
-    private String submitLink;
-    private Boolean gradingComplete; // (true 채점완료, false 채점안됨)
+    private String rubricSubmitLink;
+
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -78,7 +83,7 @@ public class Exam {
     }
 
     @Builder
-    public Exam(Long id, Student student, Teacher teacher, Subject subject, Paper paper, ExamResultState resultState, Double resultScore, Double percentScore, Integer grade, Boolean isUse, String paperTypeCopy, Double totalPointCopy, String questionTypeCopy, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, Boolean gradingComplete, LocalDateTime createdAt) {
+    public Exam(Long id, Student student, Teacher teacher, Subject subject, Paper paper, ExamResultStatus resultState, Double resultScore, Double percentScore, Integer grade, Boolean isUse, String paperTypeCopy, Double totalPointCopy, String questionTypeCopy, String studentSign, LocalDateTime studentSignUpdatedAt, String teacherComment, LocalDateTime commentUpdatedAt, String submitLink, Boolean gradingComplete, LocalDateTime createdAt) {
         this.id = id;
         this.student = student;
         this.teacher = teacher;
@@ -128,9 +133,9 @@ public class Exam {
         }
 
         if (grade > 1) {
-            resultState = ExamResultState.PASS;
+            resultState = ExamResultStatus.PASS;
         } else {
-            resultState = ExamResultState.FAIL;
+            resultState = ExamResultStatus.FAIL;
         }
         gradingComplete = true;
     }
@@ -140,7 +145,7 @@ public class Exam {
     }
 
     // 결석, 미응시
-    public static Exam createBlankExam(Student student, Paper paper, ExamResultState resultState) {
+    public static Exam createBlankExam(Student student, Paper paper, ExamResultStatus resultState) {
         return Exam.builder()
                 .student(student)
                 .paper(paper)

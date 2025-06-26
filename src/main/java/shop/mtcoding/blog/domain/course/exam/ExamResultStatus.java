@@ -1,6 +1,6 @@
 package shop.mtcoding.blog.domain.course.exam;
 
-public enum ExamResultState {
+public enum ExamResultStatus {
     PASS("통과"),
     FAIL("미통과(60점미만)"),
     ABSENT("결석"),
@@ -8,7 +8,7 @@ public enum ExamResultState {
 
     private final String korean;
 
-    ExamResultState(String korean) {
+    ExamResultStatus(String korean) {
         this.korean = korean;
     }
 
@@ -16,8 +16,8 @@ public enum ExamResultState {
         return korean;
     }
 
-    public static ExamResultState fromKorean(String korean) {
-        for (ExamResultState state : values()) {
+    public static ExamResultStatus fromKorean(String korean) {
+        for (ExamResultStatus state : values()) {
             if (state.korean.equals(korean)) {
                 return state;
             }

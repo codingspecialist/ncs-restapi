@@ -12,6 +12,7 @@ import shop.mtcoding.blog.domain.course.subject.paper.question.rubric.RubricOpti
 
 import java.time.LocalDateTime;
 
+// 학생이 제출한 시험의 답변들
 @NoArgsConstructor
 @Getter
 @Entity
@@ -31,28 +32,16 @@ public class ExamAnswer {
 
     // 객관식은 자동 계산 / 그게 아니면 수동 계산됨
     private Integer selectedOptionNo;
-    private Integer earnedPoint; // 5점, 4점, 3점, 2점, 1점 (머든지 될 수 있음) - 이건 배점이 아님!!
-    private Boolean isRight; // 0점이 아니면 전부다 true임!! 루브릭은 모든 답변에 점수가 부여됨
 
-    private String codeReviewLink; // 선택적 (링크 들어가서 파일에 주석달고, 그거 캡쳐후 새로운 브랜치 임의생성후 PR요청)
-    private String codeReviewPRLink;
+
+    private String codeReviewRequestLink;
+
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Builder
-    public ExamAnswer(Long id, Exam exam, Question question, Integer questionNo, Integer selectedOptionNo, Integer earnedPoint, Boolean isRight, String codeReviewLink, LocalDateTime createdAt, String codeReviewPRLink) {
-        this.id = id;
-        this.exam = exam;
-        this.question = question;
-        this.questionNo = questionNo;
-        this.selectedOptionNo = selectedOptionNo;
-        this.earnedPoint = earnedPoint;
-        this.isRight = isRight;
-        this.codeReviewLink = codeReviewLink;
-        this.createdAt = createdAt;
-        this.codeReviewPRLink = codeReviewPRLink;
-    }
+
 
     // 시스템이 자동 채점
     public void autoMcqGrade() {

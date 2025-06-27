@@ -24,7 +24,7 @@ public class ExamResult {
 
     private Integer scoredPoint; // 5점, 4점, 3점, 2점, 1점 (머든지 될 수 있음) - 이건 배점이 아님!!
     private Boolean isCorrect; // 0점이 아니면 전부다 true임!! 루브릭은 모든 답변에 점수가 부여됨
-    private String codeReviewFeedbackPRLink;
+    private String codeReviewFeedbackPRLink; // (선택적)
 
     @CreationTimestamp
     private LocalDateTime createdAt;

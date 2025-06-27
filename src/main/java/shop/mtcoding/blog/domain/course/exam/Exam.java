@@ -11,18 +11,14 @@ import shop.mtcoding.blog.domain.course.exam.result.ExamResult;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionType;
-import shop.mtcoding.blog.domain.course.subject.paper.question.mcq.QuestionMcqOption;
 import shop.mtcoding.blog.domain.user.student.Student;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.web.exam.ExamRequest;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
-/**
- * 1. 실행된 시험
- */
 @NoArgsConstructor
 @Getter
 @Entity
@@ -32,32 +28,28 @@ public class Exam {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 시험 보는 학생
     @ManyToOne(fetch = FetchType.LAZY)
     private Student student;
 
-    // 시험 담당 강사
     @ManyToOne(fetch = FetchType.LAZY)
     private Teacher teacher;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Subject subject;
 
-    // 시험지
     @ManyToOne(fetch = FetchType.LAZY)
-    private Paper paper; // paperType은 여기서 확인
+    private Paper paper;
 
     @Enumerated(EnumType.STRING)
-    private ExamResultStatus resultStatus; // 통과, 미통과(60점미만), 결석, 미응시
-    private Double totalScore; // 시험결과 점수 (재평가라면 10% 감점)
-    private Double totalScorePercent; // 감점 후 백분율까지된 점수
+    private ExamResultStatus resultStatus;
+    private Double totalScore;
+    private Double totalScorePercent;
+    private Integer gradeLevel;
+    private Boolean isActive;
 
-    private Integer gradeLevel; // 시험결과 수준
-    private Boolean isActive; // default true 사용유무 (본평가를 쳤는데, 재평가를 치게 되면 본평가는 false)
-
-    private String copiedPaperType; // 본평가,재평가
-    private Double copiedMaxScore; // 만점 점수
-    private String copiedQuestionType; // 객관식 or 루브릭
+    private String copiedPaperType;
+    private Double copiedMaxScore;
+    private String copiedQuestionType;
 
     @Lob
     private String studentSign;
@@ -66,9 +58,7 @@ public class Exam {
     private String teacherComment;
     private LocalDateTime teacherCommentedAt;
 
-    // ------------- 객관식이 아닐때 받아야함
     private String rubricSubmitLink;
-
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -76,9 +66,12 @@ public class Exam {
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
     private List<ExamAnswer> examAnswers = new ArrayList<>();
 
-    // TODO : 반대방향 setter 필요
     public void addAnswer(ExamAnswer answer) {
         this.examAnswers.add(answer);
+    }
+
+    public List<ExamAnswer> getExamAnswers() {
+        return Collections.unmodifiableList(this.examAnswers);
     }
 
     @Builder
@@ -104,215 +97,170 @@ public class Exam {
         this.createdAt = createdAt;
     }
 
-    public static Exam createMcqExam(Student student, Paper paper) {
-        Exam mcqExam = Exam.builder()
-                .student(student)
-                .paper(paper)
-                .subject(paper.getSubject())
-                .teacher(paper.getSubject().getTeacher())
-                .copiedPaperType(paper.getPaperType().toString()) // ORIGINAL vs RETEST
-                .copiedQuestionType(paper.getQuestionType().toString()) // MCQ vs RUBRIC
-                .copiedMaxScore(paper.getMaxScore())
-                .resultStatus(ExamResultStatus.NOT_GRADED)
-                .isActive(true)
-                .gradeLevel(null)
-                .teacherComment(null)
-                .totalScore(null)
-                .totalScorePercent(null)
-                .studentSign(null)
-                .studentSignedAt(null)
-                .teacherCommentedAt(null)
-                .rubricSubmitLink(null)
-                .build();
-
-
-        return mcqExam;
-    }
-
-    // 채점전
-    public static Exam createRubricExamIsNotGraded(Student student, Paper paper, String rubricSubmitLink) {
+    private static ExamBuilder baseBuilder(Student student, Paper paper) {
         return Exam.builder()
                 .student(student)
                 .paper(paper)
                 .subject(paper.getSubject())
                 .teacher(paper.getSubject().getTeacher())
-                .copiedPaperType(paper.getPaperType().toString()) // ORIGINAL vs RETEST
-                .copiedQuestionType(paper.getQuestionType().toString()) // MCQ vs RUBRIC
+                .copiedPaperType(paper.getPaperType().toString())
+                .copiedQuestionType(paper.getQuestionType().toString())
                 .copiedMaxScore(paper.getMaxScore())
+                .isActive(true);
+    }
+
+    public static Exam createAbsentExam(Student student, Paper paper) {
+        return baseBuilder(student, paper)
+                .resultStatus(ExamResultStatus.ABSENT)
+                .teacherComment(ExamResultStatus.ABSENT.toKorean())
+                .build();
+    }
+
+    public static Exam createNotTakenExam(Student student, Paper paper) {
+        return baseBuilder(student, paper)
+                .resultStatus(ExamResultStatus.NOT_TAKEN)
+                .teacherComment(ExamResultStatus.NOT_TAKEN.toKorean())
+                .build();
+    }
+
+    public static Exam createMcqExam(Student student, Paper paper) {
+        return baseBuilder(student, paper)
+                .resultStatus(ExamResultStatus.NOT_GRADED)
+                .build();
+    }
+
+    public static Exam createRubricExam(Student student, Paper paper, String rubricSubmitLink) {
+        return baseBuilder(student, paper)
                 .rubricSubmitLink(rubricSubmitLink)
                 .resultStatus(ExamResultStatus.NOT_GRADED)
-                .isActive(true)
-                .gradeLevel(null)
-                .teacherComment(null)
-                .totalScore(null)
-                .totalScorePercent(null)
-                .studentSign(null)
-                .studentSignedAt(null)
-                .teacherCommentedAt(null)
                 .build();
     }
 
-    // 결석
-    public static Exam createAbsentExam(Student student, Paper paper) {
-        return Exam.builder()
-                .student(student)
-                .paper(paper)
-                .subject(paper.getSubject())
-                .teacher(paper.getSubject().getTeacher())
-                .teacherComment(ExamResultStatus.ABSENT.toKorean())
-                .resultStatus(ExamResultStatus.ABSENT)
-                .copiedPaperType(paper.getPaperType().toString()) // ORIGINAL vs RETEST
-                .copiedQuestionType(paper.getQuestionType().toString()) // MCQ vs RUBRIC
-                .copiedMaxScore(paper.getMaxScore())
-                .isActive(true)
-                .gradeLevel(null)
-                .totalScore(null)
-                .totalScorePercent(null)
-                .studentSign(null)
-                .studentSignedAt(null)
-                .teacherCommentedAt(null)
-                .rubricSubmitLink(null)
-                .build();
-    }
+    public void gradeMcq() {
+        validateQuestionType(QuestionType.MCQ);
 
-    // 미응시
-    public static Exam createNotTakenExam(Student student, Paper paper) {
-        return Exam.builder()
-                .student(student)
-                .paper(paper)
-                .subject(paper.getSubject())
-                .teacher(paper.getSubject().getTeacher())
-                .teacherComment(ExamResultStatus.NOT_TAKEN.toKorean())
-                .resultStatus(ExamResultStatus.NOT_TAKEN)
-                .copiedPaperType(paper.getPaperType().toString()) // ORIGINAL vs RETEST
-                .copiedQuestionType(paper.getQuestionType().toString()) // MCQ vs RUBRIC
-                .copiedMaxScore(paper.getMaxScore())
-                .isActive(true)
-                .gradeLevel(null)
-                .totalScore(null)
-                .totalScorePercent(null)
-                .studentSign(null)
-                .studentSignedAt(null)
-                .teacherCommentedAt(null)
-                .rubricSubmitLink(null)
-                .build();
-    }
-
-
-    public void 채점하기() {
-        if (getQuestionType() != QuestionType.MCQ) {
-            throw new IllegalStateException("객관식 시험만 이 메서드를 호출할 수 있습니다.");
-        }
-
-        double totalScore = 0.0;
-
-        for (ExamAnswer answer : this.examAnswers) {
-            QuestionMcqOption selectedOption = answer.getQuestion().getMcqOptions().stream()
-                    .filter(opt -> opt.getNo().equals(answer.getSelectedOptionNo()))
-                    .findFirst()
-                    .orElse(null);
-
-            int scoredPoint = (selectedOption != null) ? selectedOption.getPoint() : 0;
-            boolean isCorrect = scoredPoint > 0;
-
-            ExamResult result = ExamResult.builder()
-                    .examAnswer(answer)
-                    .scoredPoint(scoredPoint)
-                    .isCorrect(isCorrect)
-                    .codeReviewFeedbackPRLink(null)
-                    .build();
-
-            answer.setExamResult(result);
-            totalScore += scoredPoint;
-        }
-
-        updateTotalScoreAndGradeLevel(totalScore);
-    }
-
-    public void 채점하기(ExamRequest.GradeDTO gradeDTO) {
-        if (getQuestionType() != QuestionType.RUBRIC) {
-            throw new IllegalStateException("루브릭 시험만 이 메서드를 호출할 수 있습니다.");
-        }
-
-        double totalScore = gradeDTO.getAnswerGrades().stream()
-                .map(dto -> {
-                    ExamAnswer answer = this.examAnswers.stream()
-                            .filter(a -> a.getId().equals(dto.getAnswerId()))
-                            .findFirst()
-                            .orElseThrow(() -> new RuntimeException("해당 answerId가 존재하지 않습니다."));
-
-                    Integer selectedNo = dto.getSelectedOptionNo();
-
-                    Integer scoredPoint = answer.getQuestion().getRubricOptions().stream()
-                            .filter(opt -> opt.getNo().equals(selectedNo))
-                            .map(opt -> opt.getPoint())
-                            .findFirst()
-                            .orElse(null);
-
-                    Boolean isCorrect = (scoredPoint != null && scoredPoint > 0);
-
-                    ExamResult result = ExamResult.builder()
-                            .examAnswer(answer)
-                            .scoredPoint(scoredPoint)
-                            .isCorrect(isCorrect)
-                            .codeReviewFeedbackPRLink(dto.getCodeReviewPRLink())
-                            .build();
-
-                    answer.setExamResult(result);
-
-                    return (scoredPoint != null) ? scoredPoint : 0;
+        double total = examAnswers.stream()
+                .mapToDouble(answer -> {
+                    int score = calculateMcqScore(answer);
+                    answer.setExamResult(buildResult(answer, score, null));
+                    return score;
                 })
-                .reduce(0.0, Double::sum);
+                .sum();
 
-        updateTotalScoreAndGradeLevel(totalScore);
-        updateTeacherComment(gradeDTO.getTeacherComment());
+        finalizeGrading(total);
     }
 
+    public void gradeRubric() {
+        validateQuestionType(QuestionType.RUBRIC);
+
+        double total = examAnswers.stream()
+                .mapToDouble(answer -> {
+                    int score = calculateRubricScore(answer, answer.getSelectedOptionNo());
+                    answer.setExamResult(buildResult(answer, score, null));
+                    return score;
+                })
+                .sum();
+
+        finalizeGrading(total);
+    }
+
+    public void regradeRubric(ExamRequest.GradeDTO dto) {
+        validateQuestionType(QuestionType.RUBRIC);
+
+        Map<Long, ExamAnswer> answerMap = this.examAnswers.stream()
+                .collect(Collectors.toMap(ExamAnswer::getId, a -> a));
+
+        double totalScore = dto.getAnswerGrades().stream()
+                .mapToDouble(grade -> {
+                    ExamAnswer answer = Optional.ofNullable(answerMap.get(Long.valueOf(grade.getAnswerId())))
+                            .orElseThrow(() -> new RuntimeException("Invalid answerId: " + grade.getAnswerId()));
+
+                    int score = calculateRubricScore(answer, grade.getSelectedOptionNo());
+                    answer.getExamResult().update(score, score > 0, grade.getCodeReviewPRLink());
+                    return score;
+                }).sum();
+
+        finalizeGrading(totalScore);
+    }
+
+    public void regradeMcq(ExamRequest.GradeDTO dto) {
+        validateQuestionType(QuestionType.MCQ);
+
+        Map<Long, ExamAnswer> answerMap = this.examAnswers.stream()
+                .collect(Collectors.toMap(ExamAnswer::getId, a -> a));
+
+        double totalScore = dto.getAnswerGrades().stream()
+                .mapToDouble(grade -> {
+                    ExamAnswer answer = Optional.ofNullable(answerMap.get(Long.valueOf(grade.getAnswerId())))
+                            .orElseThrow(() -> new RuntimeException("Invalid answerId: " + grade.getAnswerId()));
+
+                    int score = calculateMcqScore(answer);
+                    answer.getExamResult().update(score, score > 0, null);
+                    return score;
+                }).sum();
+
+        finalizeGrading(totalScore);
+    }
+
+    private void validateQuestionType(QuestionType expected) {
+        if (getQuestionType() != expected) {
+            throw new IllegalStateException(expected + " 시험만 가능합니다.");
+        }
+    }
+
+    private int calculateMcqScore(ExamAnswer answer) {
+        return answer.getQuestion().getMcqOptions().stream()
+                .filter(opt -> opt.getNo().equals(answer.getSelectedOptionNo()))
+                .mapToInt(opt -> opt.getPoint())
+                .findFirst().orElse(0);
+    }
+
+    private int calculateRubricScore(ExamAnswer answer, Integer selectedNo) {
+        return answer.getQuestion().getRubricOptions().stream()
+                .filter(opt -> opt.getNo().equals(selectedNo))
+                .mapToInt(opt -> opt.getPoint())
+                .findFirst().orElse(0);
+    }
+
+    private ExamResult buildResult(ExamAnswer answer, Integer score, String prLink) {
+        return ExamResult.builder()
+                .examAnswer(answer)
+                .scoredPoint(score)
+                .isCorrect(score > 0)
+                .codeReviewFeedbackPRLink(prLink)
+                .build();
+    }
+
+    private void finalizeGrading(Double sumPoints) {
+        this.totalScore = sumPoints;
+        this.totalScorePercent = MyUtil.scaleTo100(sumPoints, copiedMaxScore);
+
+        this.gradeLevel = switch ((int) (totalScorePercent / 10)) {
+            case 9, 10 -> 5;
+            case 8 -> 4;
+            case 7 -> 3;
+            case 6 -> 2;
+            default -> 1;
+        };
+
+        this.resultStatus = (gradeLevel > 1) ? ExamResultStatus.PASS : ExamResultStatus.FAIL;
+    }
 
     public void updateStudentSign(String studentSign) {
         this.studentSign = studentSign;
         this.studentSignedAt = LocalDateTime.now();
     }
 
-    private void updateTeacherComment(String teacherComment) {
+    public void updateTeacherComment(String teacherComment) {
         this.teacherComment = teacherComment;
-        this.teacherCommentedAt = LocalDateTime.now(); // 총평 남겼다는 인증 시간
+        this.teacherCommentedAt = LocalDateTime.now();
     }
 
-    private void updateTotalScoreAndGradeLevel(Double sumPoints) {
-        this.totalScore = sumPoints;
-        this.totalScorePercent = MyUtil.scaleTo100(sumPoints, copiedMaxScore);
-
-        if (totalScorePercent >= 90) {
-            gradeLevel = 5;
-        } else if (totalScorePercent >= 80) {
-            gradeLevel = 4;
-        } else if (totalScorePercent >= 70) {
-            gradeLevel = 3;
-        } else if (totalScorePercent >= 60) {
-            gradeLevel = 2;
-        } else {
-            gradeLevel = 1;
-        }
-
-        if (gradeLevel > 1) {
-            resultStatus = ExamResultStatus.PASS;
-        } else {
-            resultStatus = ExamResultStatus.FAIL;
-        }
-    }
-
-    public void setNotUse() {
+    public void deactivate() {
         this.isActive = false;
     }
 
-
     public QuestionType getQuestionType() {
-        if (QuestionType.valueOf(copiedQuestionType) == QuestionType.MCQ) {
-            return QuestionType.MCQ;
-        } else {
-            return QuestionType.RUBRIC;
-        }
+        return QuestionType.valueOf(copiedQuestionType);
     }
-
 }

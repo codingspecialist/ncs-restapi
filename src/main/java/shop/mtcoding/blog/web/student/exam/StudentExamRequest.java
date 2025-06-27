@@ -2,6 +2,7 @@ package shop.mtcoding.blog.web.student.exam;
 
 import lombok.Data;
 import shop.mtcoding.blog.core.errors.exception.api.Exception400;
+import shop.mtcoding.blog.core.errors.exception.api.Exception404;
 import shop.mtcoding.blog.domain.course.exam.Exam;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
@@ -12,7 +13,6 @@ import java.util.List;
 
 public class StudentExamRequest {
 
-    // ✅ 루브릭 시험 응시
     @Data
     public static class RubricSaveDTO {
         private Long paperId;
@@ -22,23 +22,26 @@ public class StudentExamRequest {
         @Data
         public static class AnswerDTO {
             private Integer questionNo;
-            private Integer selectedOptionNo;
             private String codeReviewRequestLink;
 
-            public ExamAnswer toEntity(Question question, Exam exam) {
-                return ExamAnswer.builder()
-                        .exam(exam)
-                        .question(question)
-                        .questionNo(questionNo)
-                        .selectedOptionNo(selectedOptionNo)
-                        .codeReviewRequestLink(codeReviewRequestLink)
-                        .build();
+            public ExamAnswer toEntity(Exam exam, Question question) {
+                return ExamAnswer.createRubricAnswer(exam, question, questionNo, codeReviewRequestLink);
             }
         }
 
-        // 시험 객체 생성
-        public Exam toEntity(Student student, Paper paper) {
-            return Exam.createRubricExamIsNotGraded(student, paper, rubricSubmitLink);
+        /**
+         * 시험 + 답변들까지 한번에 생성
+         */
+        public Exam toEntityWithAnswers(Student student, Paper paper, List<Question> questionList) {
+            Exam exam = Exam.createRubricExam(student, paper, rubricSubmitLink);
+            for (AnswerDTO dto : answers) {
+                Question question = questionList.stream()
+                        .filter(q -> q.getNo().equals(dto.getQuestionNo()))
+                        .findFirst()
+                        .orElseThrow(() -> new Exception404("해당 questionNo 없음: " + dto.getQuestionNo()));
+                exam.addAnswer(dto.toEntity(exam, question));
+            }
+            return exam;
         }
     }
 
@@ -53,22 +56,27 @@ public class StudentExamRequest {
             private Integer questionNo;
             private Integer selectedOptionNo;
 
-            public ExamAnswer toEntity(Question question, Exam exam) {
+            public ExamAnswer toEntity(Exam exam, Question question) {
                 if (selectedOptionNo == null) {
                     throw new Exception400("모든 문제에 대한 답안을 제출해야 됩니다");
                 }
-
-                return ExamAnswer.builder()
-                        .exam(exam)
-                        .question(question)
-                        .questionNo(questionNo)
-                        .selectedOptionNo(selectedOptionNo)
-                        .build();
+                return ExamAnswer.createMcqAnswer(exam, question, questionNo, selectedOptionNo);
             }
         }
 
-        public Exam toEntity(Student student, Paper paper) {
-            return Exam.createMcqExam(student, paper);
+        /**
+         * 시험 + 답변들까지 한번에 생성
+         */
+        public Exam toEntityWithAnswers(Student student, Paper paper, List<Question> questionList) {
+            Exam exam = Exam.createMcqExam(student, paper);
+            for (AnswerDTO dto : answers) {
+                Question question = questionList.stream()
+                        .filter(q -> q.getNo().equals(dto.getQuestionNo()))
+                        .findFirst()
+                        .orElseThrow(() -> new Exception404("해당 questionNo 없음: " + dto.getQuestionNo()));
+                exam.addAnswer(dto.toEntity(exam, question));
+            }
+            return exam;
         }
     }
 

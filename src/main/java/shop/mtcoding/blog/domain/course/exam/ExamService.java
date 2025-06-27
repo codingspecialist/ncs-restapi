@@ -41,6 +41,48 @@ public class ExamService {
     private final TeacherRepository teacherRepository;
     private final ExamQueryRepository examQueryRepository;
 
+    @Transactional
+    public void 강사_총평만_남기기(Long examId, String teacherComment) {
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new Exception404("시험이 존재하지 않아요"));
+        exam.updateTeacherComment(teacherComment);
+    }
+
+    @Transactional
+    public void 채점하기(Long examId, ExamRequest.GradeDTO reqDTO) {
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new Exception404("시험이 존재하지 않아요"));
+
+        if (exam.getQuestionType().isMcq()) {
+            exam.gradeMcq();
+        } else {
+            exam.gradeRubric(reqDTO);
+        }
+
+        exam.updateTeacherComment(reqDTO.getTeacherComment());
+    }
+
+    @Transactional
+    public void 강사_결석처리(ExamRequest.AbsentDTO reqDTO, User sessionUser) {
+        // 1. 유저가 선생님인지 검증
+        if (UserType.STUDENT.equals(sessionUser.getRole())) {
+            throw new Exception403("권한이 없습니다.");
+        }
+
+        // 2. 학생/시험지 조회
+        Student student = studentRepository.findById(reqDTO.getStudentId())
+                .orElseThrow(() -> new Exception404("학생을 찾을 수 없습니다."));
+
+        Paper paper = paperRepository.findById(reqDTO.getPaperId())
+                .orElseThrow(() -> new Exception404("시험지를 찾을 수 없습니다."));
+
+        // 3. 결석 시험 생성
+        Exam exam = Exam.createBlankExam(student, paper, ExamResultStatus.ABSENT);
+
+        // 4. 저장
+        examRepository.save(exam);
+    }
+
 
     public List<ExamModel.Result> 강사_교과목별시험결과(Long courseId, Long subjectId) {
         Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
@@ -124,30 +166,25 @@ public class ExamService {
         return new ExamModel.PaperItems(studentId, filteredPapers, attendanceMap);
     }
 
+    // 선택된 번호 다시 넘어옴, 총평 넘어옴
     @Transactional
-    public void 강사_결석처리(ExamRequest.AbsentDTO reqDTO, User sessionUser) {
-        // 1. 유저가 선생님인지 검증
-        if (UserType.STUDENT.equals(sessionUser.getRole())) {
-            throw new Exception403("권한이 없습니다.");
-        }
+    public void 강사_총평남기기(Long examId, ExamRequest.GradeDTO reqDTO) {
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new Exception404("시험이 존재하지 않아요"));
 
-        // 2. 학생/시험지 조회
-        Student student = studentRepository.findById(reqDTO.getStudentId())
-                .orElseThrow(() -> new Exception404("학생을 찾을 수 없습니다."));
+        reqDTO.updateAnswers(exam.getExamAnswers());
 
-        Paper paper = paperRepository.findById(reqDTO.getPaperId())
-                .orElseThrow(() -> new Exception404("시험지를 찾을 수 없습니다."));
 
-        // 3. 결석 시험 생성
-        Exam exam = Exam.createBlankExam(student, paper, ExamResultStatus.ABSENT);
+        if (exam.getQuestionType() == QuestionType.MCQ) exam.gradeMcq();
+        else exam.gradeRubric(reqDTO);
 
-        // 4. 저장
-        examRepository.save(exam);
+        exam.updateTeacherComment(reqDTO.getTeacherComment());
     }
+
 
     // 총평 남기기 or 루브릭 채점하기
     @Transactional
-    public void 강사_총평남기기(Long examId, ExamRequest.UpdateDTO reqDTO) {
+    public void 강사_총평남기기v1(Long examId, ExamRequest.UpdateDTO reqDTO) {
         Exam examPS = examRepository.findById(examId)
                 .orElseThrow(() -> new Exception404("응시한 시험이 존재하지 않아요"));
 
@@ -241,103 +278,75 @@ public class ExamService {
         examAnswerRepository.saveAll(examAnswerList);
     }
 
+    private String generateAutoTeacherComment(List<ExamAnswer> examAnswers) {
+        StringBuilder goodComment = new StringBuilder();
+        StringBuilder badComment = new StringBuilder();
 
+        for (ExamAnswer answer : examAnswers) {
+            String subtitle = answer.getQuestion().getSubjectElement().getTitle();
+            if (answer.getIsRight()) {
+                goodComment.append(subtitle).append(", ");
+            } else {
+                badComment.append(subtitle).append(", ");
+            }
+        }
+
+        // 마지막 쉼표 제거
+        if (goodComment.length() > 2) {
+            goodComment.setLength(goodComment.length() - 2);
+        }
+
+        if (badComment.length() > 2) {
+            badComment.setLength(badComment.length() - 2);
+        }
+
+        StringBuilder result = new StringBuilder();
+
+        if (!goodComment.isEmpty()) {
+            result.append(goodComment).append(" 부분을 잘 이해하고 ");
+            if (!badComment.isEmpty()) {
+                result.append(", ");
+            } else {
+                result.append("있습니다.");
+            }
+        }
+
+        if (!badComment.isEmpty()) {
+            result.append(badComment).append(" 부분이 부족합니다.");
+        }
+
+        return result.toString();
+    }
+
+    // TODO : 아주 깔끔해!! 내가 직접 만들자
     @Transactional
-    public void 학생_객관식_시험응시(StudentExamRequest.McqSaveDTO reqDTO, User sessionUser) {
-        // 1. Exam 저장
+    public void 학생객관식시험응시(StudentExamRequest.McqSaveDTO reqDTO, User sessionUser) {
+        // 1. 조회
         Paper paper = paperRepository.findById(reqDTO.getPaperId())
                 .orElseThrow(() -> new Exception404("시험지를 찾을 수 없어요"));
 
-        Student student = studentRepository.findByUserId(sessionUser.getId());
+        Student student = studentRepository.findByUserId(sessionUser.getId())
+                .orElseThrow(() -> new Exception404("학생을 찾을 수 없어요"));
 
-        // 2. 재평가인데, 이전 시험(Exam)이 있으면 이전 시험 isNotUse로 변경
-        // 재평가를 10번 해도, 모든 이전 재평가, 본평가는 isNotUse가 true가 됨
-        if (paper.isReEvaluation()) {
-            Optional<Exam> examOP = examRepository.findBySubjectIdAndStudentIdAndIsUse(paper.getSubject().getId(), student.getId(), true);
+        // 2. 재평가라면. 본평가를 찾아서 사용안함이라고 업데이트 해주기
 
-            if (examOP.isPresent()) {
-                // 1. 새로운 평가가 저장되면, 기존 사용중인 평가를 사용안함으로 변경
-                examOP.get().setNotUse();
-            }
-        }
-
-
-        Exam exam = reqDTO.toEntity(paper, student, "채점중", 0.0, 0, "");
-        Exam examPS = examRepository.save(exam);
-
-        // 2. 정답지 가져오기
+        // 3. 정답지 가져오기
         List<Question> questionList = questionRepository.findAllByPaperId(reqDTO.getPaperId());
 
-        // 3. ExamAnswer 컬렉션 저장 (채점하기)
-        List<ExamAnswer> examAnswerList = new ArrayList<>();
+        // 4. Exam과 ExamAnswer 비영속 객체 생성
+        Exam exam = reqDTO.toEntityWithAnswers(student, paper, questionList);
 
-        questionList.forEach(question -> {
-            // 순회하면서 채점
-            reqDTO.getAnswers().forEach(answerDTO -> {
-                if (answerDTO.getQuestionNo() == question.getNo()) {
-                    examAnswerList.add(answerDTO.toEntity(question, examPS));
-                }
-            });
-        });
+        // 5. 자동채점 (ExamResult 비영속 객체 생성)
+        exam.gradeMcq();
 
-        // 4. 시험점수, 수준, 통과여부 업데이트 하기
-        double score = examAnswerList.stream()
-                .mapToInt(answer -> {
-                    Integer selectedOptionNo = answer.getSelectedOptionNo(); // 사용자가 고른 번호
-                    List<QuestionOption> options = answer.getQuestion().getQuestionOptions();
-
-                    return options.stream()
-                            .filter(opt -> opt.getNo().equals(selectedOptionNo))
-                            .mapToInt(QuestionOption::getPoint)
-                            .findFirst()
-                            .orElse(0);
-                })
-                .sum();
-
-        // 5. 재평가지로 시험쳤으면 10%
-        if (paper.isReEvaluation()) {
-            score = score * 0.9;
-        }
-
-        // 6. 점수 입력 수준 입력
-        examPS.updatePointAndGrade(score, paper.sumQuestionPoints());
-
+        // 6. 재평가시에 0.9 곱해서 점수 만들기 (ExamResult)
 
         // 7. 총평 자동화
-        String teacherGoodComment = "";
-        String teacherBadComment = "";
+        String teacherComment = generateAutoTeacherComment(exam.getExamAnswers());
+        exam.updateTeacherComment(teacherComment);
 
-        for (ExamAnswer examAnswer : examAnswerList) {
-            if (examAnswer.getIsRight()) {
-                teacherGoodComment += examAnswer.getQuestion().getSubjectElement().getSubtitle() + ", ";
-            } else {
-                teacherBadComment += examAnswer.getQuestion().getSubjectElement().getSubtitle() + ", ";
-            }
-        }
-
-        int goodIndex = teacherGoodComment.lastIndexOf(", ");
-        int badIndex = teacherBadComment.lastIndexOf(", ");
-
-        if (goodIndex != -1) teacherGoodComment = teacherGoodComment.substring(0, goodIndex);
-
-        if (badIndex != -1) teacherBadComment = teacherBadComment.substring(0, badIndex);
-
-        if (teacherGoodComment.length() > 0) {
-            if (teacherBadComment.length() == 0) {
-                teacherGoodComment += " 부분을 잘이해하고 있습니다.";
-            } else {
-                teacherGoodComment += " 부분을 잘이해하고 있고, ";
-            }
-        }
-
-        if (teacherBadComment.length() > 0) {
-            teacherBadComment += " 부분이 부족합니다.";
-        }
-
-        examPS.updateTeacherComment(teacherGoodComment + teacherBadComment);
-
-        // 5. 학생 제출 답안 저장하기
-        examAnswerRepository.saveAll(examAnswerList);
+        // 8. 학생 제출 답안 저장하기 (Exam, ExamAnswer, ExamResult)
+        examRepository.save(exam);
     }
 
     public ExamModel.ResultDetail 학생_시험결과상세(Long examId) {

@@ -32,7 +32,7 @@ public class ExamAnswer {
     // 객관식은 자동 계산 / 그게 아니면 수동 계산됨
     private Integer selectedOptionNo;
 
-    private String codeReviewRequestLink;
+    private String codeReviewRequestLink; // (선택적)
 
     @OneToOne(mappedBy = "examAnswer", cascade = CascadeType.ALL, orphanRemoval = true)
     private ExamResult examResult;
@@ -53,5 +53,27 @@ public class ExamAnswer {
         this.selectedOptionNo = selectedOptionNo;
         this.codeReviewRequestLink = codeReviewRequestLink;
         this.createdAt = createdAt;
+    }
+
+    public static ExamAnswer createMcqAnswer(Exam exam, Question question, Integer questionNo, Integer selectedOptionNo) {
+        return ExamAnswer.builder()
+                .exam(exam)
+                .question(question)
+                .questionNo(questionNo)
+                .selectedOptionNo(selectedOptionNo)
+                .build();
+    }
+
+    public static ExamAnswer createRubricAnswer(Exam exam, Question question, Integer questionNo, String codeReviewRequestLink) {
+        return ExamAnswer.builder()
+                .exam(exam)
+                .question(question)
+                .questionNo(questionNo)
+                .codeReviewRequestLink(codeReviewRequestLink)
+                .build();
+    }
+
+    public Boolean getIsRight() {
+        return examResult != null ? examResult.getIsCorrect() : null;
     }
 }

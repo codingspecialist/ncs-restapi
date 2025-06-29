@@ -49,22 +49,22 @@ public class ExamController {
 
     @GetMapping("/api/exam-menu/course/{courseId}/subject/{subjectId}/exam")
     public String teacherResult(Model model, @PathVariable("courseId") Long courseId, @PathVariable("subjectId") Long subjectId) {
-        var modelData = examService.강사_교과목별시험결과(courseId, subjectId);
+        var modelData = examService.강사교과목별시험결과(courseId, subjectId);
         model.addAttribute("models", modelData);
         return "exam/list";
     }
 
-
+    // TODO: 여기서부터 해야함 (시험상세결과들, 현재 id는 알아야함)
     @GetMapping("/api/exam-menu/exam/{examId}")
     public String teacherResultDetail(@PathVariable(value = "examId") Long examId, Model model) {
-        var modelData = examService.강사_시험결과상세(examId);
+        var modelData = examService.시험상세결과들(examId);
 
-        if (modelData.exam().getPaper().getEvaluationWay() == EvaluationWay.MCQ) {
-            var respDTO = new ExamResponse.ResultMcqDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher(), modelData.prevExamId(), modelData.nextExamId(), modelData.currentIndex(), modelData.originExamId());
+        if (modelData.evaluationWay() == EvaluationWay.MCQ) {
+            var respDTO = new ExamResponse.ResultMcqDetails(examId, modelData.exams(), modelData.subjectElements(), modelData.teacher());
             model.addAttribute("model", respDTO);
             return "exam/mcq-detail";
         } else {
-            var respDTO = new ExamResponse.ResultRubricDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher(), modelData.prevExamId(), modelData.nextExamId(), modelData.currentIndex(), modelData.originExamId());
+            var respDTO = new ExamResponse.ResultRubricDetails(examId, modelData.exams(), modelData.subjectElements(), modelData.teacher());
             model.addAttribute("model", respDTO);
             return "exam/rubric-detail";
         }
@@ -82,14 +82,5 @@ public class ExamController {
     public ResponseEntity<?> update(@PathVariable("examId") Long examId, @RequestBody ExamRequest.UpdateDTO reqDTO) {
         examService.강사_총평남기기(examId, reqDTO);
         return ResponseEntity.ok(new ApiUtil<>(null));
-    }
-
-    @GetMapping("/api/exam-menu/exam/{notPassExamId}/notpass")
-    public String teacherResultDetailNotPass(@PathVariable(value = "notPassExamId") Long notPassExamId, Model model) {
-
-        var modelData = examService.강사_시험결과상세(notPassExamId);
-        var respDTO = new ExamResponse.ResultMcqDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher(), null, null, null, null);
-        model.addAttribute("model", respDTO);
-        return "exam/detail-notpass";
     }
 }

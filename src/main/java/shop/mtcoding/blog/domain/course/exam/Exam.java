@@ -10,9 +10,8 @@ import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.exam.result.ExamResult;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
+import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionOption;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionType;
-import shop.mtcoding.blog.domain.course.subject.paper.question.mcq.QuestionMcqOption;
-import shop.mtcoding.blog.domain.course.subject.paper.question.rubric.QuestionRubricOption;
 import shop.mtcoding.blog.domain.user.student.Student;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.web.exam.ExamRequest;
@@ -211,7 +210,7 @@ public class Exam {
 
         double total = examAnswers.stream()
                 .mapToDouble(answer -> {
-                    double score = calculateMcqScore(answer);
+                    double score = calculateScore(answer);
                     answer.setExamResult(buildResult(answer, score, null));
                     return score;
                 })
@@ -225,7 +224,7 @@ public class Exam {
 
         double total = examAnswers.stream()
                 .mapToDouble(answer -> {
-                    double score = calculateRubricScore(answer, answer.getSelectedOptionNo());
+                    double score = calculateScore(answer);
                     String feedbackPRLink = feedbackPRLinkMap.get(answer.getId());
                     answer.setExamResult(buildResult(answer, score, feedbackPRLink));
                     return score;
@@ -241,18 +240,10 @@ public class Exam {
         }
     }
 
-    private Double calculateMcqScore(ExamAnswer answer) {
-        return answer.getQuestion().getMcqOptions().stream()
+    private Double calculateScore(ExamAnswer answer) {
+        return answer.getQuestion().getQuestionOptions().stream()
                 .filter(opt -> opt.getNo().equals(answer.getSelectedOptionNo()))
-                .mapToDouble(QuestionMcqOption::getPoint)
-                .findFirst()
-                .orElse(0);
-    }
-
-    private Double calculateRubricScore(ExamAnswer answer, Integer selectedNo) {
-        return answer.getQuestion().getRubricOptions().stream()
-                .filter(opt -> opt.getNo().equals(selectedNo))
-                .mapToDouble(QuestionRubricOption::getPoint)
+                .mapToDouble(QuestionOption::getPoint)
                 .findFirst()
                 .orElse(0);
     }

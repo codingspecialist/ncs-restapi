@@ -2,6 +2,7 @@ package shop.mtcoding.blog.domain.course.exam;
 
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
+import shop.mtcoding.blog.domain.course.subject.paper.EvaluationWay;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.user.student.Student;
@@ -11,8 +12,12 @@ import java.util.List;
 import java.util.Map;
 
 public class ExamModel {
-    public record ResultDetail(Exam exam, List<SubjectElement> subjectElements, Teacher teacher, Long prevExamId,
-                               Long nextExamId, int currentIndex, Long originExamId) {
+    public record ResultDetails(EvaluationWay evaluationWay, List<Exam> exams, List<SubjectElement> subjectElements,
+                                Teacher teacher) {
+    }
+
+    public record ResultDetail(EvaluationWay evaluationWay, Exam exam, List<SubjectElement> subjectElements,
+                               Teacher teacher) {
     }
 
     public record Start(Paper paperPS, String studentName, List<SubjectElement> subjectElementListPS,

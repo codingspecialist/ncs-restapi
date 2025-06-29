@@ -6,14 +6,14 @@ import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.exam.Exam;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
+import shop.mtcoding.blog.domain.course.exam.result.ExamResult;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
-import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
+import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionOption;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 
 public class ExamResponse {
@@ -85,8 +85,8 @@ public class ExamResponse {
         private Integer courseRound;
 
         public SubjectDTO(Subject subject) {
-            Paper paper = subject.getPapers().stream().filter(p -> !p.isReEvaluation()).findFirst().orElse(null);
-            Paper rePaper = subject.getPapers().stream().filter(p -> p.isReEvaluation()).findFirst().orElse(null);
+            Paper paper = subject.getPapers().stream().filter(p -> !p.isReTest()).findFirst().orElse(null);
+            Paper rePaper = subject.getPapers().stream().filter(p -> p.isReTest()).findFirst().orElse(null);
 
             this.subjectId = subject.getId();
             this.code = subject.getCode();
@@ -118,227 +118,257 @@ public class ExamResponse {
     }
 
     @Data
-    public static class ResultMcqDetailDTO {
+    public static class ResultMcqDetails {
+        private Long selectedExamId;
+        private List<ResultMcqDetail> details;
+
+        public ResultMcqDetails(Long examId, List<Exam> exams, List<SubjectElement> subjectElements, Teacher teacher) {
+            this.selectedExamId = examId;
+            this.details = exams.stream()
+                    .map(exam -> new ResultMcqDetail(exam, subjectElements, teacher))
+                    .toList();
+        }
+    }
+    
+    @Data
+    public static class ResultRubricDetails {
+        private Long selectedExamId;
+        private List<ResultRubricDetail> details;
+
+        public ResultRubricDetails(Long examId, List<Exam> exams, List<SubjectElement> subjectElements, Teacher teacher) {
+            this.selectedExamId = examId;
+            this.details = exams.stream()
+                    .map(exam -> new ResultRubricDetail(exam, subjectElements, teacher))
+                    .toList();
+        }
+    }
+
+    @Data
+    public static class ResultMcqDetail {
         private Long examId;
         private Long paperId;
         private String studentName;
         private String teacherName;
-        private String evaluationDate; // 평가일 (subject)
-
-        private String evaluationDevice; // 평가장소
-        private String evaluationRoom; // 평가장소
+        private String evaluationDate;
+        private String evaluationDevice;
+        private String evaluationRoom;
 
         private String subjectTitle; // 교과목 (subject)
         private List<String> subjectElements;
-        private List<AnswerDTO> answers;
+        private List<ResultMcq> results;
+
         private Integer questionCount;
-        private String examState;
-        private String reExamReason;
-        private String examPassState;
-        private Double manjumScore;
-        private Double score;
-        private Double finalScore;
+        private String examResultStatus;
+        private String notTakenReason;
+        private Double rawScore;
+        private Double totalScore;
+        private Double totalScorePercent;
         private String teacherComment;
-        private Integer grade;
+        private Integer gradeLevel;
         private String teacherSign;
         private String studentSign;
-        private Boolean isAbsent;
-        private Integer studentNo;
-        private Long prevExamId; // 해당 교과목에 이전 학생 id
-        private Long nextExamId; // 해당 교과목에 다음 학생 id
-        private Long originExamId;
 
-        public ResultMcqDetailDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher, Long prevExamId, Long nextExamId, Integer currentIndex, Long originExamId) {
+        public ResultMcqDetail(Exam exam, List<SubjectElement> subjectElements, Teacher teacher) {
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
             this.studentName = exam.getStudent().getName();
-            this.teacherName = exam.getTeacherName();
+            this.teacherName = exam.getTeacher().getName();
             this.evaluationDate = exam.getPaper().getEvaluationDate().toString();
             this.evaluationDevice = exam.getPaper().getEvaluationDevice();
             this.evaluationRoom = exam.getPaper().getEvaluationRoom();
+
             this.subjectTitle = exam.getPaper().getSubject().getTitle();
-            this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
-            this.answers = exam.getExamAnswers().stream().map(AnswerDTO::new).toList();
+            this.subjectElements = subjectElements.stream()
+                    .map(SubjectElement::getTitle)
+                    .toList();
+            this.results = exam.getExamAnswers().stream()
+                    .map(ResultMcq::new)
+                    .toList();
+
             this.questionCount = exam.getPaper().getQuestions().size();
-            this.examState = exam.getExamState();
-            this.reExamReason = exam.getReExamReason() == null ? "" : exam.getReExamReason();
-            this.examPassState = exam.getPassState();
-            this.manjumScore = exam.getManjumScore();
-            this.score = exam.getScore();
-            this.finalScore = exam.getFinalScore();
+            this.examResultStatus = exam.getResultStatus().toKorean(); // 정확한 이름 매핑
+            this.notTakenReason = exam.getNotTakenReason().toKorean();
+            this.rawScore = exam.getRawScore();
+            this.totalScore = exam.getTotalScore();
+            this.totalScorePercent = exam.getTotalScorePercent();
             this.teacherComment = exam.getTeacherComment();
-            this.grade = exam.getGrade();
+            this.gradeLevel = exam.getGradeLevel();
             this.teacherSign = teacher.getSign();
             this.studentSign = exam.getStudentSign();
-            this.studentNo = currentIndex == null ? null : currentIndex + 1;
-            this.prevExamId = prevExamId;
-            this.nextExamId = nextExamId;
-            this.isAbsent = exam.getReExamReason().equals("결석");
-            this.originExamId = originExamId;
         }
 
 
         @Data
-        class AnswerDTO {
+        class ResultMcq {
             private Long answerId;
             private Long questionId;
-            private Integer no;
-            private String title;
-            private String exContent;
-            private Integer totalPoint; // 점수
-            private Integer answerNumber; // 정답 번호
-            private Integer selectedOptionNo; // 학생 선택 번호
-            private Integer studentPoint;
-            private List<OptionDTO> options;
+            private Integer questionNo;
+            private String questionTitle;
+            private String questionExContent;
+            private Double maxScore;
+            private Integer correctOptionNo;
+            private Integer selectedOptionNo;
+            private Double scoredPoint;
+            private List<Option> options;
 
-            public AnswerDTO(ExamAnswer answer) {
+            public ResultMcq(ExamAnswer answer) {
                 this.answerId = answer.getId();
                 this.questionId = answer.getQuestion().getId();
-                this.no = answer.getQuestion().getNo();
-                this.title = answer.getQuestion().getTitle();
-                this.exContent = answer.getQuestion().getExContent();
-                // 객관식일때는, isRight인것의 점수를 가져오면 되는데, 객관식이 아닐때는, 정답이 여러개일수 있기 때문에 가장 높은점수를 가져와야 해서 아래 코드 필수임
-                QuestionOption _option = answer.getQuestion().getQuestionOptions().stream()
-                        .max(Comparator.comparingInt(QuestionOption::getPoint))
-                        .orElse(null);
+                this.questionNo = answer.getQuestionNo(); // answer 기준
+                this.questionTitle = answer.getQuestion().getTitle();
+                this.questionExContent = answer.getQuestion().getExContent();
 
-                this.totalPoint = _option.getPoint();
-                this.answerNumber = _option.getNo();
+                // 가장 높은 점수를 가진 옵션
+                QuestionOption correctOption = answer.getQuestion().getCorrectOption();
+
+                this.maxScore = correctOption != null ? correctOption.getPoint().doubleValue() : 0.0;
+                this.correctOptionNo = correctOption != null ? correctOption.getNo() : null;
                 this.selectedOptionNo = answer.getSelectedOptionNo();
-                this.studentPoint = answer.getEarnedPoint();
-                this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new OptionDTO(option, selectedOptionNo)).toList();
+
+                // 💡 채점 결과는 ExamResult에서 가져옴
+                ExamResult result = answer.getExamResult();
+                this.scoredPoint = result != null ? result.getScoredPoint() : null;
+
+                this.options = answer.getQuestion().getQuestionOptions().stream()
+                        .map(option -> new Option(option, selectedOptionNo))
+                        .toList();
             }
 
             @Data
-            class OptionDTO {
+            class Option {
                 private Long optionId;
-                private Integer no;
-                private String content;
-                private Boolean isSelect; // 해당 옵션이 선택되었는지 여부
+                private Integer optionNo;
+                private String optionContent;
+                private Boolean isSelected;
 
-                public OptionDTO(QuestionOption option, Integer selectedOptionNo) {
+                public Option(QuestionOption option, Integer selectedOptionNo) {
                     this.optionId = option.getId();
-                    this.no = option.getNo();
-                    this.content = option.getContent();
-                    this.isSelect = no.equals(selectedOptionNo);
+                    this.optionNo = option.getNo();
+                    this.optionContent = option.getContent();
+                    this.isSelected = optionNo.equals(selectedOptionNo);
                 }
             }
         }
     }
 
     @Data
-    public static class ResultRubricDetailDTO {
-        private Boolean gradingComplete;
+    public static class ResultRubricDetail {
         private Long examId;
         private Long paperId;
         private String studentName;
         private String teacherName;
-        private String evaluationDate; // 평가일 (subject)
-        private String evaluationDevice; // 평가장소
-        private String evaluationRoom; // 평가장소
-        private Integer questionCount;
+        private String evaluationDate;
+        private String evaluationDevice;
+        private String evaluationRoom;
 
         private String subjectTitle; // 교과목 (subject)
         private List<String> subjectElements;
-        private List<AnswerDTO> answers;
-        private String examState;
-        private String reExamReason;
-        private String examPassState;
-        private Double manjumScore;
-        private Double score;
-        private Double finalScore;
-        private String submitLink;
+        private List<ResultRubric> results;
+
+        private Integer questionCount;
+        private String examResultStatus; // 통과, 미통과(60점미만), 미응시, 채점전
+        private String notTakenReason;
+        private Double rawScore;
+        private Double totalScore;
+        private Double totalScorePercent;
         private String teacherComment;
-        private Integer grade;
+        private Integer gradeLevel;
         private String teacherSign;
         private String studentSign;
-        private Boolean isAbsent;
-        private Integer studentNo;
-        private Long prevExamId; // 해당 교과목에 이전 학생 id
-        private Long nextExamId; // 해당 교과목에 다음 학생 id
-        private Long originExamId;
 
-        public ResultRubricDetailDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher, Long prevExamId, Long nextExamId, Integer currentIndex, Long originExamId) {
-            this.gradingComplete = exam.getGradingComplete();
+        // 루브릭만 가지는 것
+        private String rubricSubmitLink;
+
+        public ResultRubricDetail(Exam exam, List<SubjectElement> subjectElements, Teacher teacher) {
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
             this.studentName = exam.getStudent().getName();
-            this.teacherName = exam.getTeacherName();
+            this.teacherName = exam.getTeacher().getName();
             this.evaluationDate = exam.getPaper().getEvaluationDate().toString();
             this.evaluationDevice = exam.getPaper().getEvaluationDevice();
             this.evaluationRoom = exam.getPaper().getEvaluationRoom();
+
             this.subjectTitle = exam.getPaper().getSubject().getTitle();
-            this.subjectElements = subjectElements.stream().map(SubjectElement::getSubtitle).toList();
-            this.answers = exam.getExamAnswers().stream().map(AnswerDTO::new).toList();
+            this.subjectElements = subjectElements.stream()
+                    .map(SubjectElement::getTitle)
+                    .toList();
+            this.results = exam.getExamAnswers().stream()
+                    .map(ResultRubric::new)
+                    .toList();
+
             this.questionCount = exam.getPaper().getQuestions().size();
-            this.examState = exam.getExamState();
-            this.reExamReason = exam.getReExamReason() == null ? "" : exam.getReExamReason();
-            this.examPassState = exam.getPassState();
-            this.manjumScore = exam.getManjumScore();
-            this.score = exam.getScore();
-            this.finalScore = exam.getFinalScore();
-            this.submitLink = exam.getSubmitLink();
+            this.examResultStatus = exam.getResultStatus().toKorean(); // 정확한 이름 매핑
+            this.notTakenReason = exam.getNotTakenReason().toKorean();
+            this.rawScore = exam.getRawScore();
+            this.totalScore = exam.getTotalScore();
+            this.totalScorePercent = exam.getTotalScorePercent();
             this.teacherComment = exam.getTeacherComment();
-            this.grade = exam.getGrade();
+            this.gradeLevel = exam.getGradeLevel();
             this.teacherSign = teacher.getSign();
             this.studentSign = exam.getStudentSign();
-            this.studentNo = currentIndex == null ? null : currentIndex + 1;
-            this.prevExamId = prevExamId;
-            this.nextExamId = nextExamId;
-            this.isAbsent = exam.getReExamReason().equals("결석");
-            this.originExamId = originExamId;
-
+            this.rubricSubmitLink = exam.getRubricSubmitLink();
         }
 
 
         @Data
-        class AnswerDTO {
+        class ResultRubric {
             private Long answerId;
             private Long questionId;
-            private Integer no;
-            private String title;
-            private Integer totalPoint;
-            private Integer selectedOptionNo; // 학생 선택 번호
-            private Integer studentPoint;
-            private String codeReviewLink;
-            private String codeReviewPRLink;
-            private List<String> scenarios;
+            private Integer questionNo;
+            private String questionTitle;
+            private String questionExContent;
+            private Double maxScore;
+            private Integer selectedOptionNo;
+            private Double scoredPoint;
+            private List<Option> options;
 
-            private List<OptionDTO> options;
 
-            public AnswerDTO(ExamAnswer answer) {
+            private String codeReviewRequestLink;
+            private String codeReviewFeedbackPRLink;
+            private List<String> exScenarios;
+
+            public ResultRubric(ExamAnswer answer) {
                 this.answerId = answer.getId();
                 this.questionId = answer.getQuestion().getId();
-                this.no = answer.getQuestion().getNo();
-                this.title = answer.getQuestion().getTitle();
-                // 객관식일때는, isRight인것의 점수를 가져오면 되는데, 객관식이 아닐때는, 정답이 여러개일수 있기 때문에 가장 높은점수를 가져와야 해서 아래 코드 필수임
-                QuestionOption _option = answer.getQuestion().getQuestionOptions().stream()
-                        .max(Comparator.comparingInt(QuestionOption::getPoint))
-                        .orElse(null);
+                this.questionNo = answer.getQuestionNo(); // answer 기준
+                this.questionTitle = answer.getQuestion().getTitle();
+                this.questionExContent = answer.getQuestion().getExContent();
 
-                this.totalPoint = _option.getPoint();
-                this.selectedOptionNo = answer.getSelectedOptionNo(); // 기본적으로 1번에 체크되게 하기
-                this.studentPoint = answer.getEarnedPoint();
-                this.codeReviewLink = answer.getCodeReviewLink();
-                this.codeReviewPRLink = answer.getCodeReviewPRLink();
-                this.scenarios = MyUtil.parseMultilineWithoutHyphen(answer.getQuestion().getScenario());
-                this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new OptionDTO(option, selectedOptionNo)).toList();
+                // 가장 높은 점수를 가진 옵션이 정답
+                QuestionOption correctOption = answer.getQuestion().getCorrectOption();
+
+                this.maxScore = correctOption != null ? correctOption.getPoint().doubleValue() : 0.0;
+                this.selectedOptionNo = answer.getSelectedOptionNo();
+
+                // 💡 채점 결과는 ExamResult에서 가져옴
+                ExamResult result = answer.getExamResult();
+                this.scoredPoint = result != null ? result.getScoredPoint() : null;
+
+                this.options = answer.getQuestion().getQuestionOptions().stream()
+                        .map(option -> new Option(option, selectedOptionNo))
+                        .toList();
+
+
+                this.codeReviewRequestLink = answer.getCodeReviewRequestLink();
+                this.codeReviewFeedbackPRLink = result.getCodeReviewFeedbackPRLink();
+                this.exScenarios = MyUtil.parseMultilineWithoutHyphen(answer.getQuestion().getExScenario());
+                this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new Option(option, selectedOptionNo)).toList();
             }
 
             @Data
-            class OptionDTO {
+            class Option {
                 private Long optionId;
-                private Integer no;
-                private String rubricItem;
-                private Boolean isSelect; // 해당 옵션이 선택되었는지 여부
-                private Integer point;
+                private Integer optionNo;
+                private String optionContent;
+                private Boolean isSelected;
+                private Integer rubricPoint;
 
-                public OptionDTO(QuestionOption option, Integer selectedOptionNo) {
+                public Option(QuestionOption option, Integer selectedOptionNo) {
                     this.optionId = option.getId();
-                    this.no = option.getNo();
-                    this.rubricItem = option.getRubricItem();
-                    this.isSelect = no.equals(selectedOptionNo);
-                    this.point = option.getPoint();
+                    this.optionNo = option.getNo();
+                    this.optionContent = option.getContent();
+                    this.isSelected = option.getNo().equals(selectedOptionNo);
+                    this.rubricPoint = option.getPoint();
                 }
             }
         }

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog.core.errors.exception.api.Exception403;
 import shop.mtcoding.blog.core.errors.exception.api.Exception404;
-import shop.mtcoding.blog.core.errors.exception.api.Exception500;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.SubjectRepository;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
@@ -251,47 +250,46 @@ public class ExamService {
         examPS.updateStudentSign(reqDTO.getSign());
     }
 
-    public ExamModel.ResultDetail 시험결과상세(Long examId) {
+    // 시험결과목록 -> 시험결과들상세 (프론트에서 시험상세 결과들중 선택된 examId로 pageview에서 보여줌)
+    public ExamModel.ResultDetails 시험상세결과들(Long examId) {
         // 1. 시험 조회
         Exam exam = examRepository.findById(examId)
                 .orElseThrow(() -> new Exception404("시험 기록이 존재하지 않습니다."));
 
         // 2. 동일 교과목의 활성 시험 전체 조회 (학생 이름순 정렬)
         Long subjectId = exam.getPaper().getSubject().getId();
-        List<Exam> allExams = examRepository.findBySubjectIdAndIsUseOrderByStudentNameAsc(subjectId);
+        List<Exam> exams = examRepository.findBySubjectIdAndIsUseOrderByStudentNameAsc(subjectId);
 
-        // 3. 현재 시험 위치 및 이전/다음 ID 계산
-        int currentIndex = -1;
-        Long prevId = null, nextId = null;
-
-        for (int i = 0; i < allExams.size(); i++) {
-            if (allExams.get(i).getId().equals(examId)) {
-                currentIndex = i;
-                if (i > 0) prevId = allExams.get(i - 1).getId();
-                if (i < allExams.size() - 1) nextId = allExams.get(i + 1).getId();
-                break;
-            }
-        }
-
-        // 4. 교과목 요소 및 교사 정보 조회
+        // 3. 교과목 요소 및 교사 정보 조회
         List<SubjectElement> elements = elementRepository.findAllBySubjectId(subjectId);
         Teacher teacher = teacherRepository.findById(exam.getTeacher().getId())
                 .orElseThrow(() -> new Exception404("해당 시험의 교사를 찾을 수 없습니다."));
 
-        // 5. 본평가 ID 확인 (재평가일 경우)
-        Long originExamId = null;
-        if (exam.getPaper().isReTest()) {
-            Long studentId = exam.getStudent().getId();
-            originExamId = examRepository.findBySubjectIdAndStudentIdAndIsUse(subjectId, studentId, false)
-                    .map(Exam::getId)
-                    .orElseThrow(() -> new Exception500("본평가를 찾을 수 없습니다."));
-        }
 
-        return new ExamModel.ResultDetail(
-                exam, elements, teacher,
-                prevId, nextId, currentIndex,
-                originExamId
+        return new ExamModel.ResultDetails(exam.getPaper().getEvaluationWay(),
+                exams, elements, teacher
         );
     }
+
+    // 시험결과목록 -> 시험결과들상세 (프론트에서 시험상세 결과들중 선택된 examId로 pageview에서 보여줌)
+    public ExamModel.ResultDetail 시험상세결과(Long examId) {
+        // 1. 시험 조회
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new Exception404("시험 기록이 존재하지 않습니다."));
+
+        // 2. 동일 교과목의 활성 시험 전체 조회 (학생 이름순 정렬)
+        Long subjectId = exam.getPaper().getSubject().getId();
+
+
+        // 3. 교과목 요소 및 교사 정보 조회
+        List<SubjectElement> elements = elementRepository.findAllBySubjectId(subjectId);
+        Teacher teacher = teacherRepository.findById(exam.getTeacher().getId())
+                .orElseThrow(() -> new Exception404("해당 시험의 교사를 찾을 수 없습니다."));
+
+        return new ExamModel.ResultDetail(exam.getPaper().getEvaluationWay(),
+                exam, elements, teacher
+        );
+    }
+
 
 }

@@ -72,12 +72,9 @@ public class ExamAnswer {
                 .build();
     }
 
+
     // 채점시에 업데이트 되어야 함.
     public void setSelectedOptionNo(Integer selectedOptionNo) {
         this.selectedOptionNo = selectedOptionNo;
-    }
-
-    public Boolean getIsRight() {
-        return examResult != null ? examResult.getIsCorrect() : null;
     }
 }

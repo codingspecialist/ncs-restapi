@@ -5,14 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import shop.mtcoding.blog.core.errors.exception.api.Exception500;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
-import shop.mtcoding.blog.domain.course.subject.paper.question.mcq.QuestionMcqOption;
-import shop.mtcoding.blog.domain.course.subject.paper.question.rubric.QuestionRubricOption;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -40,10 +38,7 @@ public class Question {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    private List<QuestionRubricOption> rubricOptions = new ArrayList<>();
-
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    private List<QuestionMcqOption> mcqOptions = new ArrayList<>();
+    private List<QuestionOption> questionOptions = new ArrayList<>();
 
     @Builder
     public Question(Long id, Integer no, String title, String exContent, String exScenario, SubjectElement subjectElement, Paper paper, LocalDateTime createdAt) {
@@ -57,23 +52,13 @@ public class Question {
         this.createdAt = createdAt;
     }
 
-    public void addRubric(QuestionRubricOption rubric) {
-        this.rubricOptions.add(rubric);
-        rubric.setQuestion(this); // 연관관계의 주인 쪽도 세팅
+    public void addOption(QuestionOption option) {
+        this.questionOptions.add(option);
     }
 
-    public void addMcq(QuestionMcqOption mcq) {
-        this.mcqOptions.add(mcq);
-        mcq.setQuestion(this); // 연관관계의 주인 쪽도 세팅
-    }
-
-    public List<?> getOptions() {
-        if (paper.getQuestionType() == QuestionType.MCQ) {
-            return mcqOptions;
-        } else if (paper.getQuestionType() == QuestionType.RUBRIC) {
-            return rubricOptions;
-        } else {
-            throw new Exception500("Unknown question type: " + paper.getQuestionType());
-        }
+    public QuestionOption getCorrectOption() {
+        return this.getQuestionOptions().stream()
+                .max(Comparator.comparingInt(QuestionOption::getPoint))
+                .orElse(null);
     }
 }

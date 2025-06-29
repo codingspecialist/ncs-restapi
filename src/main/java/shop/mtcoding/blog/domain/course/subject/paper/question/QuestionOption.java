@@ -1,11 +1,10 @@
-package shop.mtcoding.blog.domain.course.subject.paper.question.mcq;
+package shop.mtcoding.blog.domain.course.subject.paper.question;
 
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 
 import java.time.LocalDateTime;
 
@@ -15,9 +14,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "question_mcq_tb",
+@Table(name = "question_option_tb",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"no", "question_id"})})
-public class QuestionMcqOption {
+public class QuestionOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,7 +32,7 @@ public class QuestionMcqOption {
     private LocalDateTime createdAt;
 
     @Builder
-    public QuestionMcqOption(Long id, Integer no, String content, Question question, Integer point, LocalDateTime createdAt) {
+    public QuestionOption(Long id, Integer no, String content, Question question, Integer point, LocalDateTime createdAt) {
         this.id = id;
         this.no = no;
         this.content = content;

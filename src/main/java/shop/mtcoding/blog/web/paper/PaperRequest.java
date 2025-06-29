@@ -7,7 +7,7 @@ import shop.mtcoding.blog.domain.course.subject.paper.EvaluationWay;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperType;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
-import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
+import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionOption;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,7 +24,7 @@ public class PaperRequest {
 
         // 둘 중 택일로 받음
         private String exContent;
-        private String scenario;
+        private String exScenario;
 
         private List<OptionDTO> options;
 
@@ -33,7 +33,7 @@ public class PaperRequest {
                     .no(questionNo)
                     .title(questionTitle)
                     .exContent(exContent)
-                    .scenario(Optional.ofNullable(scenario).filter(s -> !s.isBlank()).orElse(null))
+                    .exScenario(Optional.ofNullable(exScenario).filter(s -> !s.isBlank()).orElse(null))
                     .paper(paper)
                     .subjectElement(element)
                     .build();
@@ -42,20 +42,14 @@ public class PaperRequest {
         @Data
         public static class OptionDTO {
             private Integer optionNo;
-            // 객관식일 경우
             private String optionContent;
-            // 객관식의 정답에 체크가 되어있으면 점수를 받고, 아니면 0점을 받기
             private Integer optionPoint;
-            // 객관식의 정답에 체크가 되어있으면 루브릭 내용받기
-            // 객관식이 아닐경우에는 무조건 받기
-            private String rubricItem;
 
             public QuestionOption toEntity(Question question) {
                 return QuestionOption.builder()
                         .no(optionNo)
                         .content(Optional.ofNullable(optionContent).filter(s -> !s.isBlank()).orElse(null))
                         .point(Optional.ofNullable(optionPoint).orElse(0))
-                        .rubricItem(Optional.ofNullable(rubricItem).filter(s -> !s.isBlank()).orElse(null))
                         .question(question)
                         .build();
             }
@@ -73,12 +67,12 @@ public class PaperRequest {
         private EvaluationWay evaluationWay; // 객관식. 서술형. 작업형. 프로젝트형
 
         // rubric 관련 항목 (null 가능)
-        private String rubricTitle;
-        private String rubricScenario;
-        private String rubricScenarioGuideLink;
-        private String rubricChallenge;
-        private String rubricSubmitFormat;
-        private String rubricSubmitTemplateLink;
+        private String taskTitle;
+        private String taskScenario;
+        private String taskScenarioGuideLink;
+        private String taskSubmitFormat;
+        private String taskSubmitTemplateLink;
+        private String taskChallenge;
 
         public Paper toEntity(Subject subject) {
             return Paper.builder()
@@ -88,12 +82,12 @@ public class PaperRequest {
                     .evaluationWay(evaluationWay)
                     .evaluationRoom(evaluationRoom)
                     .evaluationDevice(evaluationDevice)
-                    .rubricTitle(rubricTitle != null && !rubricTitle.isBlank() ? rubricTitle : null)
-                    .rubricScenario(rubricScenario != null && !rubricScenario.isBlank() ? rubricScenario : null)
-                    .rubricScenarioGuideLink(rubricScenarioGuideLink != null && !rubricScenarioGuideLink.isBlank() ? rubricScenarioGuideLink : null)
-                    .rubricChallenge(rubricChallenge != null && !rubricChallenge.isBlank() ? rubricChallenge : null)
-                    .rubricSubmitFormat(rubricSubmitFormat != null && !rubricSubmitFormat.isBlank() ? rubricSubmitFormat : null)
-                    .rubricSubmitTemplateLink(rubricSubmitTemplateLink != null && !rubricSubmitTemplateLink.isBlank() ? rubricSubmitTemplateLink : null)
+                    .taskTitle(taskTitle)
+                    .taskScenario(taskScenario)
+                    .taskScenarioGuideLink(taskScenarioGuideLink)
+                    .taskSubmitFormat(taskSubmitFormat)
+                    .taskSubmitTemplateLink(taskSubmitTemplateLink)
+                    .taskChallenge(taskChallenge)
                     .build();
         }
     }

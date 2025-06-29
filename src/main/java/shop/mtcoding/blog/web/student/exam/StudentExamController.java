@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import shop.mtcoding.blog.core.utils.Resp;
 import shop.mtcoding.blog.domain.course.exam.ExamService;
 import shop.mtcoding.blog.domain.course.subject.paper.EvaluationWay;
 import shop.mtcoding.blog.domain.user.User;
@@ -46,19 +47,19 @@ public class StudentExamController {
     }
 
     @PostMapping("/api/student/exam/mcq")
-    public ResponseEntity<?> studentExamMcqSave(@RequestBody StudentExamRequest.McqSaveDTO reqDTO) {
+    public ResponseEntity<?> studentExamMcqSave(@RequestBody StudentExamRequest.McqSave reqDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
 
-        examService.학생_객관식_시험응시(reqDTO, sessionUser);
-        return ResponseEntity.ok(new ApiUtil<>(null));
+        examService.학생객관식시험응시(reqDTO, sessionUser);
+        return ResponseEntity.ok(Resp.ok(null));
     }
 
     @PostMapping("/api/student/exam/rubric")
-    public ResponseEntity<?> studentExamRubricSave(@RequestBody StudentExamRequest.RubricSaveDTO reqDTO) {
+    public ResponseEntity<?> studentExamRubricSave(@RequestBody StudentExamRequest.RubricSave reqDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
 
-        examService.학생_루브릭_시험응시(reqDTO, sessionUser);
-        return ResponseEntity.ok(new ApiUtil<>(null));
+        examService.학생루브릭시험응시(reqDTO, sessionUser);
+        return ResponseEntity.ok(Resp.ok(null));
     }
 
     @GetMapping("/api/student/exam")
@@ -73,7 +74,7 @@ public class StudentExamController {
 
     @GetMapping("/api/student/exam/{examId}")
     public String studentExamResultDetail(@PathVariable(value = "examId") Long examId, Model model) {
-        var modelData = examService.학생_시험결과상세(examId);
+        var modelData = examService.학생시험결과상세(examId);
 
         if (modelData.exam().getPaper().getEvaluationWay() == EvaluationWay.MCQ) {
             var respDTO = new StudentExamResponse.McqResultDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher());
@@ -92,7 +93,7 @@ public class StudentExamController {
     @PutMapping("/api/student/exam/sign")
     public ResponseEntity<?> sign(@RequestBody StudentExamRequest.SignDTO reqDTO) {
         examService.학생_사인저장(reqDTO);
-        return ResponseEntity.ok(new ApiUtil<>(null));
+        return ResponseEntity.ok(Resp.ok(null));
     }
 
 

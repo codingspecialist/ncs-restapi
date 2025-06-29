@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import shop.mtcoding.blog.core.utils.Resp;
 import shop.mtcoding.blog.domain.course.CourseModel;
 import shop.mtcoding.blog.domain.course.CourseService;
 import shop.mtcoding.blog.domain.course.exam.ExamService;
@@ -71,16 +72,21 @@ public class ExamController {
     }
 
     // 시험을 치지 않아도 Exam은 만들어져야 한다.
-    @PostMapping("/api/exam-menu/exam/absent")
-    public ResponseEntity<?> 결석입력(@RequestBody ExamRequest.AbsentDTO reqDTO) {
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        examService.강사_결석처리(reqDTO, sessionUser);
-        return ResponseEntity.ok(new ApiUtil<>(null));
+    @PostMapping("/api/exam/not-taken-reason")
+    public ResponseEntity<?> 미응시이유입력(@RequestBody ExamRequest.NotTakenReason reqDTO) {
+        examService.강사미응시이유처리(reqDTO);
+        return ResponseEntity.ok(Resp.ok(null));
     }
 
-    @PutMapping("/api/exam-menu/exam/{examId}")
-    public ResponseEntity<?> update(@PathVariable("examId") Long examId, @RequestBody ExamRequest.UpdateDTO reqDTO) {
-        examService.강사_총평남기기(examId, reqDTO);
-        return ResponseEntity.ok(new ApiUtil<>(null));
+    @PutMapping("/api/exam/{examId}/mcq")
+    public ResponseEntity<?> 채점하기(@PathVariable("examId") Long examId, @RequestBody ExamRequest.GradeMcq reqDTO) {
+        examService.강사객관식채점하기(examId, reqDTO);
+        return ResponseEntity.ok(Resp.ok(null));
+    }
+
+    @PutMapping("/api/exam/{examId}/rubric")
+    public ResponseEntity<?> 채점하기(@PathVariable("examId") Long examId, @RequestBody ExamRequest.GradeRubric reqDTO) {
+        examService.강사루브릭채점하기(examId, reqDTO);
+        return ResponseEntity.ok(Resp.ok(null));
     }
 }

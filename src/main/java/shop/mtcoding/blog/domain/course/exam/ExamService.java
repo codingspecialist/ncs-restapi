@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog.core.errors.exception.api.Exception403;
 import shop.mtcoding.blog.core.errors.exception.api.Exception404;
 import shop.mtcoding.blog.domain.course.subject.Subject;
-import shop.mtcoding.blog.domain.course.subject.SubjectRepository;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElementRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
@@ -37,12 +36,11 @@ public class ExamService {
     private final SubjectElementRepository elementRepository;
     private final QuestionRepository questionRepository;
     private final TeacherRepository teacherRepository;
-    private final SubjectRepository subjectRepository;
 
 
     /// (객관식 -> Exam, ExamAnswer)
     @Transactional
-    public void 학생객관식시험응시(StudentExamRequest.McqSaveDTO reqDTO, User sessionUser) {
+    public void 학생객관식시험응시(StudentExamRequest.McqSave reqDTO, User sessionUser) {
         // 1. 조회
         Paper paper = paperRepository.findById(reqDTO.getPaperId())
                 .orElseThrow(() -> new Exception404("시험지를 찾을 수 없어요"));

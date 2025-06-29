@@ -7,7 +7,7 @@ import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
-import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
+import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionOption;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -81,8 +81,8 @@ public class PaperResponse {
         private Integer courseRound;
 
         public SubjectDTO(Subject subject) {
-            Paper paper = subject.getPapers().stream().filter(p -> !p.isReEvaluation()).findFirst().orElse(null);
-            Paper rePaper = subject.getPapers().stream().filter(p -> p.isReEvaluation()).findFirst().orElse(null);
+            Paper paper = subject.getPapers().stream().filter(p -> !p.isReTest()).findFirst().orElse(null);
+            Paper rePaper = subject.getPapers().stream().filter(p -> p.isReTest()).findFirst().orElse(null);
 
             this.subjectId = subject.getId();
             this.code = subject.getCode();
@@ -123,7 +123,7 @@ public class PaperResponse {
         private String subjectTitle; // 교과목 (subject)
         private String teacherName;
         private Integer questionCount;
-        private List<QuestionDTO> questions;
+        private List<QuestionItem> questions;
 
         public McqDetailDTO(Paper paper, List<Question> questions) {
             this.paperId = paper.getId();
@@ -131,48 +131,42 @@ public class PaperResponse {
             this.evaluationDevice = paper.getEvaluationDevice();
             this.evaluationRoom = paper.getEvaluationRoom();
             this.subjectTitle = paper.getSubject().getTitle();
-            this.teacherName = paper.getSubject().getTeacherName();
+            this.teacherName = paper.getSubject().getTeacher().getName();
             this.questionCount = questions.size();
-            this.questions = questions.stream().map(QuestionDTO::new).toList();
+            this.questions = questions.stream().map(QuestionItem::new).toList();
         }
 
         @Data
-        class QuestionDTO {
+        class QuestionItem {
             private Long questionId;
-            private Integer no;
-            private String title;
+            private Integer questionNo;
+            private String questionTitle;
             private String exContent;
-            private Integer totalPoint; // 배점
-            private List<OptionDTO> options;
+            private Double maxScore; // 만점
+            private List<Option> options;
 
-            public QuestionDTO(Question question) {
+            public QuestionItem(Question question) {
                 this.questionId = question.getId();
-                this.no = question.getNo();
-                this.title = question.getTitle();
+                this.questionNo = question.getNo();
+                this.questionTitle = question.getTitle();
                 this.exContent = question.getExContent();
-                this.totalPoint = question.getQuestionOptions()
-                        .stream()
-                        .mapToInt(o -> o.getPoint())
-                        .max()
-                        .orElse(0);
-                this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
+                this.maxScore = question.getPaper().getMaxScore();
+                this.options = question.getQuestionOptions().stream().map(Option::new).toList();
             }
 
             @Data
-            class OptionDTO {
+            class Option {
                 private Long optionId;
-                private Integer no;
-                private String content;
-                private String rubricItem;
-                private Integer point;
+                private Integer optionNo;
+                private String optionContent;
+                private Integer optionPoint;
                 private Boolean isRight;
 
-                public OptionDTO(QuestionOption option) {
+                public Option(QuestionOption option) {
                     this.optionId = option.getId();
-                    this.no = option.getNo();
-                    this.content = option.getContent();
-                    this.rubricItem = option.getRubricItem();
-                    this.point = option.getPoint();
+                    this.optionNo = option.getNo();
+                    this.optionContent = option.getContent();
+                    this.optionPoint = option.getPoint();
                     this.isRight = option.getPoint() > 0;
                 }
             }
@@ -192,15 +186,14 @@ public class PaperResponse {
         private Integer questionCount;
 
         // -------------------- 객관식이 아닐때 받아야 할 목록
-        private String pblTitle;
-        private String pblScenario;
-        private String pblScenarioGuideLink;
-        private List<String> pblSubmitFormats; // 제출항목 (notion)
-        private String pblSubmitTemplateLink; // 제출항목 복제 템플릿 (선택)
-        private List<String> pblChallenges; // 도전과제
+        private String taskTitle;
+        private String taskScenario;
+        private String taskScenarioGuideLink;
+        private List<String> taskSubmitFormats; // 제출항목 (notion)
+        private String taskSubmitTemplateLink; // 제출항목 복제 템플릿 (선택)
+        private List<String> taskChallenges; // 도전과제
 
-
-        private List<QuestionDTO> questions;
+        private List<QuestionItem> questions;
 
         public RubricDetailDTO(Paper paper, List<Question> questions) {
             this.paperId = paper.getId();
@@ -209,46 +202,46 @@ public class PaperResponse {
             this.evaluationRoom = paper.getEvaluationRoom();
             this.subjectTitle = paper.getSubject().getTitle();
 
-            this.teacherName = paper.getSubject().getTeacherName();
+            this.teacherName = paper.getSubject().getTeacher().getName();
             this.questionCount = questions.size();
 
-            this.pblTitle = paper.getPblTitle();
-            this.pblScenario = paper.getPblScenario();
-            this.pblScenarioGuideLink = paper.getPblScenarioGuideLink();
-            this.pblSubmitFormats = MyUtil.parseMultilineWithoutHyphen(paper.getPblSubmitFormat());
-            this.pblSubmitTemplateLink = paper.getPblSubmitTemplateLink();
-            this.pblChallenges = MyUtil.parseMultilineWithoutHyphen(paper.getPblChallenge());
-            this.questions = questions.stream().map(QuestionDTO::new).toList();
+            this.taskTitle = paper.getTaskTitle();
+            this.taskScenario = paper.getTaskScenario();
+            this.taskScenarioGuideLink = paper.getTaskScenarioGuideLink();
+            this.taskSubmitFormats = MyUtil.parseMultilineWithoutHyphen(paper.getTaskSubmitFormat());
+            this.taskSubmitTemplateLink = paper.getTaskSubmitTemplateLink();
+            this.taskChallenges = MyUtil.parseMultilineWithoutHyphen(paper.getTaskChallenge());
+            this.questions = questions.stream().map(QuestionItem::new).toList();
         }
 
         @Data
-        class QuestionDTO {
+        class QuestionItem {
             private Long questionId;
-            private Integer no;
-            private String title;
-            private List<String> scenarios; // 가이드 요약본
-            private List<OptionDTO> options;
+            private Integer questionNo;
+            private String questionTitle;
+            private List<String> exScenarios; // 가이드 요약본
+            private List<Option> options;
 
-            public QuestionDTO(Question question) {
+            public QuestionItem(Question question) {
                 this.questionId = question.getId();
-                this.no = question.getNo();
-                this.title = question.getTitle();
-                this.scenarios = MyUtil.parseMultiline(question.getScenario());
-                this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
+                this.questionNo = question.getNo();
+                this.questionTitle = question.getTitle();
+                this.exScenarios = MyUtil.parseMultiline(question.getExScenario());
+                this.options = question.getQuestionOptions().stream().map(Option::new).toList();
             }
 
             @Data
-            class OptionDTO {
+            class Option {
                 private Long optionId;
-                private Integer no;
-                private String rubricItem;
-                private Integer point;
+                private Integer optionNo;
+                private String optionContent;
+                private Integer optionPoint;
 
-                public OptionDTO(QuestionOption option) {
+                public Option(QuestionOption option) {
                     this.optionId = option.getId();
-                    this.no = option.getNo();
-                    this.rubricItem = option.getRubricItem();
-                    this.point = option.getPoint();
+                    this.optionNo = option.getNo();
+                    this.optionContent = option.getContent();
+                    this.optionPoint = option.getPoint();
                 }
             }
         }

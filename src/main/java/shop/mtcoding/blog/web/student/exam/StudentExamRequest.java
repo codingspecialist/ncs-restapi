@@ -44,7 +44,7 @@ public class StudentExamRequest {
 
     // ✅ 객관식 시험 응시
     @Data
-    public static class McqSaveDTO {
+    public static class McqSave {
         private Long paperId;
         private List<AnswerDTO> answers;
 

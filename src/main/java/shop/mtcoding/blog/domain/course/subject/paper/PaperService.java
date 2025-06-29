@@ -8,11 +8,7 @@ import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.SubjectRepository;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElementRepository;
-import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
-import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionQueryRepository;
-import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionRepository;
-import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
-import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOptionRepository;
+import shop.mtcoding.blog.domain.course.subject.paper.question.*;
 import shop.mtcoding.blog.web.paper.PaperRequest;
 
 import java.util.List;
@@ -23,10 +19,10 @@ import java.util.List;
 public class PaperService {
     private final PaperRepository paperRepository;
     private final QuestionRepository questionRepository;
-    private final QuestionOptionRepository questionOptionRepository;
     private final QuestionQueryRepository questionQueryRepository;
     private final SubjectElementRepository subjectElementRepository;
     private final SubjectRepository subjectRepository;
+    private final QuestionOptionRepository questionOptionRepository;
 
     // 교과목별 시험지 목록
     public PaperModel.Items 교과목별시험지목록(Long subjectId) {

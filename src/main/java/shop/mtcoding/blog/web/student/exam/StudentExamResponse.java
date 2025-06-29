@@ -7,7 +7,7 @@ import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
-import shop.mtcoding.blog.domain.course.subject.paper.question.option.QuestionOption;
+import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionOption;
 import shop.mtcoding.blog.domain.user.student.Student;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 
@@ -55,7 +55,7 @@ public class StudentExamResponse {
                 this.subjectTitle = paper.getSubject().getTitle();
                 this.questionCount = paper.getQuestions().size();
                 this.paperType = paper.getPaperType().toKorean();
-                this.teacherName = paper.getSubject().getTeacherName();
+                this.teacherName = paper.getSubject().getTeacher().getName();
                 this.isAttendance = isAttendance;
             }
         }
@@ -73,50 +73,50 @@ public class StudentExamResponse {
         private String evaluationRoom; // 평가장소 (임시)
         private String subjectTitle; // 교과목 (subject)
         private List<String> subjectElements;
-        private List<QuestionDTO> questions;
+        private List<QuestionItem> questions;
         private Integer questionCount;
 
         public McqStartDTO(Paper paper, String studentName, List<SubjectElement> subjectElements, List<Question> questions) {
             this.paperId = paper.getId();
             this.studentName = studentName;
-            this.teacherName = paper.getSubject().getTeacherName();
+            this.teacherName = paper.getSubject().getTeacher().getName();
             this.evaluationDate = paper.getEvaluationDate().toString();
             this.evaluationDevice = paper.getEvaluationDevice();
             this.evaluationRoom = paper.getEvaluationRoom();
             this.subjectTitle = paper.getSubject().getTitle();
-            this.subjectElements = subjectElements.stream().map(se -> se.getSubtitle()).toList();
-            this.questions = questions.stream().map(QuestionDTO::new).toList();
+            this.subjectElements = subjectElements.stream().map(se -> se.getTitle()).toList();
+            this.questions = questions.stream().map(QuestionItem::new).toList();
             this.questionCount = questions.size();
         }
 
         @Data
-        class QuestionDTO {
+        class QuestionItem {
             private Long questionId;
-            private Integer no;
-            private String title;
-            private Integer totalPoint;
+            private Integer questionNo;
+            private String questionTitle;
+            private Integer collectOptionScore;
             private String exContent;
-            private List<OptionDTO> options;
+            private List<Option> options;
 
-            public QuestionDTO(Question question) {
+            public QuestionItem(Question question) {
                 this.questionId = question.getId();
-                this.no = question.getNo();
-                this.title = question.getTitle();
-                this.totalPoint = question.getQuestionOptions().stream().mapToInt(option -> option.getPoint()).max().getAsInt();
+                this.questionNo = question.getNo();
+                this.questionTitle = question.getTitle();
+                this.collectOptionScore = question.getCorrectOption().getPoint();
                 this.exContent = question.getExContent();
-                this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
+                this.options = question.getQuestionOptions().stream().map(Option::new).toList();
             }
 
             @Data
-            class OptionDTO {
+            class Option {
                 private Long optionId;
-                private Integer no;
-                private String content;
+                private Integer optionNo;
+                private String optionContent;
 
-                public OptionDTO(QuestionOption option) {
+                public Option(QuestionOption option) {
                     this.optionId = option.getId();
-                    this.no = option.getNo();
-                    this.content = option.getContent();
+                    this.optionNo = option.getNo();
+                    this.optionContent = option.getContent();
                 }
             }
         }

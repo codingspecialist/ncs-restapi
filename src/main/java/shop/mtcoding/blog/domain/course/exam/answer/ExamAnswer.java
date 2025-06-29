@@ -29,7 +29,6 @@ public class ExamAnswer {
 
     private Integer questionNo;
 
-    // 객관식은 자동 계산 / 그게 아니면 수동 계산됨
     private Integer selectedOptionNo;
 
     private String codeReviewRequestLink; // (선택적)
@@ -71,6 +70,11 @@ public class ExamAnswer {
                 .questionNo(questionNo)
                 .codeReviewRequestLink(codeReviewRequestLink)
                 .build();
+    }
+
+    // 채점시에 업데이트 되어야 함.
+    public void setSelectedOptionNo(Integer selectedOptionNo) {
+        this.selectedOptionNo = selectedOptionNo;
     }
 
     public Boolean getIsRight() {

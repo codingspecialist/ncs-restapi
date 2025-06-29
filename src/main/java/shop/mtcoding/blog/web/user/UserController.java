@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(UserRequest.LoginDTO reqDTO) {
+    public ResponseEntity<?> login(UserRequest.Login reqDTO) {
         var modelData = userService.로그인(reqDTO);
         var respDTO = new UserResponse.Session(modelData.user(), modelData.accessToken(), modelData.refreshToken());
         return ResponseEntity.ok(Resp.ok(respDTO));

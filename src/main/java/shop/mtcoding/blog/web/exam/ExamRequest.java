@@ -1,27 +1,44 @@
 package shop.mtcoding.blog.web.exam;
 
 import lombok.Data;
+import shop.mtcoding.blog.domain.course.exam.ExamNotTakenReason;
+
+import java.util.List;
 
 public class ExamRequest {
 
-    // 강사가 총평 작성
     @Data
-    public static class GradeDTO {
-        private Integer answerId;
-        private Integer selectedOptionNo;
+    public static class GradeMcq {
+        private Long examId;
+        private String teacherComment; // exam
+        private List<AnswerMcq> answers;
+
+        @Data
+        public static class AnswerMcq {
+            private Integer answerId;
+            private Integer selectedOptionNo; // examAnswer
+        }
     }
 
-
     @Data
-    public static class AbsentDTO {
-        private Long studentId;
-        private Long paperId;
+    public static class GradeRubric {
+        private Integer examId;
+        private String teacherComment; // exam
+        private List<AnswerRubric> answers;
+
+        @Data
+        public static class AnswerRubric {
+            private Long answerId;
+            private Integer selectedOptionNo; // examAnswer
+            private String codeReviewFeedbackPRLink; // examResult
+        }
     }
 
     @Data
-    public static class NotTakenDTO {
+    public static class NotTakenReason {
         private Long studentId;
         private Long paperId;
+        private ExamNotTakenReason notTakenReason;
     }
 
 }

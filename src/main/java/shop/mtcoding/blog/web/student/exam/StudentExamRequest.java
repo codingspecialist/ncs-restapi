@@ -14,13 +14,13 @@ import java.util.List;
 public class StudentExamRequest {
 
     @Data
-    public static class RubricSaveDTO {
+    public static class RubricSave {
         private Long paperId;
         private String rubricSubmitLink;
-        private List<AnswerDTO> answers;
+        private List<Answer> answers;
 
         @Data
-        public static class AnswerDTO {
+        public static class Answer {
             private Integer questionNo;
             private String codeReviewRequestLink;
 
@@ -29,17 +29,14 @@ public class StudentExamRequest {
             }
         }
 
-        /**
-         * 시험 + 답변들까지 한번에 생성
-         */
         public Exam toEntityWithAnswers(Student student, Paper paper, List<Question> questionList) {
             Exam exam = Exam.createRubricExam(student, paper, rubricSubmitLink);
-            for (AnswerDTO dto : answers) {
+            for (Answer answer : answers) {
                 Question question = questionList.stream()
-                        .filter(q -> q.getNo().equals(dto.getQuestionNo()))
+                        .filter(q -> q.getNo().equals(answer.getQuestionNo()))
                         .findFirst()
-                        .orElseThrow(() -> new Exception404("해당 questionNo 없음: " + dto.getQuestionNo()));
-                exam.addAnswer(dto.toEntity(exam, question));
+                        .orElseThrow(() -> new Exception404("해당 questionNo 없음: " + answer.getQuestionNo()));
+                exam.addAnswer(answer.toEntity(exam, question));
             }
             return exam;
         }
@@ -64,9 +61,6 @@ public class StudentExamRequest {
             }
         }
 
-        /**
-         * 시험 + 답변들까지 한번에 생성
-         */
         public Exam toEntityWithAnswers(Student student, Paper paper, List<Question> questionList) {
             Exam exam = Exam.createMcqExam(student, paper);
             for (AnswerDTO dto : answers) {

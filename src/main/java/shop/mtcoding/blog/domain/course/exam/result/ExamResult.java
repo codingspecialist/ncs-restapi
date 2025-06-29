@@ -22,7 +22,7 @@ public class ExamResult {
     @OneToOne(fetch = FetchType.LAZY)
     private ExamAnswer examAnswer;
 
-    private Integer scoredPoint; // 5점, 4점, 3점, 2점, 1점 (머든지 될 수 있음) - 이건 배점이 아님!!
+    private Double scoredPoint; // 5점, 4점, 3점, 2점, 1점 (머든지 될 수 있음)
     private Boolean isCorrect; // 0점이 아니면 전부다 true임!! 루브릭은 모든 답변에 점수가 부여됨
     private String codeReviewFeedbackPRLink; // (선택적)
 
@@ -30,7 +30,7 @@ public class ExamResult {
     private LocalDateTime createdAt;
 
     @Builder
-    public ExamResult(Long id, ExamAnswer examAnswer, Integer scoredPoint, Boolean isCorrect, String codeReviewFeedbackPRLink, LocalDateTime createdAt) {
+    public ExamResult(Long id, ExamAnswer examAnswer, Double scoredPoint, Boolean isCorrect, String codeReviewFeedbackPRLink, LocalDateTime createdAt) {
         this.id = id;
         this.examAnswer = examAnswer;
         this.scoredPoint = scoredPoint;

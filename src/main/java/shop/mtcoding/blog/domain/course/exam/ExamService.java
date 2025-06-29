@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog.core.errors.exception.api.Exception403;
 import shop.mtcoding.blog.core.errors.exception.api.Exception404;
 import shop.mtcoding.blog.core.errors.exception.api.Exception500;
-import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswerRepository;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElementRepository;
@@ -15,9 +14,7 @@ import shop.mtcoding.blog.domain.course.subject.paper.PaperRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperType;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionRepository;
-import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionType;
 import shop.mtcoding.blog.domain.user.User;
-import shop.mtcoding.blog.domain.user.UserType;
 import shop.mtcoding.blog.domain.user.student.Student;
 import shop.mtcoding.blog.domain.user.student.StudentRepository;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
@@ -25,7 +22,10 @@ import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
 import shop.mtcoding.blog.web.exam.ExamRequest;
 import shop.mtcoding.blog.web.student.exam.StudentExamRequest;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
@@ -41,48 +41,111 @@ public class ExamService {
     private final TeacherRepository teacherRepository;
     private final ExamQueryRepository examQueryRepository;
 
+
+    /// (객관식 -> Exam, ExamAnswer)
     @Transactional
-    public void 강사_총평만_남기기(Long examId, String teacherComment) {
+    public void 학생객관식시험응시(StudentExamRequest.McqSaveDTO reqDTO, User sessionUser) {
+        // 1. 조회
+        Paper paper = paperRepository.findById(reqDTO.getPaperId())
+                .orElseThrow(() -> new Exception404("시험지를 찾을 수 없어요"));
+
+        Student student = studentRepository.findByUserId(sessionUser.getId())
+                .orElseThrow(() -> new Exception404("학생을 찾을 수 없어요"));
+
+        // 2. 재평가라면. 본평가를 찾아서 사용안함이라고 업데이트 해주기
+        if (paper.isReTest()) {
+            Long subjectId = paper.getSubject().getId();
+            Long studentId = student.getId();
+
+            Exam originalExam = examRepository.findBySubjectIdAndStudentIdAndIsUse(subjectId, studentId, true)
+                    .orElseThrow(() -> new Exception404("기존 본평가 시험을 찾을 수 없습니다."));
+
+            originalExam.deactivate();
+        }
+
+        // 3. 정답지 가져오기
+        List<Question> questionList = questionRepository.findAllByPaperId(reqDTO.getPaperId());
+
+        // 4. Exam과 ExamAnswer 비영속 객체 생성
+        Exam exam = reqDTO.toEntityWithAnswers(student, paper, questionList);
+
+        // 5. 학생 제출 답안 저장하기 (Exam, ExamAnswer, ExamResult)
+        examRepository.save(exam);
+    }
+
+
+    /// (객관식 -> Exam, ExamAnswer)
+    @Transactional
+    public void 학생루브릭시험응시(StudentExamRequest.RubricSave reqDTO, User sessionUser) {
+        // 1. 조회
+        Paper paper = paperRepository.findById(reqDTO.getPaperId())
+                .orElseThrow(() -> new Exception404("시험지를 찾을 수 없어요"));
+
+        Student student = studentRepository.findByUserId(sessionUser.getId())
+                .orElseThrow(() -> new Exception404("학생을 찾을 수 없어요"));
+
+        // 2. 재평가라면. 본평가를 찾아서 사용안함이라고 업데이트 해주기
+        if (paper.isReTest()) {
+            Long subjectId = paper.getSubject().getId();
+            Long studentId = student.getId();
+
+            Exam originalExam = examRepository.findBySubjectIdAndStudentIdAndIsUse(subjectId, studentId, true)
+                    .orElseThrow(() -> new Exception404("기존 본평가 시험을 찾을 수 없습니다."));
+
+            originalExam.deactivate();
+        }
+
+        // 3. 정답지 가져오기
+        List<Question> questionList = questionRepository.findAllByPaperId(reqDTO.getPaperId());
+
+        // 4. Exam과 ExamAnswer 비영속 객체 생성
+        Exam exam = reqDTO.toEntityWithAnswers(student, paper, questionList);
+
+        // 5. 학생 제출 답안 저장하기 (Exam, ExamAnswer, ExamResult)
+        examRepository.save(exam);
+    }
+
+    /// 1. 강사가 객관식을 채점한다.
+    /// (채점시에도, 채점 업데이트시에도 사용한다)
+    /// ExamResult, Exam에 점수 반영, Exam에 teacherComment 반영
+    @Transactional
+    public void 강사객관식채점하기(Long examId, ExamRequest.GradeMcq reqDTO) {
+        // 1. 시험 찾기
         Exam exam = examRepository.findById(examId)
-                .orElseThrow(() -> new Exception404("시험이 존재하지 않아요"));
-        exam.updateTeacherComment(teacherComment);
+                .orElseThrow(() -> new Exception404("응시한 시험이 존재하지 않아요"));
+
+        // 2. 기존 시험과 시험 답변 업데이트 및 채점하기
+        exam.applyMcqGrading(reqDTO.getAnswers(), reqDTO.getTeacherComment());
+    }
+
+    /// 1. 강사가 루브릭을 채점한다.
+    /// (채점시에도, 채점 업데이트시에도 사용한다)
+    /// ExamResult, Exam에 점수 반영, Exam에 teacherComment 반영
+    @Transactional
+    public void 강사루브릭채점하기(Long examId, ExamRequest.GradeRubric reqDTO) {
+        // 1. 시험 찾기
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new Exception404("응시한 시험이 존재하지 않아요"));
+
+        // 2. 기존 시험과 시험 답변 업데이트 및 채점하기
+        exam.applyRubricGrading(reqDTO.getAnswers(), reqDTO.getTeacherComment());
     }
 
     @Transactional
-    public void 채점하기(Long examId, ExamRequest.GradeDTO reqDTO) {
-        Exam exam = examRepository.findById(examId)
-                .orElseThrow(() -> new Exception404("시험이 존재하지 않아요"));
-
-        if (exam.getQuestionType().isMcq()) {
-            exam.gradeMcq();
-        } else {
-            exam.gradeRubric(reqDTO);
-        }
-
-        exam.updateTeacherComment(reqDTO.getTeacherComment());
-    }
-
-    @Transactional
-    public void 강사_결석처리(ExamRequest.AbsentDTO reqDTO, User sessionUser) {
-        // 1. 유저가 선생님인지 검증
-        if (UserType.STUDENT.equals(sessionUser.getRole())) {
-            throw new Exception403("권한이 없습니다.");
-        }
-
-        // 2. 학생/시험지 조회
+    public void 강사미응시이유처리(ExamRequest.NotTakenReason reqDTO) {
+        // 1. 학생/시험지 조회
         Student student = studentRepository.findById(reqDTO.getStudentId())
                 .orElseThrow(() -> new Exception404("학생을 찾을 수 없습니다."));
 
         Paper paper = paperRepository.findById(reqDTO.getPaperId())
                 .orElseThrow(() -> new Exception404("시험지를 찾을 수 없습니다."));
 
-        // 3. 결석 시험 생성
-        Exam exam = Exam.createBlankExam(student, paper, ExamResultStatus.ABSENT);
+        // 2. 미응시 이유 확정
+        Exam exam = Exam.createNotTakenExamWithReason(student, paper, reqDTO.getNotTakenReason());
 
-        // 4. 저장
+        // 3. 저장
         examRepository.save(exam);
     }
-
 
     public List<ExamModel.Result> 강사_교과목별시험결과(Long courseId, Long subjectId) {
         Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
@@ -166,64 +229,32 @@ public class ExamService {
         return new ExamModel.PaperItems(studentId, filteredPapers, attendanceMap);
     }
 
-    // 선택된 번호 다시 넘어옴, 총평 넘어옴
-    @Transactional
-    public void 강사_총평남기기(Long examId, ExamRequest.GradeDTO reqDTO) {
-        Exam exam = examRepository.findById(examId)
-                .orElseThrow(() -> new Exception404("시험이 존재하지 않아요"));
+    public List<ExamModel.Result> 강사_교과목별시험결과(Long courseId, Long subjectId) {
+        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
+                .orElseThrow(() -> new Exception404("본평가 시험지가 존재하지 않아요"));
 
-        reqDTO.updateAnswers(exam.getExamAnswers());
+        List<ExamModel.Result> rawList = examQueryRepository.findExamResult(subjectId, courseId);
 
+        List<ExamModel.Result> modelData = rawList.stream()
+                .map(r -> r.examId() == null ?
+                        new ExamModel.Result(
+                                0L,
+                                r.studentName(),
+                                paperPS.getSubject().getTitle(),
+                                "본평가",
+                                paperPS.getSubject().getTeacher().getName(),
+                                0.0,
+                                1,
+                                "미응시",
+                                "",
+                                r.studentId(),
+                                paperPS.getId(),
+                                r.studentStatus(),
+                                true, true)
+                        : r
+                ).toList();
 
-        if (exam.getQuestionType() == QuestionType.MCQ) exam.gradeMcq();
-        else exam.gradeRubric(reqDTO);
-
-        exam.updateTeacherComment(reqDTO.getTeacherComment());
-    }
-
-
-    // 총평 남기기 or 루브릭 채점하기
-    @Transactional
-    public void 강사_총평남기기v1(Long examId, ExamRequest.UpdateDTO reqDTO) {
-        Exam examPS = examRepository.findById(examId)
-                .orElseThrow(() -> new Exception404("응시한 시험이 존재하지 않아요"));
-
-        List<ExamAnswer> examAnswers = examPS.getExamAnswers();
-
-        examAnswers.forEach(answer -> {
-            reqDTO.getAnswers().forEach(answerDTO -> {
-                if (answerDTO.getAnswerId().longValue() == answer.getId().longValue()) {
-                    answerDTO.update(answer.getQuestion(), answer);
-                }
-            });
-        });
-
-        double resultScore = 0;
-
-        if (examPS.getQuestionType() == QuestionType.MCQ) {
-            resultScore = examAnswers.stream().mapToInt(answer -> {
-                answer.autoMcqGrade();
-                return answer.getEarnedPoint();
-            }).sum();
-        } else {
-            resultScore = examAnswers.stream().mapToInt(answer -> {
-                answer.manualRubricGrade();
-            }).sum();
-        }
-
-
-        // 5. 재평가지로 시험쳤으면 10%, 20% 등등
-        if (examPS.getPaper().isReEvaluation()) {
-            score = score * examPS.getSubject().getScorePolicy();
-        }
-
-        System.out.println("시험지 총점 15점 나와야함 : " + examPS.getPaper().sumQuestionPoints());
-
-        // 6. 점수 입력 수준 입력
-        examPS.updatePointAndGrade(score, examPS.getPaper().sumQuestionPoints());
-
-        // 7. 코멘트 수정 (총평 남기기, 총평 남긴 시간 남기기)
-        examPS.updateTeacherComment(reqDTO.getTeacherComment());
+        return modelData;
     }
 
     public ExamModel.Start 학생_시험시작정보(User sessionUser, Long paperId) {
@@ -243,111 +274,6 @@ public class ExamService {
         return new ExamModel.Start(paperPS, studentName, subjectElementListPS, questionListPS);
     }
 
-    @Transactional
-    public void 학생_루브릭_시험응시(StudentExamRequest.RubricSaveDTO reqDTO, User sessionUser) {
-        // 1. 시험지 찾기
-        Paper paper = paperRepository.findById(reqDTO.getPaperId())
-                .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
-
-        Student student = studentRepository.findByUserId(sessionUser.getId())
-                .orElseThrow(() -> new Exception404("학생을 찾을 수 없어요"));
-
-        // 2. Exam 생성
-//        private Long paperId;
-//        private String teacherName;
-//        private String submitLink;
-//        private List<StudentExamRequest.RubricSaveDTO.AnswerDTO> answers;
-        Exam exam = reqDTO.toEntity(paper, student, "채점중", 0.0, 0, "");
-
-        Exam examPS = examRepository.save(exam);
-
-        List<Question> questionList = questionRepository.findAllByPaperId(reqDTO.getPaperId());
-
-        // 3. ExamAnswer 컬렉션 저장 (채점하기)
-        List<ExamAnswer> examAnswerList = new ArrayList<>();
-
-        questionList.forEach(question -> {
-            reqDTO.getAnswers().forEach(answerDTO -> {
-                if (answerDTO.getQuestionNo().equals(question.getNo())) {
-                    examAnswerList.add(answerDTO.toEntity(question, examPS));
-                }
-            });
-        });
-
-
-        examAnswerRepository.saveAll(examAnswerList);
-    }
-
-    private String generateAutoTeacherComment(List<ExamAnswer> examAnswers) {
-        StringBuilder goodComment = new StringBuilder();
-        StringBuilder badComment = new StringBuilder();
-
-        for (ExamAnswer answer : examAnswers) {
-            String subtitle = answer.getQuestion().getSubjectElement().getTitle();
-            if (answer.getIsRight()) {
-                goodComment.append(subtitle).append(", ");
-            } else {
-                badComment.append(subtitle).append(", ");
-            }
-        }
-
-        // 마지막 쉼표 제거
-        if (goodComment.length() > 2) {
-            goodComment.setLength(goodComment.length() - 2);
-        }
-
-        if (badComment.length() > 2) {
-            badComment.setLength(badComment.length() - 2);
-        }
-
-        StringBuilder result = new StringBuilder();
-
-        if (!goodComment.isEmpty()) {
-            result.append(goodComment).append(" 부분을 잘 이해하고 ");
-            if (!badComment.isEmpty()) {
-                result.append(", ");
-            } else {
-                result.append("있습니다.");
-            }
-        }
-
-        if (!badComment.isEmpty()) {
-            result.append(badComment).append(" 부분이 부족합니다.");
-        }
-
-        return result.toString();
-    }
-
-    // TODO : 아주 깔끔해!! 내가 직접 만들자
-    @Transactional
-    public void 학생객관식시험응시(StudentExamRequest.McqSaveDTO reqDTO, User sessionUser) {
-        // 1. 조회
-        Paper paper = paperRepository.findById(reqDTO.getPaperId())
-                .orElseThrow(() -> new Exception404("시험지를 찾을 수 없어요"));
-
-        Student student = studentRepository.findByUserId(sessionUser.getId())
-                .orElseThrow(() -> new Exception404("학생을 찾을 수 없어요"));
-
-        // 2. 재평가라면. 본평가를 찾아서 사용안함이라고 업데이트 해주기
-
-        // 3. 정답지 가져오기
-        List<Question> questionList = questionRepository.findAllByPaperId(reqDTO.getPaperId());
-
-        // 4. Exam과 ExamAnswer 비영속 객체 생성
-        Exam exam = reqDTO.toEntityWithAnswers(student, paper, questionList);
-
-        // 5. 자동채점 (ExamResult 비영속 객체 생성)
-        exam.gradeMcq();
-
-        // 6. 재평가시에 0.9 곱해서 점수 만들기 (ExamResult)
-
-        // 7. 총평 자동화
-        String teacherComment = generateAutoTeacherComment(exam.getExamAnswers());
-        exam.updateTeacherComment(teacherComment);
-
-        // 8. 학생 제출 답안 저장하기 (Exam, ExamAnswer, ExamResult)
-        examRepository.save(exam);
-    }
 
     public ExamModel.ResultDetail 학생_시험결과상세(Long examId) {
         return _examResultDetail(examId);

@@ -26,7 +26,7 @@ public class UserService {
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
 
-    public UserModel.Item 로그인(UserRequest.LoginDTO reqDTO) {
+    public UserModel.Item 로그인(UserRequest.Login reqDTO) {
         // 1. 인증 확인
         User userET = userRepository.findByUsernameAndPassword(reqDTO.getUsername(), reqDTO.getPassword())
                 .orElseThrow(() -> new Exception401("인증되지 않았습니다"));

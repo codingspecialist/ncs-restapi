@@ -10,26 +10,7 @@ import java.util.Optional;
 
 public interface ExamRepository extends JpaRepository<Exam, Long> {
 
-    @Query(value = """
-            SELECT 
-              s.name AS student_name,
-              sb.title AS subject_title,
-              e.exam_state,
-              e.teacher_name,
-              e.score,
-              e.grade,
-              e.pass_state,
-              CASE WHEN e.id IS NULL THEN TRUE ELSE FALSE END AS is_absent
-            FROM exam_tb e
-            RIGHT OUTER JOIN student_tb s
-              ON s.id = e.student_id
-              AND e.subject_id = :subjectId
-              AND e.is_use = true
-            LEFT JOIN subject_tb sb ON e.subject_id = sb.id
-            ORDER BY s.name
-            """, nativeQuery = true)
-    List<ExamModel.Result> findAllBySubjectIdAndIsUse(@Param("subjectId") Long subjectId);
-
+    List<Exam> findByStudentIdInAndSubjectId(List<Long> studentIds, Long subjectId);
 
     @Query("select ex from Exam ex left join fetch ex.paper p left join fetch p.subject sb where sb.id = :subjectId and p.paperType = :paperType")
     List<Exam> findAllBySubjectIdAndEvaluationWay(Long subjectId, PaperType paperType);

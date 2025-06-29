@@ -70,7 +70,7 @@ public class Paper {
         return paperType.isReTest();
     }
 
-    // 시험지 총점 지속적으로 반영
+    // 시험지 총점 지속적으로 반영 (문제가 만들어질때마다 업데이트 해야함)
     public void updateTotalPoint(int point) {
         this.maxScore += point;
     }

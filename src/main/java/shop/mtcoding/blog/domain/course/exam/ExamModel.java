@@ -1,9 +1,10 @@
 package shop.mtcoding.blog.domain.course.exam;
 
+import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
-import shop.mtcoding.blog.domain.user.student.StudentStatus;
+import shop.mtcoding.blog.domain.user.student.Student;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 
 import java.util.List;
@@ -28,17 +29,48 @@ public class ExamModel {
             Long examId,
             String studentName,
             String subjectTitle,
-            String examState,
             String teacherName,
-            Double score,
-            Integer grade,
-            String passState,
-            String reExamReason,
+            Double totalScorePercent,
+            Integer gradeLevel,
+            String resultStatus,
+            String notTakenReason,
             Long studentId,
             Long paperId,
-            StudentStatus studentStatus,
-            Boolean isAbsent,
-            Boolean gradingComplete
+            Boolean isActive,
+            String studentStatus
     ) {
+        public static Result fromExam(Exam exam) {
+            return new Result(
+                    exam.getId(),
+                    exam.getStudent().getName(),
+                    exam.getSubject().getTitle(),
+                    exam.getTeacher().getName(),
+                    exam.getTotalScorePercent(),
+                    exam.getGradeLevel(),
+                    exam.getResultStatus().toKorean(),
+                    exam.getNotTakenReason() != null ? exam.getNotTakenReason().toKorean() : "",
+                    exam.getStudent().getId(),
+                    exam.getPaper().getId(),
+                    exam.getIsActive(),
+                    exam.getStudent().getStudentStatus().toKorean()
+            );
+        }
+
+        public static Result createNotTakenTemplate(Student student, Subject subject, Paper paper) {
+            return new Result(
+                    null,
+                    student.getName(),
+                    subject.getTitle(),
+                    subject.getTeacher().getName(),
+                    0.0,
+                    1,
+                    ExamResultStatus.NOT_TAKEN.toKorean(),
+                    "",
+                    student.getId(),
+                    paper.getId(),
+                    true,
+                    student.getStudentStatus().toKorean()
+            );
+        }
     }
 }

@@ -6,7 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog.core.errors.exception.api.Exception403;
 import shop.mtcoding.blog.core.errors.exception.api.Exception404;
 import shop.mtcoding.blog.core.errors.exception.api.Exception500;
-import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswerRepository;
+import shop.mtcoding.blog.domain.course.subject.Subject;
+import shop.mtcoding.blog.domain.course.subject.SubjectRepository;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElementRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
@@ -22,7 +23,6 @@ import shop.mtcoding.blog.domain.user.teacher.TeacherRepository;
 import shop.mtcoding.blog.web.exam.ExamRequest;
 import shop.mtcoding.blog.web.student.exam.StudentExamRequest;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,13 +33,12 @@ import java.util.stream.Collectors;
 @Service
 public class ExamService {
     private final ExamRepository examRepository;
-    private final ExamAnswerRepository examAnswerRepository;
     private final PaperRepository paperRepository;
     private final StudentRepository studentRepository;
     private final SubjectElementRepository elementRepository;
     private final QuestionRepository questionRepository;
     private final TeacherRepository teacherRepository;
-    private final ExamQueryRepository examQueryRepository;
+    private final SubjectRepository subjectRepository;
 
 
     /// (객관식 -> Exam, ExamAnswer)
@@ -147,33 +146,37 @@ public class ExamService {
         examRepository.save(exam);
     }
 
-    public List<ExamModel.Result> 강사_교과목별시험결과(Long courseId, Long subjectId) {
-        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
-                .orElseThrow(() -> new Exception404("본평가 시험지가 존재하지 않아요"));
+    public List<ExamModel.Result> 강사교과목별시험결과(Long courseId, Long subjectId) {
+        // 1. 시험지 조회 (여기서 subject도 접근 가능)
+        Paper paper = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
+                .orElseThrow(() -> new Exception404("본평가 시험지를 찾을 수 없습니다"));
+        Subject subject = paper.getSubject();
 
-        List<ExamModel.Result> rawList = examQueryRepository.findExamResult(subjectId, courseId);
+        // 2. 전체 학생 조회
+        List<Student> students = studentRepository.findAllByCourseId(courseId);
 
-        List<ExamModel.Result> modelData = rawList.stream()
-                .map(r -> r.examId() == null ?
-                        new ExamModel.Result(
-                                0L,
-                                r.studentName(),
-                                paperPS.getSubject().getTitle(),
-                                "본평가",
-                                paperPS.getSubject().getTeacher().getName(),
-                                0.0,
-                                1,
-                                "미응시",
-                                "",
-                                r.studentId(),
-                                paperPS.getId(),
-                                r.studentStatus(),
-                                true, true)
-                        : r
-                ).toList();
+        // 3. 해당 학생들의 시험 조회
+        List<Long> studentIds = students.stream()
+                .map(Student::getId)
+                .toList();
 
-        return modelData;
+        List<Exam> exams = examRepository.findByStudentIdInAndSubjectId(studentIds, subjectId);
+
+        // 4. 시험 Map 생성 (studentId → Exam)
+        Map<Long, Exam> examMap = exams.stream()
+                .collect(Collectors.toMap(e -> e.getStudent().getId(), e -> e));
+
+        // 5. 결과 매핑
+        return students.stream()
+                .map(student -> {
+                    Exam exam = examMap.get(student.getId());
+                    return (exam != null)
+                            ? ExamModel.Result.fromExam(exam)
+                            : ExamModel.Result.createNotTakenTemplate(student, subject, paper);
+                })
+                .toList();
     }
+
 
     public ExamModel.ExamItems 학생_시험결과목록(User sessionUser) {
         if (sessionUser.getStudent() == null) throw new Exception403("당신은 학생이 아니에요 : 관리자에게 문의하세요");
@@ -182,101 +185,62 @@ public class ExamService {
         return new ExamModel.ExamItems(examListPS);
     }
 
-    // boss 로그인 시나리오
-    // 과정 2
-    // 학생 9
-
     public ExamModel.PaperItems 학생_응시가능한시험지목록(User sessionUser) {
         Long courseId = sessionUser.getStudent().getCourse().getId();
         Long studentId = sessionUser.getStudent().getId();
 
-        // 1. 과정 내 모든 시험지 가져오기
+        // 1. 과정 내 전체 시험지 조회
         List<Paper> allPapers = paperRepository.findAllByCourseId(courseId);
 
-        // 2. 해당 학생이 응시한 모든 시험
+        // 2. 해당 학생이 응시한 시험 전체 조회
         List<Exam> myExams = examRepository.findByStudentId(studentId);
 
-        // 3. 재평가 허용 대상 subjectId 추출
-        Set<Long> eligibleRetestSubjectIds = myExams.stream()
+        // 3. 재응시 허용 대상 과목 subjectId 수집
+        Set<Long> reTestableSubjectIds = myExams.stream()
                 .filter(exam -> !exam.getPaper().isReTest())
                 .filter(exam -> {
-                    boolean reTestReason = exam.getResultState() == ExamResultStatus.FAIL
-                            || exam.getResultState() == ExamResultStatus.ABSENT
-                            || exam.getResultState() == ExamResultStatus.NOT_TAKEN;
-
-                    return reTestReason;
+                    ExamResultStatus status = exam.getResultStatus();
+                    return status == ExamResultStatus.FAIL
+                            || status == ExamResultStatus.NOT_TAKEN;
                 })
-                .map(exam -> exam.getPaper().getSubject().getId())
+                .map(exam -> exam.getSubject().getId())
                 .collect(Collectors.toSet());
 
-        // 4. 시험지 필터링
-        List<Paper> filteredPapers = allPapers.stream()
+        // 4. 응시 가능한 시험지만 필터링 (본평가는 항상, 재평가는 조건 충족 시)
+        List<Paper> availablePapers = allPapers.stream()
                 .filter(paper -> {
-                    if (!paper.isReTest()) {
-                        return true; // 본평가는 항상 노출
-                    } else if (paper.isReTest()) {
-                        Long subjectId = paper.getSubject().getId();
-                        return eligibleRetestSubjectIds.contains(subjectId); // 조건 충족 시에만 노출
-                    }
-                    return false;
+                    if (!paper.isReTest()) return true;
+                    Long subjectId = paper.getSubject().getId();
+                    return reTestableSubjectIds.contains(subjectId);
                 })
                 .toList();
 
         // 5. 응시 여부 매핑
-        Map<Long, Boolean> attendanceMap = new HashMap<>();
-        myExams.forEach(exam -> attendanceMap.put(exam.getPaper().getId(), true));
+        Map<Long, Boolean> attendanceMap = myExams.stream()
+                .map(exam -> exam.getPaper().getId())
+                .distinct()
+                .collect(Collectors.toMap(paperId -> paperId, paperId -> true));
 
-        return new ExamModel.PaperItems(studentId, filteredPapers, attendanceMap);
-    }
-
-    public List<ExamModel.Result> 강사_교과목별시험결과(Long courseId, Long subjectId) {
-        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
-                .orElseThrow(() -> new Exception404("본평가 시험지가 존재하지 않아요"));
-
-        List<ExamModel.Result> rawList = examQueryRepository.findExamResult(subjectId, courseId);
-
-        List<ExamModel.Result> modelData = rawList.stream()
-                .map(r -> r.examId() == null ?
-                        new ExamModel.Result(
-                                0L,
-                                r.studentName(),
-                                paperPS.getSubject().getTitle(),
-                                "본평가",
-                                paperPS.getSubject().getTeacher().getName(),
-                                0.0,
-                                1,
-                                "미응시",
-                                "",
-                                r.studentId(),
-                                paperPS.getId(),
-                                r.studentStatus(),
-                                true, true)
-                        : r
-                ).toList();
-
-        return modelData;
+        return new ExamModel.PaperItems(studentId, availablePapers, attendanceMap);
     }
 
     public ExamModel.Start 학생_시험시작정보(User sessionUser, Long paperId) {
-        Paper paperPS = paperRepository.findById(paperId)
-                .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
+        // 1. 시험지 조회
+        Paper paper = paperRepository.findById(paperId)
+                .orElseThrow(() -> new Exception404("시험지를 찾을 수 없습니다."));
 
+        // 2. 과목 요소 조회
+        List<SubjectElement> elements = elementRepository.findAllBySubjectId(paper.getSubject().getId());
 
-        List<SubjectElement> subjectElementListPS =
-                elementRepository.findAllBySubjectId(paperPS.getSubject().getId());
+        // 3. 수험생 이름 조회
+        Student student = studentRepository.findByUserId(sessionUser.getId())
+                .orElseThrow(() -> new Exception404("학생을 찾을 수 없어요"));
 
-        Student studentPS = studentRepository.findByUserId(sessionUser.getId());
+        // 4. 문항 목록 조회
+        List<Question> questions = questionRepository.findAllByPaperId(paperId);
 
-        String studentName = studentPS.getName();
-
-        List<Question> questionListPS = questionRepository.findAllByPaperId(paperId);
-
-        return new ExamModel.Start(paperPS, studentName, subjectElementListPS, questionListPS);
-    }
-
-
-    public ExamModel.ResultDetail 학생_시험결과상세(Long examId) {
-        return _examResultDetail(examId);
+        // 5. 모델 조립
+        return new ExamModel.Start(paper, student.getName(), elements, questions);
     }
 
     @Transactional
@@ -284,56 +248,48 @@ public class ExamService {
         Exam examPS = examRepository.findById(reqDTO.getExamId())
                 .orElseThrow(() -> new Exception404("응시한 시험이 존재하지 않아요"));
 
-        examPS.updateSign(reqDTO.getSign());
+        examPS.updateStudentSign(reqDTO.getSign());
     }
 
-    public ExamModel.ResultDetail 강사_시험결과상세(Long examId) {
-        return _examResultDetail(examId);
-    }
+    public ExamModel.ResultDetail 시험결과상세(Long examId) {
+        // 1. 시험 조회
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new Exception404("시험 기록이 존재하지 않습니다."));
 
-    private ExamModel.ResultDetail _examResultDetail(Long examId) {
-        // 1. 시험 결과 찾기
-        Exam examPS = examRepository.findById(examId)
-                .orElseThrow(() -> new Exception404("시험친 기록이 없어요"));
+        // 2. 동일 교과목의 활성 시험 전체 조회 (학생 이름순 정렬)
+        Long subjectId = exam.getPaper().getSubject().getId();
+        List<Exam> allExams = examRepository.findBySubjectIdAndIsUseOrderByStudentNameAsc(subjectId);
 
-        // 2. 본평가, 재평가 중 사용중인 평가들을 학생 이름순으로 조회
-        Long subjectId = examPS.getPaper().getSubject().getId();
-        List<Exam> examListPS = examRepository.findBySubjectIdAndIsUseOrderByStudentNameAsc(subjectId);
+        // 3. 현재 시험 위치 및 이전/다음 ID 계산
+        int currentIndex = -1;
+        Long prevId = null, nextId = null;
 
-        // 3. 현재 시험의 인덱스를 찾고, prev/next Id 저장
-        Long prevExamId = null;
-        Long nextExamId = null;
-        Integer currentIndex = 0;
-        for (int i = 0; i < examListPS.size(); i++) {
-            if (examListPS.get(i).getId().equals(examId)) {
+        for (int i = 0; i < allExams.size(); i++) {
+            if (allExams.get(i).getId().equals(examId)) {
                 currentIndex = i;
-                if (i > 0) prevExamId = examListPS.get(i - 1).getId();
-                if (i < examListPS.size() - 1) nextExamId = examListPS.get(i + 1).getId();
+                if (i > 0) prevId = allExams.get(i - 1).getId();
+                if (i < allExams.size() - 1) nextId = allExams.get(i + 1).getId();
                 break;
             }
         }
 
-        // 4. 교과목 요소와 선생님 사인 조회
-        List<SubjectElement> subjectElementList = elementRepository.findAllBySubjectId(subjectId);
-        Teacher teacher = teacherRepository.findByName(examPS.getTeacherName())
-                .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
+        // 4. 교과목 요소 및 교사 정보 조회
+        List<SubjectElement> elements = elementRepository.findAllBySubjectId(subjectId);
+        Teacher teacher = teacherRepository.findById(exam.getTeacher().getId())
+                .orElseThrow(() -> new Exception404("해당 시험의 교사를 찾을 수 없습니다."));
 
-        // 5. 본평가 ID 찾기 (재평가일 경우)
+        // 5. 본평가 ID 확인 (재평가일 경우)
         Long originExamId = null;
-        Long studentId = examPS.getStudent().getId();
-        if (examPS.getExamState().equals("재평가")) {
-            Exam reExamPS = examRepository.findBySubjectIdAndStudentIdAndIsUse(subjectId, studentId, false)
-                    .orElseThrow(() -> new Exception500("재평가 본평가 저장 프로세스 오류 : 관리자 문의"));
-            originExamId = reExamPS.getId();
+        if (exam.getPaper().isReTest()) {
+            Long studentId = exam.getStudent().getId();
+            originExamId = examRepository.findBySubjectIdAndStudentIdAndIsUse(subjectId, studentId, false)
+                    .map(Exam::getId)
+                    .orElseThrow(() -> new Exception500("본평가를 찾을 수 없습니다."));
         }
 
         return new ExamModel.ResultDetail(
-                examPS,
-                subjectElementList,
-                teacher,
-                prevExamId,
-                nextExamId,
-                currentIndex,
+                exam, elements, teacher,
+                prevId, nextId, currentIndex,
                 originExamId
         );
     }

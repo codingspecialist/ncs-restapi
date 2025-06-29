@@ -13,8 +13,4 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findAllByCourseId(@Param("courseId") Long courseId);
 
     Optional<Student> findByUserId(Long userId);
-
-    @Query("select st from Student st where st.authCode = :authCode")
-    Optional<Student> findByAuthCode(@Param("authCode") String authCode);
-
 }

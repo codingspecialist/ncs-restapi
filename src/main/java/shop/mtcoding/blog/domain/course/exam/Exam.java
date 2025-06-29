@@ -132,6 +132,7 @@ public class Exam {
         return baseBuilder(student, paper)
                 .resultStatus(ExamResultStatus.NOT_TAKEN)
                 .teacherComment(ExamResultStatus.NOT_TAKEN.toKorean())
+                .student(student)
                 .build();
     }
 

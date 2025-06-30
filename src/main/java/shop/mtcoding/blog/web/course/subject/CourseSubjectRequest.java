@@ -33,7 +33,7 @@ public class CourseSubjectRequest {
                     .title(title)
                     .purpose(purpose)
                     .ncsType(ncsType)         // ✅ enum으로 변환
-                    .grade(grade)
+                    .gradeLevel(grade)
                     .totalTime(totalTime)
                     .no(no)
                     .learningWay(learningWay)   // ✅ enum으로 변환

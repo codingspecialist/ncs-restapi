@@ -39,7 +39,6 @@ public class CourseRequest {
                     .round(round)
                     .startDate(startDate)
                     .endDate(endDate)
-                    .mainTeacherName(mainTeacherName)
                     .courseStatus(courseStatus)
                     .build();
         }

@@ -293,68 +293,47 @@ VALUES (1, 1, 1, 1, 1, 'FAIL', NULL, 50.0, 50.0, 50.0, 1, FALSE, 'ORIGINAL', 'MC
 -- ExamAnswer Entity
 INSERT INTO exam_answer_tb (id, exam_id, question_id, question_no, selected_option_no, code_review_request_link,
                             created_at)
-VALUES (1, 1, 1, 1, 1, NULL, NOW());
+VALUES (1, 1, 1, 1, 1, NULL, NOW()),
+       (2, 1, 2, 2, 4, NULL, NOW()),
+       (3, 2, 1, 1, 4, NULL, NOW()),
+       (4, 2, 2, 2, 1, NULL, NOW()),
+       (5, 3, 1, 1, 1, NULL, NOW()),
+       (6, 3, 2, 2, 1, NULL, NOW()),
+       (7, 4, 3, 1, 1, NULL, NOW()),
+       (8, 4, 4, 2, 1, NULL, NOW()),
+       (9, 4, 5, 3, 1, NULL, NOW()),
+       (10, 4, 6, 4, 1, NULL, NOW()),
+       (11, 4, 7, 5, 4, NULL, NOW()),
+       (12, 5, 8, 1, 1, NULL, NOW()),
+       (13, 5, 9, 2, 1, NULL, NOW()),
+       -- 채점전이라서 아래 3개는 selected_option_no 가 없다. 이건 채점시에 채워진다.
+       (14, 6, 10, 1, NULL,
+        'https://github.com/metacoding-books/aws-v2/blob/master/src/main/java/site/metacoding/awsv2/HelloController.java',
+        NOW()),
+       (15, 6, 11, 2, NULL, NULL, NOW()),
+       (16, 6, 12, 3, NULL,
+        'https://github.com/metacoding-books/aws-v2/blob/master/src/main/java/site/metacoding/awsv2/HelloController.java',
+        NOW());
 
 -- ExamResult Entity
 INSERT INTO exam_result_tb (id, exam_answer_id, scored_point, is_correct, code_review_feedback_pr_link, created_at)
-VALUES (1, 1, 50.0, TRUE, NULL, NOW());
-
-
--- 아래 수정해야함
-insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
-values (1, true, 1, 1, 1, now(), 50);
-insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
-values (1, false, 2, 2, 4, now(), 0);
-
-insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
-values (2, false, 1, 1, 4, now(), 0);
-insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
-values (2, true, 2, 2, 1, now(), 50);
-
-insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
-values (3, true, 1, 1, 1, now(), 50);
-insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
-values (3, true, 2, 2, 1, now(), 50);
-
-
-insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
-values (4, true, 3, 1, 1, now(), 20);
-insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
-values (4, true, 4, 2, 1, now(), 20);
-insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
-values (4, true, 5, 3, 1, now(), 20);
-insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
-values (4, true, 6, 4, 1, now(), 20);
-insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
-values (4, false, 7, 5, 4, now(), 0);
-
-insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
-values (5, true, 8, 1, 1, now(), 50);
-insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
-values (5, true, 9, 2, 1, now(), 50);
-
-
-insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point, code_review_link)
-values (6, false, 10, 1, null, now(), 0,
-        'https://github.com/metacoding-books/aws-v2/blob/master/src/main/java/site/metacoding/awsv2/HelloController.java');
-insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
-values (6, false, 11, 2, null, now(), 0);
-insert into exam_answer_tb
-(exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point, code_review_link)
-values (6, false, 12, 3, null, now(), 0,
-        'https://github.com/metacoding-books/aws-v2/blob/master/src/main/java/site/metacoding/awsv2/HelloController.java');
+VALUES (1, 1, 50.0, TRUE, NULL, NOW()),
+       (2, 2, 0.0, FALSE, NULL, NOW()),
+       (3, 3, 0.0, FALSE, NULL, NOW()),
+       (4, 4, 50.0, TRUE, NULL, NOW()),
+       (5, 5, 50.0, TRUE, NULL, NOW()),
+       (6, 6, 50.0, TRUE, NULL, NOW()),
+       (7, 7, 20.0, TRUE, NULL, NOW()),
+       (8, 8, 20.0, TRUE, NULL, NOW()),
+       (9, 9, 20.0, TRUE, NULL, NOW()),
+       (10, 10, 20.0, TRUE, NULL, NOW()),
+       (11, 11, 0.0, FALSE, NULL, NOW()),
+       (12, 12, 50.0, TRUE, NULL, NOW()),
+       (13, 13, 50.0, TRUE, NULL, NOW()),
+       (14, 14, 0.0, FALSE,
+        'https://github.com/metacoding-books/aws-v2/blob/master/src/main/java/site/metacoding/awsv2/HelloController.java',
+        NOW()),
+       (15, 15, 0.0, FALSE, NULL, NOW()),
+       (16, 16, 0.0, FALSE,
+        'https://github.com/metacoding-books/aws-v2/blob/master/src/main/java/site.metacoding.awsv2/HelloController.java',
+        NOW());

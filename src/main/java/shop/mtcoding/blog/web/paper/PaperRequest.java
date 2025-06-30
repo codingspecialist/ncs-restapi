@@ -21,10 +21,7 @@ public class PaperRequest {
         private Long paperId;
         private Integer questionNo;
         private String questionTitle;
-
-        // 둘 중 택일로 받음
-        private String exContent;
-        private String exScenario;
+        private String summary;
 
         private List<OptionDTO> options;
 
@@ -32,8 +29,7 @@ public class PaperRequest {
             return Question.builder()
                     .no(questionNo)
                     .title(questionTitle)
-                    .exContent(exContent)
-                    .exScenario(Optional.ofNullable(exScenario).filter(s -> !s.isBlank()).orElse(null))
+                    .summary(summary)
                     .paper(paper)
                     .subjectElement(element)
                     .build();
@@ -58,7 +54,7 @@ public class PaperRequest {
 
     @Data
     public static class SaveDTO {
-        private PaperVersion paperType; // 본평가 / 재평가
+        private PaperVersion paperVersion; // 본평가 / 재평가
         private LocalDate evaluationDate;
 
         private String evaluationDevice; // 평가 장비
@@ -77,7 +73,7 @@ public class PaperRequest {
         public Paper toEntity(Subject subject) {
             return Paper.builder()
                     .subject(subject)
-                    .paperType(paperType)
+                    .paperVersion(paperVersion)
                     .evaluationDate(evaluationDate)
                     .evaluationWay(evaluationWay)
                     .evaluationRoom(evaluationRoom)

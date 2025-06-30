@@ -229,7 +229,7 @@ public class DocumentResponse {
 
             this.rubricScenarioGuideLink = paper.getTaskScenarioGuideLink();
             this.optionScenarios = paper.getQuestions().stream()
-                    .map(question -> MyUtil.extractFirstLine(question.getExScenario()))
+                    .map(question -> MyUtil.extractFirstLine(question.getSummary()))
                     .toList();
             this.rubricSubmitFormats = MyUtil.parseMultilineWithoutHyphen(paper.getTaskSubmitFormat());
 
@@ -396,7 +396,7 @@ public class DocumentResponse {
             this.rubricSubmitTemplateLink = paper.getTaskSubmitTemplateLink();
             this.rubricChallenges = MyUtil.parseMultilineWithoutHyphen(paper.getTaskChallenge());
             this.teacherSign = teacher.getSign();
-            this.grade = paper.getSubject().getGrade();
+            this.grade = paper.getSubject().getGradeLevel();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
         }
 
@@ -412,7 +412,7 @@ public class DocumentResponse {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-                this.scenarios = MyUtil.parseMultiline(question.getExScenario());
+                this.scenarios = MyUtil.parseMultiline(question.getSummary());
                 this.options = question.getQuestionOptions().stream().map(QuestionDTO.OptionDTO::new).toList();
             }
 
@@ -456,7 +456,7 @@ public class DocumentResponse {
             this.subjectElements = subjectElements.stream().map(se -> se.getTitle()).toList();
             this.questionCount = paper.getQuestions().size();
             this.teacherSign = teacher.getSign();
-            this.grade = paper.getSubject().getGrade();
+            this.grade = paper.getSubject().getGradeLevel();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
         }
 
@@ -465,7 +465,7 @@ public class DocumentResponse {
             private Long questionId;
             private Integer no;
             private String title;
-            private String exContent;
+            private String summary;
             private Integer totalPoint; // 배점
             private List<OptionDTO> options;
 
@@ -473,7 +473,7 @@ public class DocumentResponse {
                 this.questionId = question.getId();
                 this.no = question.getNo();
                 this.title = question.getTitle();
-                this.exContent = question.getExContent();
+                this.summary = question.getSummary();
                 this.totalPoint = question.getQuestionOptions()
                         .stream()
                         .mapToInt(o -> o.getPoint())
@@ -565,7 +565,7 @@ public class DocumentResponse {
             private Integer answerNumber; // 정답 번호
             private Integer selectedOptionNo; // 학생 선택 번호
             private Double studentPoint;
-            private String exContent;
+            private String summary;
             private List<OptionDTO> options;
 
             public AnswerDTO(ExamAnswer answer) {
@@ -580,7 +580,7 @@ public class DocumentResponse {
                 this.answerNumber = _option.getNo();
                 this.selectedOptionNo = answer.getSelectedOptionNo();
                 this.studentPoint = answer.getExamResult().getScoredPoint();
-                this.exContent = answer.getQuestion().getExContent();
+                this.summary = answer.getQuestion().getSummary();
                 this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new AnswerDTO.OptionDTO(option, selectedOptionNo)).toList();
             }
 
@@ -686,7 +686,7 @@ public class DocumentResponse {
                 this.studentPoint = answer.getExamResult().getScoredPoint();
                 this.codeReviewLink = answer.getCodeReviewRequestLink();
                 this.codeReviewPRLink = answer.getExamResult().getCodeReviewFeedbackPRLink();
-                this.scenarios = MyUtil.parseMultilineWithoutHyphen(answer.getQuestion().getExScenario());
+                this.scenarios = MyUtil.parseMultilineWithoutHyphen(answer.getQuestion().getSummary());
                 this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new AnswerDTO.OptionDTO(option, selectedOptionNo)).toList();
             }
 

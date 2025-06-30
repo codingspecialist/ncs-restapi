@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.domain.course.courseteacher.CourseTeacher;
+import shop.mtcoding.blog.domain.course.courseteacher.CourseTeacherEnum;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.user.student.Student;
 
@@ -35,7 +36,6 @@ public class Course {
     private Integer totalDay; // 과정일수
     private LocalDate startDate; // 년월일
     private LocalDate endDate; // 년월일
-    private String mainTeacherName; // 메인훈련교사 이름 (courseTeachers 중에 메인강사)
     @Enumerated(EnumType.STRING)
     private CourseStatus courseStatus; // 과정진행전, 과정진행중, 과정종료 (기본값은 과정진행전이다 - 숫자로는 0번)
 
@@ -57,7 +57,7 @@ public class Course {
 
 
     @Builder
-    public Course(Long id, String title, String code, Integer level, String purpose, Integer totalTime, Integer totalDay, Integer round, LocalDate startDate, LocalDate endDate, String mainTeacherName, CourseStatus courseStatus, LocalDateTime createdAt) {
+    public Course(Long id, String title, String code, Integer level, String purpose, Integer totalTime, Integer totalDay, Integer round, LocalDate startDate, LocalDate endDate, CourseStatus courseStatus, LocalDateTime createdAt) {
         this.id = id;
         this.title = title;
         this.code = code;
@@ -68,12 +68,19 @@ public class Course {
         this.round = round;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.mainTeacherName = mainTeacherName;
         this.courseStatus = courseStatus;
         this.createdAt = createdAt;
     }
 
     public void setCourseStatus(CourseStatus courseStatus) {
         this.courseStatus = courseStatus;
+    }
+
+    public String getMainTeacherName() {
+        return courseTeachers.stream()
+                .filter(ct -> ct.getRole() == CourseTeacherEnum.MAIN)
+                .map(ct -> ct.getTeacher().getName())
+                .findFirst()
+                .orElse(null); // 혹은 null 처리 가능
     }
 }

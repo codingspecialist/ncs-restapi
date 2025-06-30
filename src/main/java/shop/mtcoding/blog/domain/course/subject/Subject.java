@@ -39,7 +39,7 @@ public class Subject {
     @Enumerated(EnumType.STRING)
     private NcsType ncsType; // NCS, 비NCS
 
-    private Integer grade; // 교과목 수준
+    private Integer gradeLevel; // 교과목 수준
     private Integer totalTime; // 교과목 시간
 
     @Enumerated(EnumType.STRING)
@@ -68,7 +68,7 @@ public class Subject {
     }
 
     @Builder
-    public Subject(Long id, Teacher teacher, Course course, Integer no, String code, String title, String purpose, NcsType ncsType, Integer grade, Integer totalTime, LearningWay learningWay, Double scorePolicy, LocalDate startDate, LocalDate endDate, LocalDateTime createdAt) {
+    public Subject(Long id, Teacher teacher, Course course, Integer no, String code, String title, String purpose, NcsType ncsType, Integer gradeLevel, Integer totalTime, LearningWay learningWay, Double scorePolicy, LocalDate startDate, LocalDate endDate, LocalDateTime createdAt) {
         this.id = id;
         this.teacher = teacher;
         this.course = course;
@@ -77,7 +77,7 @@ public class Subject {
         this.title = title;
         this.purpose = purpose;
         this.ncsType = ncsType;
-        this.grade = grade;
+        this.gradeLevel = gradeLevel;
         this.totalTime = totalTime;
         this.learningWay = learningWay;
         this.scorePolicy = scorePolicy;

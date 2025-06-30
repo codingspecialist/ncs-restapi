@@ -289,7 +289,18 @@ VALUES (1, 1, 1, 1, 1, 'FAIL', NULL, 50.0, 50.0, 50.0, 1, FALSE, 'ORIGINAL', 'MC
        (6, 3, 4, 2, 1, 'NOT_GRADED', NULL, 0.0, 0.0, 0.0, 0, TRUE, 'ORIGINAL', 'RUBRIC', 15.0, NULL, NULL, '', NULL,
         'https://getinthere.notion.site/rubric-2128a08b6c0d80898b12f096198cd488?source=copy_link', NOW());
 
- 
+
+-- ExamAnswer Entity
+INSERT INTO exam_answer_tb (id, exam_id, question_id, question_no, selected_option_no, code_review_request_link,
+                            created_at)
+VALUES (1, 1, 1, 1, 1, NULL, NOW());
+
+-- ExamResult Entity
+INSERT INTO exam_result_tb (id, exam_answer_id, scored_point, is_correct, code_review_feedback_pr_link, created_at)
+VALUES (1, 1, 50.0, TRUE, NULL, NOW());
+
+
+-- 아래 수정해야함
 insert into exam_answer_tb
 (exam_id, is_right, question_id, question_no, selected_option_no, created_at, earned_point)
 values (1, true, 1, 1, 1, now(), 50);

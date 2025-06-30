@@ -24,14 +24,15 @@ public class User {
     private String email;
     @Enumerated(EnumType.STRING)
     private UserType role; // 학생, 강사, 직원, 팀장, 원장
-    @CreationTimestamp
-    private LocalDateTime createdAt;
 
     @OneToOne
     private Student student;
 
     @OneToOne
     private Teacher teacher;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
 
     @Builder

@@ -35,11 +35,13 @@ public class Student {
     @Column(unique = true)
     private String authCode; // 학생 인증 코드
     private Boolean isVerified; // 학생 인증 여부
-    @CreationTimestamp
-    private LocalDateTime createdAt;
 
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private User user;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
 
     public void setVerified() {
         this.isVerified = true;

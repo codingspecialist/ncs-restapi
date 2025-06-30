@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import shop.mtcoding.blog.core.errors.exception.api.Exception401;
 import shop.mtcoding.blog.core.utils.JwtEnum;
 import shop.mtcoding.blog.core.utils.JwtUtil;
@@ -20,10 +19,8 @@ import shop.mtcoding.blog.domain.user.UserRepository;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-@Component
 public class JwtAuthorizationFilter implements Filter {
 
-    // 추후 세션에 정보 필요하면 조회하기
     private final UserRepository userRepository;
 
     @Override

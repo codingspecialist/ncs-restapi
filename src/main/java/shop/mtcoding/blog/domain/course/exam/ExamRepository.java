@@ -18,7 +18,7 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     @Query("select ex from Exam ex where ex.paper.subject.id = :subjectId and ex.student.id = :studentId and ex.isActive = :isActive")
     Optional<Exam> findBySubjectIdAndStudentIdAndIsUse(@Param("subjectId") Long subjectId, @Param("studentId") Long studentId, @Param("isActive") Boolean isActive);
 
-    @Query("select ex from Exam ex left join fetch ex.paper p join fetch p.subject sb join fetch ex.student st join fetch st.user u where sb.id = :subjectId and ex.isUse = true order by st.name")
+    @Query("select ex from Exam ex left join fetch ex.paper p join fetch p.subject sb join fetch ex.student st join fetch st.user u where sb.id = :subjectId and ex.isActive = true order by st.name")
     List<Exam> findBySubjectIdAndIsUseOrderByStudentNameAsc(@Param("subjectId") Long subjectId);
 
 

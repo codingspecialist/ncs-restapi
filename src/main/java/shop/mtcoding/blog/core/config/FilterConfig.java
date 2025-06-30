@@ -6,27 +6,27 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import shop.mtcoding.blog.core.filter.CorsFilter;
 import shop.mtcoding.blog.core.filter.JwtAuthorizationFilter;
+import shop.mtcoding.blog.domain.user.UserRepository;
 
 @RequiredArgsConstructor
 @Configuration
 public class FilterConfig {
 
-    private final JwtAuthorizationFilter jwtAuthorizationFilter;
-    private final CorsFilter corsFilter;
+    private final UserRepository userRepository;
 
     @Bean
-    public FilterRegistrationBean<CorsFilter> corsFilter() {
+    public FilterRegistrationBean<?> corsFilter() {
         FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>();
-        bean.setFilter(corsFilter);
+        bean.setFilter(new CorsFilter());
         bean.addUrlPatterns("/*");
         bean.setOrder(0);
         return bean;
     }
 
     @Bean
-    public FilterRegistrationBean<JwtAuthorizationFilter> jwtAuthorizationFilter() {
+    public FilterRegistrationBean<?> jwtAuthorizationFilter() {
         FilterRegistrationBean<JwtAuthorizationFilter> bean =
-                new FilterRegistrationBean<>(jwtAuthorizationFilter);
+                new FilterRegistrationBean<>(new JwtAuthorizationFilter(userRepository));
         bean.addUrlPatterns("/api/*");
         bean.setOrder(1);
         return bean;

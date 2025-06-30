@@ -45,14 +45,13 @@ insert into course_tb(id, code, course_status, start_date, end_date, level, purp
 values (1, 'A1001', 'NOT_STARTED', '2025-08-01', '2025-12-31', 5, '마이크로 아키텍쳐에 대해서 이해한다.', 1, 'MSA기반 자바과정', 150, 1200,
         now());
 
-insert into course_teacher_tb(id, course_id, created_at, role, teacher_id)
-values (1, 1, now(), 'MAIN', 1);
-insert into course_teacher_tb(id, course_id, created_at, role, teacher_id)
-values (2, 1, now(), 'SUB', 7);
-insert into course_teacher_tb(id, course_id, created_at, role, teacher_id)
-values (3, 1, now(), 'SUB', 8);
+insert into course_teacher_tb(id, course_id, teacher_id, role, created_at)
+values (1, 1, 1, 'MAIN', now()),
+       (2, 1, 7, 'SUB', now()),
+       (3, 1, 8, 'SUB', now());
 
 
+-- Subject Entity
 insert into subject_tb(id, teacher_id, course_id, no, code, title, purpose,
                        ncs_type, grade_level, total_time, learning_way,
                        score_policy, start_date, end_date, created_at)
@@ -69,97 +68,100 @@ values (1, 1, 1, 1, 'S2001', '자바', '객체지향을 학습하는 능력이�
         0.9, '2025-06-24', '2025-06-25', now());
 
 
+-- SubjectElement Entity
+insert into subject_element_tb(id, no, title, criterion, subject_id, created_at)
+values (1, 1, '연산자', '다양한 연산자 활용을 통해 유연한 코드 구현이 가능하다.', 1, now()),
+       (2, 2, '객체지향', '객체지향 원칙을 적용하여 유지보수성과 확장성이 높은 코드를 작성할 수 있다.', 1, now()),
 
-insert into subject_element_tb(created_at, no, subject_id, subtitle, purpose)
-values (now(), 1, 1, '연산자', '여러 메서드를 타입, 매개변수를 변경하여 재사용할 수 있다.');
-insert into subject_element_tb(created_at, no, subject_id, subtitle, purpose)
-values (now(), 2, 1, '객체지향', '디자인 패턴을 활용할 수 있다.');
+       (3, 1, 'DI', '의존성 주입 개념을 이해하고, 이를 적용한 컴포넌트 간의 결합도 감소를 구현할 수 있다.', 2, now()),
+       (4, 2, 'IoC', '제어의 역전을 이해하고 IoC 컨테이너를 활용한 컴포넌트 제어가 가능하다.', 2, now()),
+       (5, 3, '어노테이션', '어노테이션 기반 프로그래밍을 이해하고 실무에 적용할 수 있다.', 2, now()),
+       (6, 4, '리플렉션', '리플렉션 API를 활용하여 런타임 동적 객체 제어가 가능하다.', 2, now()),
+       (7, 5, '컨트롤러', 'MVC 패턴에서 컨트롤러의 역할을 이해하고 효과적으로 구현할 수 있다.', 2, now()),
 
-insert into subject_element_tb(created_at, no, subject_id, subtitle, purpose)
-values (now(), 1, 2, 'DI', '머든지 난 할수 있다. 난 천재니까');
-insert into subject_element_tb(created_at, no, subject_id, subtitle, purpose)
-values (now(), 2, 2, 'IoC', '머든지 난 할수 있다. 난 천재니까');
-insert into subject_element_tb(created_at, no, subject_id, subtitle, purpose)
-values (now(), 3, 2, '어노테이션', '머든지 난 할수 있다. 난 천재니까');
-insert into subject_element_tb(created_at, no, subject_id, subtitle, purpose)
-values (now(), 4, 2, '리플렉션', '머든지 난 할수 있다. 난 천재니까');
-insert into subject_element_tb(created_at, no, subject_id, subtitle, purpose)
-values (now(), 5, 2, '컨트롤러', '머든지 난 할수 있다. 난 천재니까');
+       (8, 1, '백엔드 구현 능력', '요구사항을 기반으로 RESTful API를 설계하고 구현할 수 있다.', 3, now()),
+       (9, 2, '주소 설계가 가능하다.', 'HTTP 메서드와 REST 규칙에 맞춘 URL 설계가 가능하다.', 3, now()),
+       (10, 3, '커뮤니케이션능력', '개발 과정에서 팀원과 효과적으로 소통하고 협업할 수 있다.', 3, now());
 
-insert into subject_element_tb(created_at, no, subject_id, subtitle, purpose)
-values ('2025-06-14 22:07:49.570270', 1, 3, '백엔드 구현 능력', 'RestAPI를 만들 수 있다.');
+-- Paper Entity
+insert into paper_tb(id, evaluation_way, evaluation_date, subject_id, paper_version,
+                     evaluation_room, evaluation_device, max_score,
+                     task_title, task_scenario, task_scenario_guide_link,
+                     task_submit_format, task_submit_template_link, task_challenge,
+                     created_at)
+values
+-- MCQ 본평가
+(1, 'MCQ', '2025-06-21', 1, 'ORIGINAL',
+ '본관 3층 302호', '인터넷 가능한 PC', null,
+ null, null, null,
+ null, null, null,
+ now()),
 
-insert into subject_element_tb(created_at, no, subject_id, subtitle, purpose)
-values ('2025-06-14 22:08:32.764959', 2, 3, '주소 설계가 가능하다.', '4가지 http method 규칙에 맞추어 api 설계가 가능하다.');
+-- MCQ 본평가
+(2, 'MCQ', '2025-06-23', 2, 'ORIGINAL',
+ '본관 3층 302호', '인터넷 가능한 PC', null,
+ null, null, null,
+ null, null, null,
+ now()),
 
-insert into subject_element_tb(created_at, no, subject_id, subtitle, purpose)
-values ('2025-06-14 22:08:32.766494', 3, 3, '커뮤니케이션능력', '커뮤니케이션 능력으로 팀과 협업할 수 있다.');
+-- MCQ 재평가
+(3, 'MCQ', '2025-06-25', 1, 'RETEST',
+ '본관 3층 302호', '인터넷 가능한 PC', null,
+ null, null, null,
+ null, null, null,
+ now()),
 
+-- 루브릭(프로젝트형) 본평가
+(4, 'PROJECT', '2024-06-08', 3, 'ORIGINAL',
+ '본관 3층 302호', '인터넷 가능한 PC', null,
+ '스프링 부트 기반으로 나만의 블로그 시스템을 설계하고 개발하세요.',
+ '당신은 스타트업의 백엔드 개발자로 채용되었습니다. 기획자는 블로그 서비스 기능을 요구했고, 디자이너는 아직 없기 때문에 API 문서 기반으로 프론트엔드와 협업해야 합니다. 당신은 다음 요구사항을 구현하고, 문서화 및 팀과 공유해야 합니다.',
+ 'https://getinthere.notion.site/2178a08b6c0d802087c2fe804ce19b4b?source=copy_link',
+ '노션링크',
+ 'https://getinthere.notion.site/rubric-2128a08b6c0d80898b12f096198cd488?source=copy_link',
+ '- 도커로 환경구성\n- 통합테스트',
+ now());
 
--- 시험지 3
-insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
-                     evaluation_room)
-values (1, now(), 'ORIGINAL', '2025-06-21', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호');
-insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
-                     evaluation_room)
-values (2, now(), 'ORIGINAL', '2025-06-23', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호');
-insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
-                     evaluation_room)
-values (1, now(), 'RETEST', '2025-06-25', 'MCQ', '인터넷 가능한 PC', '본관 3층 302호');
-insert into paper_tb(subject_id, created_at, paper_type, evaluation_date, evaluation_way, evaluation_device,
-                     evaluation_room,
-                     rubric_title, rubric_scenario, rubric_scenario_guide_link, rubric_submit_format,
-                     rubric_submit_template_link, rubric_challenge)
-values (3, now(), 'ORIGINAL', '2024-06-08', 'PROJECT', '인터넷 가능한 PC', '본관 3층 302호',
-        '스프링 부트 기반으로 나만의 블로그 시스템을 설계하고 개발하세요.',
-        '당신은 스타트업의 백엔드 개발자로 채용되었습니다. 기획자는 블로그 서비스 기능을 요구했고, 디자이너는 아직 없기 때문에 API 문서 기반으로 프론트엔드와 협업해야 합니다. 당신은 다음 요구사항을 구현하고, 문서화 및 팀과 공유해야 합니다.',
-        'https://getinthere.notion.site/2178a08b6c0d802087c2fe804ce19b4b?source=copy_link',
-        '노션링크',
-        'https://getinthere.notion.site/rubric-2128a08b6c0d80898b12f096198cd488?source=copy_link',
-        '- 도커로 환경구성
-- 통합테스트');
+-- Question Entity
+insert into question_tb(id, no, title, summary, subject_element_id, paper_id, created_at)
+values
+-- 1번 시험지
+(1, 1, '다음 중 for문 설명으로 틀린것은?',
+ '개발자는 반복적인 작업을 처리하기 위해 다양한 반복문을 사용한다. 그 중에서도 for문은 반복 횟수가 명확할 때 자주 활용된다. 다음은 자바에서 for문을 사용하는 전형적인 예이다.', 1, 1, now()),
+(2, 2, '다음 중 while문 설명으로 틀린것은?',
+ '반복 조건이 불명확할 경우 while문을 사용하는 것이 일반적이다. while문은 조건을 만족하는 동안 코드 블록을 반복 수행하며, break나 continue를 통해 흐름 제어가 가능하다.', 2, 1,
+ now()),
 
--- 1번 시험지의 문제 2개 (1,2)
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
-values (1, '다음 중 for문 설명으로 틀린것은?', 1, now(), 1, 'ex)지문(보기) 영역입니다.');
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
-values (2, '다음 중 while문 설명으로 틀린것은?', 1, now(), 2, 'ex)지문(보기) 영역입니다.');
+-- 2번 시험지
+(3, 1, '다음 중 select 설명으로 틀린것은?', null, 3, 2, now()),
+(4, 2, '다음 중 insert 설명으로 틀린것은?', null, 4, 2, now()),
+(5, 3, '다음 중 update 설명으로 틀린것은?', null, 5, 2, now()),
+(6, 4, '다음 중 delete 설명으로 틀린것은?', null, 6, 2, now()),
+(7, 5, '다음 중 dml 설명으로 틀린것은?', null, 7, 2, now()),
 
--- 2번 시험지의 문제 5개 (3,4,5,6,7)
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
-values (1, '다음 중 select 설명으로 틀린것은?', 2, now(), 3, null);
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
-values (2, '다음 중 insert 설명으로 틀린것은?', 2, now(), 4, null);
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
-values (3, '다음 중 update 설명으로 틀린것은?', 2, now(), 5, null);
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
-values (4, '다음 중 delete 설명으로 틀린것은?', 2, now(), 6, null);
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
-values (5, '다음 중 dml 설명으로 틀린것은?', 2, now(), 7, null);
+-- 3번 시험지
+(8, 1, '다음 중 스레드 설명으로 틀린것은?', null, 1, 3, now()),
+(9, 2, '다음 중 소켓 설명으로 틀린것은?', null, 2, 3, now()),
 
--- 3번 시험지의 문제 2개 (8,9)
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
-values (1, '다음 중 스레드 설명으로 틀린것은?', 3, now(), 1, 'ex)지문(보기) 영역입니다.');
-insert into question_tb(no, title, paper_id, created_at, subject_element_id, ex_content)
-values (2, '다음 중 소켓 설명으로 틀린것은?', 3, now(), 2, null);
+-- 4번 시험지 (루브릭 기반)
+(10, 1, '백엔드 설계능력',
+ '온라인 강의 플랫폼의 강의 등록 기능을 설계하시오.
+ - 요구사항: 강의명, 강사명, 가격, 소개글 등록
+ - 기술조건: MVC 패턴 기반 설계, 도메인 모델 작성, RESTful API 구조 명세',
+ 8, 4, now()),
 
--- 4번 시험지의 문제 1개 (10)
-INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, ex_content, title, scenario)
-VALUES (1, now(), 4, 8, NULL, '백엔드 설계능력',
-        '온라인 강의 플랫폼의 강의 등록 기능을 설계하시오.
-- 요구사항: 강의명, 강사명, 가격, 소개글 등록
-- 기술조건: MVC 패턴 기반 설계, 도메인 모델 작성, RESTful API 구조 명세');
-INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, ex_content, title, scenario)
-VALUES (2, now(), 4, 9, NULL, 'RestAPI 구현능력', '블로그 서비스의 게시글 CRUD API를 구현하시오.
-- 요구사항: 게시글 등록/조회/수정/삭제
-- 기술조건: Spring Boot 기반 REST API, 예외 처리 및 응답 메시지 통일
-');
-INSERT INTO question_tb(no, created_at, paper_id, subject_element_id, ex_content, title, scenario)
-VALUES (3, now(), 4, 10, NULL, '커뮤니케이션능력',
-        '팀 프로젝트 회의록을 작성하고, 팀원들과 공유 및 피드백을 주고받는 시나리오를 설명하시오.
-- 요구사항: 회의록 작성 → 피드백 공유 → 수정본 반영
-- 기술조건: 협업툴(Notion, Slack 등) 사용, 피드백 처리 과정 설명 포함
-');
+(11, 2, 'RestAPI 구현능력',
+ '블로그 서비스의 게시글 CRUD API를 구현하시오.
+ - 요구사항: 게시글 등록/조회/수정/삭제
+ - 기술조건: Spring Boot 기반 REST API, 예외 처리 및 응답 메시지 통일',
+ 9, 4, now()),
+
+(12, 3, '커뮤니케이션능력',
+ '팀 프로젝트 회의록을 작성하고, 팀원들과 공유 및 피드백을 주고받는 시나리오를 설명하시오.
+ - 요구사항: 회의록 작성 → 피드백 공유 → 수정본 반영
+ - 기술조건: 협업툴(Notion, Slack 등) 사용, 피드백 처리 과정 설명 포함',
+ 10, 4, now());
+
 
 -- 4번 시험지의 문제옵션들(1)
 INSERT INTO question_option_tb(no, created_at, point, question_id, rubric_item, content, is_right)

@@ -8,7 +8,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.domain.course.exam.Exam;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
-import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,13 +30,10 @@ public class Paper {
     @ManyToOne(fetch = FetchType.LAZY)
     private Subject subject;
     @Enumerated(EnumType.STRING)
-    private PaperType paperType; // 본평가, 재평가
+    private PaperVersion paperType; // 본평가, 재평가
     private String evaluationRoom;     // 평가 장소
     private String evaluationDevice;   // 평가 장비 정보
     private Double maxScore; // 시험지의 만점 (문제가 만들어질때 마다 update 된다)
-
-    @Enumerated(EnumType.STRING)
-    private QuestionType questionType; // Enum(MCQ, RUBRIC)
 
     // -------------------- 객관식이 아닐때 받아야 할 목록
     private String taskTitle;
@@ -76,7 +72,7 @@ public class Paper {
     }
 
     @Builder
-    public Paper(Long id, EvaluationWay evaluationWay, LocalDate evaluationDate, Subject subject, PaperType paperType, String evaluationRoom, String evaluationDevice, Double maxScore, QuestionType questionType, String taskTitle, String taskScenario, String taskScenarioGuideLink, String taskSubmitFormat, String taskSubmitTemplateLink, String taskChallenge, LocalDateTime createdAt) {
+    public Paper(Long id, EvaluationWay evaluationWay, LocalDate evaluationDate, Subject subject, PaperVersion paperType, String evaluationRoom, String evaluationDevice, Double maxScore, String taskTitle, String taskScenario, String taskScenarioGuideLink, String taskSubmitFormat, String taskSubmitTemplateLink, String taskChallenge, LocalDateTime createdAt) {
         this.id = id;
         this.evaluationWay = evaluationWay;
         this.evaluationDate = evaluationDate;
@@ -85,7 +81,6 @@ public class Paper {
         this.evaluationRoom = evaluationRoom;
         this.evaluationDevice = evaluationDevice;
         this.maxScore = maxScore;
-        this.questionType = questionType;
         this.taskTitle = taskTitle;
         this.taskScenario = taskScenario;
         this.taskScenarioGuideLink = taskScenarioGuideLink;

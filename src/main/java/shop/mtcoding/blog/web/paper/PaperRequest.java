@@ -5,7 +5,7 @@ import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.EvaluationWay;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
-import shop.mtcoding.blog.domain.course.subject.paper.PaperType;
+import shop.mtcoding.blog.domain.course.subject.paper.PaperVersion;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionOption;
 
@@ -58,7 +58,7 @@ public class PaperRequest {
 
     @Data
     public static class SaveDTO {
-        private PaperType paperType; // 본평가 / 재평가
+        private PaperVersion paperType; // 본평가 / 재평가
         private LocalDate evaluationDate;
 
         private String evaluationDevice; // 평가 장비

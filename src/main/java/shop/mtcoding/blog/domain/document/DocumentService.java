@@ -16,7 +16,7 @@ import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElementRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperRepository;
-import shop.mtcoding.blog.domain.course.subject.paper.PaperType;
+import shop.mtcoding.blog.domain.course.subject.paper.PaperVersion;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionRepository;
 import shop.mtcoding.blog.domain.user.User;
@@ -52,14 +52,14 @@ public class DocumentService {
         Subject subjectPS = subjectRepository.findById(subjectId).orElseThrow(() -> new Exception404("해당 교과목이 없어요"));
         Teacher teacherPS = teacherRepository.findById(subjectPS.getTeacher().getId())
                 .orElseThrow(() -> new Exception404("해당 선생님이 존재하지 않아요"));
-        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
+        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperVersion.ORIGINAL)
                 .orElseThrow(() -> new Exception404("해당 교과목의 본평가 시험지를 찾을 수 없습니다."));
         List<Question> questionListPS = questionRepository.findAllByPaperId(paperPS.getId());
         return new DocumentModel.No1(subjectPS, questionListPS, teacherPS, paperPS);
     }
 
     public DocumentModel.No2 no2(Long subjectId) {
-        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
+        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperVersion.ORIGINAL)
                 .orElseThrow(() -> new Exception404("해당 교과목의 본평가 시험지를 찾을 수 없습니다."));
         List<Question> questionListPS = questionRepository.findAllByPaperId(paperPS.getId());
 
@@ -67,7 +67,7 @@ public class DocumentService {
     }
 
     public DocumentModel.No3 no3(Long subjectId) {
-        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
+        Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperVersion.ORIGINAL)
                 .orElseThrow(() -> new Exception404("해당 교과목의 본평가 시험지를 찾을 수 없습니다."));
         List<Question> questionListPS = questionRepository.findAllByPaperId(paperPS.getId());
         List<SubjectElement> elementListPS = elementRepository.findAllBySubjectId(subjectId);
@@ -92,8 +92,8 @@ public class DocumentService {
     }
 
     public DocumentModel.No5 no5(Long subjectId) {
-        List<Exam> examListPS = examRepository.findAllBySubjectIdAndEvaluationWay(subjectId, PaperType.ORIGINAL);
-        List<Exam> reExamListPS = examRepository.findAllBySubjectIdAndEvaluationWay(subjectId, PaperType.RETEST);
+        List<Exam> examListPS = examRepository.findAllBySubjectIdAndEvaluationWay(subjectId, PaperVersion.ORIGINAL);
+        List<Exam> reExamListPS = examRepository.findAllBySubjectIdAndEvaluationWay(subjectId, PaperVersion.RETEST);
         Teacher teacherPS = teacherRepository.findById(examListPS.get(0).getTeacher().getId())
                 .orElseThrow(() -> new Exception404("해당 선생님이 존재하지 않아요"));
         return new DocumentModel.No5(examListPS, reExamListPS, teacherPS);

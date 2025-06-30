@@ -10,7 +10,7 @@ import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElementRepository;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.PaperRepository;
-import shop.mtcoding.blog.domain.course.subject.paper.PaperType;
+import shop.mtcoding.blog.domain.course.subject.paper.PaperVersion;
 import shop.mtcoding.blog.domain.course.subject.paper.question.Question;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionRepository;
 import shop.mtcoding.blog.domain.user.User;
@@ -145,7 +145,7 @@ public class ExamService {
 
     public List<ExamModel.Result> 강사교과목별시험결과(Long courseId, Long subjectId) {
         // 1. 시험지 조회 (여기서 subject도 접근 가능)
-        Paper paper = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
+        Paper paper = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperVersion.ORIGINAL)
                 .orElseThrow(() -> new Exception404("본평가 시험지를 찾을 수 없습니다"));
         Subject subject = paper.getSubject();
 

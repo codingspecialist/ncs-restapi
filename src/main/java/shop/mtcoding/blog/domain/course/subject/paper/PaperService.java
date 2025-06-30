@@ -45,8 +45,8 @@ public class PaperService {
                 .orElseThrow(() -> new Exception404("해당 교과목을 찾을 수 없어요"));
 
         // ORIGINAL 유형이면 해당 교과목에 이미 존재하는지 확인
-        if (reqDTO.getPaperType() == PaperType.ORIGINAL) {
-            boolean exists = paperRepository.existsBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL);
+        if (reqDTO.getPaperType() == PaperVersion.ORIGINAL) {
+            boolean exists = paperRepository.existsBySubjectIdAndPaperType(subjectId, PaperVersion.ORIGINAL);
             if (exists) {
                 throw new Exception404("해당 교과목에는 이미 본평가(ORIGINAL) 시험지가 존재합니다.");
             }

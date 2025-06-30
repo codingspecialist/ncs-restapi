@@ -1,6 +1,6 @@
 package shop.mtcoding.blog.domain.course.subject.paper;
 
-public enum PaperType {
+public enum PaperVersion {
     ORIGINAL, // 본평가
     RETEST;   // 재평가
 
@@ -11,7 +11,7 @@ public enum PaperType {
         };
     }
 
-    public static PaperType fromKorean(String value) {
+    public static PaperVersion fromKorean(String value) {
         return switch (value) {
             case "본평가" -> ORIGINAL;
             case "재평가" -> RETEST;

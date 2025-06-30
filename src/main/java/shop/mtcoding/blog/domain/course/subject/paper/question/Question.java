@@ -25,15 +25,15 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer no; // 시험지에 종속되는 시험 순서 1, 2, 3
-    private String title; // 시험 문제 제목
-    private String summary; // 객관식 보기 지문, 문제 시나리오 요약
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Paper paper;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private SubjectElement subjectElement; // 여기 내부에 평가기준 있음!  criterion
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Paper paper;
+    private Integer no; // 시험지에 종속되는 시험 순서 1, 2, 3
+    private String title; // 시험 문제 제목
+    private String summary; // 객관식 보기 지문, 문제 시나리오 요약
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -42,13 +42,13 @@ public class Question {
     private List<QuestionOption> questionOptions = new ArrayList<>();
 
     @Builder
-    public Question(Long id, Integer no, String title, String summary, SubjectElement subjectElement, Paper paper, LocalDateTime createdAt) {
+    public Question(Long id, Paper paper, SubjectElement subjectElement, Integer no, String title, String summary, LocalDateTime createdAt) {
         this.id = id;
+        this.paper = paper;
+        this.subjectElement = subjectElement;
         this.no = no;
         this.title = title;
         this.summary = summary;
-        this.subjectElement = subjectElement;
-        this.paper = paper;
         this.createdAt = createdAt;
     }
 

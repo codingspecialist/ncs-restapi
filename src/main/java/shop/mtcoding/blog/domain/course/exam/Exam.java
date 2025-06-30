@@ -9,9 +9,9 @@ import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.exam.result.ExamResult;
 import shop.mtcoding.blog.domain.course.subject.Subject;
+import shop.mtcoding.blog.domain.course.subject.paper.EvaluationWay;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
 import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionOption;
-import shop.mtcoding.blog.domain.course.subject.paper.question.QuestionType;
 import shop.mtcoding.blog.domain.user.student.Student;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 import shop.mtcoding.blog.web.exam.ExamRequest;
@@ -33,31 +33,31 @@ public class Exam {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Student student;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Teacher teacher;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     private Subject subject;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Paper paper;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Student student;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Teacher teacher;
 
     @Enumerated(EnumType.STRING)
     private ExamResultStatus resultStatus;
 
     @Enumerated(EnumType.STRING)
     private ExamNotTakenReason notTakenReason;
-    private Double rawScore;
-    private Double totalScore;
-    private Double totalScorePercent;
-    private Integer gradeLevel;
-    private Boolean isActive;
+    private Double rawScore; // 시험 원점수 ex) 13점
+    private Double totalScore; // 정답 맞춘 점수 재평가시 0.9 곱하기 ex) 13*0.9점
+    private Double totalScorePercent; // totalScore 100점 만점으로 환산
+    private Integer gradeLevel; // 수준 1~5
+    private Boolean isActive; // 해당 paper의 paperStage가 재평가가 생기면, 본평가는 isActive false
 
-    private String copiedPaperType;
-    private Double copiedMaxScore;
-    private String copiedQuestionType;
+    private String copiedPaperVersion; // copied가 붙은것은 다른 테이블에 있는데 비정규화로 중복해서 저장 (본평가, 재평가)
+    private String copiedEvaluationWay; // MCQ, PROJECT, PRACTICE
+    private Double copiedMaxScore; // 만점 점수 ex) 15점
 
     @Lob
     private String studentSign;
@@ -66,7 +66,7 @@ public class Exam {
     private String teacherComment;
     private LocalDateTime teacherCommentedAt;
 
-    private String rubricSubmitLink;
+    private String rubricSubmitLink; //
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -83,12 +83,12 @@ public class Exam {
     }
 
     @Builder
-    public Exam(Long id, Student student, Teacher teacher, Subject subject, Paper paper, ExamResultStatus resultStatus, ExamNotTakenReason notTakenReason, Double rawScore, Double totalScore, Double totalScorePercent, Integer gradeLevel, Boolean isActive, String copiedPaperType, Double copiedMaxScore, String copiedQuestionType, String studentSign, LocalDateTime studentSignedAt, String teacherComment, LocalDateTime teacherCommentedAt, String rubricSubmitLink, LocalDateTime createdAt) {
+    public Exam(Long id, Subject subject, Paper paper, Student student, Teacher teacher, ExamResultStatus resultStatus, ExamNotTakenReason notTakenReason, Double rawScore, Double totalScore, Double totalScorePercent, Integer gradeLevel, Boolean isActive, String copiedPaperVersion, String copiedEvaluationWay, Double copiedMaxScore, String studentSign, LocalDateTime studentSignedAt, String teacherComment, LocalDateTime teacherCommentedAt, String rubricSubmitLink, LocalDateTime createdAt) {
         this.id = id;
-        this.student = student;
-        this.teacher = teacher;
         this.subject = subject;
         this.paper = paper;
+        this.student = student;
+        this.teacher = teacher;
         this.resultStatus = resultStatus;
         this.notTakenReason = notTakenReason;
         this.rawScore = rawScore;
@@ -96,9 +96,9 @@ public class Exam {
         this.totalScorePercent = totalScorePercent;
         this.gradeLevel = gradeLevel;
         this.isActive = isActive;
-        this.copiedPaperType = copiedPaperType;
+        this.copiedPaperVersion = copiedPaperVersion;
+        this.copiedEvaluationWay = copiedEvaluationWay;
         this.copiedMaxScore = copiedMaxScore;
-        this.copiedQuestionType = copiedQuestionType;
         this.studentSign = studentSign;
         this.studentSignedAt = studentSignedAt;
         this.teacherComment = teacherComment;
@@ -107,15 +107,16 @@ public class Exam {
         this.createdAt = createdAt;
     }
 
+
     private static ExamBuilder baseBuilder(Student student, Paper paper) {
         return Exam.builder()
                 .student(student)
                 .paper(paper)
                 .subject(paper.getSubject())
                 .teacher(paper.getSubject().getTeacher())
-                .copiedPaperType(paper.getPaperType().toString())
-                .copiedQuestionType(paper.getQuestionType().toString())
+                .copiedPaperVersion(paper.getPaperVersion().toString())
                 .copiedMaxScore(paper.getMaxScore())
+                .copiedEvaluationWay(paper.getEvaluationWay().toString())
                 .isActive(true);
     }
 
@@ -197,8 +198,8 @@ public class Exam {
         this.isActive = false;
     }
 
-    public QuestionType getQuestionType() {
-        return QuestionType.valueOf(copiedQuestionType);
+    public EvaluationWay getEvaluationWay() {
+        return EvaluationWay.valueOf(copiedEvaluationWay);
     }
 
     // -------------------------
@@ -206,7 +207,6 @@ public class Exam {
     // -------------------------
 
     private void gradeMcq() {
-        validateQuestionType(QuestionType.MCQ);
 
         double total = examAnswers.stream()
                 .mapToDouble(answer -> {
@@ -220,7 +220,6 @@ public class Exam {
     }
 
     private void gradeRubric(Map<Long, String> feedbackPRLinkMap) {
-        validateQuestionType(QuestionType.RUBRIC);
 
         double total = examAnswers.stream()
                 .mapToDouble(answer -> {
@@ -232,12 +231,6 @@ public class Exam {
                 .sum();
 
         finalizeGrading(total);
-    }
-
-    private void validateQuestionType(QuestionType expected) {
-        if (getQuestionType() != expected) {
-            throw new IllegalStateException(expected + " 시험만 가능합니다.");
-        }
     }
 
     private Double calculateScore(ExamAnswer answer) {

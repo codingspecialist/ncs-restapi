@@ -49,7 +49,7 @@ public class CourseStudentResponse {
                 this.dropOutDate = student.getDropOutDate() == null ? "" : student.getDropOutDate().toString();
                 this.dropOutReason = student.getDropOutReason() == null ? "" : student.getDropOutReason();
                 this.comment = student.getComment() == null ? "" : student.getComment();
-                this.grade = student.getGrade() == null ? "" : student.getGrade().toString();
+                this.grade = student.getGradeLevel() == null ? "" : student.getGradeLevel().toString();
                 this.courseId = student.getCourse().getId();
                 this.courseTitle = student.getCourse().getTitle();
                 this.courseRound = student.getCourse().getRound();

@@ -50,7 +50,7 @@ public class DocumentService {
 
     public DocumentModel.No1 no1(Long subjectId) {
         Subject subjectPS = subjectRepository.findById(subjectId).orElseThrow(() -> new Exception404("해당 교과목이 없어요"));
-        Teacher teacherPS = teacherRepository.findByName(subjectPS.getTeacherName())
+        Teacher teacherPS = teacherRepository.findById(subjectPS.getTeacher().getId())
                 .orElseThrow(() -> new Exception404("해당 선생님이 존재하지 않아요"));
         Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
                 .orElseThrow(() -> new Exception404("해당 교과목의 본평가 시험지를 찾을 수 없습니다."));
@@ -62,7 +62,8 @@ public class DocumentService {
         Paper paperPS = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperType.ORIGINAL)
                 .orElseThrow(() -> new Exception404("해당 교과목의 본평가 시험지를 찾을 수 없습니다."));
         List<Question> questionListPS = questionRepository.findAllByPaperId(paperPS.getId());
-        return new DocumentModel.No2(paperPS.getSubject(), questionListPS);
+
+        return new DocumentModel.No2(paperPS.getEvaluationWay(), paperPS.getSubject(), questionListPS);
     }
 
     public DocumentModel.No3 no3(Long subjectId) {
@@ -70,7 +71,7 @@ public class DocumentService {
                 .orElseThrow(() -> new Exception404("해당 교과목의 본평가 시험지를 찾을 수 없습니다."));
         List<Question> questionListPS = questionRepository.findAllByPaperId(paperPS.getId());
         List<SubjectElement> elementListPS = elementRepository.findAllBySubjectId(subjectId);
-        Teacher teacherPS = teacherRepository.findByName(paperPS.getSubject().getTeacherName())
+        Teacher teacherPS = teacherRepository.findById(paperPS.getSubject().getTeacher().getId())
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
         return new DocumentModel.No3(paperPS, elementListPS, questionListPS, teacherPS);
     }
@@ -84,7 +85,7 @@ public class DocumentService {
         Integer nextIndex = currentIndex < examListPS.size() - 1 ? currentIndex + 1 : null;
 
         List<SubjectElement> elementListPS = elementRepository.findAllBySubjectId(subjectId);
-        Teacher teacherPS = teacherRepository.findByName(examPS.getTeacherName())
+        Teacher teacherPS = teacherRepository.findById(examPS.getTeacher().getId())
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
 
         return new DocumentModel.No4(examPS, elementListPS, teacherPS, prevIndex, nextIndex, currentIndex);
@@ -93,7 +94,7 @@ public class DocumentService {
     public DocumentModel.No5 no5(Long subjectId) {
         List<Exam> examListPS = examRepository.findAllBySubjectIdAndEvaluationWay(subjectId, PaperType.ORIGINAL);
         List<Exam> reExamListPS = examRepository.findAllBySubjectIdAndEvaluationWay(subjectId, PaperType.RETEST);
-        Teacher teacherPS = teacherRepository.findByName(examListPS.get(0).getTeacherName())
+        Teacher teacherPS = teacherRepository.findById(examListPS.get(0).getTeacher().getId())
                 .orElseThrow(() -> new Exception404("해당 선생님이 존재하지 않아요"));
         return new DocumentModel.No5(examListPS, reExamListPS, teacherPS);
     }

@@ -20,7 +20,7 @@ public class PaperModel {
 
         public NextQuestion withElements(List<SubjectElement> subjectElements, Paper paper) {
             List<Element> converted = subjectElements.stream()
-                    .map(e -> new Element(e.getId(), e.getSubtitle()))
+                    .map(e -> new Element(e.getId(), e.getTitle()))
                     .toList();
             return new NextQuestion(expectNo, paperId, paper.getEvaluationWay(), converted);
         }

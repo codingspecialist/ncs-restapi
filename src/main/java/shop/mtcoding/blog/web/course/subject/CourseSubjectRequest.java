@@ -5,6 +5,7 @@ import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.subject.LearningWay;
 import shop.mtcoding.blog.domain.course.subject.NcsType;
 import shop.mtcoding.blog.domain.course.subject.Subject;
+import shop.mtcoding.blog.domain.user.teacher.Teacher;
 
 import java.time.LocalDate;
 
@@ -25,9 +26,9 @@ public class CourseSubjectRequest {
         private LocalDate startDate;
         private LocalDate endDate;
 
-        public Subject toEntity(Course course) {
+        public Subject toEntity(Course course, Teacher teacher) {
             return Subject.builder()
-                    .teacherName(teacherName)
+                    .teacher(teacher)
                     .code(code)
                     .title(title)
                     .purpose(purpose)

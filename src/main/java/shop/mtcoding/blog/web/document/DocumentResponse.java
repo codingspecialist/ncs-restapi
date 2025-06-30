@@ -318,7 +318,7 @@ public class DocumentResponse {
             double scorePolicy = paper.getSubject().getScorePolicy();
             this.scorePolicies = Arrays.asList("본평가 배점 : 평가점수 X 1.0", "재평가 배점 : 평가점수 X " + scorePolicy, "결시자 배점 : 평가점수 X " + scorePolicy);
 
-            this.subjectElements = subject.getElements().stream().map(subjectElement -> subjectElement.getSubtitle()).toList();
+            this.subjectElements = subject.getElements().stream().map(subjectElement -> subjectElement.getTitle()).toList();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
             this.sign = sign;
         }
@@ -694,14 +694,14 @@ public class DocumentResponse {
             class OptionDTO {
                 private Long optionId;
                 private Integer no;
-                private String rubricItem;
+                private String content;
                 private Boolean isSelect; // 해당 옵션이 선택되었는지 여부
                 private Integer point;
 
                 public OptionDTO(QuestionOption option, Integer selectedOptionNo) {
                     this.optionId = option.getId();
                     this.no = option.getNo();
-                    this.rubricItem = option.getRubricItem();
+                    this.content = option.getContent();
                     this.isSelect = no.equals(selectedOptionNo);
                     this.point = option.getPoint();
                 }

@@ -175,14 +175,14 @@ public class ExamService {
     }
 
 
-    public ExamModel.ExamItems 학생_시험결과목록(User sessionUser) {
+    public ExamModel.ExamItems 학생시험결과목록(User sessionUser) {
         if (sessionUser.getStudent() == null) throw new Exception403("당신은 학생이 아니에요 : 관리자에게 문의하세요");
         List<Exam> examListPS = examRepository.findByStudentId(sessionUser.getStudent().getId());
 
         return new ExamModel.ExamItems(examListPS);
     }
 
-    public ExamModel.PaperItems 학생_응시가능한시험지목록(User sessionUser) {
+    public ExamModel.PaperItems 학생응시가능한시험지목록(User sessionUser) {
         Long courseId = sessionUser.getStudent().getCourse().getId();
         Long studentId = sessionUser.getStudent().getId();
 
@@ -221,7 +221,7 @@ public class ExamService {
         return new ExamModel.PaperItems(studentId, availablePapers, attendanceMap);
     }
 
-    public ExamModel.Start 학생_시험시작정보(User sessionUser, Long paperId) {
+    public ExamModel.Start 학생시험시작정보(User sessionUser, Long paperId) {
         // 1. 시험지 조회
         Paper paper = paperRepository.findById(paperId)
                 .orElseThrow(() -> new Exception404("시험지를 찾을 수 없습니다."));
@@ -241,7 +241,7 @@ public class ExamService {
     }
 
     @Transactional
-    public void 학생_사인저장(StudentExamRequest.SignDTO reqDTO) {
+    public void 학생사인저장(StudentExamRequest.SignDTO reqDTO) {
         Exam examPS = examRepository.findById(reqDTO.getExamId())
                 .orElseThrow(() -> new Exception404("응시한 시험이 존재하지 않아요"));
 

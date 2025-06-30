@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.domain.course.Course;
+import shop.mtcoding.blog.domain.user.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,7 +28,7 @@ public class Student {
     private LocalDate dropOutDate; // 중탈 날짜
     private String dropOutReason; // 중탈 이유
     private String comment; // 학생 모든 교과목에 대한 총평
-    private Integer grade; // 학생 모든 교과목에 대한 수준 1,2,3,4,5
+    private Integer gradeLevel; // 학생 모든 교과목에 대한 수준 1,2,3,4,5
     @Enumerated(EnumType.STRING)
     private StudentStatus studentStatus; // 취업, 중도탈락, 미이수, 이수, 재학중
 
@@ -37,13 +38,16 @@ public class Student {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @OneToOne(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
+    private User user;
+
     public void setVerified() {
         this.isVerified = true;
         this.authCode = null;
     }
 
     @Builder
-    public Student(Long id, Course course, String name, String birthday, LocalDate dropOutDate, String dropOutReason, String comment, Integer grade, StudentStatus studentStatus, String authCode, Boolean isVerified, LocalDateTime createdAt) {
+    public Student(Long id, Course course, String name, String birthday, LocalDate dropOutDate, String dropOutReason, String comment, Integer gradeLevel, StudentStatus studentStatus, String authCode, Boolean isVerified, LocalDateTime createdAt, User user) {
         this.id = id;
         this.course = course;
         this.name = name;
@@ -51,10 +55,11 @@ public class Student {
         this.dropOutDate = dropOutDate;
         this.dropOutReason = dropOutReason;
         this.comment = comment;
-        this.grade = grade;
+        this.gradeLevel = gradeLevel;
         this.studentStatus = studentStatus;
         this.authCode = authCode;
         this.isVerified = isVerified;
         this.createdAt = createdAt;
+        this.user = user;
     }
 }

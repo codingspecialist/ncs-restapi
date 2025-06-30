@@ -12,14 +12,14 @@ public class SubjectElementResponse {
     public static class Item {
         private Long subjectElementId;
         private Integer no;
-        private String subtitle;
-        private String purpose;
+        private String title;
+        private String criterion;
 
         public Item(SubjectElement subjectElement) {
             this.subjectElementId = subjectElement.getId();
             this.no = subjectElement.getNo();
-            this.subtitle = subjectElement.getSubtitle();
-            this.purpose = subjectElement.getPurpose();
+            this.title = subjectElement.getTitle();
+            this.criterion = subjectElement.getCriterion();
         }
     }
 

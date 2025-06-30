@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,11 +63,16 @@ public class DocumentController {
     }
 
     @GetMapping("/api/document-menu/subject/{subjectId}/no2")
-    public String no2(@PathVariable("subjectId") Long subjectId, Model model) throws JsonProcessingException {
+    public ResponseEntity<?> no2(@PathVariable("subjectId") Long subjectId, Model model) throws JsonProcessingException {
         var modelData = documentService.no2(subjectId);
-        var respDTO = new DocumentResponse.No2DTO(modelData.subject(), modelData.questions());
-        model.addAttribute("model", respDTO);
-        return "document/no2";
+
+        if (modelData.evaluationWay() == EvaluationWay.MCQ) {
+            var respDTO = new DocumentResponse.No2McqDTO(modelData.subject(), modelData.questions());
+            return ResponseEntity.ok(respDTO);
+        } else {
+            var respDTO = new DocumentResponse.No2RubricDTO(modelData.subject(), modelData.questions());
+            return ResponseEntity.ok(respDTO);
+        }
     }
 
     @GetMapping("/api/document-menu/subject/{subjectId}/no3")

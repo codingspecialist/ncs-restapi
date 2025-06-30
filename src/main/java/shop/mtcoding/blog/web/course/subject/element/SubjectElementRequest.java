@@ -9,14 +9,14 @@ public class SubjectElementRequest {
     @Data
     public static class Save {
         private Integer no;
-        private String subtitle;
-        private String purpose;
+        private String title;
+        private String criterion;
 
         public SubjectElement toEntity(Subject subject) {
             return SubjectElement.builder()
                     .no(no)
-                    .subtitle(subtitle)
-                    .purpose(purpose)
+                    .title(title)
+                    .criterion(criterion)
                     .subject(subject)
                     .build();
         }

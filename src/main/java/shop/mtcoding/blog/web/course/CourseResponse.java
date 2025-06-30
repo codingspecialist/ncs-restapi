@@ -91,7 +91,7 @@ public class CourseResponse {
                 this.dropOutDate = student.getDropOutDate() == null ? "" : student.getDropOutDate().toString();
                 this.dropOutReason = student.getDropOutReason() == null ? "" : student.getDropOutReason();
                 this.comment = student.getComment() == null ? "" : student.getComment();
-                this.grade = student.getGrade() == null ? "" : student.getGrade().toString();
+                this.grade = student.getGradeLevel() == null ? "" : student.getGradeLevel().toString();
                 this.authCode = student.getAuthCode() == null ? "완료" : student.getAuthCode().toString();
                 this.courseId = student.getCourse().getId();
             }
@@ -117,8 +117,8 @@ public class CourseResponse {
 
 
             public SubjectItem(Subject subject) {
-                Paper paper = subject.getPapers().stream().filter(p -> !p.isReEvaluation()).findFirst().orElse(null);
-                Paper rePaper = subject.getPapers().stream().filter(Paper::isReEvaluation).findFirst().orElse(null);
+                Paper paper = subject.getPapers().stream().filter(p -> !p.isReTest()).findFirst().orElse(null);
+                Paper rePaper = subject.getPapers().stream().filter(Paper::isReTest).findFirst().orElse(null);
 
                 this.subjectId = subject.getId();
                 this.code = subject.getCode();

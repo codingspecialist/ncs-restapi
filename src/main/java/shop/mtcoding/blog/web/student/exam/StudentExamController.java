@@ -22,7 +22,7 @@ public class StudentExamController {
     public String studentPaperList(Model model) {
         User sessionUser = (User) session.getAttribute("sessionUser");
 
-        var modelData = examService.학생_응시가능한시험지목록(sessionUser);
+        var modelData = examService.학생응시가능한시험지목록(sessionUser);
         var respDTO = new StudentExamResponse.MyPaperListDTO(modelData.studentId(), modelData.papers(), modelData.attendanceMap());
         model.addAttribute("model", respDTO);
         return "student/paper/list";
@@ -31,7 +31,7 @@ public class StudentExamController {
     @GetMapping("/api/student/paper/{paperId}/start")
     public String studentExamStartInfo(@PathVariable("paperId") Long paperId, Model model) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        var modelData = examService.학생_시험시작정보(sessionUser, paperId);
+        var modelData = examService.학생시험시작정보(sessionUser, paperId);
 
         if (modelData.paperPS().getEvaluationWay() == EvaluationWay.MCQ) {
             var respDTO = new StudentExamResponse.McqStartDTO(modelData.paperPS(), modelData.studentName(), modelData.subjectElementListPS(), modelData.questionListPS());
@@ -66,7 +66,7 @@ public class StudentExamController {
     public String studentExamResultList(Model model) {
         User sessionUser = (User) session.getAttribute("sessionUser");
 
-        var modelData = examService.학생_시험결과목록(sessionUser);
+        var modelData = examService.학생시험결과목록(sessionUser);
         var respDTOs = modelData.exams().stream().map(StudentExamResponse.ResultDTO::new).toList();
         model.addAttribute("models", respDTOs);
         return "student/exam-result/list";
@@ -74,7 +74,7 @@ public class StudentExamController {
 
     @GetMapping("/api/student/exam/{examId}")
     public String studentExamResultDetail(@PathVariable(value = "examId") Long examId, Model model) {
-        var modelData = examService.학생시험결과상세(examId);
+        var modelData = examService.시험상세결과(examId);
 
         if (modelData.exam().getPaper().getEvaluationWay() == EvaluationWay.MCQ) {
             var respDTO = new StudentExamResponse.McqResultDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher());
@@ -92,7 +92,7 @@ public class StudentExamController {
 
     @PutMapping("/api/student/exam/sign")
     public ResponseEntity<?> sign(@RequestBody StudentExamRequest.SignDTO reqDTO) {
-        examService.학생_사인저장(reqDTO);
+        examService.학생사인저장(reqDTO);
         return ResponseEntity.ok(Resp.ok(null));
     }
 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import shop.mtcoding.blog.core.utils.Resp;
 import shop.mtcoding.blog.domain.course.CourseModel;
 import shop.mtcoding.blog.domain.course.CourseService;
 import shop.mtcoding.blog.domain.course.subject.SubjectModel;
@@ -88,7 +89,7 @@ public class PaperController {
     @PostMapping("/api/paper-menu/subject/{subjectId}/paper/save")
     public ResponseEntity<?> save(@PathVariable("subjectId") Long subjectId, @RequestBody PaperRequest.SaveDTO reqDTO) {
         paperService.시험지등록(subjectId, reqDTO);
-        return ResponseEntity.ok(new ApiUtil<>(subjectId));
+        return ResponseEntity.ok(Resp.ok(subjectId));
     }
 
     // 6. 시험지관리 - 과정목록 - 교과목목록 - 시험지목록 - 시험지상세 - 문제등록 폼
@@ -108,7 +109,7 @@ public class PaperController {
     @PostMapping("/api/paper-menu/paper/{paperId}/question/save")
     public ResponseEntity<?> questionSave(@RequestBody PaperRequest.QuestionSaveDTO reqDTO) {
         paperService.문제등록(reqDTO);
-        return ResponseEntity.ok(new ApiUtil<>(null));
+        return ResponseEntity.ok(Resp.ok(null));
     }
 
 

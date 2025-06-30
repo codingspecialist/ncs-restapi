@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.mtcoding.blog.core.errors.exception.api.*;
+import shop.mtcoding.blog.core.utils.Resp;
 
 // RuntimeException이 터지면 해당 파일로 오류가 모인다
 @Slf4j
@@ -46,6 +47,6 @@ public class MyExceptionHandler {
         log.error(e.getMessage());
         Sentry.captureException(e);
         e.printStackTrace();
-        return new ResponseEntity<>(new ApiUtil<>(500, "오류 : 관리자에게 문의하세요"), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(Resp.fail(500, "오류 : 관리자에게 문의하세요"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

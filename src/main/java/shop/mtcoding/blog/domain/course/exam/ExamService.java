@@ -23,7 +23,6 @@ import shop.mtcoding.blog.web.student.exam.StudentExamRequest;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
@@ -145,7 +144,7 @@ public class ExamService {
 
     public List<ExamModel.Result> 강사교과목별시험결과(Long courseId, Long subjectId) {
         // 1. 시험지 조회 (여기서 subject도 접근 가능)
-        Paper paper = paperRepository.findBySubjectIdAndPaperType(subjectId, PaperVersion.ORIGINAL)
+        Paper paper = paperRepository.findBySubjectIdAndPaperVersion(subjectId, PaperVersion.ORIGINAL)
                 .orElseThrow(() -> new Exception404("본평가 시험지를 찾을 수 없습니다"));
         Subject subject = paper.getSubject();
 
@@ -177,7 +176,7 @@ public class ExamService {
 
     public ExamModel.ExamItems 학생시험결과목록(User sessionUser) {
         if (sessionUser.getStudent() == null) throw new Exception403("당신은 학생이 아니에요 : 관리자에게 문의하세요");
-        List<Exam> examListPS = examRepository.findByStudentId(sessionUser.getStudent().getId());
+        List<Exam> examListPS = examRepository.findAllByStudentId(sessionUser.getStudent().getId());
 
         return new ExamModel.ExamItems(examListPS);
     }
@@ -186,39 +185,43 @@ public class ExamService {
         Long courseId = sessionUser.getStudent().getCourse().getId();
         Long studentId = sessionUser.getStudent().getId();
 
-        // 1. 과정 내 전체 시험지 조회
-        List<Paper> allPapers = paperRepository.findAllByCourseId(courseId);
+        // 1. 과정의 모든 시험지 조회
+        List<Paper> allPapersInCourse = paperRepository.findAllByCourseId(courseId);
 
-        // 2. 해당 학생이 응시한 시험 전체 조회
-        List<Exam> myExams = examRepository.findByStudentId(studentId);
+        // 2. 학생의 모든 응시 기록 조회
+        List<Exam> myAllExams = examRepository.findAllByStudentId(studentId);
 
-        // 3. 재응시 허용 대상 과목 subjectId 수집
-        Set<Long> reTestableSubjectIds = myExams.stream()
-                .filter(exam -> !exam.getPaper().isReTest())
-                .filter(exam -> {
-                    ExamResultStatus status = exam.getResultStatus();
-                    return status == ExamResultStatus.FAIL
-                            || status == ExamResultStatus.NOT_TAKEN;
-                })
-                .map(exam -> exam.getSubject().getId())
-                .collect(Collectors.toSet());
+        // 3. 빠른 조회를 위해 응시 기록을 Map으로 변환
+        Map<Long, Exam> myExamMap = myAllExams.stream()
+                .collect(Collectors.toMap(exam -> exam.getPaper().getId(), exam -> exam));
 
-        // 4. 응시 가능한 시험지만 필터링 (본평가는 항상, 재평가는 조건 충족 시)
-        List<Paper> availablePapers = allPapers.stream()
-                .filter(paper -> {
-                    if (!paper.isReTest()) return true;
-                    Long subjectId = paper.getSubject().getId();
-                    return reTestableSubjectIds.contains(subjectId);
+        // 4. 상태 계산 및 최종 목록 생성
+        List<ExamModel.PaperItem> finalPaperList = allPapersInCourse.stream()
+                .map(paper -> {
+                    ExamTakingStatus status; // 학생의 응시 상태
+
+                    if (myExamMap.containsKey(paper.getId())) {
+                        // 1. 이미 응시한 시험
+                        status = ExamTakingStatus.TAKEN;
+                    } else if (!paper.isReTest()) {
+                        // 2. 응시하지 않은 '본평가'
+                        status = ExamTakingStatus.AVAILABLE;
+                    } else {
+                        // 3. 응시하지 않은 '재평가'
+                        boolean canTakeRetest = myAllExams.stream()
+                                .filter(exam -> exam.getSubject().getId().equals(paper.getSubject().getId()) && !exam.getPaper().isReTest())
+                                .findFirst()
+                                .map(mainExam -> mainExam.getResultStatus() == ExamResultStatus.FAIL || mainExam.getResultStatus() == ExamResultStatus.NOT_TAKEN)
+                                .orElse(false); // 본평가 기록이 없으면 재시험 자격 없음
+
+                        status = canTakeRetest ? ExamTakingStatus.AVAILABLE : ExamTakingStatus.NOT_AVAILABLE;
+                    }
+                    return new ExamModel.PaperItem(paper, status);
                 })
                 .toList();
 
-        // 5. 응시 여부 매핑
-        Map<Long, Boolean> attendanceMap = myExams.stream()
-                .map(exam -> exam.getPaper().getId())
-                .distinct()
-                .collect(Collectors.toMap(paperId -> paperId, paperId -> true));
-
-        return new ExamModel.PaperItems(studentId, availablePapers, attendanceMap);
+        // 5. 결과 반환
+        return new ExamModel.PaperItems(studentId, finalPaperList);
     }
 
     public ExamModel.Start 학생시험시작정보(User sessionUser, Long paperId) {

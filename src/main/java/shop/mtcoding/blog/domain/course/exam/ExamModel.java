@@ -9,7 +9,6 @@ import shop.mtcoding.blog.domain.user.student.Student;
 import shop.mtcoding.blog.domain.user.teacher.Teacher;
 
 import java.util.List;
-import java.util.Map;
 
 public class ExamModel {
     public record ResultDetails(EvaluationWay evaluationWay, List<Exam> exams, List<SubjectElement> subjectElements,
@@ -24,7 +23,16 @@ public class ExamModel {
                         List<Question> questionListPS) {
     }
 
-    public record PaperItems(Long studentId, List<Paper> papers, Map<Long, Boolean> attendanceMap) {
+    public record PaperItems(Long studentId, List<PaperItem> papers) {
+    }
+
+    /**
+     * 학생에게 보여줄 시험지 목록의 각 항목
+     *
+     * @param paper  원본 시험지 객체
+     * @param status 학생의 현재 응시 상태
+     */
+    public record PaperItem(Paper paper, ExamTakingStatus status) {
     }
 
     public record ExamItems(List<Exam> exams) {

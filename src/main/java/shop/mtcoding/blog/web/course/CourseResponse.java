@@ -125,7 +125,7 @@ public class CourseResponse {
                 this.title = subject.getTitle();
                 this.purpose = subject.getPurpose();
                 this.ncsType = subject.getNcsType().toKorean();
-                this.grade = subject.getGrade();
+                this.grade = subject.getGradeLevel();
                 this.totalTime = subject.getTotalTime();
                 this.no = subject.getNo();
                 this.learningWay = subject.getLearningWay().toKorean();

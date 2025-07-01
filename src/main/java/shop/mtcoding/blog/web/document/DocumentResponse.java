@@ -668,8 +668,8 @@ public class DocumentResponse {
             private Integer totalPoint; // 배점
             private Integer selectedOptionNo; // 학생 선택 번호
             private Double studentPoint;
-            private String codeReviewLink;
-            private String codeReviewPRLink;
+            private String codeReviewRequestLink;
+            private String codeReviewFeedbackPrLink;
             private List<String> scenarios;
             private List<OptionDTO> options;
 
@@ -684,8 +684,8 @@ public class DocumentResponse {
                 this.totalPoint = _option.getPoint();
                 this.selectedOptionNo = answer.getSelectedOptionNo(); // 기본적으로 1번에 체크되게 하기
                 this.studentPoint = answer.getExamResult().getScoredPoint();
-                this.codeReviewLink = answer.getCodeReviewRequestLink();
-                this.codeReviewPRLink = answer.getExamResult().getCodeReviewFeedbackPRLink();
+                this.codeReviewRequestLink = answer.getCodeReviewRequestLink();
+                this.codeReviewFeedbackPrLink = answer.getExamResult().getCodeReviewFeedbackPrLink();
                 this.scenarios = MyUtil.parseMultilineWithoutHyphen(answer.getQuestion().getSummary());
                 this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new AnswerDTO.OptionDTO(option, selectedOptionNo)).toList();
             }

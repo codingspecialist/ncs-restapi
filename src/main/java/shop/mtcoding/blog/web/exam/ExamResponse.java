@@ -2,7 +2,6 @@ package shop.mtcoding.blog.web.exam;
 
 import lombok.Data;
 import org.springframework.data.domain.Page;
-import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.exam.Exam;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
@@ -93,7 +92,7 @@ public class ExamResponse {
             this.title = subject.getTitle();
             this.purpose = subject.getPurpose();
             this.ncsType = subject.getNcsType().toKorean();
-            this.grade = subject.getGrade();
+            this.grade = subject.getGradeLevel();
             this.totalTime = subject.getTotalTime();
             this.no = subject.getNo();
             this.learningWay = subject.getLearningWay().toKorean();
@@ -129,7 +128,7 @@ public class ExamResponse {
                     .toList();
         }
     }
-    
+
     @Data
     public static class ResultRubricDetails {
         private Long selectedExamId;
@@ -204,7 +203,7 @@ public class ExamResponse {
             private Long questionId;
             private Integer questionNo;
             private String questionTitle;
-            private String questionExContent;
+            private String questionSummary;
             private Double maxScore;
             private Integer correctOptionNo;
             private Integer selectedOptionNo;
@@ -216,7 +215,7 @@ public class ExamResponse {
                 this.questionId = answer.getQuestion().getId();
                 this.questionNo = answer.getQuestionNo(); // answer 기준
                 this.questionTitle = answer.getQuestion().getTitle();
-                this.questionExContent = answer.getQuestion().getExContent();
+                this.questionSummary = answer.getQuestion().getSummary();
 
                 // 가장 높은 점수를 가진 옵션
                 QuestionOption correctOption = answer.getQuestion().getCorrectOption();
@@ -316,7 +315,7 @@ public class ExamResponse {
             private Long questionId;
             private Integer questionNo;
             private String questionTitle;
-            private String questionExContent;
+            private String questionSummary;
             private Double maxScore;
             private Integer selectedOptionNo;
             private Double scoredPoint;
@@ -324,7 +323,7 @@ public class ExamResponse {
 
 
             private String codeReviewRequestLink;
-            private String codeReviewFeedbackPRLink;
+            private String codeReviewFeedbackPrLink;
             private List<String> exScenarios;
 
             public ResultRubric(ExamAnswer answer) {
@@ -332,7 +331,7 @@ public class ExamResponse {
                 this.questionId = answer.getQuestion().getId();
                 this.questionNo = answer.getQuestionNo(); // answer 기준
                 this.questionTitle = answer.getQuestion().getTitle();
-                this.questionExContent = answer.getQuestion().getExContent();
+                this.questionSummary = answer.getQuestion().getSummary();
 
                 // 가장 높은 점수를 가진 옵션이 정답
                 QuestionOption correctOption = answer.getQuestion().getCorrectOption();
@@ -350,8 +349,7 @@ public class ExamResponse {
 
 
                 this.codeReviewRequestLink = answer.getCodeReviewRequestLink();
-                this.codeReviewFeedbackPRLink = result.getCodeReviewFeedbackPRLink();
-                this.exScenarios = MyUtil.parseMultilineWithoutHyphen(answer.getQuestion().getExScenario());
+                this.codeReviewFeedbackPrLink = result.getCodeReviewFeedbackPrLink();
                 this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new Option(option, selectedOptionNo)).toList();
             }
 

@@ -23,7 +23,7 @@ public class StudentExamController {
         User sessionUser = (User) session.getAttribute("sessionUser");
 
         var modelData = examService.학생응시가능한시험지목록(sessionUser);
-        var respDTO = new StudentExamResponse.MyPaperListDTO(modelData.studentId(), modelData.papers(), modelData.attendanceMap());
+        var respDTO = new StudentExamResponse.MyPaperItems(modelData.studentId(), modelData.papers());
         model.addAttribute("model", respDTO);
         return "student/paper/list";
     }

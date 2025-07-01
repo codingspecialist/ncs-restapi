@@ -89,7 +89,7 @@ public class PaperResponse {
             this.title = subject.getTitle();
             this.purpose = subject.getPurpose();
             this.ncsType = subject.getNcsType().toKorean();
-            this.grade = subject.getGrade();
+            this.grade = subject.getGradeLevel();
             this.totalTime = subject.getTotalTime();
             this.no = subject.getNo();
             this.learningWay = subject.getLearningWay().toKorean();
@@ -141,7 +141,7 @@ public class PaperResponse {
             private Long questionId;
             private Integer questionNo;
             private String questionTitle;
-            private String exContent;
+            private String questionSummary;
             private Double maxScore; // 만점
             private List<Option> options;
 
@@ -149,7 +149,7 @@ public class PaperResponse {
                 this.questionId = question.getId();
                 this.questionNo = question.getNo();
                 this.questionTitle = question.getTitle();
-                this.exContent = question.getExContent();
+                this.questionSummary = question.getSummary();
                 this.maxScore = question.getPaper().getMaxScore();
                 this.options = question.getQuestionOptions().stream().map(Option::new).toList();
             }
@@ -219,14 +219,14 @@ public class PaperResponse {
             private Long questionId;
             private Integer questionNo;
             private String questionTitle;
-            private List<String> exScenarios; // 가이드 요약본
+            private List<String> questionSummaries; // 가이드 요약본
             private List<Option> options;
 
             public QuestionItem(Question question) {
                 this.questionId = question.getId();
                 this.questionNo = question.getNo();
                 this.questionTitle = question.getTitle();
-                this.exScenarios = MyUtil.parseMultiline(question.getExScenario());
+                this.questionSummaries = MyUtil.parseMultiline(question.getSummary());
                 this.options = question.getQuestionOptions().stream().map(Option::new).toList();
             }
 
@@ -257,7 +257,7 @@ public class PaperResponse {
         private Long subjectId;
         private String subjectTitle; // 교과목명
         private Integer questionCount; // 문항수
-        private String paperType;
+        private String paperVersion;
         private String evaluationWay;
         private String evaluationDate;
 
@@ -268,7 +268,7 @@ public class PaperResponse {
             this.subjectId = paper.getSubject().getId();
             this.subjectTitle = paper.getSubject().getTitle();
             this.questionCount = paper.getQuestions().size();
-            this.paperType = paper.getPaperType().toKorean();
+            this.paperVersion = paper.getPaperVersion().toKorean();
             this.evaluationWay = paper.getEvaluationWay().toKorean();
             this.evaluationDate = MyUtil.localDateToString(paper.getEvaluationDate());
         }

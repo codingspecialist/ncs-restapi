@@ -241,12 +241,12 @@ public class Exam {
                 .orElse(0);
     }
 
-    private ExamResult buildResult(ExamAnswer answer, Double scoredPoint, String codeReviewFeedbackPRLink) {
+    private ExamResult buildResult(ExamAnswer answer, Double scoredPoint, String codeReviewFeedbackPrLink) {
         return ExamResult.builder()
                 .examAnswer(answer)
                 .scoredPoint(scoredPoint)
                 .isCorrect(scoredPoint > 0)
-                .codeReviewFeedbackPRLink(codeReviewFeedbackPRLink)
+                .codeReviewFeedbackPrLink(codeReviewFeedbackPrLink)
                 .build();
     }
 

@@ -33,7 +33,7 @@ public class Question {
 
     private Integer no; // 시험지에 종속되는 시험 순서 1, 2, 3
     private String title; // 시험 문제 제목
-    private String summary; // 객관식 보기 지문, 문제 시나리오 요약
+    private String summary; // 객관식 보기 지문, 문제 시나리오 요약 (두개를 하나로 통합)
 
     @CreationTimestamp
     private LocalDateTime createdAt;

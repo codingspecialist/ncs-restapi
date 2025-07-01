@@ -3,6 +3,8 @@ package shop.mtcoding.blog.web.student.exam;
 import lombok.Data;
 import shop.mtcoding.blog.core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.exam.Exam;
+import shop.mtcoding.blog.domain.course.exam.ExamModel;
+import shop.mtcoding.blog.domain.course.exam.ExamTakingStatus;
 import shop.mtcoding.blog.domain.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;
@@ -12,54 +14,63 @@ import shop.mtcoding.blog.domain.user.teacher.Teacher;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 public class StudentExamResponse {
 
     @Data
-    public static class MyPaperListDTO {
+    public static class MyPaperItems {
 
         private Long studentId;
-        private List<PaperDTO> papers;
+        private List<PaperInfo> papers; // 내부 클래스 타입으로 변경
 
-        public MyPaperListDTO(Long studentId, List<Paper> papers, Map<Long, Boolean> attendanceMap) {
+        /**
+         * 서비스 계층에서 계산된 PaperItem 리스트(Paper+Status)를 받아
+         * 최종 응답 DTO 리스트로 변환합니다.
+         */
+        public MyPaperItems(Long studentId, List<ExamModel.PaperItem> paperItems) {
             this.studentId = studentId;
-            this.papers = papers.stream().map(paper -> {
-
-                Boolean isAttendance = attendanceMap.get(paper.getId());
-
-                return new PaperDTO(paper, isAttendance);
-            }).toList();
+            this.papers = paperItems.stream()
+                    .map(item -> new PaperInfo(item.paper(), item.status())) // paper와 status를 함께 전달
+                    .toList();
         }
 
+        /**
+         * 실제 API 응답에 포함될 개별 시험지 정보 DTO
+         */
         @Data
-        class PaperDTO {
-            private Integer subjectNo;
+        class PaperInfo {
+            // 기존 필드
             private Long paperId;
             private String courseTitle;
             private Integer courseRound;
             private Long subjectId;
-            private String subjectTitle; // 교과목명
-            private Integer questionCount; // 문항수
-            private String paperType;
+            private String subjectTitle;
+            private Integer questionCount;
+            private String paperVersion;
             private String teacherName;
-            private Boolean isAttendance; // 시험 응시 이력이 있음?
 
-            public PaperDTO(Paper paper, Boolean isAttendance) {
-                this.subjectNo = paper.getSubject().getNo();
+            // 새로 추가된 필드
+            private String status; // 학생의 응시 상태 (ex: "응시 가능", "응시 완료")
+
+            public PaperInfo(Paper paper, ExamTakingStatus status) {
+                // 기존 매핑
                 this.paperId = paper.getId();
                 this.courseTitle = paper.getSubject().getCourse().getTitle();
                 this.courseRound = paper.getSubject().getCourse().getRound();
                 this.subjectId = paper.getSubject().getId();
                 this.subjectTitle = paper.getSubject().getTitle();
                 this.questionCount = paper.getQuestions().size();
-                this.paperType = paper.getPaperType().toKorean();
+                this.paperVersion = paper.getPaperVersion().toKorean();
                 this.teacherName = paper.getSubject().getTeacher().getName();
-                this.isAttendance = isAttendance;
+
+                // Enum으로 받은 상태를 클라이언트가 보기 좋은 한글 문자열로 변환
+                this.status = switch (status) {
+                    case TAKEN -> "응시 완료";
+                    case AVAILABLE -> "응시 가능";
+                    case NOT_AVAILABLE -> "응시 불가";
+                };
             }
         }
-
-
     }
 
     @Data
@@ -94,7 +105,7 @@ public class StudentExamResponse {
             private Integer questionNo;
             private String questionTitle;
             private Integer collectOptionScore;
-            private String exContent;
+            private String questionSummary;
             private List<Option> options;
 
             public QuestionItem(Question question) {
@@ -102,7 +113,7 @@ public class StudentExamResponse {
                 this.questionNo = question.getNo();
                 this.questionTitle = question.getTitle();
                 this.collectOptionScore = question.getCorrectOption().getPoint();
-                this.exContent = question.getExContent();
+                this.questionSummary = question.getSummary();
                 this.options = question.getQuestionOptions().stream().map(Option::new).toList();
             }
 
@@ -168,7 +179,7 @@ public class StudentExamResponse {
             private Integer no;
             private String title;
             private Integer totalPoint; // 이 문제의 총점
-            private List<String> scenarios; // 가이드 요약본
+            private List<String> summaries; // 가이드 요약본
             private List<OptionDTO> options;
 
             public QuestionDTO(Question question) {
@@ -176,7 +187,7 @@ public class StudentExamResponse {
                 this.no = question.getNo();
                 this.title = question.getTitle();
                 this.totalPoint = question.getQuestionOptions().stream().mapToInt(QuestionOption::getPoint).max().getAsInt();
-                this.scenarios = MyUtil.parseMultiline(question.getExScenario());
+                this.summaries = MyUtil.parseMultiline(question.getSummary());
                 this.options = question.getQuestionOptions().stream().map(OptionDTO::new).toList();
             }
 
@@ -312,9 +323,9 @@ public class StudentExamResponse {
             private Integer totalPoint; // 배점
             private Integer selectedOptionNo; // 학생 선택 번호
             private Double studentPoint;
-            private String codeReviewLink;
-            private String codeReviewPRLink;
-            private List<String> scenarios;
+            private String codeReviewRequestLink;
+            private String codeReviewFeedbackPrLink;
+            private List<String> summaries;
             private List<OptionDTO> options;
 
             public AnswerDTO(ExamAnswer answer) {
@@ -327,9 +338,9 @@ public class StudentExamResponse {
                         .max(Comparator.comparingInt(QuestionOption::getPoint))
                         .orElse(null);
                 this.totalPoint = _option.getPoint();
-                this.codeReviewLink = answer.getCodeReviewRequestLink();
-                this.codeReviewPRLink = answer.getExamResult().getCodeReviewFeedbackPRLink();
-                this.scenarios = MyUtil.parseMultilineWithoutHyphen(answer.getQuestion().getExScenario());
+                this.codeReviewRequestLink = answer.getCodeReviewRequestLink();
+                this.codeReviewFeedbackPrLink = answer.getExamResult().getCodeReviewFeedbackPrLink();
+                this.summaries = MyUtil.parseMultilineWithoutHyphen(answer.getQuestion().getSummary());
                 this.selectedOptionNo = answer.getSelectedOptionNo();
                 this.studentPoint = answer.getExamResult().getScoredPoint();
                 this.options = answer.getQuestion().getQuestionOptions().stream().map(option -> new OptionDTO(option, selectedOptionNo)).toList();
@@ -422,7 +433,7 @@ public class StudentExamResponse {
             private Integer answerNumber; // 정답 번호
             private Integer selectedOptionNo; // 학생 선택 번호
             private Double studentPoint;
-            private String exContent;
+            private String questionSummary;
             private List<OptionDTO> options;
 
             public AnswerDTO(ExamAnswer answer) {
@@ -431,7 +442,7 @@ public class StudentExamResponse {
                 this.no = answer.getQuestion().getNo();
                 this.title = answer.getQuestion().getTitle();
 
-                this.exContent = answer.getQuestion().getExContent();
+                this.questionSummary = answer.getQuestion().getSummary();
                 QuestionOption _option = answer.getQuestion().getQuestionOptions().stream()
                         .max(Comparator.comparingInt(QuestionOption::getPoint))
                         .orElse(null);

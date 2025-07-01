@@ -12,8 +12,8 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
 
     List<Exam> findByStudentIdInAndSubjectId(List<Long> studentIds, Long subjectId);
 
-    @Query("select ex from Exam ex left join fetch ex.paper p left join fetch p.subject sb where sb.id = :subjectId and p.paperType = :paperType")
-    List<Exam> findAllBySubjectIdAndPaperType(Long subjectId, PaperVersion paperType);
+    @Query("select ex from Exam ex left join fetch ex.paper p left join fetch p.subject sb where sb.id = :subjectId and p.paperVersion = :paperVersion")
+    List<Exam> findAllBySubjectIdAndPaperVersion(Long subjectId, PaperVersion paperVersion);
 
     @Query("select ex from Exam ex where ex.paper.subject.id = :subjectId and ex.student.id = :studentId and ex.isActive = :isActive")
     Optional<Exam> findBySubjectIdAndStudentIdAndIsUse(@Param("subjectId") Long subjectId, @Param("studentId") Long studentId, @Param("isActive") Boolean isActive);
@@ -27,5 +27,5 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
 
 
     @Query("select ex from Exam ex join fetch ex.paper p join fetch ex.student st where ex.student.id = :studentId order by p.subject.no asc")
-    List<Exam> findByStudentId(@Param("studentId") Long studentId);
+    List<Exam> findAllByStudentId(@Param("studentId") Long studentId);
 }

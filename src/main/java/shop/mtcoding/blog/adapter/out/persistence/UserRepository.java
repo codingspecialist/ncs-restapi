@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.adapter.out;
+package shop.mtcoding.blog.adapter.out.persistence;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import shop.mtcoding.blog.domain.user.application.port.out.FindUserPort;

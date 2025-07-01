@@ -1,7 +1,6 @@
 package shop.mtcoding.blog.webv2.course;
 
 import lombok.Data;
-import shop.mtcoding.blog._core.utils.MyUtil;
 import shop.mtcoding.blog.domainv2222222.course.Course;
 import shop.mtcoding.blog.domainv2222222.course.CourseStatus;
 
@@ -27,7 +26,8 @@ public class CourseRequest {
 
         public Course toEntity() {
 
-            CourseStatus courseStatus = MyUtil.courseStatusUpdate(startDate, endDate);
+            //CourseStatus courseStatus = MyUtil.courseStatusUpdate(startDate, endDate);
+            CourseStatus courseStatus = null;
 
             return Course.builder()
                     .code(code)

@@ -11,6 +11,9 @@ public class UserCommand {
                               String birthday) {
     }
 
+    public record EmpJoin(String username, String password, String email, String name, UserType role, String sign) {
+    }
+
     public record Login(String username, String password) {
     }
 }

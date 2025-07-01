@@ -5,11 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import shop.mtcoding.blog.domainv2222222.course.CourseStatus;
-import shop.mtcoding.blog.domainv2222222.course.courseteacher.CourseTeacher;
-import shop.mtcoding.blog.domainv2222222.course.courseteacher.CourseTeacherEnum;
-import shop.mtcoding.blog.domainv2222222.course.subject.Subject;
-import shop.mtcoding.blog.domainv2222222.user.student.Student;
+import shop.mtcoding.blog.domain.subject.model.Subject;
+import shop.mtcoding.blog.domain.user.model.Student;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

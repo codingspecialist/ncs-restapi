@@ -31,23 +31,26 @@ public class User {
     @OneToOne
     private Teacher teacher;
 
+    @OneToOne
+    private Emp emp;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-
     @Builder
-    public User(Long id, String username, String password, String email, UserType role, LocalDateTime createdAt, Student student, Teacher teacher) {
+    public User(Long id, String username, String password, String email, UserType role, Student student, Teacher teacher, Emp emp, LocalDateTime createdAt) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
-        this.createdAt = createdAt;
         this.student = student;
         this.teacher = teacher;
+        this.emp = emp;
+        this.createdAt = createdAt;
     }
 
-    // User.java 내부
+
     public static User from(UserCommand.TeacherJoin command) {
         // 1. Teacher 엔티티 생성
         Teacher teacher = Teacher.builder()
@@ -70,7 +73,6 @@ public class User {
     }
 
     public static User from(UserCommand.StudentJoin command, Course course, String authCode) {
-        // 1. Student 엔티티 생성
         Student student = Student.builder()
                 .studentStatus(StudentStatus.ENROLL)
                 .course(course)
@@ -80,17 +82,33 @@ public class User {
                 .name(command.name())
                 .build();
 
-        // 2. User 엔티티 생성 및 Student 연결
         User user = User.builder()
                 .username(command.username())
                 .password(command.password())
                 .email(command.email())
                 .role(command.role())
-                .student(student) // 여기서 Student와 User 연결
+                .student(student)
                 .build();
 
-        // 3. 양방향 연관 관계 설정 (필요시)
         student.setUser(user);
+        return user;
+    }
+
+    public static User from(UserCommand.EmpJoin command) {
+        Emp emp = Emp.builder()
+                .name(command.name())
+                .sign(command.sign())
+                .build();
+
+        User user = User.builder()
+                .username(command.username())
+                .password(command.password())
+                .email(command.email())
+                .role(command.role())
+                .emp(emp)
+                .build();
+
+        emp.setUser(user);
         return user;
     }
 }

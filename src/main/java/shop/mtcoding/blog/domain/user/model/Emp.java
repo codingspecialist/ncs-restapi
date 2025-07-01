@@ -1,4 +1,46 @@
 package shop.mtcoding.blog.domain.user.model;
 
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
+
+@NoArgsConstructor
+@Getter
+@Entity
+@Table(name = "emp_tb")
 public class Emp {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Lob
+    private String sign; // base64 image
+    private String name;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @OneToOne(mappedBy = "emp", cascade = CascadeType.ALL, orphanRemoval = true)
+    private User user;
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setSign(String sign) {
+        this.sign = sign;
+    }
+
+    @Builder
+    public Emp(Long id, String sign, String name, LocalDateTime createdAt, User user) {
+        this.id = id;
+        this.sign = sign;
+        this.name = name;
+        this.createdAt = createdAt;
+        this.user = user;
+    }
 }

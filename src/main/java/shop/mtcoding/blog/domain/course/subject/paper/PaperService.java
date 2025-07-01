@@ -3,7 +3,7 @@ package shop.mtcoding.blog.domain.course.subject.paper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.mtcoding.blog.core.errors.exception.api.Exception404;
+import shop.mtcoding.blog._core.errors.exception.api.Exception404;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.SubjectRepository;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElement;

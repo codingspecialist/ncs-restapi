@@ -2,7 +2,7 @@ package shop.mtcoding.blog.web.paper;
 
 import lombok.Data;
 import org.springframework.data.domain.Page;
-import shop.mtcoding.blog.core.utils.MyUtil;
+import shop.mtcoding.blog._core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.subject.Subject;
 import shop.mtcoding.blog.domain.course.subject.paper.Paper;

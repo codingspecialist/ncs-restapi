@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import shop.mtcoding.blog.core.utils.Resp;
+import shop.mtcoding.blog._core.utils.Resp;
 import shop.mtcoding.blog.domain.course.subject.element.SubjectElementService;
 
 import java.util.List;

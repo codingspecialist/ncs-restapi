@@ -1,7 +1,7 @@
 package shop.mtcoding.blog.web.student.exam;
 
 import lombok.Data;
-import shop.mtcoding.blog.core.utils.MyUtil;
+import shop.mtcoding.blog._core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.exam.Exam;
 import shop.mtcoding.blog.domain.course.exam.ExamModel;
 import shop.mtcoding.blog.domain.course.exam.ExamTakingStatus;

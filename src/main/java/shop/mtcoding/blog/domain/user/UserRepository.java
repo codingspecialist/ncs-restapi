@@ -8,7 +8,7 @@ import java.util.Optional;
 
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    
+
     @Query("""
                 select u from User u
                 left join fetch u.student

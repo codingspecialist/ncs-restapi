@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.mtcoding.blog.core.errors.exception.api.Exception404;
+import shop.mtcoding.blog._core.errors.exception.api.Exception404;
 import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.CourseRepository;
 import shop.mtcoding.blog.domain.course.exam.Exam;

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface PaperRepository extends JpaRepository<Paper, Long> {
 
- 
+
     @Query("SELECT COUNT(p) > 0 FROM Paper p WHERE p.subject.id = :subjectId AND p.paperVersion = :paperVersion")
     boolean existsBySubjectIdAndPaperVersion(@Param("subjectId") Long subjectId, @Param("paperVersion") PaperVersion paperVersion);
 

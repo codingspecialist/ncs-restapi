@@ -6,8 +6,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import shop.mtcoding.blog.core.anno.SessionUser;
-import shop.mtcoding.blog.core.utils.Resp;
+import shop.mtcoding.blog._core.anno.SessionUser;
+import shop.mtcoding.blog._core.utils.Resp;
 import shop.mtcoding.blog.domain.course.CourseService;
 import shop.mtcoding.blog.domain.user.User;
 

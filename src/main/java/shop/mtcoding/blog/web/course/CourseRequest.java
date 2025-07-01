@@ -1,7 +1,7 @@
 package shop.mtcoding.blog.web.course;
 
 import lombok.Data;
-import shop.mtcoding.blog.core.utils.MyUtil;
+import shop.mtcoding.blog._core.utils.MyUtil;
 import shop.mtcoding.blog.domain.course.Course;
 import shop.mtcoding.blog.domain.course.CourseStatus;
 

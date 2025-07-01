@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import shop.mtcoding.blog.core.utils.Resp;
+import shop.mtcoding.blog._core.utils.Resp;
 import shop.mtcoding.blog.domain.course.subject.SubjectService;
 
 @RequestMapping("/api/courses/{courseId}/subjects")

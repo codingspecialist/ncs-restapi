@@ -9,7 +9,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import shop.mtcoding.blog._core.anno.SessionUser;
-import shop.mtcoding.blog.domain.user.User;
+import shop.mtcoding.blog.domainv2222222.user.User;
 
 @RequiredArgsConstructor
 @Configuration

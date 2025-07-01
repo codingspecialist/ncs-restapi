@@ -12,9 +12,9 @@ import org.springframework.http.MediaType;
 import shop.mtcoding.blog._core.errors.exception.api.Exception401;
 import shop.mtcoding.blog._core.utils.JwtEnum;
 import shop.mtcoding.blog._core.utils.JwtUtil;
-import shop.mtcoding.blog.domain.user.SessionUser;
-import shop.mtcoding.blog.domain.user.User;
-import shop.mtcoding.blog.domain.user.UserRepository;
+import shop.mtcoding.blog.domainv2222222.user.SessionUser;
+import shop.mtcoding.blog.domainv2222222.user.User;
+import shop.mtcoding.blog.domainv2222222.user.UserRepository;
 
 import java.io.IOException;
 

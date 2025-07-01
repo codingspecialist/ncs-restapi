@@ -3,7 +3,7 @@
 1. [x] 만점에 null이 들어감 (manjumScore) --> model.manjumScore
 2. [x] 새로운 교과목 만들고 시험치면 no1 문서 열때 오류
    Cannot invoke "java.lang.Double.doubleValue()" because the return value of "
-   shop.mtcoding.blog.domain.course.subject.Subject.getScorePolicy()" is null
+   shop.mtcoding.blog.domainv2222222.course.subject.Subject.getScorePolicy()" is null
 3. [x] 학생 회원가입할때 사용자 이름에 -> 아이디 라고 변경하기
 4. [x] 기존 다른 과정의 학생들이 다른 과정의 교과목에 시험이 뜨는 문제!! (시험관리) (코스, 러브, 하하, 테스트)는 본인 과정의 시험만 떠야함
 5. [x] 루브릭 시험 채점하기 클릭 - com.samskivert.mustache.MustacheException$Context: No key, method or field with name '

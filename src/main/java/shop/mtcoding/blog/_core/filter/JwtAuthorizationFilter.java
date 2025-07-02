@@ -12,16 +12,16 @@ import org.springframework.http.MediaType;
 import shop.mtcoding.blog._core.errors.exception.api.Exception401;
 import shop.mtcoding.blog._core.utils.JwtEnum;
 import shop.mtcoding.blog._core.utils.JwtUtil;
-import shop.mtcoding.blog.domain.user.application.port.out.FindUserPort;
-import shop.mtcoding.blog.domain.user.model.SessionUser;
-import shop.mtcoding.blog.domain.user.model.User;
+import shop.mtcoding.blog.domain.user.application.port.out.UserRepositoryPort;
+import shop.mtcoding.blog.domain.user.domain.SessionUser;
+import shop.mtcoding.blog.domain.user.domain.User;
 
 import java.io.IOException;
 
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter implements Filter {
 
-    private final FindUserPort findUserPort;
+    private final UserRepositoryPort userRepository;
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)

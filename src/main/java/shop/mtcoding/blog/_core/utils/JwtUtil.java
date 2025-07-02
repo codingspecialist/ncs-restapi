@@ -3,8 +3,8 @@ package shop.mtcoding.blog._core.utils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import shop.mtcoding.blog.domain.user.model.User;
-import shop.mtcoding.blog.domain.user.model.UserType;
+import shop.mtcoding.blog.domain.user.domain.User;
+import shop.mtcoding.blog.domain.user.domain.type.UserRole;
 
 import java.util.Date;
 
@@ -36,7 +36,7 @@ public class JwtUtil {
 
         return User.builder()
                 .id(id)
-                .role(UserType.valueOf(role))
+                .role(UserRole.valueOf(role))
                 .build();
     }
 }

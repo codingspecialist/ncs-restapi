@@ -8,69 +8,73 @@ import shop.mtcoding.blog._core.errors.exception.api.Exception401;
 import shop.mtcoding.blog._core.errors.exception.api.Exception404;
 import shop.mtcoding.blog._core.utils.JwtUtil;
 import shop.mtcoding.blog._core.utils.MyUtil;
-import shop.mtcoding.blog.domain.course.application.port.out.FindCoursePort;
-import shop.mtcoding.blog.domain.course.model.Course;
-import shop.mtcoding.blog.domain.user.application.dto.UserCommand;
-import shop.mtcoding.blog.domain.user.application.dto.UserResult;
-import shop.mtcoding.blog.domain.user.application.port.in.LoginUseCase;
-import shop.mtcoding.blog.domain.user.application.port.in.StudentJoinUseCase;
-import shop.mtcoding.blog.domain.user.application.port.in.TeacherJoinUseCase;
-import shop.mtcoding.blog.domain.user.application.port.out.FindUserPort;
-import shop.mtcoding.blog.domain.user.application.port.out.SaveUserPort;
-import shop.mtcoding.blog.domain.user.model.User;
+import shop.mtcoding.blog.course.model.Course;
+import shop.mtcoding.blog.course.port.out.CourseRepositoryPort;
+import shop.mtcoding.blog.domain.user.application.port.in.EmpUseCase;
+import shop.mtcoding.blog.domain.user.application.port.in.StudentUseCase;
+import shop.mtcoding.blog.domain.user.application.port.in.TeacherUseCase;
+import shop.mtcoding.blog.domain.user.application.port.in.UserUseCase;
+import shop.mtcoding.blog.domain.user.application.port.in.dto.UserCommand;
+import shop.mtcoding.blog.domain.user.application.port.in.dto.UserOutput;
+import shop.mtcoding.blog.domain.user.application.port.out.UserRepositoryPort;
+import shop.mtcoding.blog.domain.user.domain.User;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService implements
-        LoginUseCase, StudentJoinUseCase, TeacherJoinUseCase {
+        UserUseCase, StudentUseCase, TeacherUseCase, EmpUseCase {
 
-    // UserRepository의 구현체를 DI
-    private final FindUserPort findUserPort;
-    private final SaveUserPort saveUserPort;
-    private final FindCoursePort findCoursePort;
+    private final UserRepositoryPort userRepository;
+    private final CourseRepositoryPort courseRepository;
 
     @Override
-    public UserResult.Login 로그인(UserCommand.Login command) {
-        User user = findUserPort.findByUsernameAndPassword(
+    public UserOutput.SessionItem 로그인(UserCommand.Login command) {
+        User user = userRepository.findByUsernameAndPassword(
                         command.username(), command.password())
                 .orElseThrow(() -> new Exception401("인증되지 않았습니다"));
 
         String accessToken = JwtUtil.create(user);
         String refreshToken = JwtUtil.createRefresh(user);
 
-        return new UserResult.Login(user, accessToken, refreshToken);
+        return new UserOutput.SessionItem(user, accessToken, refreshToken);
     }
 
     @Transactional
     @Override
-    public UserResult.StudentJoin 학생회원가입(UserCommand.StudentJoin command) {
-        Optional<User> userOP = findUserPort.findByUsername(command.username());
-        if (userOP.isPresent()) {
+    public User 학생회원가입(UserCommand.StudentJoin command) {
+        Optional<User> userOP = userRepository.findByUsername(command.username());
+        if (userOP.isPresent())
             throw new Exception400("중복된 유저네임입니다.");
-        }
 
-        Course course = findCoursePort.findById(command.courseId())
+
+        Course course = courseRepository.findById(command.courseId())
                 .orElseThrow(() -> new Exception404("조회된 과정이 없습니다."));
         String authCode = MyUtil.generateAuthCode();
-        User newUser = User.from(command, course, authCode);
-        User savedUser = saveUserPort.save(newUser);
 
-        return new UserResult.StudentJoin(savedUser);
+        return userRepository.save(User.from(command, course, authCode));
     }
 
     @Transactional
     @Override
-    public UserResult.TeacherJoin 강사회원가입(UserCommand.TeacherJoin command) {
-        Optional<User> userOP = findUserPort.findByUsername(command.username());
-        if (userOP.isPresent()) {
+    public User 강사회원가입(UserCommand.TeacherJoin command) {
+        Optional<User> userOP = userRepository.findByUsername(command.username());
+        if (userOP.isPresent())
             throw new Exception400("중복된 유저네임입니다.");
-        }
 
-        User newUser = User.from(command);
-        User savedUser = saveUserPort.save(newUser);
 
-        return new UserResult.TeacherJoin(savedUser);
+        return userRepository.save(User.from(command));
+    }
+
+    @Transactional
+    @Override
+    public User 직원회원가입(UserCommand.EmpJoin command) {
+        Optional<User> userOP = userRepository.findByUsername(command.username());
+        if (userOP.isPresent())
+            throw new Exception400("중복된 유저네임입니다.");
+
+
+        return userRepository.save(User.from(command));
     }
 }

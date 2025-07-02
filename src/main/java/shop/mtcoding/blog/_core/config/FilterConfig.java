@@ -6,13 +6,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import shop.mtcoding.blog._core.filter.CorsFilter;
 import shop.mtcoding.blog._core.filter.JwtAuthorizationFilter;
-import shop.mtcoding.blog.domain.user.application.port.out.FindUserPort;
+import shop.mtcoding.blog.domain.user.application.port.out.UserRepositoryPort;
 
 @RequiredArgsConstructor
 @Configuration
 public class FilterConfig {
 
-    private final FindUserPort findUserPort;
+    private final UserRepositoryPort userRepository;
 
     @Bean
     public FilterRegistrationBean<?> corsFilter() {
@@ -26,7 +26,7 @@ public class FilterConfig {
     @Bean
     public FilterRegistrationBean<?> jwtAuthorizationFilter() {
         FilterRegistrationBean<JwtAuthorizationFilter> bean =
-                new FilterRegistrationBean<>(new JwtAuthorizationFilter(findUserPort));
+                new FilterRegistrationBean<>(new JwtAuthorizationFilter(userRepository));
         bean.addUrlPatterns("/api/*");
         bean.setOrder(1);
         return bean;

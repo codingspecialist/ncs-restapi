@@ -2,7 +2,7 @@ package shop.mtcoding.blog._core.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import shop.mtcoding.blog._core.errors.exception.api.Exception500;
-import shop.mtcoding.blog.domain.course.model.CourseStatus;
+import shop.mtcoding.blog.course.type.CourseStatus;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

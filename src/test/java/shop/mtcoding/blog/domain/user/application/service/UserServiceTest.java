@@ -13,16 +13,14 @@ import shop.mtcoding.blog._core.errors.exception.api.Exception401;
 import shop.mtcoding.blog._core.errors.exception.api.Exception404;
 import shop.mtcoding.blog._core.utils.JwtUtil;
 import shop.mtcoding.blog._core.utils.MyUtil;
-import shop.mtcoding.blog.domain.course.application.port.out.FindCoursePort;
-import shop.mtcoding.blog.domain.course.model.Course;
-import shop.mtcoding.blog.domain.user.application.dto.UserCommand;
-import shop.mtcoding.blog.domain.user.application.dto.UserResult;
-import shop.mtcoding.blog.domain.user.application.port.out.FindUserPort;
-import shop.mtcoding.blog.domain.user.application.port.out.SaveUserPort;
-import shop.mtcoding.blog.domain.user.model.Student;
-import shop.mtcoding.blog.domain.user.model.Teacher;
-import shop.mtcoding.blog.domain.user.model.User;
-import shop.mtcoding.blog.domain.user.model.UserType;
+import shop.mtcoding.blog.course.model.Course;
+import shop.mtcoding.blog.course.port.out.CourseRepositoryPort;
+import shop.mtcoding.blog.domain.user.application.port.in.dto.UserCommand;
+import shop.mtcoding.blog.domain.user.application.port.in.dto.UserOutput;
+import shop.mtcoding.blog.domain.user.domain.Student;
+import shop.mtcoding.blog.domain.user.domain.Teacher;
+import shop.mtcoding.blog.domain.user.domain.User;
+import shop.mtcoding.blog.domain.user.domain.type.UserRole;
 
 import java.util.Optional;
 
@@ -52,7 +50,7 @@ public class UserServiceTest {
     @Mock
     private SaveUserPort saveUserPort;
     @Mock
-    private FindCoursePort findCoursePort;
+    private CourseRepositoryPort findCoursePort;
 
     // 각 테스트 메서드 실행 전에 초기화 (현재는 PasswordEncoder가 없으므로 비어있음)
     @BeforeEach
@@ -65,7 +63,7 @@ public class UserServiceTest {
     void teacherJoin_success_test() {
         // given (테스트에 필요한 입력 데이터 및 Mock 객체의 동작 설정)
         UserCommand.TeacherJoin command = new UserCommand.TeacherJoin(
-                "teacher123", "plainPassword", "teacher@example.com", "김강사", UserType.TEACHER, "사인내용"
+                "teacher123", "plainPassword", "teacher@example.com", "김강사", UserRole.TEACHER, "사인내용"
         );
 
         // 1. findUserPort.findByUsername() 호출 시, Optional.empty()를 반환하여 중복이 없음을 가정
@@ -78,7 +76,7 @@ public class UserServiceTest {
                 .username(command.username())
                 .password(command.password()) // 현재 코드 기준: 암호화되지 않은 비밀번호
                 .email(command.email())
-                .role(UserType.TEACHER)
+                .role(UserRole.TEACHER)
                 .teacher(Teacher.builder().name(command.name()).sign(command.sign()).build())
                 .build();
         // User.from() 내부에서 teacher.setUser(user)가 호출될 것이므로, Teacher 객체에도 User를 설정
@@ -90,13 +88,13 @@ public class UserServiceTest {
         when(saveUserPort.save(any(User.class))).thenReturn(mockUser);
 
         // when (테스트 대상 메서드 실행)
-        UserResult.TeacherJoin result = userService.강사회원가입(command);
+        UserOutput.TeacherJoin result = userService.강사회원가입(command);
 
         // then (결과 검증)
         assertThat(result).isNotNull();
         assertThat(result.user().getUsername()).isEqualTo(command.username());
         assertThat(result.user().getEmail()).isEqualTo(command.email());
-        assertThat(result.user().getRole()).isEqualTo(UserType.TEACHER);
+        assertThat(result.user().getRole()).isEqualTo(UserRole.TEACHER);
         assertThat(result.user().getTeacher()).isNotNull();
         assertThat(result.user().getTeacher().getName()).isEqualTo(command.name());
         assertThat(result.user().getTeacher().getSign()).isEqualTo(command.sign());
@@ -108,7 +106,7 @@ public class UserServiceTest {
     void teacherJoin_duplicateUsername_fail_test() {
         // given
         UserCommand.TeacherJoin command = new UserCommand.TeacherJoin(
-                "teacher123", "plainPassword", "teacher@example.com", "김강사", UserType.TEACHER, "사인내용"
+                "teacher123", "plainPassword", "teacher@example.com", "김강사", UserRole.TEACHER, "사인내용"
         );
 
         // findUserPort.findByUsername() 호출 시, 이미 존재하는 User를 반환하도록 설정하여 중복 상황 가정
@@ -130,7 +128,7 @@ public class UserServiceTest {
     void studentJoin_success_test() {
         // given
         UserCommand.StudentJoin command = new UserCommand.StudentJoin(
-                "student123", "plainPassword", "student@example.com", "박학생", UserType.STUDENT, 1L, "2000-01-01"
+                "student123", "plainPassword", "student@example.com", "박학생", UserRole.STUDENT, 1L, "2000-01-01"
         );
         Course mockCourse = Course.builder().id(1L).title("Java 기초").build();
         String mockAuthCode = "ABCDEF";
@@ -152,7 +150,7 @@ public class UserServiceTest {
                     .username(command.username())
                     .password(command.password()) // 현재 코드 기준: 암호화되지 않은 비밀번호
                     .email(command.email())
-                    .role(UserType.STUDENT)
+                    .role(UserRole.STUDENT)
                     .student(Student.builder()
                             .name(command.name())
                             .birthday(command.birthday())
@@ -170,13 +168,13 @@ public class UserServiceTest {
             when(saveUserPort.save(any(User.class))).thenReturn(mockUser);
 
             // when
-            UserResult.StudentJoin result = userService.학생회원가입(command);
+            UserOutput.StudentJoin result = userService.학생회원가입(command);
 
             // then
             assertThat(result).isNotNull();
             assertThat(result.user().getUsername()).isEqualTo(command.username());
             assertThat(result.user().getEmail()).isEqualTo(command.email());
-            assertThat(result.user().getRole()).isEqualTo(UserType.STUDENT);
+            assertThat(result.user().getRole()).isEqualTo(UserRole.STUDENT);
             assertThat(result.user().getStudent()).isNotNull();
             assertThat(result.user().getStudent().getName()).isEqualTo(command.name());
             assertThat(result.user().getStudent().getCourse().getTitle()).isEqualTo(mockCourse.getTitle());
@@ -190,7 +188,7 @@ public class UserServiceTest {
     void studentJoin_duplicateUsername_fail_test() {
         // given
         UserCommand.StudentJoin command = new UserCommand.StudentJoin(
-                "student123", "plainPassword", "student@example.com", "박학생", UserType.STUDENT, 1L, "2000-01-01"
+                "student123", "plainPassword", "student@example.com", "박학생", UserRole.STUDENT, 1L, "2000-01-01"
         );
 
         when(findUserPort.findByUsername(command.username())).thenReturn(
@@ -208,7 +206,7 @@ public class UserServiceTest {
     void studentJoin_courseNotFound_fail_test() {
         // given
         UserCommand.StudentJoin command = new UserCommand.StudentJoin(
-                "student123", "plainPassword", "student@example.com", "박학생", UserType.STUDENT, 999L, "2000-01-01"
+                "student123", "plainPassword", "student@example.com", "박학생", UserRole.STUDENT, 999L, "2000-01-01"
         );
 
         when(findUserPort.findByUsername(command.username())).thenReturn(Optional.empty());
@@ -233,7 +231,7 @@ public class UserServiceTest {
                 .username("testuser")
                 .password("testpass") // 현재 코드 기준: 암호화되지 않은 비밀번호
                 .email("test@example.com")
-                .role(UserType.STUDENT)
+                .role(UserRole.STUDENT)
                 .build();
 
         // findUserPort.findByUsernameAndPassword() 호출 시 mockUser를 반환하도록 설정
@@ -246,7 +244,7 @@ public class UserServiceTest {
             mockedJwtUtil.when(() -> JwtUtil.createRefresh(any(User.class))).thenReturn("mockRefreshToken");
 
             // when
-            UserResult.Login result = userService.로그인(loginCommand);
+            UserOutput.Login result = userService.로그인(loginCommand);
 
             // then
             assertThat(result).isNotNull();

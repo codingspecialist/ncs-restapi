@@ -13,14 +13,15 @@ import shop.mtcoding.blog._core.errors.exception.api.Exception401;
 import shop.mtcoding.blog._core.errors.exception.api.Exception404;
 import shop.mtcoding.blog._core.utils.JwtUtil;
 import shop.mtcoding.blog._core.utils.MyUtil;
-import shop.mtcoding.blog.course.model.Course;
-import shop.mtcoding.blog.course.port.out.CourseRepositoryPort;
-import shop.mtcoding.blog.domain.user.application.port.in.dto.UserCommand;
-import shop.mtcoding.blog.domain.user.application.port.in.dto.UserOutput;
-import shop.mtcoding.blog.domain.user.domain.Student;
-import shop.mtcoding.blog.domain.user.domain.Teacher;
-import shop.mtcoding.blog.domain.user.domain.User;
-import shop.mtcoding.blog.domain.user.domain.type.UserRole;
+import shop.mtcoding.blog.course.application.port.out.CourseRepositoryPort;
+import shop.mtcoding.blog.course.domain.Course;
+import shop.mtcoding.blog.user.application.port.in.dto.UserCommand;
+import shop.mtcoding.blog.user.application.port.in.dto.UserOutput;
+import shop.mtcoding.blog.user.application.service.UserService;
+import shop.mtcoding.blog.user.domain.Student;
+import shop.mtcoding.blog.user.domain.Teacher;
+import shop.mtcoding.blog.user.domain.User;
+import shop.mtcoding.blog.user.domain.enums.UserRole;
 
 import java.util.Optional;
 

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import shop.mtcoding.blog._core.filter.CorsFilter;
 import shop.mtcoding.blog._core.filter.JwtAuthorizationFilter;
-import shop.mtcoding.blog.domain.user.application.port.out.UserRepositoryPort;
+import shop.mtcoding.blog.user.application.port.out.UserRepositoryPort;
 
 @RequiredArgsConstructor
 @Configuration

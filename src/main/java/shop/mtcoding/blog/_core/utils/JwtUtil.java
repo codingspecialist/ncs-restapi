@@ -3,8 +3,8 @@ package shop.mtcoding.blog._core.utils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import shop.mtcoding.blog.domain.user.domain.User;
-import shop.mtcoding.blog.domain.user.domain.type.UserRole;
+import shop.mtcoding.blog.user.domain.User;
+import shop.mtcoding.blog.user.domain.enums.UserRole;
 
 import java.util.Date;
 

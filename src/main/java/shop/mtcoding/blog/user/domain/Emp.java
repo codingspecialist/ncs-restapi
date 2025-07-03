@@ -24,7 +24,7 @@ public class Emp {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @OneToOne(mappedBy = "emp")
+    @OneToOne(mappedBy = "emp", cascade = CascadeType.ALL, orphanRemoval = true)
     private User user;
 
     public void setSign(String sign) {

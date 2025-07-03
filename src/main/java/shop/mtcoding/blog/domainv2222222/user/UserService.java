@@ -28,12 +28,12 @@ public class UserService {
 
     public UserModel.Item 로그인(UserRequest.Login reqDTO) {
         // 1. 인증 확인
-        User userET = userRepository.findByUsernameAndPassword(reqDTO.getUsername(), reqDTO.getPassword())
+        User findUser = userRepository.findByUsernameAndPassword(reqDTO.getUsername(), reqDTO.getPassword())
                 .orElseThrow(() -> new Exception401("인증되지 않았습니다"));
         // 2. 토큰생성
         String accessToken = JwtUtil.create(null);
         String refreshToken = JwtUtil.createRefresh(null);
-        return new UserModel.Item(userET, accessToken, refreshToken);
+        return new UserModel.Item(findUser, accessToken, refreshToken);
     }
 
     // 강사 사인 받아야함
@@ -44,8 +44,8 @@ public class UserService {
         if (userOP.isPresent()) throw new Exception400("중복된 유저네임입니다");
 
         // 2. 회원가입 (User, Teacher)
-        User userET = userRepository.save(reqDTO.toEntity());
-        return new UserModel.Item(userET, null, null);
+        User savedUser = userRepository.save(reqDTO.toEntity());
+        return new UserModel.Item(savedUser, null, null);
     }
 
     // 인증코드로 인증필요
@@ -56,14 +56,14 @@ public class UserService {
         if (userOP.isPresent()) throw new Exception400("중복된 유저네임입니다");
 
         // 2. 과정 조회
-        Course courseET = courseRepository.findById(reqDTO.getCourseId())
+        Course findCourse = courseRepository.findById(reqDTO.getCourseId())
                 .orElseThrow(() -> new Exception404("조회된 과정이 없습니다"));
 
         // 3. 인증번호 생성
         String authCode = MyUtil.generateAuthCode();
 
         // 4. 회원가입 (User, Student)
-        User userET = userRepository.save(reqDTO.toEntity(courseET, authCode));
+        User userET = userRepository.save(reqDTO.toEntity(findCourse, authCode));
         return new UserModel.Item(userET, null, null);
     }
 }

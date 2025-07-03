@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import shop.mtcoding.blog.course.domain.Course;
 import shop.mtcoding.blog.user.application.port.in.dto.UserCommand;
 import shop.mtcoding.blog.user.domain.enums.StudentStatus;
 import shop.mtcoding.blog.user.domain.enums.UserRole;
@@ -76,10 +75,9 @@ public class User {
     }
 
     // 3. 팩토리 메서드 from 혹은 create
-    public static User createStudent(UserCommand.StudentJoin command, Course course, String authCode) {
+    public static User createStudent(UserCommand.StudentJoin command, String authCode) {
         Student student = Student.builder()
                 .studentStatus(StudentStatus.ENROLL) // 기본 상태
-                .course(course) // Course 엔티티는 서비스에서 조회하여 전달
                 .birthday(command.birthday())
                 .authCode(authCode)
                 .isVerified(false) // 기본값

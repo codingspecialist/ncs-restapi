@@ -21,7 +21,6 @@ public class UserResponse {
 
     public record StudentItem(
             Long studentId,
-            Long courseId,
             String name,
             String birthday,
             StudentStatus studentStatus,
@@ -30,7 +29,6 @@ public class UserResponse {
         public static StudentItem from(Student student) {
             return new StudentItem(
                     student.getId(),
-                    student.getCourse().getId(),
                     student.getName(),
                     student.getBirthday(),
                     student.getStudentStatus(),

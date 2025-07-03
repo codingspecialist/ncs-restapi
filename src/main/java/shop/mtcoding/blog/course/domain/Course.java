@@ -7,17 +7,17 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.course.domain.enums.CourseStatus;
 import shop.mtcoding.blog.course.domain.enums.CourseTeacherEnum;
-import shop.mtcoding.blog.user.domain.Student;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 1. 크로스플랫폼 과정에 특정 회차 정보
- * 2. 새로운 코스를 등록할 때 해당 Course 정보를 불러오기 할 수 있다.
- */
+// Aggregate root
+// 과정등록 -> 과정 선생님 등록 -> 교과목 등록
+// 시험 -> 시험지등록, 문제등록, 문제옵션등록
+// 나중에 입학한 첫날 -> 학생들에게 회원가입하세요 (이메일 가서 인증코드 확인하세요)
+// 과정에 학생등록 (이 부분은 추후에도 할 수 있어야 한다)
 @NoArgsConstructor
 @Getter
 @Entity
@@ -44,7 +44,7 @@ public class Course {
     private List<CourseTeacher> courseTeachers = new ArrayList<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Student> students = new ArrayList<>();
+    private List<CourseStudent> courseStudents = new ArrayList<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Subject> subjects = new ArrayList<>();
@@ -54,6 +54,13 @@ public class Course {
         if (!courseTeachers.contains(ct)) {
             courseTeachers.add(ct);
             ct.setCourse(this);
+        }
+    }
+
+    public void addCourseStudent(CourseStudent cs) {
+        if (!courseStudents.contains(cs)) {
+            courseStudents.add(cs);
+            cs.setCourse(this);
         }
     }
 

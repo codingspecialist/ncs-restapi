@@ -15,6 +15,7 @@ public interface CourseRepository extends JpaRepository<Course, Long>, CourseRep
     @Override
     Optional<Course> findById(Long id);
 
+    // 스케줄러가 과정상태 변경할 때 필요
     @Override
     @Query("SELECT c FROM Course c WHERE c.courseStatus <> 'FINISHED'")
     List<Course> findAllNotFinished();

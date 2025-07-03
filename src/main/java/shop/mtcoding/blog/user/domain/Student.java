@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import shop.mtcoding.blog.course.domain.Course;
 import shop.mtcoding.blog.user.domain.enums.StudentStatus;
 
 import java.time.LocalDate;
@@ -20,8 +19,7 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Course course;
+    // 학생은 CourseStudent에 등록되어야 한다. (다른 코스는 없다 하더라도)
 
     private String name;
     private String birthday; // 생년월일 (800825)
@@ -36,16 +34,15 @@ public class Student {
     private String authCode; // 학생 인증 코드
     private Boolean isVerified; // 학생 인증 여부
 
-    @OneToOne(mappedBy = "student")
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private User user;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Builder
-    public Student(Long id, Course course, String name, String birthday, LocalDate dropOutDate, String dropOutReason, String comment, Integer gradeLevel, StudentStatus studentStatus, String authCode, Boolean isVerified, LocalDateTime createdAt, User user) {
+    public Student(Long id, String name, String birthday, LocalDate dropOutDate, String dropOutReason, String comment, Integer gradeLevel, StudentStatus studentStatus, String authCode, Boolean isVerified, LocalDateTime createdAt, User user) {
         this.id = id;
-        this.course = course;
         this.name = name;
         this.birthday = birthday;
         this.dropOutDate = dropOutDate;

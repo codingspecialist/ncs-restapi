@@ -8,7 +8,7 @@ import shop.mtcoding.blog.user.application.port.out.CourseLoadPort;
 
 @RequiredArgsConstructor
 @Component
-public class CourseServiceAdapter implements CourseLoadPort {
+public class CourseRepositoryAdapter implements CourseLoadPort {
 
     private final CourseRepository courseRepository;
 

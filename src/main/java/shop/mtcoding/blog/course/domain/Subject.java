@@ -60,14 +60,6 @@ public class Subject {
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
     private List<Paper> papers = new ArrayList<>();
 
-    public void addPaper(Paper paper) {
-        this.papers.add(paper);
-    }
-
-    public void addElement(SubjectElement element) {
-        this.elements.add(element);
-    }
-
     @Builder
     public Subject(Long id, Teacher teacher, Course course, Integer no, String code, String title, String purpose, NcsType ncsType, Integer gradeLevel, Integer totalTime, LearningWay learningWay, Double scorePolicy, LocalDate startDate, LocalDate endDate, LocalDateTime createdAt) {
         this.id = id;
@@ -85,5 +77,9 @@ public class Subject {
         this.startDate = startDate;
         this.endDate = endDate;
         this.createdAt = createdAt;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 }

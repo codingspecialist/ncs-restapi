@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.course.domain.enums.CourseStatus;
 import shop.mtcoding.blog.course.domain.enums.CourseTeacherEnum;
-import shop.mtcoding.blog.domain.subject.model.Subject;
 import shop.mtcoding.blog.user.domain.Student;
 
 import java.time.LocalDate;
@@ -39,6 +38,8 @@ public class Course {
     @Enumerated(EnumType.STRING)
     private CourseStatus courseStatus; // 과정진행전, 과정진행중, 과정종료 (기본값은 과정진행전이다 - 숫자로는 0번)
 
+    // JPA의 cascade 동작 기준은 FK 주인이 아니라, 어그리게이트 루트 객체가 persist() 되는지를 기준으로 합니다.
+    // Course가 이미 영속 상태, 혹은 비영속 Course가 persist될때 함께 insert 된다.
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CourseTeacher> courseTeachers = new ArrayList<>();
 
@@ -48,9 +49,24 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Subject> subjects = new ArrayList<>();
 
-    public void addSubject(Subject subject) {
-        this.subjects.add(subject);
+
+    public void addCourseTeacher(CourseTeacher ct) {
+        if (!courseTeachers.contains(ct)) {
+            courseTeachers.add(ct);
+            ct.setCourse(this);
+        }
     }
+
+    public void addSubject(Subject subject) {
+        if (!subjects.contains(subject)) {
+            // 루트에서 교과목 담기
+            subjects.add(subject);
+
+            // 교과목에서도 루트 담아주기 (담지 않으면 Subject가 course_id를 관리하는데, fk가 null이 됨)
+            subject.setCourse(this);
+        }
+    }
+
 
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -6,4 +6,7 @@ import shop.mtcoding.blog.course.domain.Course;
 public class CourseOutput {
     public record MaxPage(Page<Course> coursePG) {
     }
+
+    public record Max(Course course) {
+    }
 }

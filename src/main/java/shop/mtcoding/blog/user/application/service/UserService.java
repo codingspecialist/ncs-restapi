@@ -41,7 +41,7 @@ public class UserService implements
 
     @Transactional
     @Override
-    public User 학생회원가입(UserCommand.StudentJoin command) {
+    public UserOutput.Max 학생회원가입(UserCommand.StudentJoin command) {
         Optional<User> userOP = userRepositoryPort.findByUsername(command.username());
         if (userOP.isPresent())
             throw new Exception400("중복된 유저네임입니다.");
@@ -49,30 +49,30 @@ public class UserService implements
         String authCode = MyUtil.generateAuthCode();
         User savedUser = userRepositoryPort.save(User.createStudent(command, authCode));
 
-        // External Port Mocking    `
         sendEmailPort.sendEmail(savedUser.getEmail(), "회원가입이 완료메시지", "인증코드 : " + authCode);
 
-        return savedUser;
+        return new UserOutput.Max(savedUser);
     }
 
     @Transactional
     @Override
-    public User 강사회원가입(UserCommand.TeacherJoin command) {
+    public UserOutput.Max 강사회원가입(UserCommand.TeacherJoin command) {
         Optional<User> userOP = userRepositoryPort.findByUsername(command.username());
         if (userOP.isPresent())
             throw new Exception400("중복된 유저네임입니다.");
 
-        return userRepositoryPort.save(User.createTeacher(command));
+        User savedUser = userRepositoryPort.save(User.createTeacher(command));
+        return new UserOutput.Max(savedUser);
     }
 
     @Transactional
     @Override
-    public User 직원회원가입(UserCommand.EmpJoin command) {
+    public UserOutput.Max 직원회원가입(UserCommand.EmpJoin command) {
         Optional<User> userOP = userRepositoryPort.findByUsername(command.username());
         if (userOP.isPresent())
             throw new Exception400("중복된 유저네임입니다.");
+        User savedUser = userRepositoryPort.save(User.createEmp(command));
 
-
-        return userRepositoryPort.save(User.createEmp(command));
+        return new UserOutput.Max(savedUser);
     }
 }

@@ -13,4 +13,6 @@ public interface CourseRepositoryPort {
     Page<Course> findAllByTeacherId(Long teacherId, Pageable pageable);
 
     List<Course> findAllNotFinished();
+
+    Course save(Course course);
 }

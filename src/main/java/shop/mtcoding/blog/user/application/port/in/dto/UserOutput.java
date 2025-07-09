@@ -6,4 +6,7 @@ import shop.mtcoding.blog.user.domain.User;
 public class UserOutput {
     public record Session(User user, String accessToken, String refreshToken) {
     }
+
+    public record Max(User user) {
+    }
 }

@@ -27,7 +27,7 @@ public class UserController {
     public ResponseEntity<?> teacherJoin(@RequestBody UserRequest.TeacherJoin reqDTO) {
         var command = UserCommand.TeacherJoin.from(reqDTO);
         var output = teacherUseCase.강사회원가입(command);
-        var respDTO = UserResponse.Item.from(output);
+        var respDTO = UserResponse.Item.from(output.user());
         return ResponseEntity.ok(Resp.ok(respDTO));
     }
 
@@ -35,7 +35,7 @@ public class UserController {
     public ResponseEntity<?> studentJoin(@RequestBody UserRequest.StudentJoin reqDTO) {
         var command = UserCommand.StudentJoin.from(reqDTO);
         var output = studentUseCase.학생회원가입(command);
-        var respDTO = UserResponse.Item.from(output);
+        var respDTO = UserResponse.Item.from(output.user());
         return ResponseEntity.ok(Resp.ok(respDTO));
     }
 
@@ -43,7 +43,7 @@ public class UserController {
     public ResponseEntity<?> empJoin(@RequestBody UserRequest.EmpJoin reqDTO) {
         var command = UserCommand.EmpJoin.from(reqDTO);
         var output = empUseCase.직원회원가입(command);
-        var respDTO = UserResponse.Item.from(output);
+        var respDTO = UserResponse.Item.from(output.user());
         return ResponseEntity.ok(Resp.ok(respDTO));
     }
 

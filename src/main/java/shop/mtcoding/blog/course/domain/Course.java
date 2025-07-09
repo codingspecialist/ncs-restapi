@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import shop.mtcoding.blog._core.utils.MyUtil;
+import shop.mtcoding.blog.course.application.port.in.dto.CourseCommand;
 import shop.mtcoding.blog.course.domain.enums.CourseStatus;
 import shop.mtcoding.blog.course.domain.enums.CourseTeacherEnum;
 
@@ -37,9 +39,9 @@ public class Course {
     private LocalDate endDate; // 년월일
     @Enumerated(EnumType.STRING)
     private CourseStatus courseStatus; // 과정진행전, 과정진행중, 과정종료 (기본값은 과정진행전이다 - 숫자로는 0번)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
-    // JPA의 cascade 동작 기준은 FK 주인이 아니라, 어그리게이트 루트 객체가 persist() 되는지를 기준으로 합니다.
-    // Course가 이미 영속 상태, 혹은 비영속 Course가 persist될때 함께 insert 된다.
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CourseTeacher> courseTeachers = new ArrayList<>();
 
@@ -48,7 +50,6 @@ public class Course {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Subject> subjects = new ArrayList<>();
-
 
     public void addCourseTeacher(CourseTeacher ct) {
         if (!courseTeachers.contains(ct)) {
@@ -74,11 +75,6 @@ public class Course {
         }
     }
 
-
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-
-
     @Builder
     public Course(Long id, String title, String code, Integer level, String purpose, Integer totalTime, Integer totalDay, Integer round, LocalDate startDate, LocalDate endDate, CourseStatus courseStatus, LocalDateTime createdAt) {
         this.id = id;
@@ -94,6 +90,24 @@ public class Course {
         this.courseStatus = courseStatus;
         this.createdAt = createdAt;
     }
+
+    public static Course create(CourseCommand.Save command) {
+        CourseStatus initialStatus = MyUtil.courseStatusUpdate(command.startDate(), command.endDate());
+
+        return Course.builder()
+                .code(command.code())
+                .title(command.title())
+                .level(command.level())
+                .round(command.round())
+                .purpose(command.purpose())
+                .totalTime(command.totalTime())
+                .totalDay(command.totalDay())
+                .startDate(command.startDate())
+                .endDate(command.endDate())
+                .courseStatus(initialStatus)
+                .build();
+    }
+
 
     public void setCourseStatus(CourseStatus courseStatus) {
         this.courseStatus = courseStatus;

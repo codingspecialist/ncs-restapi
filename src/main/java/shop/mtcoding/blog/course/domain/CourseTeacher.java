@@ -40,6 +40,14 @@ public class CourseTeacher {
         this.createdAt = createdAt;
     }
 
+    public static CourseTeacher create(Course course, Teacher teacher, CourseTeacherEnum role) {
+        return CourseTeacher.builder()
+                .course(course)
+                .teacher(teacher)
+                .role(role)
+                .build();
+    }
+
     public void setCourse(Course course) {
         this.course = course;
     }

@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import shop.mtcoding.blog.user.application.port.out.UserRepositoryPort;
 import shop.mtcoding.blog.user.domain.User;
 
+import java.util.List;
 import java.util.Optional;
 
 // 어그리게이트 루트의 Repository만 만드는 것이 권장됨
@@ -21,4 +22,10 @@ public interface UserRepository extends JpaRepository<User, Long>, UserRepositor
 
     @Override
     User save(User user);
+
+    @Override
+    Optional<User> findByTeacherId(Long teacherId);
+
+    @Override
+    List<User> findByTeacherIdIn(List<Long> teacherIds);
 }

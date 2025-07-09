@@ -23,4 +23,7 @@ public interface CourseRepository extends JpaRepository<Course, Long>, CourseRep
     @Override
     @Query("SELECT ct.course FROM CourseTeacher ct WHERE ct.teacher.id = :teacherId")
     Page<Course> findAllByTeacherId(@Param("teacherId") Long teacherId, Pageable pageable);
+
+    @Override
+    Course save(Course course);
 }

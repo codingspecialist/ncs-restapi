@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import shop.mtcoding.blog.domainv2222222.course.subject.Subject;
 
 import java.time.LocalDateTime;
 
@@ -37,6 +36,10 @@ public class SubjectElement {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    public void setCourseSubject(Subject subject) {
+        this.subject = subject;
+    }
 
     @Builder
     public SubjectElement(Long id, Integer no, String title, String criterion, Subject subject, LocalDateTime createdAt) {

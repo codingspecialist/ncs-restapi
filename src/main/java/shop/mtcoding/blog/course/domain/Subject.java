@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.course.domain.enums.LearningWay;
 import shop.mtcoding.blog.course.domain.enums.NcsType;
-import shop.mtcoding.blog.domainv2222222.course.subject.element.SubjectElement;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.Paper;
-import shop.mtcoding.blog.user.domain.Teacher;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,7 +24,7 @@ public class Subject {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Teacher teacher;
+    private CourseTeacher courseTeacher;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Course course;
@@ -57,13 +54,17 @@ public class Subject {
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
     private List<SubjectElement> elements = new ArrayList<>();
 
-    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
-    private List<Paper> papers = new ArrayList<>();
+    public void addElement(SubjectElement element) {
+        if (!elements.contains(element)) {
+            elements.add(element);
+            element.setCourseSubject(this);
+        }
+    }
 
     @Builder
-    public Subject(Long id, Teacher teacher, Course course, Integer no, String code, String title, String purpose, NcsType ncsType, Integer gradeLevel, Integer totalTime, LearningWay learningWay, Double scorePolicy, LocalDate startDate, LocalDate endDate, LocalDateTime createdAt) {
+    public Subject(Long id, CourseTeacher courseTeacher, Course course, Integer no, String code, String title, String purpose, NcsType ncsType, Integer gradeLevel, Integer totalTime, LearningWay learningWay, Double scorePolicy, LocalDate startDate, LocalDate endDate, LocalDateTime createdAt) {
         this.id = id;
-        this.teacher = teacher;
+        this.courseTeacher = courseTeacher;
         this.course = course;
         this.no = no;
         this.code = code;

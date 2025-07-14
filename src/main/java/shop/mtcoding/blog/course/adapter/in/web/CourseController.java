@@ -39,6 +39,7 @@ public class CourseController {
 
     @GetMapping("/{courseId}")
     public ResponseEntity<?> detail(@PathVariable(value = "courseId") Long courseId) {
+        
         return ResponseEntity.ok(Resp.ok(null));
     }
 

@@ -23,7 +23,6 @@ public class CourseResponse {
             String courseStatus,
             String mainTeacherName
     ) {
-        // 내부 사용을 위한 private 생성자
         private Max(Course course) {
             this(course.getId(),
                     course.getCode(),
@@ -53,7 +52,6 @@ public class CourseResponse {
             Boolean isLast,
             List<Max> courses
     ) {
-        // 내부 사용을 위한 private 생성자
         private MaxPage(Page<Course> paging) {
             this(
                     paging.getTotalPages(),
@@ -72,21 +70,21 @@ public class CourseResponse {
         }
     }
 
+
     public record Detail(
             Max course,
             List<SubjectMax> subjects,
             List<StudentMax> students
     ) {
-        // 내부 사용을 위한 private 생성자
-        private Detail(Course course, List<SubjectMax> subjects, List<StudentMax> students) { // Student 엔티티 대신 CourseStudent 엔티티를 받도록 변경
+        private Detail(Course course, List<Subject> subjects, List<CourseStudent> students) {
             this(
                     new Max(course),
-                    subjects.stream().map(SubjectMax::from).toList(), // from 메서드 사용
-                    students.stream().map(StudentMax::from).toList()  // from 메서드 사용
+                    subjects.stream().map(SubjectMax::new).toList(),
+                    students.stream().map(StudentMax::new).toList()
             );
         }
 
-        public static Detail from(Course course, List<SubjectMax> subjects, List<StudentMax> students) { // Student 엔티티 대신 CourseStudent 엔티티를 받도록 변경
+        public static Detail from(Course course, List<Subject> subjects, List<CourseStudent> students) {
             return new Detail(course, subjects, students);
         }
 
@@ -103,7 +101,6 @@ public class CourseResponse {
                 String authCode,
                 Long courseId
         ) {
-            // 내부 사용을 위한 private 생성자
             private StudentMax(CourseStudent courseStudent) { // Student 엔티티 대신 CourseStudent 엔티티를 받도록 변경
                 this(
                         courseStudent.getStudent().getId(), // CourseStudent에서 실제 Student 엔티티 접근
@@ -118,34 +115,24 @@ public class CourseResponse {
                         courseStudent.getCourse().getId() // CourseStudent에서 실제 Course 엔티티 접근
                 );
             }
-
-            public static StudentMax from(CourseStudent courseStudent) { // Student 엔티티 대신 CourseStudent 엔티티를 받도록 변경
-                return new StudentMax(courseStudent);
-            }
         }
 
+        // 평가일, 재평가일 이 부분은 추후 리팩토링 하자.
         public record SubjectMax(
                 Long subjectId,
                 String code,
                 String title,
                 String purpose,
                 String ncsType,
-                Integer grade,
+                Integer gradeLevel,
                 Integer totalTime,
                 Integer no,
                 String learningWay,
-                String evaluationWay,
-                String evaluationDate,
-                String revaluationDate,
                 LocalDate startDate,
                 LocalDate endDate,
                 Long courseId
         ) {
-            // 내부 사용을 위한 private 생성자
-            private SubjectMax(Subject subject) { // Subject 엔티티 대신 CourseSubject 엔티티를 받도록 변경
-                Optional<Paper> paper = courseSubject.getPapers().stream().filter(p -> !p.isReTest()).findFirst();
-                Optional<Paper> rePaper = courseSubject.getPapers().stream().filter(Paper::isReTest).findFirst();
-
+            private SubjectMax(Subject subject) {
                 this(
                         subject.getId(),
                         subject.getCode(),
@@ -156,17 +143,10 @@ public class CourseResponse {
                         subject.getTotalTime(),
                         subject.getNo(),
                         subject.getLearningWay().toKorean(),
-                        paper.map(p -> p.getEvaluationWay() != null ? p.getEvaluationWay().toKorean() : "시험지없음").orElse("시험지없음"),
-                        paper.map(p -> p.getEvaluationDate().toString()).orElse("시험지없음"),
-                        rePaper.map(p -> p.getEvaluationDate().toString()).orElse("시험지없음"),
                         subject.getStartDate(),
                         subject.getEndDate(),
                         subject.getCourse().getId()
                 );
-            }
-
-            public static SubjectMax from(Subject subject) { // Subject 엔티티 대신 CourseSubject 엔티티를 받도록 변경
-                return new SubjectMax(subject);
             }
         }
     }

@@ -38,14 +38,18 @@ public class CourseController {
     }
 
     @GetMapping("/{courseId}")
-    public ResponseEntity<?> detail(@PathVariable(value = "courseId") Long courseId) {
-        
-        return ResponseEntity.ok(Resp.ok(null));
+    public ResponseEntity<?> info(@PathVariable(value = "courseId") Long courseId) {
+        var output = courseUseCase.과정정보(courseId);
+        var respDTO = CourseResponse.Max.from(output.course());
+        return ResponseEntity.ok(Resp.ok(respDTO));
     }
 
     @GetMapping("/{courseId}/detail")
-    public ResponseEntity<?> detailWithSubjectAndStudents(@PathVariable(value = "courseId") Long courseId) {
-        return ResponseEntity.ok(Resp.ok(null));
+    public ResponseEntity<?> detail(@PathVariable(value = "courseId") Long courseId) {
+        // TODO: 평가일, 재평가일 추후 고려하기
+        var output = courseUseCase.과정상세(courseId);
+        var respDTO = CourseResponse.Detail.from(output.course(), output.subjects(), output.students());
+        return ResponseEntity.ok(Resp.ok(respDTO));
     }
 
 }

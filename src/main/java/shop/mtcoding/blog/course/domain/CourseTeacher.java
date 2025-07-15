@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import shop.mtcoding.blog.course.domain.enums.CourseTeacherEnum;
+import shop.mtcoding.blog.course.domain.enums.TeacherType;
 import shop.mtcoding.blog.user.domain.Teacher;
 
 import java.time.LocalDateTime;
@@ -22,29 +22,30 @@ public class CourseTeacher {
     @ManyToOne(fetch = FetchType.LAZY)
     private Course course;
 
+    // TODO: MSA 전환시 FK id참조로 전환
     @ManyToOne(fetch = FetchType.LAZY)
     private Teacher teacher;
 
     @Enumerated(EnumType.STRING)
-    private CourseTeacherEnum role; // 메인강사, 보조강사
+    private TeacherType teacherType; // 메인강사, 보조강사
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Builder
-    public CourseTeacher(Long id, Course course, Teacher teacher, CourseTeacherEnum role, LocalDateTime createdAt) {
+    public CourseTeacher(Long id, Course course, Teacher teacher, TeacherType teacherType, LocalDateTime createdAt) {
         this.id = id;
         this.course = course;
         this.teacher = teacher;
-        this.role = role;
+        this.teacherType = teacherType;
         this.createdAt = createdAt;
     }
 
-    public static CourseTeacher create(Course course, Teacher teacher, CourseTeacherEnum role) {
+    public static CourseTeacher create(Course course, Teacher teacher, TeacherType teacherType) {
         return CourseTeacher.builder()
                 .course(course)
                 .teacher(teacher)
-                .role(role)
+                .teacherType(teacherType)
                 .build();
     }
 

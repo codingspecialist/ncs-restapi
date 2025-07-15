@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.exam.domain;
+package shop.mtcoding.blog.subject.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;

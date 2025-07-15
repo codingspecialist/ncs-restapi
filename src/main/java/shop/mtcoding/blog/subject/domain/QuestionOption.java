@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.exam.domain;
+package shop.mtcoding.blog.subject.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -23,7 +23,7 @@ public class QuestionOption {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private shop.mtcoding.blog.domainv2222222.course.subject.paper.question.Question question;
+    private Question question;
 
     private Integer no; // 4지선답 번호
     private String content; // 4지선답 항목
@@ -33,7 +33,7 @@ public class QuestionOption {
     private LocalDateTime createdAt;
 
     @Builder
-    public QuestionOption(Long id, Integer no, String content, shop.mtcoding.blog.domainv2222222.course.subject.paper.question.Question question, Integer point, LocalDateTime createdAt) {
+    public QuestionOption(Long id, Integer no, String content, Question question, Integer point, LocalDateTime createdAt) {
         this.id = id;
         this.no = no;
         this.content = content;

@@ -8,7 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog._core.utils.MyUtil;
 import shop.mtcoding.blog.course.application.port.in.dto.CourseCommand;
 import shop.mtcoding.blog.course.domain.enums.CourseStatus;
-import shop.mtcoding.blog.course.domain.enums.CourseTeacherEnum;
+import shop.mtcoding.blog.course.domain.enums.TeacherType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -49,28 +49,26 @@ public class Course {
     private List<CourseStudent> courseStudents = new ArrayList<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Subject> subjects = new ArrayList<>();
+    private List<CourseSubject> courseSubjects = new ArrayList<>();
 
-    public void addCourseTeacher(CourseTeacher ct) {
-        if (!courseTeachers.contains(ct)) {
-            courseTeachers.add(ct);
-            ct.setCourse(this);
+    public void addCourseTeacher(CourseTeacher teacher) {
+        if (!courseTeachers.contains(teacher)) {
+            courseTeachers.add(teacher);
+            teacher.setCourse(this);
         }
     }
 
-    public void addCourseStudent(CourseStudent cs) {
-        if (!courseStudents.contains(cs)) {
-            courseStudents.add(cs);
-            cs.setCourse(this);
+    public void addCourseStudent(CourseStudent student) {
+        if (!courseStudents.contains(student)) {
+            courseStudents.add(student);
+            student.setCourse(this);
         }
     }
 
-    public void addSubject(Subject subject) {
-        if (!subjects.contains(subject)) {
+    public void addCourseSubject(CourseSubject subject) {
+        if (!courseSubjects.contains(subject)) {
             // 루트에서 교과목 담기
-            subjects.add(subject);
-
-            // 교과목에서도 루트 담아주기 (담지 않으면 Subject가 course_id를 관리하는데, fk가 null이 됨)
+            courseSubjects.add(subject);
             subject.setCourse(this);
         }
     }
@@ -115,7 +113,7 @@ public class Course {
 
     public String getMainTeacherName() {
         return courseTeachers.stream()
-                .filter(ct -> ct.getRole() == CourseTeacherEnum.MAIN)
+                .filter(ct -> ct.getTeacherType() == TeacherType.MAIN)
                 .map(ct -> ct.getTeacher().getName())
                 .findFirst()
                 .orElse(null); // 혹은 null 처리 가능

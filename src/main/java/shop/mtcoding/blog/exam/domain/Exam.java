@@ -34,15 +34,18 @@ public class Exam {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // TODO: MSA 전환시 FK로 빼야함
     @ManyToOne(fetch = FetchType.LAZY)
     private Subject subject;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Paper paper;
 
+    // TODO: MSA 전환시 FK로 빼야함
     @ManyToOne(fetch = FetchType.LAZY)
     private Student student;
 
+    // TODO: MSA 전환시 FK로 빼야함
     @ManyToOne(fetch = FetchType.LAZY)
     private Teacher teacher;
 

@@ -13,8 +13,7 @@ import shop.mtcoding.blog.course.application.port.out.CourseRepositoryPort;
 import shop.mtcoding.blog.course.domain.Course;
 import shop.mtcoding.blog.course.domain.CourseStudent;
 import shop.mtcoding.blog.course.domain.CourseTeacher;
-import shop.mtcoding.blog.course.domain.Subject;
-import shop.mtcoding.blog.course.domain.enums.CourseTeacherEnum;
+import shop.mtcoding.blog.course.domain.enums.TeacherType;
 import shop.mtcoding.blog.user.domain.User;
 
 import java.util.List;
@@ -37,13 +36,13 @@ public class CourseService implements CourseUseCase {
         User loadUser = userRepositoryAdapter.loadUserByTeacherId(command.mainTeacherId());
         Course savedCourse = courseRepositoryPort.save(Course.create(command));
 
-        CourseTeacher mainTeacher = CourseTeacher.create(savedCourse, loadUser.getTeacher(), CourseTeacherEnum.MAIN);
+        CourseTeacher mainTeacher = CourseTeacher.create(savedCourse, loadUser.getTeacher(), TeacherType.MAIN);
         savedCourse.addCourseTeacher(mainTeacher);
 
         // 4. 보조강사 등록
         List<User> subUsers = userRepositoryAdapter.loadUserByTeacherIdIn(command.subTeacherIds());
         subUsers.stream().forEach(user -> {
-            CourseTeacher subTeacher = CourseTeacher.create(savedCourse, user.getTeacher(), CourseTeacherEnum.SUB);
+            CourseTeacher subTeacher = CourseTeacher.create(savedCourse, user.getTeacher(), TeacherType.SUB);
             savedCourse.addCourseTeacher(subTeacher);
         });
         return new CourseOutput.Max(savedCourse);

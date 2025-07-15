@@ -39,8 +39,6 @@ public class User {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    // 1. 빌더
-
     @Builder
     public User(Long id, String username, String password, String email, UserRole role, Student student, Teacher teacher, Emp emp, LocalDateTime createdAt) {
         this.id = id;
@@ -55,7 +53,6 @@ public class User {
     }
 
     // 2. 연관관계 편의메서드
-
     public void setStudent(Student student) {
         if (this.student != null) this.student.setUser(null); // 이전 연결 끊기
         this.student = student;

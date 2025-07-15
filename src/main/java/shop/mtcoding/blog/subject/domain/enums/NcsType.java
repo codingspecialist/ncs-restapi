@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.course.domain.enums;
+package shop.mtcoding.blog.subject.domain.enums;
 
 public enum NcsType {
     NCS,

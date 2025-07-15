@@ -21,7 +21,7 @@ public class CourseStudent {
     @ManyToOne(fetch = FetchType.LAZY)
     private Course course;
 
-    //MSA는 같은 도메인끼리는 ORM 객체로 하고 다른 도메인은 fk 변수로 관리한다
+    // TODO: MSA 전환시 FK id참조로 전환
     @ManyToOne(fetch = FetchType.LAZY)
     private Student student;
 

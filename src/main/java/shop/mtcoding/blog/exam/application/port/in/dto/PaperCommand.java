@@ -1,4 +1,4 @@
 package shop.mtcoding.blog.exam.application.port.in.dto;
 
-public class PaperCommend {
+public class PaperCommand {
 }

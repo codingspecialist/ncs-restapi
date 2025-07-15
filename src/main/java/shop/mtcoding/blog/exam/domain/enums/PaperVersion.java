@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.subject.domain.enums;
+package shop.mtcoding.blog.exam.domain.enums;
 
 public enum PaperVersion {
     ORIGINAL, // 본평가

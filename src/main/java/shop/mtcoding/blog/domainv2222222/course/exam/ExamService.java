@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.api.Exception403;
 import shop.mtcoding.blog._core.errors.exception.api.Exception404;
-import shop.mtcoding.blog.domainv2222222.course.subject.Subject;
 import shop.mtcoding.blog.domainv2222222.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domainv2222222.course.subject.element.SubjectElementRepository;
 import shop.mtcoding.blog.domainv2222222.course.subject.paper.Paper;
@@ -18,6 +17,7 @@ import shop.mtcoding.blog.domainv2222222.user.student.Student;
 import shop.mtcoding.blog.domainv2222222.user.student.StudentRepository;
 import shop.mtcoding.blog.domainv2222222.user.teacher.Teacher;
 import shop.mtcoding.blog.domainv2222222.user.teacher.TeacherRepository;
+import shop.mtcoding.blog.subject.domain.Subject;
 import shop.mtcoding.blog.webv2.exam.ExamRequest;
 import shop.mtcoding.blog.webv2.student.exam.StudentExamRequest;
 
@@ -49,7 +49,7 @@ public class ExamService {
 
         // 2. 재평가라면. 본평가를 찾아서 사용안함이라고 업데이트 해주기
         if (paper.isReTest()) {
-            Long subjectId = paper.getSubject().getId();
+            Long subjectId = paper.getCourseSubject().getId();
             Long studentId = student.getId();
 
             Exam originalExam = examRepository.findBySubjectIdAndStudentIdAndIsUse(subjectId, studentId, true)
@@ -81,7 +81,7 @@ public class ExamService {
 
         // 2. 재평가라면. 본평가를 찾아서 사용안함이라고 업데이트 해주기
         if (paper.isReTest()) {
-            Long subjectId = paper.getSubject().getId();
+            Long subjectId = paper.getCourseSubject().getId();
             Long studentId = student.getId();
 
             Exam originalExam = examRepository.findBySubjectIdAndStudentIdAndIsUse(subjectId, studentId, true)
@@ -146,7 +146,7 @@ public class ExamService {
         // 1. 시험지 조회 (여기서 subject도 접근 가능)
         Paper paper = paperRepository.findBySubjectIdAndPaperVersion(subjectId, PaperVersion.ORIGINAL)
                 .orElseThrow(() -> new Exception404("본평가 시험지를 찾을 수 없습니다"));
-        Subject subject = paper.getSubject();
+        Subject subject = paper.getCourseSubject().getSubject();
 
         // 2. 전체 학생 조회
         List<Student> students = studentRepository.findAllByCourseId(courseId);
@@ -168,7 +168,7 @@ public class ExamService {
                     Exam exam = examMap.get(student.getId());
                     return (exam != null)
                             ? ExamModel.Result.fromExam(exam)
-                            : ExamModel.Result.createNotTakenTemplate(student, subject, paper);
+                            : ExamModel.Result.createNotTakenTemplate(student, null, paper);
                 })
                 .toList();
     }
@@ -209,7 +209,7 @@ public class ExamService {
                     } else {
                         // 3. 응시하지 않은 '재평가'
                         boolean canTakeRetest = myAllExams.stream()
-                                .filter(exam -> exam.getSubject().getId().equals(paper.getSubject().getId()) && !exam.getPaper().isReTest())
+                                .filter(exam -> exam.getSubject().getId().equals(paper.getCourseSubject().getId()) && !exam.getPaper().isReTest())
                                 .findFirst()
                                 .map(mainExam -> mainExam.getResultStatus() == ExamResultStatus.FAIL || mainExam.getResultStatus() == ExamResultStatus.NOT_TAKEN)
                                 .orElse(false); // 본평가 기록이 없으면 재시험 자격 없음
@@ -230,7 +230,7 @@ public class ExamService {
                 .orElseThrow(() -> new Exception404("시험지를 찾을 수 없습니다."));
 
         // 2. 과목 요소 조회
-        List<SubjectElement> elements = elementRepository.findAllBySubjectId(paper.getSubject().getId());
+        List<SubjectElement> elements = elementRepository.findAllBySubjectId(paper.getCourseSubject().getId());
 
         // 3. 수험생 이름 조회
         Student student = studentRepository.findByUserId(sessionUser.getId())
@@ -258,7 +258,7 @@ public class ExamService {
                 .orElseThrow(() -> new Exception404("시험 기록이 존재하지 않습니다."));
 
         // 2. 동일 교과목의 활성 시험 전체 조회 (학생 이름순 정렬)
-        Long subjectId = exam.getPaper().getSubject().getId();
+        Long subjectId = exam.getPaper().getCourseSubject().getId();
         List<Exam> exams = examRepository.findBySubjectIdAndIsUseOrderByStudentNameAsc(subjectId);
 
         // 3. 교과목 요소 및 교사 정보 조회
@@ -279,7 +279,7 @@ public class ExamService {
                 .orElseThrow(() -> new Exception404("시험 기록이 존재하지 않습니다."));
 
         // 2. 동일 교과목의 활성 시험 전체 조회 (학생 이름순 정렬)
-        Long subjectId = exam.getPaper().getSubject().getId();
+        Long subjectId = exam.getPaper().getCourseSubject().getId();
 
 
         // 3. 교과목 요소 및 교사 정보 조회

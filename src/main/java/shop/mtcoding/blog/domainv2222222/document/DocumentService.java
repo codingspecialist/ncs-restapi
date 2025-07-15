@@ -63,7 +63,7 @@ public class DocumentService {
                 .orElseThrow(() -> new Exception404("해당 교과목의 본평가 시험지를 찾을 수 없습니다."));
         List<Question> questionListPS = questionRepository.findAllByPaperId(paperPS.getId());
 
-        return new DocumentModel.No2(paperPS.getEvaluationWay(), paperPS.getSubject(), questionListPS);
+        return new DocumentModel.No2(paperPS.getEvaluationWay(), null, questionListPS);
     }
 
     public DocumentModel.No3 no3(Long subjectId) {
@@ -71,7 +71,7 @@ public class DocumentService {
                 .orElseThrow(() -> new Exception404("해당 교과목의 본평가 시험지를 찾을 수 없습니다."));
         List<Question> questionListPS = questionRepository.findAllByPaperId(paperPS.getId());
         List<SubjectElement> elementListPS = elementRepository.findAllBySubjectId(subjectId);
-        Teacher teacherPS = teacherRepository.findById(paperPS.getSubject().getTeacher().getId())
+        Teacher teacherPS = teacherRepository.findById(1L)
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
         return new DocumentModel.No3(paperPS, elementListPS, questionListPS, teacherPS);
     }

@@ -6,16 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog._core.utils.MyUtil;
+import shop.mtcoding.blog.course.domain.CourseStudent;
+import shop.mtcoding.blog.course.domain.CourseSubject;
+import shop.mtcoding.blog.course.domain.CourseTeacher;
 import shop.mtcoding.blog.domainv2222222.course.exam.ExamNotTakenReason;
 import shop.mtcoding.blog.domainv2222222.course.exam.ExamResultStatus;
 import shop.mtcoding.blog.domainv2222222.course.exam.answer.ExamAnswer;
 import shop.mtcoding.blog.domainv2222222.course.exam.result.ExamResult;
-import shop.mtcoding.blog.domainv2222222.course.subject.Subject;
 import shop.mtcoding.blog.domainv2222222.course.subject.paper.EvaluationWay;
 import shop.mtcoding.blog.domainv2222222.course.subject.paper.Paper;
 import shop.mtcoding.blog.domainv2222222.course.subject.paper.question.QuestionOption;
-import shop.mtcoding.blog.domainv2222222.user.student.Student;
-import shop.mtcoding.blog.domainv2222222.user.teacher.Teacher;
 import shop.mtcoding.blog.webv2.exam.ExamRequest;
 
 import java.time.LocalDateTime;
@@ -36,18 +36,19 @@ public class Exam {
 
     // TODO: MSA 전환시 FK로 빼야함
     @ManyToOne(fetch = FetchType.LAZY)
-    private Subject subject;
+    private CourseSubject courseSubject;
 
+    // TODO: MSA 전환시 FK로 빼야함
     @ManyToOne(fetch = FetchType.LAZY)
     private Paper paper;
 
     // TODO: MSA 전환시 FK로 빼야함
     @ManyToOne(fetch = FetchType.LAZY)
-    private Student student;
+    private CourseStudent courseStudent;
 
     // TODO: MSA 전환시 FK로 빼야함
     @ManyToOne(fetch = FetchType.LAZY)
-    private Teacher teacher;
+    private CourseTeacher courseTeacher;
 
     @Enumerated(EnumType.STRING)
     private ExamResultStatus resultStatus;
@@ -71,7 +72,7 @@ public class Exam {
     private String teacherComment;
     private LocalDateTime teacherCommentedAt;
 
-    private String rubricSubmitLink; //
+    private String rubricSubmitLink;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -88,12 +89,12 @@ public class Exam {
     }
 
     @Builder
-    public Exam(Long id, Subject subject, Paper paper, Student student, Teacher teacher, ExamResultStatus resultStatus, ExamNotTakenReason notTakenReason, Double rawScore, Double totalScore, Double totalScorePercent, Integer gradeLevel, Boolean isActive, String copiedPaperVersion, String copiedEvaluationWay, Double copiedMaxScore, String studentSign, LocalDateTime studentSignedAt, String teacherComment, LocalDateTime teacherCommentedAt, String rubricSubmitLink, LocalDateTime createdAt) {
+    public Exam(Long id, CourseSubject courseSubject, Paper paper, CourseStudent courseStudent, CourseTeacher courseTeacher, ExamResultStatus resultStatus, ExamNotTakenReason notTakenReason, Double rawScore, Double totalScore, Double totalScorePercent, Integer gradeLevel, Boolean isActive, String copiedPaperVersion, String copiedEvaluationWay, Double copiedMaxScore, String studentSign, LocalDateTime studentSignedAt, String teacherComment, LocalDateTime teacherCommentedAt, String rubricSubmitLink, LocalDateTime createdAt) {
         this.id = id;
-        this.subject = subject;
+        this.courseSubject = courseSubject;
         this.paper = paper;
-        this.student = student;
-        this.teacher = teacher;
+        this.courseStudent = courseStudent;
+        this.courseTeacher = courseTeacher;
         this.resultStatus = resultStatus;
         this.notTakenReason = notTakenReason;
         this.rawScore = rawScore;
@@ -113,19 +114,19 @@ public class Exam {
     }
 
 
-    private static Exam.ExamBuilder baseBuilder(Student student, Paper paper) {
+    private static Exam.ExamBuilder baseBuilder(CourseStudent courseStudent, Paper paper) {
         return Exam.builder()
-                .student(student)
+                .courseStudent(courseStudent)
                 .paper(paper)
-                .subject(paper.getSubject())
-                .teacher(paper.getSubject().getTeacher())
+                .courseSubject(paper.getCourseSubject())
+                .courseTeacher(paper.getCourseSubject().getCourseTeacher())
                 .copiedPaperVersion(paper.getPaperVersion().toString())
                 .copiedMaxScore(paper.getMaxScore())
                 .copiedEvaluationWay(paper.getEvaluationWay().toString())
                 .isActive(true);
     }
 
-    public static Exam createNotTakenExamWithReason(Student student, Paper paper, ExamNotTakenReason notTakenReason) {
+    public static Exam createNotTakenExamWithReason(CourseStudent student, Paper paper, ExamNotTakenReason notTakenReason) {
         return baseBuilder(student, paper)
                 .resultStatus(ExamResultStatus.NOT_TAKEN)
                 .notTakenReason(notTakenReason)
@@ -133,22 +134,22 @@ public class Exam {
                 .build();
     }
 
-    public static Exam createNotTakenExam(Student student, Paper paper) {
-        return baseBuilder(student, paper)
+    public static Exam createNotTakenExam(CourseStudent courseStudent, Paper paper) {
+        return baseBuilder(courseStudent, paper)
                 .resultStatus(ExamResultStatus.NOT_TAKEN)
                 .teacherComment(ExamResultStatus.NOT_TAKEN.toKorean())
-                .student(student)
+                .courseStudent(courseStudent)
                 .build();
     }
 
-    public static Exam createMcqExam(Student student, Paper paper) {
-        return baseBuilder(student, paper)
+    public static Exam createMcqExam(CourseStudent courseStudent, Paper paper) {
+        return baseBuilder(courseStudent, paper)
                 .resultStatus(ExamResultStatus.NOT_GRADED)
                 .build();
     }
 
-    public static Exam createRubricExam(Student student, Paper paper, String rubricSubmitLink) {
-        return baseBuilder(student, paper)
+    public static Exam createRubricExam(CourseStudent courseStudent, Paper paper, String rubricSubmitLink) {
+        return baseBuilder(courseStudent, paper)
                 .rubricSubmitLink(rubricSubmitLink)
                 .resultStatus(ExamResultStatus.NOT_GRADED)
                 .build();
@@ -260,7 +261,7 @@ public class Exam {
         this.totalScore = rawScore;
 
         if (paper.isReTest()) {
-            this.totalScore = rawScore * subject.getScorePolicy();
+            this.totalScore = rawScore * courseSubject.getSubject().getScorePolicy();
         }
 
         this.totalScorePercent = MyUtil.scaleTo100(totalScore, copiedMaxScore);

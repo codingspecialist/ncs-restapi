@@ -176,7 +176,7 @@ public class ExamResponse {
             this.evaluationDevice = exam.getPaper().getEvaluationDevice();
             this.evaluationRoom = exam.getPaper().getEvaluationRoom();
 
-            this.subjectTitle = exam.getPaper().getSubject().getTitle();
+            //this.subjectTitle = exam.getPaper().getSubject().getTitle();
             this.subjectElements = subjectElements.stream()
                     .map(SubjectElement::getTitle)
                     .toList();
@@ -287,7 +287,7 @@ public class ExamResponse {
             this.evaluationDevice = exam.getPaper().getEvaluationDevice();
             this.evaluationRoom = exam.getPaper().getEvaluationRoom();
 
-            this.subjectTitle = exam.getPaper().getSubject().getTitle();
+            //this.subjectTitle = exam.getPaper().getSubject().getTitle();
             this.subjectElements = subjectElements.stream()
                     .map(SubjectElement::getTitle)
                     .toList();

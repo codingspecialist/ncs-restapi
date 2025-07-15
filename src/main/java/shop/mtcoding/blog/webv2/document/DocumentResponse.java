@@ -50,21 +50,21 @@ public class DocumentResponse {
             this.writingDate = paper.getEvaluationDate().toString();
             this.requestDate = paper.getEvaluationDate().toString();
             this.retentionPeriod = "5년";
-            this.author = paper.getSubject().getTeacher().getName();
+            //this.author = paper.getSubject().getTeacher().getName();
             this.recipient = "내부결재";
-            this.title = paper.getSubject().getCourse().getTitle() + " 평가 실시보고";
-            this.ga = paper.getSubject().getCourse().getTitle();
-            this.na = paper.getSubject().getCourse().getStartDate() + " ~ " + paper.getSubject().getCourse().getEndDate() + " (" + paper.getSubject().getCourse().getTotalTime() + "시간)";
-            this.da = paper.getSubject().getTitle() + " (" + paper.getEvaluationWay().toKorean() + ")";
-            this.ra = paper.getSubject().getTeacher().getName();
+            //this.title = paper.getSubject().getCourse().getTitle() + " 평가 실시보고";
+            //this.ga = paper.getSubject().getCourse().getTitle();
+            //this.na = paper.getSubject().getCourse().getStartDate() + " ~ " + paper.getSubject().getCourse().getEndDate() + " (" + paper.getSubject().getCourse().getTotalTime() + "시간)";
+            //this.da = paper.getSubject().getTitle() + " (" + paper.getEvaluationWay().toKorean() + ")";
+            //this.ra = paper.getSubject().getTeacher().getName();
             this.ma = paper.getEvaluationDate().toString();
 
             // 중탈안한 총 학생수
-            long allStudentCount = paper.getSubject().getCourse().getStudents().stream()
-                    .filter(student ->
-                            student.getDropOutDate() == null || student.getDropOutDate().isAfter(paper.getEvaluationDate())
-                    )
-                    .count();
+//            long allStudentCount = paper.getSubject().getCourse().getStudents().stream()
+//                    .filter(student ->
+//                            student.getDropOutDate() == null || student.getDropOutDate().isAfter(paper.getEvaluationDate())
+//                    )
+//                    .count();
             // 1. 본평가 응시자 수 (시험을 실제로 사용하고, 재시험 아님) - 결석자 제외
             long notTakenCount = exams.stream()
                     .filter(exam -> exam.getResultStatus() == ExamResultStatus.NOT_TAKEN)
@@ -87,7 +87,7 @@ public class DocumentResponse {
                 temp2 += " / 미응시 " + notTakenCount + "명";
             }
 
-            this.ba = "재적 " + allStudentCount + "명 / 실시 " + doExamCount + "명" + temp1 + temp2;
+            this.ba = "재적 " + 5 + "명 / 실시 " + doExamCount + "명" + temp1 + temp2;
 
             // 재평가 실시 인원
             this.sa = reExams.size() + "명";
@@ -315,8 +315,8 @@ public class DocumentResponse {
             this.evaluationRoom = paper.getEvaluationRoom();
             //this.submissionFormats = MyUtil.parseMultilineWithoutHyphen(paper.getSubmissionFormat());
             // TODO (결시자, 재평가자야 0.9 프로 Subject에서 받기)
-            double scorePolicy = paper.getSubject().getScorePolicy();
-            this.scorePolicies = Arrays.asList("본평가 배점 : 평가점수 X 1.0", "재평가 배점 : 평가점수 X " + scorePolicy, "결시자 배점 : 평가점수 X " + scorePolicy);
+            //double scorePolicy = paper.getSubject().getScorePolicy();
+            this.scorePolicies = Arrays.asList("본평가 배점 : 평가점수 X 1.0", "재평가 배점 : 평가점수 X " + 0.9, "결시자 배점 : 평가점수 X " + 0.9);
 
             this.subjectElements = subject.getElements().stream().map(subjectElement -> subjectElement.getTitle()).toList();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
@@ -382,11 +382,11 @@ public class DocumentResponse {
         private List<QuestionDTO> questions;
 
         public No3RubricDTO(Paper paper, List<Question> questions, Teacher teacher) {
-            this.teacherName = paper.getSubject().getTeacher().getName();
+            //this.teacherName = paper.getSubject().getTeacher().getName();
             this.evaluationDate = paper.getEvaluationDate().toString();
             this.evaluationRoom = paper.getEvaluationRoom();
             this.evaluationDevice = paper.getEvaluationDevice();
-            this.subjectTitle = paper.getSubject().getTitle();
+            //this.subjectTitle = paper.getSubject().getTitle();
             this.questionCount = questions.size();
 
             this.rubricTitle = paper.getTaskTitle();
@@ -396,7 +396,7 @@ public class DocumentResponse {
             this.rubricSubmitTemplateLink = paper.getTaskSubmitTemplateLink();
             this.rubricChallenges = MyUtil.parseMultilineWithoutHyphen(paper.getTaskChallenge());
             this.teacherSign = teacher.getSign();
-            this.grade = paper.getSubject().getGradeLevel();
+            //this.grade = paper.getSubject().getGradeLevel();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
         }
 
@@ -448,15 +448,15 @@ public class DocumentResponse {
         private List<QuestionDTO> questions;
 
         public No3McqDTO(Paper paper, List<SubjectElement> subjectElements, List<Question> questions, Teacher teacher) {
-            this.teacherName = paper.getSubject().getTeacher().getName();
+            //this.teacherName = paper.getSubject().getTeacher().getName();
             this.evaluationDate = paper.getEvaluationDate().toString();
             this.evaluationRoom = paper.getEvaluationRoom();
             this.evaluationDevice = paper.getEvaluationDevice();
-            this.subjectTitle = paper.getSubject().getTitle();
+            //this.subjectTitle = paper.getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getTitle()).toList();
             this.questionCount = paper.getQuestions().size();
             this.teacherSign = teacher.getSign();
-            this.grade = paper.getSubject().getGradeLevel();
+            //this.grade = paper.getSubject().getGradeLevel();
             this.questions = questions.stream().map(QuestionDTO::new).toList();
         }
 
@@ -528,8 +528,8 @@ public class DocumentResponse {
         private String studentSign;
 
         public No4McqDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher, Integer prevIndex, Integer nextIndex, Integer currentIndex) {
-            this.subjectId = exam.getPaper().getSubject().getId();
-            this.courseId = exam.getPaper().getSubject().getCourse().getId();
+            //this.subjectId = exam.getPaper().getSubject().getId();
+            //this.courseId = exam.getPaper().getSubject().getCourse().getId();
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
             this.studentName = exam.getStudent().getName();
@@ -537,7 +537,7 @@ public class DocumentResponse {
             this.evaluationDate = exam.getPaper().getEvaluationDate().toString();
             this.evaluationDevice = exam.getPaper().getEvaluationDevice();
             this.evaluationRoom = exam.getPaper().getEvaluationRoom();
-            this.subjectTitle = exam.getPaper().getSubject().getTitle();
+            //this.subjectTitle = exam.getPaper().getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getTitle()).toList();
             this.answers = exam.getExamAnswers().stream().map(AnswerDTO::new).toList();
             this.questionCount = exam.getPaper().getQuestions().size();
@@ -631,8 +631,8 @@ public class DocumentResponse {
         private String submitLink;
 
         public No4RubricDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher, Integer prevIndex, Integer nextIndex, Integer currentIndex) {
-            this.subjectId = exam.getPaper().getSubject().getId();
-            this.courseId = exam.getPaper().getSubject().getCourse().getId();
+            //this.subjectId = exam.getPaper().getSubject().getId();
+            //this.courseId = exam.getPaper().getSubject().getCourse().getId();
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
             this.studentName = exam.getStudent().getName();
@@ -640,7 +640,7 @@ public class DocumentResponse {
             this.evaluationDate = exam.getPaper().getEvaluationDate().toString();
             this.evaluationDevice = exam.getPaper().getEvaluationDevice();
             this.evaluationRoom = exam.getPaper().getEvaluationRoom();
-            this.subjectTitle = exam.getPaper().getSubject().getTitle();
+            //this.subjectTitle = exam.getPaper().getSubject().getTitle();
             this.subjectElements = subjectElements.stream().map(se -> se.getTitle()).toList();
             this.answers = exam.getExamAnswers().stream().map(AnswerDTO::new).toList();
             this.questionCount = exam.getPaper().getQuestions().size();

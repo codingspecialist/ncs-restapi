@@ -1,15 +1,13 @@
-package shop.mtcoding.blog.subject.domain;
+package shop.mtcoding.blog.exam.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import shop.mtcoding.blog.domainv2222222.course.exam.Exam;
-import shop.mtcoding.blog.domainv2222222.course.subject.Subject;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.EvaluationWay;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.PaperVersion;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.question.Question;
+import shop.mtcoding.blog.course.domain.CourseSubject;
+import shop.mtcoding.blog.exam.domain.enums.EvaluationWay;
+import shop.mtcoding.blog.exam.domain.enums.PaperVersion;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,8 +27,10 @@ public class Paper {
     @Enumerated(EnumType.STRING)
     private EvaluationWay evaluationWay; // 평가 방법
     private LocalDate evaluationDate; // 평가일
+
+    // TODO: MSA전환시 FK ID참조로 변경하기
     @ManyToOne(fetch = FetchType.LAZY)
-    private Subject subject;
+    private CourseSubject courseSubject;
     @Enumerated(EnumType.STRING)
     private PaperVersion paperVersion; // 본평가, 재평가
     private String evaluationRoom;     // 평가 장소
@@ -74,11 +74,11 @@ public class Paper {
     }
 
     @Builder
-    public Paper(Long id, EvaluationWay evaluationWay, LocalDate evaluationDate, Subject subject, PaperVersion paperVersion, String evaluationRoom, String evaluationDevice, Double maxScore, String taskTitle, String taskScenario, String taskScenarioGuideLink, String taskSubmitFormat, String taskSubmitTemplateLink, String taskChallenge, LocalDateTime createdAt) {
+    public Paper(Long id, EvaluationWay evaluationWay, LocalDate evaluationDate, CourseSubject courseSubject, PaperVersion paperVersion, String evaluationRoom, String evaluationDevice, Double maxScore, String taskTitle, String taskScenario, String taskScenarioGuideLink, String taskSubmitFormat, String taskSubmitTemplateLink, String taskChallenge, LocalDateTime createdAt) {
         this.id = id;
         this.evaluationWay = evaluationWay;
         this.evaluationDate = evaluationDate;
-        this.subject = subject;
+        this.courseSubject = courseSubject;
         this.paperVersion = paperVersion;
         this.evaluationRoom = evaluationRoom;
         this.evaluationDevice = evaluationDevice;

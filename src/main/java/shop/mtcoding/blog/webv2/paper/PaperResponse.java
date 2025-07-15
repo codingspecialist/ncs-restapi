@@ -130,8 +130,8 @@ public class PaperResponse {
             this.evaluationDate = paper.getEvaluationDate().toString();
             this.evaluationDevice = paper.getEvaluationDevice();
             this.evaluationRoom = paper.getEvaluationRoom();
-            this.subjectTitle = paper.getSubject().getTitle();
-            this.teacherName = paper.getSubject().getTeacher().getName();
+            //this.subjectTitle = paper.getSubject().getTitle();
+            //this.teacherName = paper.getSubject().getTeacher().getName();
             this.questionCount = questions.size();
             this.questions = questions.stream().map(QuestionItem::new).toList();
         }
@@ -200,9 +200,9 @@ public class PaperResponse {
             this.evaluationDate = paper.getEvaluationDate().toString();
             this.evaluationDevice = paper.getEvaluationDevice();
             this.evaluationRoom = paper.getEvaluationRoom();
-            this.subjectTitle = paper.getSubject().getTitle();
+            //this.subjectTitle = paper.getSubject().getTitle();
 
-            this.teacherName = paper.getSubject().getTeacher().getName();
+            //this.teacherName = paper.getSubject().getTeacher().getName();
             this.questionCount = questions.size();
 
             this.taskTitle = paper.getTaskTitle();
@@ -263,10 +263,10 @@ public class PaperResponse {
 
         public DTO(Paper paper) {
             this.paperId = paper.getId();
-            this.courseTitle = paper.getSubject().getCourse().getTitle();
-            this.courseRound = paper.getSubject().getCourse().getRound();
-            this.subjectId = paper.getSubject().getId();
-            this.subjectTitle = paper.getSubject().getTitle();
+            //this.courseTitle = paper.getSubject().getCourse().getTitle();
+            //this.courseRound = paper.getSubject().getCourse().getRound();
+            //this.subjectId = paper.getSubject().getId();
+            //this.subjectTitle = paper.getSubject().getTitle();
             this.questionCount = paper.getQuestions().size();
             this.paperVersion = paper.getPaperVersion().toKorean();
             this.evaluationWay = paper.getEvaluationWay().toKorean();

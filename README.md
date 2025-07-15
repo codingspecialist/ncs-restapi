@@ -1,5 +1,48 @@
 # NCS 평가 프로그램
 
+1. 학사 관리 도메인 (Academic Management Domain)
+   Course (과정 / 학기)
+
+역할: 교육 과정을 정의 (예: 2024학년도 1학기).
+
+포함될 엔티티:
+
+Course: 과정 자체의 정보 (PK: course_id)
+
+CourseStudent: 특정 과정에 등록된 학생 정보 (FK: course_id, student_id) - 학생이 특정 학기에 수강 신청한 정보를 연결.
+
+CourseTeacher: 특정 과정에 배정된 교사 정보 (FK: course_id, professor_id) - 특정 학기의 총괄 교수진을 연결 (선택 사항, CourseSubject에 교수가 있다면 불필요할 수도
+있음).
+
+CourseSubject: 특정 과정에 개설된 교과목 인스턴스 (FK: course_id, subject_id, professor_id) - 과목이 해당 과정에서 어떻게 운영되는지에 대한 상세 정보를 연결.
+
+2. 교과목 정의 도메인 (Curriculum/Subject Definition Domain)
+   Subject (교과목 공통정보)
+
+역할: 과목 자체의 고유하고 변하지 않는 정의를 담당.
+
+포함될 엔티티:
+
+Subject: 과목 기본 정보 (PK: subject_id)
+
+SubjectElement: 특정 과목의 구성 요소 (예: 학습 목표, 평가 기준, 교재 정보 등). Subject 엔티티를 FK로 참조.
+
+3. 시험/평가 도메인 (Exam/Assessment Domain)
+   Paper (시험지)
+
+역할: 특정 CourseSubject에 대한 시험지 자체의 내용 및 기본 정보 관리.
+
+포함될 엔티티:
+
+Paper: 시험지 정보 (FK: course_subject_id)
+
+ExamResult: 시험 결과 정보 (FK: paper_id, student_id)
+
+4. 사용자/인사 도메인 (User/Personnel Domain)
+   Student (학생)
+
+Professor (교수)
+
 ## 급한것
 
 - [x] 학생쪽 디자인 완료

@@ -12,6 +12,7 @@ import shop.mtcoding.blog.course.application.port.in.dto.CourseOutput;
 import shop.mtcoding.blog.course.application.port.out.CourseRepositoryPort;
 import shop.mtcoding.blog.course.domain.Course;
 import shop.mtcoding.blog.course.domain.CourseStudent;
+import shop.mtcoding.blog.course.domain.CourseSubject;
 import shop.mtcoding.blog.course.domain.CourseTeacher;
 import shop.mtcoding.blog.course.domain.enums.TeacherType;
 import shop.mtcoding.blog.user.domain.User;
@@ -61,7 +62,7 @@ public class CourseService implements CourseUseCase {
         Course findCourse = courseRepositoryPort.findById(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
 
-        List<Subject> findSubjects = courseRepositoryPort.findAllSubjectsByCourseId(findCourse.getId());
+        List<CourseSubject> findSubjects = courseRepositoryPort.findAllSubjectsByCourseId(findCourse.getId());
         List<CourseStudent> findStudents = courseRepositoryPort.findAllStudentsByCourseId(findCourse.getId());
         return new CourseOutput.Detail(findCourse, findSubjects, findStudents);
     }

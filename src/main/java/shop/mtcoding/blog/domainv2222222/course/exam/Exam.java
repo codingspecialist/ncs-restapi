@@ -112,8 +112,6 @@ public class Exam {
         return Exam.builder()
                 .student(student)
                 .paper(paper)
-                .subject(paper.getSubject())
-                .teacher(paper.getSubject().getTeacher())
                 .copiedPaperVersion(paper.getPaperVersion().toString())
                 .copiedMaxScore(paper.getMaxScore())
                 .copiedEvaluationWay(paper.getEvaluationWay().toString())

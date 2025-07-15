@@ -76,7 +76,7 @@ public class PaperService {
         Paper paperPS = paperRepository.findById(paperId)
                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
-        List<SubjectElement> elementListPS = subjectElementRepository.findAllBySubjectId(paperPS.getSubject().getId());
+        List<SubjectElement> elementListPS = subjectElementRepository.findAllBySubjectId(paperPS.getCourseSubject().getId());
 
         PaperModel.NextQuestion nextQuestion = questionQueryRepository.findNextNo(paperId)
                 .withElements(elementListPS, paperPS);

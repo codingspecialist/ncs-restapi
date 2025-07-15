@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import shop.mtcoding.blog._core.utils.Resp;
-import shop.mtcoding.blog.domainv2222222.course.CourseModel;
-import shop.mtcoding.blog.domainv2222222.course.CourseService;
 import shop.mtcoding.blog.domainv2222222.course.subject.SubjectModel;
 import shop.mtcoding.blog.domainv2222222.course.subject.SubjectService;
 import shop.mtcoding.blog.domainv2222222.course.subject.paper.EvaluationWay;
@@ -30,14 +28,14 @@ public class PaperController {
     private final HttpSession session;
     private final PaperService paperService;
     private final SubjectService subjectService;
-    private final CourseService courseService;
+    //private final CourseService courseService;
 
     // 1. 시험지관리 - 과정목록 (완)
     @GetMapping("/api/paper-menu/course")
     public String courseList(Model model, @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        CourseModel.Slice slice = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
-        PaperResponse.CourseListDTO respDTO = new PaperResponse.CourseListDTO(slice.coursePG());
+        //CourseModel.Slice slice = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
+        PaperResponse.CourseListDTO respDTO = new PaperResponse.CourseListDTO(null);
         model.addAttribute("model", respDTO);
 
         return "paper/course-list";

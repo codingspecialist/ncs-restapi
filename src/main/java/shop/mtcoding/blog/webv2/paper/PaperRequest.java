@@ -72,7 +72,7 @@ public class PaperRequest {
 
         public Paper toEntity(Subject subject) {
             return Paper.builder()
-                    .subject(subject)
+                    .courseSubject(null)
                     .paperVersion(paperVersion)
                     .evaluationDate(evaluationDate)
                     .evaluationWay(evaluationWay)

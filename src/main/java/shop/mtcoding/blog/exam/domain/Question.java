@@ -6,10 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog._core.errors.exception.api.Exception500;
-import shop.mtcoding.blog.domainv2222222.course.subject.element.SubjectElement;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.EvaluationWay;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.Paper;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.question.QuestionOption;
+import shop.mtcoding.blog.course.domain.SubjectElement;
+import shop.mtcoding.blog.exam.domain.enums.EvaluationWay;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -59,7 +57,7 @@ public class Question {
 
     public QuestionOption getCorrectOption() {
         return this.getQuestionOptions().stream()
-                .max(Comparator.comparingInt(QuestionOption::getPoint))
+                .max(Comparator.comparingInt(value -> value.getPoint()))
                 .orElse(null);
     }
 

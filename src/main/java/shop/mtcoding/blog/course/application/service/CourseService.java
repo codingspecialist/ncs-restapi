@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.api.Exception404;
 import shop.mtcoding.blog.course.adapter.out.external.UserRepositoryAdapter;
 import shop.mtcoding.blog.course.application.port.in.CourseUseCase;
@@ -19,6 +20,7 @@ import shop.mtcoding.blog.user.domain.User;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class CourseService implements CourseUseCase {

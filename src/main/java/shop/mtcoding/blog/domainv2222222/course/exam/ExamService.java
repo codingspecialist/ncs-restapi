@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.api.Exception403;
 import shop.mtcoding.blog._core.errors.exception.api.Exception404;
+import shop.mtcoding.blog.course.domain.Subject;
 import shop.mtcoding.blog.domainv2222222.course.subject.element.SubjectElement;
 import shop.mtcoding.blog.domainv2222222.course.subject.element.SubjectElementRepository;
 import shop.mtcoding.blog.domainv2222222.course.subject.paper.Paper;
@@ -17,7 +18,6 @@ import shop.mtcoding.blog.domainv2222222.user.student.Student;
 import shop.mtcoding.blog.domainv2222222.user.student.StudentRepository;
 import shop.mtcoding.blog.domainv2222222.user.teacher.Teacher;
 import shop.mtcoding.blog.domainv2222222.user.teacher.TeacherRepository;
-import shop.mtcoding.blog.subject.domain.Subject;
 import shop.mtcoding.blog.webv2.exam.ExamRequest;
 import shop.mtcoding.blog.webv2.student.exam.StudentExamRequest;
 

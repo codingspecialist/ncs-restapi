@@ -9,13 +9,9 @@ import shop.mtcoding.blog._core.utils.MyUtil;
 import shop.mtcoding.blog.course.domain.CourseStudent;
 import shop.mtcoding.blog.course.domain.CourseSubject;
 import shop.mtcoding.blog.course.domain.CourseTeacher;
-import shop.mtcoding.blog.domainv2222222.course.exam.ExamNotTakenReason;
-import shop.mtcoding.blog.domainv2222222.course.exam.ExamResultStatus;
-import shop.mtcoding.blog.domainv2222222.course.exam.answer.ExamAnswer;
-import shop.mtcoding.blog.domainv2222222.course.exam.result.ExamResult;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.EvaluationWay;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.Paper;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.question.QuestionOption;
+import shop.mtcoding.blog.exam.domain.enums.EvaluationWay;
+import shop.mtcoding.blog.exam.domain.enums.ExamNotTakenReason;
+import shop.mtcoding.blog.exam.domain.enums.ExamResultStatus;
 import shop.mtcoding.blog.webv2.exam.ExamRequest;
 
 import java.time.LocalDateTime;
@@ -242,7 +238,7 @@ public class Exam {
     private Double calculateScore(ExamAnswer answer) {
         return answer.getQuestion().getQuestionOptions().stream()
                 .filter(opt -> opt.getNo().equals(answer.getSelectedOptionNo()))
-                .mapToDouble(QuestionOption::getPoint)
+                .mapToDouble(value -> value.getPoint())
                 .findFirst()
                 .orElse(0);
     }

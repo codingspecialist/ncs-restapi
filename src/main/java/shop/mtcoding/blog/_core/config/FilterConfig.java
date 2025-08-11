@@ -6,13 +6,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import shop.mtcoding.blog._core.filter.CorsFilter;
 import shop.mtcoding.blog._core.filter.JwtAuthorizationFilter;
-import shop.mtcoding.blog.user.application.port.out.UserRepositoryPort;
+import shop.mtcoding.blog.user.application.repository.UserRepository;
 
 @RequiredArgsConstructor
 @Configuration
 public class FilterConfig {
 
-    private final UserRepositoryPort userRepository;
+    private final UserRepository userRepository;
 
     @Bean
     public FilterRegistrationBean<?> corsFilter() {

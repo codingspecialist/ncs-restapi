@@ -1,6 +1,7 @@
 package shop.mtcoding.blog.course.web.dto;
 
-import shop.mtcoding.blog.course.application.port.in.dto.CourseCommand;
+
+import shop.mtcoding.blog.course.application.service.dto.CourseCommand;
 
 import java.time.LocalDate;
 import java.util.List;

@@ -1,9 +1,9 @@
 package shop.mtcoding.blog.course.web.dto;
 
 import org.springframework.data.domain.Page;
-import shop.mtcoding.blog.course.domain.Course;
-import shop.mtcoding.blog.course.domain.CourseStudent;
-import shop.mtcoding.blog.course.domain.Subject;
+import shop.mtcoding.blog.course.application.domain.Course;
+import shop.mtcoding.blog.course.application.domain.CourseStudent;
+import shop.mtcoding.blog.course.application.domain.Subject;
 
 import java.time.LocalDate;
 import java.util.List;

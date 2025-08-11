@@ -15,7 +15,7 @@ import shop.mtcoding.blog.course.application.domain.enums.TeacherType;
 import shop.mtcoding.blog.course.application.repository.CourseRepository;
 import shop.mtcoding.blog.course.application.service.dto.CourseCommand;
 import shop.mtcoding.blog.course.application.service.dto.CourseOutput;
-import shop.mtcoding.blog.user.domain.User;
+import shop.mtcoding.blog.user.application.domain.User;
 
 import java.util.List;
 

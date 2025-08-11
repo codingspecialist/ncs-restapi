@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.user.application.domain.enums.StudentStatus;
 import shop.mtcoding.blog.user.application.domain.enums.UserRole;
-import shop.mtcoding.blog.user.application.port.in.dto.UserCommand;
+import shop.mtcoding.blog.user.application.service.dto.UserCommand;
 
 import java.time.LocalDateTime;
 

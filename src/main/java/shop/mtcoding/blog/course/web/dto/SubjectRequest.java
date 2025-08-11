@@ -1,8 +1,9 @@
 package shop.mtcoding.blog.course.web.dto;
 
-import shop.mtcoding.blog.course.application.port.in.dto.SubjectCommand;
-import shop.mtcoding.blog.course.domain.enums.LearningWay;
-import shop.mtcoding.blog.course.domain.enums.NcsType;
+
+import shop.mtcoding.blog.course.application.domain.enums.LearningWay;
+import shop.mtcoding.blog.course.application.domain.enums.NcsType;
+import shop.mtcoding.blog.course.application.service.dto.SubjectCommand;
 
 import java.time.LocalDate;
 

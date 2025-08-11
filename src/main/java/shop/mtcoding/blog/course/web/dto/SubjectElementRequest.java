@@ -1,6 +1,7 @@
 package shop.mtcoding.blog.course.web.dto;
 
-import shop.mtcoding.blog.course.application.port.in.dto.SubjectElementCommand;
+
+import shop.mtcoding.blog.course.application.service.dto.SubjectElementCommand;
 
 public class SubjectElementRequest {
 

@@ -4,12 +4,13 @@ package shop.mtcoding.blog.user.web.dto;
 // import lombok.AllArgsConstructor;
 // import lombok.Data;
 
-import shop.mtcoding.blog.user.domain.Emp;
-import shop.mtcoding.blog.user.domain.Student;
-import shop.mtcoding.blog.user.domain.Teacher;
-import shop.mtcoding.blog.user.domain.User;
-import shop.mtcoding.blog.user.domain.enums.StudentStatus;
-import shop.mtcoding.blog.user.domain.enums.UserRole;
+
+import shop.mtcoding.blog.user.application.domain.Emp;
+import shop.mtcoding.blog.user.application.domain.Student;
+import shop.mtcoding.blog.user.application.domain.Teacher;
+import shop.mtcoding.blog.user.application.domain.User;
+import shop.mtcoding.blog.user.application.domain.enums.StudentStatus;
+import shop.mtcoding.blog.user.application.domain.enums.UserRole;
 
 public class UserResponse {
 

@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import shop.mtcoding.blog.course.domain.Subject;
+import shop.mtcoding.blog.course.application.domain.Subject;
 import shop.mtcoding.blog.exam.application.domain.enums.EvaluationWay;
 import shop.mtcoding.blog.exam.application.domain.enums.PaperVersion;
 

@@ -1,7 +1,7 @@
 package shop.mtcoding.blog.user.application.service.dto;
 
-import shop.mtcoding.blog.user.adapter.in.web.dto.UserRequest;
-import shop.mtcoding.blog.user.domain.enums.UserRole;
+import shop.mtcoding.blog.user.application.domain.enums.UserRole;
+import shop.mtcoding.blog.user.web.dto.UserRequest;
 
 public class UserCommand {
 

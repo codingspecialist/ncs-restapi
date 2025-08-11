@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog._core.utils.Resp;
-import shop.mtcoding.blog.course.application.port.in.dto.SubjectElementCommand;
 import shop.mtcoding.blog.course.application.service.SubjectElementService;
+import shop.mtcoding.blog.course.application.service.dto.SubjectElementCommand;
 import shop.mtcoding.blog.course.web.dto.SubjectElementRequest;
 import shop.mtcoding.blog.course.web.dto.SubjectElementResponse;
 

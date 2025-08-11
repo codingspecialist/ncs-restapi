@@ -6,8 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import shop.mtcoding.blog._core.utils.Resp;
-import shop.mtcoding.blog.user.application.port.in.dto.UserCommand;
 import shop.mtcoding.blog.user.application.service.UserService;
+import shop.mtcoding.blog.user.application.service.dto.UserCommand;
 import shop.mtcoding.blog.user.web.dto.UserRequest;
 import shop.mtcoding.blog.user.web.dto.UserResponse;
 

@@ -1,8 +1,8 @@
 package shop.mtcoding.blog.course.web.dto;
 
 
-import shop.mtcoding.blog.course.domain.Subject;
-import shop.mtcoding.blog.course.domain.SubjectElement;
+import shop.mtcoding.blog.course.application.domain.Subject;
+import shop.mtcoding.blog.course.application.domain.SubjectElement;
 
 import java.util.List;
 

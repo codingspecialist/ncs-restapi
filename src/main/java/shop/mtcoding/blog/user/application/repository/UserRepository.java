@@ -1,7 +1,7 @@
 package shop.mtcoding.blog.user.application.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import shop.mtcoding.blog.user.domain.User;
+import shop.mtcoding.blog.user.application.domain.User;
 
 import java.util.List;
 import java.util.Optional;

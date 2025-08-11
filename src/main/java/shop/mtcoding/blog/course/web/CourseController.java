@@ -11,7 +11,7 @@ import shop.mtcoding.blog._core.utils.Resp;
 import shop.mtcoding.blog.course.application.service.CourseService;
 import shop.mtcoding.blog.course.web.dto.CourseRequest;
 import shop.mtcoding.blog.course.web.dto.CourseResponse;
-import shop.mtcoding.blog.user.domain.User;
+import shop.mtcoding.blog.user.application.domain.User;
 
 @RequestMapping("/api/courses")
 @RequiredArgsConstructor
@@ -37,6 +37,7 @@ public class CourseController {
         return ResponseEntity.ok(Resp.ok(respDTO));
     }
 
+    // 과정정보만 포함
     @GetMapping("/{courseId}")
     public ResponseEntity<?> info(@PathVariable(value = "courseId") Long courseId) {
         var output = courseService.과정정보(courseId);
@@ -44,6 +45,7 @@ public class CourseController {
         return ResponseEntity.ok(Resp.ok(respDTO));
     }
 
+    // 교과목들, 학생들 포함
     @GetMapping("/{courseId}/detail")
     public ResponseEntity<?> detail(@PathVariable(value = "courseId") Long courseId) {
         // TODO: 평가일, 재평가일 추후 고려하기

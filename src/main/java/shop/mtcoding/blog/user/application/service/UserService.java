@@ -7,11 +7,10 @@ import shop.mtcoding.blog._core.errors.exception.api.Exception400;
 import shop.mtcoding.blog._core.errors.exception.api.Exception401;
 import shop.mtcoding.blog._core.utils.JwtUtil;
 import shop.mtcoding.blog._core.utils.MyUtil;
-import shop.mtcoding.blog.user.application.port.in.dto.UserCommand;
-import shop.mtcoding.blog.user.application.port.in.dto.UserOutput;
-import shop.mtcoding.blog.user.application.port.out.SendEmailPort;
-import shop.mtcoding.blog.user.application.port.out.UserRepositoryPort;
-import shop.mtcoding.blog.user.domain.User;
+import shop.mtcoding.blog.user.application.domain.User;
+import shop.mtcoding.blog.user.application.repository.UserRepository;
+import shop.mtcoding.blog.user.application.service.dto.UserCommand;
+import shop.mtcoding.blog.user.application.service.dto.UserOutput;
 
 import java.util.Optional;
 
@@ -19,11 +18,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepositoryPort userRepositoryPort;
-    private final SendEmailPort sendEmailPort;
+    private final UserRepository userRepository;
 
     public UserOutput.Session 로그인(UserCommand.Login command) {
-        User findUser = userRepositoryPort.findByUsernameAndPassword(
+        User findUser = userRepository.findByUsernameAndPassword(
                         command.username(), command.password())
                 .orElseThrow(() -> new Exception401("인증되지 않았습니다"));
 
@@ -35,34 +33,32 @@ public class UserService {
 
     @Transactional
     public UserOutput.Max 학생회원가입(UserCommand.StudentJoin command) {
-        Optional<User> userOP = userRepositoryPort.findByUsername(command.username());
+        Optional<User> userOP = userRepository.findByUsername(command.username());
         if (userOP.isPresent())
             throw new Exception400("중복된 유저네임입니다.");
 
         String authCode = MyUtil.generateAuthCode();
-        User savedUser = userRepositoryPort.save(User.createStudent(command, authCode));
-
-        sendEmailPort.sendEmail(savedUser.getEmail(), "회원가입이 완료메시지", "인증코드 : " + authCode);
+        User savedUser = userRepository.save(User.createStudent(command, authCode));
 
         return new UserOutput.Max(savedUser);
     }
 
     @Transactional
     public UserOutput.Max 강사회원가입(UserCommand.TeacherJoin command) {
-        Optional<User> userOP = userRepositoryPort.findByUsername(command.username());
+        Optional<User> userOP = userRepository.findByUsername(command.username());
         if (userOP.isPresent())
             throw new Exception400("중복된 유저네임입니다.");
 
-        User savedUser = userRepositoryPort.save(User.createTeacher(command));
+        User savedUser = userRepository.save(User.createTeacher(command));
         return new UserOutput.Max(savedUser);
     }
 
     @Transactional
     public UserOutput.Max 직원회원가입(UserCommand.EmpJoin command) {
-        Optional<User> userOP = userRepositoryPort.findByUsername(command.username());
+        Optional<User> userOP = userRepository.findByUsername(command.username());
         if (userOP.isPresent())
             throw new Exception400("중복된 유저네임입니다.");
-        User savedUser = userRepositoryPort.save(User.createEmp(command));
+        User savedUser = userRepository.save(User.createEmp(command));
 
         return new UserOutput.Max(savedUser);
     }

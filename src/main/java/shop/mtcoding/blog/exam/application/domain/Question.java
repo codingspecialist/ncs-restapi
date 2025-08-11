@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog._core.errors.exception.api.Exception500;
-import shop.mtcoding.blog.course.domain.SubjectElement;
+import shop.mtcoding.blog.course.application.domain.SubjectElement;
 import shop.mtcoding.blog.exam.application.domain.enums.EvaluationWay;
 
 import java.time.LocalDateTime;

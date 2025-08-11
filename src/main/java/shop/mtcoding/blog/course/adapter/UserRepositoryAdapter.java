@@ -2,8 +2,8 @@ package shop.mtcoding.blog.course.adapter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import shop.mtcoding.blog.user.adapter.out.persistence.UserRepository;
-import shop.mtcoding.blog.user.domain.User;
+import shop.mtcoding.blog.user.application.domain.User;
+import shop.mtcoding.blog.user.application.repository.UserRepository;
 
 import java.util.List;
 

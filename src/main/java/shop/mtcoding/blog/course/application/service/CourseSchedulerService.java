@@ -6,23 +6,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import shop.mtcoding.blog._core.utils.MyUtil;
-import shop.mtcoding.blog.course.application.port.in.CourseStatusUpdateUseCase;
-import shop.mtcoding.blog.course.application.port.out.CourseRepositoryPort;
-import shop.mtcoding.blog.course.domain.Course;
-import shop.mtcoding.blog.course.domain.enums.CourseStatus;
+import shop.mtcoding.blog.course.application.domain.Course;
+import shop.mtcoding.blog.course.application.domain.enums.CourseStatus;
+import shop.mtcoding.blog.course.application.repository.CourseRepository;
 
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class CourseSchedulerService implements CourseStatusUpdateUseCase {
+public class CourseSchedulerService {
 
-    private final CourseRepositoryPort courseRepository;
+    private final CourseRepository courseRepository;
 
     @Scheduled(cron = "0 0 3 * * *") // 매일 새벽 3시
     @Transactional
-    @Override
     public void updateCourseStatus() {
         List<Course> courses = courseRepository.findAllNotFinished();
 

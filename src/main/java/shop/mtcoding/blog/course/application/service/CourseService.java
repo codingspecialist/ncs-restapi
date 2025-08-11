@@ -6,16 +6,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.api.Exception404;
-import shop.mtcoding.blog.course.adapter.out.external.UserRepositoryAdapter;
-import shop.mtcoding.blog.course.application.port.in.CourseUseCase;
-import shop.mtcoding.blog.course.application.port.in.dto.CourseCommand;
-import shop.mtcoding.blog.course.application.port.in.dto.CourseOutput;
-import shop.mtcoding.blog.course.application.port.out.CourseRepositoryPort;
-import shop.mtcoding.blog.course.domain.Course;
-import shop.mtcoding.blog.course.domain.CourseStudent;
-import shop.mtcoding.blog.course.domain.CourseTeacher;
-import shop.mtcoding.blog.course.domain.Subject;
-import shop.mtcoding.blog.course.domain.enums.TeacherType;
+import shop.mtcoding.blog.course.adapter.UserRepositoryAdapter;
+import shop.mtcoding.blog.course.application.domain.Course;
+import shop.mtcoding.blog.course.application.domain.CourseStudent;
+import shop.mtcoding.blog.course.application.domain.CourseTeacher;
+import shop.mtcoding.blog.course.application.domain.Subject;
+import shop.mtcoding.blog.course.application.domain.enums.TeacherType;
+import shop.mtcoding.blog.course.application.repository.CourseRepository;
+import shop.mtcoding.blog.course.application.service.dto.CourseCommand;
+import shop.mtcoding.blog.course.application.service.dto.CourseOutput;
 import shop.mtcoding.blog.user.domain.User;
 
 import java.util.List;
@@ -23,21 +22,19 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
-public class CourseService implements CourseUseCase {
+public class CourseService {
 
-    private final CourseRepositoryPort courseRepositoryPort;
+    private final CourseRepository courseRepository;
     private final UserRepositoryAdapter userRepositoryAdapter;
 
-    @Override
     public CourseOutput.MaxPage 과정목록(Long teacherId, Pageable pageable) {
-        Page<Course> coursePG = courseRepositoryPort.findAllByTeacherId(teacherId, pageable);
+        Page<Course> coursePG = courseRepository.findAllByTeacherId(teacherId, pageable);
         return new CourseOutput.MaxPage(coursePG);
     }
 
-    @Override
     public CourseOutput.Max 과정등록(CourseCommand.Save command) {
         User loadUser = userRepositoryAdapter.loadUserByTeacherId(command.mainTeacherId());
-        Course savedCourse = courseRepositoryPort.save(Course.create(command));
+        Course savedCourse = courseRepository.save(Course.create(command));
 
         CourseTeacher mainTeacher = CourseTeacher.create(savedCourse, loadUser.getTeacher(), TeacherType.MAIN);
         savedCourse.addCourseTeacher(mainTeacher);
@@ -51,21 +48,19 @@ public class CourseService implements CourseUseCase {
         return new CourseOutput.Max(savedCourse);
     }
 
-    @Override
     public CourseOutput.Max 과정정보(Long courseId) {
-        Course findCourse = courseRepositoryPort.findById(courseId)
+        Course findCourse = courseRepository.findById(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
 
         return new CourseOutput.Max(findCourse);
     }
 
-    @Override
     public CourseOutput.Detail 과정상세(Long courseId) {
-        Course findCourse = courseRepositoryPort.findById(courseId)
+        Course findCourse = courseRepository.findById(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
 
-        List<Subject> findSubjects = courseRepositoryPort.findAllSubjectsByCourseId(findCourse.getId());
-        List<CourseStudent> findStudents = courseRepositoryPort.findAllStudentsByCourseId(findCourse.getId());
+        List<Subject> findSubjects = courseRepository.findAllSubjectsByCourseId(findCourse.getId());
+        List<CourseStudent> findStudents = courseRepository.findAllStudentsByCourseId(findCourse.getId());
         return new CourseOutput.Detail(findCourse, findSubjects, findStudents);
     }
 }

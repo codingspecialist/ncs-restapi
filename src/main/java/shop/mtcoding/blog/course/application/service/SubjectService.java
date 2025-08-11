@@ -4,36 +4,33 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.api.Exception404;
-import shop.mtcoding.blog.course.application.port.in.SubjectUseCase;
-import shop.mtcoding.blog.course.application.port.in.dto.SubjectCommand;
-import shop.mtcoding.blog.course.application.port.in.dto.SubjectOutput;
-import shop.mtcoding.blog.course.application.port.out.CourseRepositoryPort;
-import shop.mtcoding.blog.course.application.port.out.SubjectRepositoryPort;
-import shop.mtcoding.blog.course.domain.Course;
-import shop.mtcoding.blog.course.domain.CourseTeacher;
-import shop.mtcoding.blog.course.domain.Subject;
+import shop.mtcoding.blog.course.application.domain.Course;
+import shop.mtcoding.blog.course.application.domain.CourseTeacher;
+import shop.mtcoding.blog.course.application.domain.Subject;
+import shop.mtcoding.blog.course.application.repository.CourseRepository;
+import shop.mtcoding.blog.course.application.repository.SubjectRepository;
+import shop.mtcoding.blog.course.application.service.dto.SubjectCommand;
+import shop.mtcoding.blog.course.application.service.dto.SubjectOutput;
 
 import java.util.List;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
-public class SubjectService implements SubjectUseCase {
-    private final SubjectRepositoryPort subjectRepositoryPort;
-    private final CourseRepositoryPort courseRepositoryPort;
+public class SubjectService {
+    private final SubjectRepository subjectRepository;
+    private final CourseRepository courseRepository;
 
-    @Override
     public SubjectOutput.MaxList 과정별교과목(Long courseId) {
-        List<Subject> subjects = subjectRepositoryPort.findAllByCourseId(courseId);
+        List<Subject> subjects = subjectRepository.findAllByCourseId(courseId);
         return new SubjectOutput.MaxList(subjects);
     }
 
     @Transactional
-    @Override
     public void 교과목등록(Long courseId, SubjectCommand.Save command) {
-        Course coursePS = courseRepositoryPort.findById(courseId)
+        Course coursePS = courseRepository.findById(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
         CourseTeacher courseTeacher = CourseTeacher.builder().id(command.courseTeacherId()).build();
-        subjectRepositoryPort.save(command.toEntity(coursePS, courseTeacher));
+        subjectRepository.save(command.toEntity(coursePS, courseTeacher));
     }
 }

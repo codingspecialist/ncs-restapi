@@ -7,10 +7,6 @@ import shop.mtcoding.blog._core.errors.exception.api.Exception400;
 import shop.mtcoding.blog._core.errors.exception.api.Exception401;
 import shop.mtcoding.blog._core.utils.JwtUtil;
 import shop.mtcoding.blog._core.utils.MyUtil;
-import shop.mtcoding.blog.user.application.port.in.EmpUseCase;
-import shop.mtcoding.blog.user.application.port.in.StudentUseCase;
-import shop.mtcoding.blog.user.application.port.in.TeacherUseCase;
-import shop.mtcoding.blog.user.application.port.in.UserUseCase;
 import shop.mtcoding.blog.user.application.port.in.dto.UserCommand;
 import shop.mtcoding.blog.user.application.port.in.dto.UserOutput;
 import shop.mtcoding.blog.user.application.port.out.SendEmailPort;
@@ -21,13 +17,11 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements
-        UserUseCase, StudentUseCase, TeacherUseCase, EmpUseCase {
+public class UserService {
 
     private final UserRepositoryPort userRepositoryPort;
     private final SendEmailPort sendEmailPort;
 
-    @Override
     public UserOutput.Session 로그인(UserCommand.Login command) {
         User findUser = userRepositoryPort.findByUsernameAndPassword(
                         command.username(), command.password())
@@ -40,7 +34,6 @@ public class UserService implements
     }
 
     @Transactional
-    @Override
     public UserOutput.Max 학생회원가입(UserCommand.StudentJoin command) {
         Optional<User> userOP = userRepositoryPort.findByUsername(command.username());
         if (userOP.isPresent())
@@ -55,7 +48,6 @@ public class UserService implements
     }
 
     @Transactional
-    @Override
     public UserOutput.Max 강사회원가입(UserCommand.TeacherJoin command) {
         Optional<User> userOP = userRepositoryPort.findByUsername(command.username());
         if (userOP.isPresent())
@@ -66,7 +58,6 @@ public class UserService implements
     }
 
     @Transactional
-    @Override
     public UserOutput.Max 직원회원가입(UserCommand.EmpJoin command) {
         Optional<User> userOP = userRepositoryPort.findByUsername(command.username());
         if (userOP.isPresent())

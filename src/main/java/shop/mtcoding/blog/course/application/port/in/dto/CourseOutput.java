@@ -3,7 +3,7 @@ package shop.mtcoding.blog.course.application.port.in.dto;
 import org.springframework.data.domain.Page;
 import shop.mtcoding.blog.course.domain.Course;
 import shop.mtcoding.blog.course.domain.CourseStudent;
-import shop.mtcoding.blog.course.domain.CourseSubject;
+import shop.mtcoding.blog.course.domain.Subject;
 
 import java.util.List;
 
@@ -14,6 +14,6 @@ public class CourseOutput {
     public record Max(Course course) {
     }
 
-    public record Detail(Course course, List<CourseSubject> subjects, List<CourseStudent> students) {
+    public record Detail(Course course, List<Subject> subjects, List<CourseStudent> students) {
     }
 }

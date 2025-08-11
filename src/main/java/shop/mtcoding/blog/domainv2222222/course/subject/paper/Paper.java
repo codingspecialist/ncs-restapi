@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import shop.mtcoding.blog.course.domain.CourseSubject;
 import shop.mtcoding.blog.domainv2222222.course.exam.Exam;
 import shop.mtcoding.blog.domainv2222222.course.subject.paper.question.Question;
 

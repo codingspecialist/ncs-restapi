@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.mtcoding.blog.course.domain.Course;
 import shop.mtcoding.blog.course.domain.CourseStudent;
-import shop.mtcoding.blog.course.domain.CourseSubject;
+import shop.mtcoding.blog.course.domain.Subject;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +18,7 @@ public interface CourseRepositoryPort {
 
     Course save(Course course);
 
-    List<CourseSubject> findAllSubjectsByCourseId(Long courseId);
+    List<Subject> findAllSubjectsByCourseId(Long courseId);
 
     List<CourseStudent> findAllStudentsByCourseId(Long courseId);
 }

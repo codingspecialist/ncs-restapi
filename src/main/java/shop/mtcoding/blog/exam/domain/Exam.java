@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog._core.utils.MyUtil;
 import shop.mtcoding.blog.course.domain.CourseStudent;
-import shop.mtcoding.blog.course.domain.CourseSubject;
 import shop.mtcoding.blog.course.domain.CourseTeacher;
+import shop.mtcoding.blog.course.domain.Subject;
 import shop.mtcoding.blog.exam.domain.enums.EvaluationWay;
 import shop.mtcoding.blog.exam.domain.enums.ExamNotTakenReason;
 import shop.mtcoding.blog.exam.domain.enums.ExamResultStatus;
@@ -32,7 +32,7 @@ public class Exam {
 
     // TODO: MSA 전환시 FK로 빼야함
     @ManyToOne(fetch = FetchType.LAZY)
-    private CourseSubject courseSubject;
+    private Subject subject;
 
     // TODO: MSA 전환시 FK로 빼야함
     @ManyToOne(fetch = FetchType.LAZY)
@@ -85,9 +85,9 @@ public class Exam {
     }
 
     @Builder
-    public Exam(Long id, CourseSubject courseSubject, Paper paper, CourseStudent courseStudent, CourseTeacher courseTeacher, ExamResultStatus resultStatus, ExamNotTakenReason notTakenReason, Double rawScore, Double totalScore, Double totalScorePercent, Integer gradeLevel, Boolean isActive, String copiedPaperVersion, String copiedEvaluationWay, Double copiedMaxScore, String studentSign, LocalDateTime studentSignedAt, String teacherComment, LocalDateTime teacherCommentedAt, String rubricSubmitLink, LocalDateTime createdAt) {
+    public Exam(Long id, Subject subject, Paper paper, CourseStudent courseStudent, CourseTeacher courseTeacher, ExamResultStatus resultStatus, ExamNotTakenReason notTakenReason, Double rawScore, Double totalScore, Double totalScorePercent, Integer gradeLevel, Boolean isActive, String copiedPaperVersion, String copiedEvaluationWay, Double copiedMaxScore, String studentSign, LocalDateTime studentSignedAt, String teacherComment, LocalDateTime teacherCommentedAt, String rubricSubmitLink, LocalDateTime createdAt) {
         this.id = id;
-        this.courseSubject = courseSubject;
+        this.subject = subject;
         this.paper = paper;
         this.courseStudent = courseStudent;
         this.courseTeacher = courseTeacher;
@@ -114,8 +114,8 @@ public class Exam {
         return Exam.builder()
                 .courseStudent(courseStudent)
                 .paper(paper)
-                .courseSubject(paper.getCourseSubject())
-                .courseTeacher(paper.getCourseSubject().getCourseTeacher())
+                .subject(paper.getSubject())
+                .courseTeacher(paper.getSubject().getCourseTeacher())
                 .copiedPaperVersion(paper.getPaperVersion().toString())
                 .copiedMaxScore(paper.getMaxScore())
                 .copiedEvaluationWay(paper.getEvaluationWay().toString())
@@ -257,7 +257,7 @@ public class Exam {
         this.totalScore = rawScore;
 
         if (paper.isReTest()) {
-            this.totalScore = rawScore * courseSubject.getSubject().getScorePolicy();
+            this.totalScore = rawScore * subject.getScorePolicy();
         }
 
         this.totalScorePercent = MyUtil.scaleTo100(totalScore, copiedMaxScore);

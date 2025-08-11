@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import shop.mtcoding.blog.course.domain.CourseSubject;
+import shop.mtcoding.blog.course.domain.Subject;
 import shop.mtcoding.blog.exam.domain.enums.EvaluationWay;
 import shop.mtcoding.blog.exam.domain.enums.PaperVersion;
 
@@ -30,7 +30,7 @@ public class Paper {
 
     // TODO: MSA전환시 FK ID참조로 변경하기
     @ManyToOne(fetch = FetchType.LAZY)
-    private CourseSubject courseSubject;
+    private Subject subject;
     @Enumerated(EnumType.STRING)
     private PaperVersion paperVersion; // 본평가, 재평가
     private String evaluationRoom;     // 평가 장소
@@ -74,11 +74,11 @@ public class Paper {
     }
 
     @Builder
-    public Paper(Long id, EvaluationWay evaluationWay, LocalDate evaluationDate, CourseSubject courseSubject, PaperVersion paperVersion, String evaluationRoom, String evaluationDevice, Double maxScore, String taskTitle, String taskScenario, String taskScenarioGuideLink, String taskSubmitFormat, String taskSubmitTemplateLink, String taskChallenge, LocalDateTime createdAt) {
+    public Paper(Long id, EvaluationWay evaluationWay, LocalDate evaluationDate, Subject subject, PaperVersion paperVersion, String evaluationRoom, String evaluationDevice, Double maxScore, String taskTitle, String taskScenario, String taskScenarioGuideLink, String taskSubmitFormat, String taskSubmitTemplateLink, String taskChallenge, LocalDateTime createdAt) {
         this.id = id;
         this.evaluationWay = evaluationWay;
         this.evaluationDate = evaluationDate;
-        this.courseSubject = courseSubject;
+        this.subject = subject;
         this.paperVersion = paperVersion;
         this.evaluationRoom = evaluationRoom;
         this.evaluationDevice = evaluationDevice;

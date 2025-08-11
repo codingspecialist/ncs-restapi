@@ -3,7 +3,7 @@ package shop.mtcoding.blog.course.adapter.in.web.dto;
 import org.springframework.data.domain.Page;
 import shop.mtcoding.blog.course.domain.Course;
 import shop.mtcoding.blog.course.domain.CourseStudent;
-import shop.mtcoding.blog.course.domain.CourseSubject;
+import shop.mtcoding.blog.course.domain.Subject;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -76,16 +76,16 @@ public class CourseResponse {
             List<SubjectMax> subjects,
             List<StudentMax> students
     ) {
-        private Detail(Course course, List<CourseSubject> courseSubjects, List<CourseStudent> students) {
+        private Detail(Course course, List<Subject> subjects, List<CourseStudent> students) {
             this(
                     new Max(course),
-                    courseSubjects.stream().map(SubjectMax::new).toList(),
+                    subjects.stream().map(SubjectMax::new).toList(),
                     students.stream().map(StudentMax::new).toList()
             );
         }
 
-        public static Detail from(Course course, List<CourseSubject> courseSubjects, List<CourseStudent> students) {
-            return new Detail(course, courseSubjects, students);
+        public static Detail from(Course course, List<Subject> subjects, List<CourseStudent> students) {
+            return new Detail(course, subjects, students);
         }
 
 
@@ -132,20 +132,20 @@ public class CourseResponse {
                 LocalDate endDate,
                 Long courseId
         ) {
-            private SubjectMax(CourseSubject courseSubjects) {
+            private SubjectMax(Subject subject) {
                 this(
-                        courseSubjects.getId(),
-                        courseSubjects.getSubject().getCode(),
-                        courseSubjects.getSubject().getTitle(),
-                        courseSubjects.getSubject().getPurpose(),
-                        courseSubjects.getSubject().getNcsType().toKorean(),
-                        courseSubjects.getSubject().getGradeLevel(),
-                        courseSubjects.getTotalTime(),
-                        courseSubjects.getNo(),
-                        courseSubjects.getSubject().getLearningWay().toKorean(),
-                        courseSubjects.getStartDate(),
-                        courseSubjects.getEndDate(),
-                        courseSubjects.getCourse().getId()
+                        subject.getId(),
+                        subject.getCode(),
+                        subject.getTitle(),
+                        subject.getPurpose(),
+                        subject.getNcsType().toKorean(),
+                        subject.getGradeLevel(),
+                        subject.getTotalTime(),
+                        subject.getNo(),
+                        subject.getLearningWay().toKorean(),
+                        subject.getStartDate(),
+                        subject.getEndDate(),
+                        subject.getCourse().getId()
                 );
             }
         }

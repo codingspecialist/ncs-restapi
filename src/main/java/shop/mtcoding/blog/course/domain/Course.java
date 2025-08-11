@@ -49,7 +49,7 @@ public class Course {
     private List<CourseStudent> courseStudents = new ArrayList<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CourseSubject> courseSubjects = new ArrayList<>();
+    private List<Subject> subjects = new ArrayList<>();
 
     public void addCourseTeacher(CourseTeacher teacher) {
         if (!courseTeachers.contains(teacher)) {
@@ -65,10 +65,10 @@ public class Course {
         }
     }
 
-    public void addCourseSubject(CourseSubject subject) {
-        if (!courseSubjects.contains(subject)) {
+    public void addCourseSubject(Subject subject) {
+        if (!subjects.contains(subject)) {
             // 루트에서 교과목 담기
-            courseSubjects.add(subject);
+            subjects.add(subject);
             subject.setCourse(this);
         }
     }

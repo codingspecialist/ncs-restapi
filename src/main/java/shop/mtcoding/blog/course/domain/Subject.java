@@ -28,6 +28,7 @@ public class Subject {
     private String title; // 교과목명 (능력단위명)
     private String purpose; // 교과목 목표
     private Integer totalTime; // 교과목 시간
+    private Integer no; // 교과목 번호
 
     @Enumerated(EnumType.STRING)
     private NcsType ncsType; // NCS, 비NCS
@@ -51,9 +52,14 @@ public class Subject {
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
     private List<SubjectElement> elements = new ArrayList<>();
 
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
     @Builder
-    public Subject(Long id, String code, String title, String purpose, Integer totalTime, NcsType ncsType, Integer gradeLevel, LearningWay learningWay, Double scorePolicy, LocalDateTime createdAt, LocalDate startDate, LocalDate endDate, CourseTeacher courseTeacher, Course course) {
+    public Subject(Long id, Integer no, String code, String title, String purpose, Integer totalTime, NcsType ncsType, Integer gradeLevel, LearningWay learningWay, Double scorePolicy, LocalDateTime createdAt, LocalDate startDate, LocalDate endDate, CourseTeacher courseTeacher, Course course) {
         this.id = id;
+        this.no = no;
         this.code = code;
         this.title = title;
         this.purpose = purpose;

@@ -26,6 +26,6 @@ public class PaperModel {
         }
 
         record Element(Long elementId, String subtitle) {
-        }
+        } 
     }
 }

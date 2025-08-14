@@ -17,3 +17,4 @@ public class CourseOutput {
     public record Detail(Course course, List<Subject> subjects, List<CourseStudent> students) {
     }
 }
+ 

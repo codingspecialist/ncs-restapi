@@ -1,22 +1,19 @@
 package shop.mtcoding.blog.exam.web.dto;
 
 import lombok.Data;
-import shop.mtcoding.blog.course.application.domain.Subject;
-import shop.mtcoding.blog.course.application.domain.SubjectElement;
-import shop.mtcoding.blog.exam.application.domain.Paper;
-import shop.mtcoding.blog.exam.application.domain.Question;
-import shop.mtcoding.blog.exam.application.domain.QuestionOption;
 import shop.mtcoding.blog.exam.application.domain.enums.EvaluationWay;
 import shop.mtcoding.blog.exam.application.domain.enums.PaperVersion;
+import shop.mtcoding.blog.exam.application.service.dto.PaperCommand;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class PaperRequest {
 
     @Data
-    public static class QuestionSaveDTO {
+    public static class QuestionSave {
         private Long elementId;
         private Integer questionNo;
         private String questionTitle;
@@ -24,13 +21,20 @@ public class PaperRequest {
 
         private List<OptionDTO> options;
 
-        public Question toEntity(Paper paper, SubjectElement element) {
-            return Question.builder()
-                    .no(questionNo)
-                    .title(questionTitle)
+        public PaperCommand.QuestionSave toCommand() {
+            List<PaperCommand.QuestionSave.Option> optionCommands = null;
+            if (options != null) {
+                optionCommands = options.stream()
+                        .map(OptionDTO::toCommand)
+                        .collect(Collectors.toList());
+            }
+
+            return PaperCommand.QuestionSave.builder()
+                    .elementId(elementId)
+                    .questionNo(questionNo)
+                    .questionTitle(questionTitle)
                     .summary(summary)
-                    .paper(paper)
-                    .subjectElement(element)
+                    .options(optionCommands)
                     .build();
         }
 
@@ -40,29 +44,27 @@ public class PaperRequest {
             private String optionContent;
             private Integer optionPoint;
 
-            public QuestionOption toEntity(Question question) {
-                return QuestionOption.builder()
+            public PaperCommand.QuestionSave.Option toCommand() {
+                return PaperCommand.QuestionSave.Option.builder()
                         .no(optionNo)
                         .content(Optional.ofNullable(optionContent).filter(s -> !s.isBlank()).orElse(null))
                         .point(Optional.ofNullable(optionPoint).orElse(0))
-                        .question(question)
                         .build();
             }
         }
     }
 
     @Data
-    public static class SaveDTO {
+    public static class Save {
         private Long subjectId;
-        private PaperVersion paperVersion; // 본평가 / 재평가
+        private PaperVersion paperVersion;
         private LocalDate evaluationDate;
 
-        private String evaluationDevice; // 평가 장비
-        private String evaluationRoom;   // 평가 장소
+        private String evaluationDevice;
+        private String evaluationRoom;
 
-        private EvaluationWay evaluationWay; // 객관식. 서술형. 작업형. 프로젝트형
+        private EvaluationWay evaluationWay;
 
-        // rubric 관련 항목 (null 가능)
         private String taskTitle;
         private String taskScenario;
         private String taskScenarioGuideLink;
@@ -70,9 +72,9 @@ public class PaperRequest {
         private String taskSubmitTemplateLink;
         private String taskChallenge;
 
-        public Paper toEntity(Subject subject) {
-            return Paper.builder()
-                    .subject(subject)
+        public PaperCommand.Save toCommand() {
+            return PaperCommand.Save.builder()
+                    .subjectId(subjectId)
                     .paperVersion(paperVersion)
                     .evaluationDate(evaluationDate)
                     .evaluationWay(evaluationWay)
@@ -87,5 +89,4 @@ public class PaperRequest {
                     .build();
         }
     }
-
 }

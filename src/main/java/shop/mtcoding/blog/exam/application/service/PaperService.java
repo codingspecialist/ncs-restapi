@@ -16,8 +16,8 @@ import shop.mtcoding.blog.exam.application.repository.PaperRepository;
 import shop.mtcoding.blog.exam.application.repository.QuestionOptionRepository;
 import shop.mtcoding.blog.exam.application.repository.QuestionQueryRepository;
 import shop.mtcoding.blog.exam.application.repository.QuestionRepository;
+import shop.mtcoding.blog.exam.application.service.dto.PaperCommand;
 import shop.mtcoding.blog.exam.application.service.dto.PaperOutput;
-import shop.mtcoding.blog.exam.web.dto.PaperRequest;
 
 import java.util.List;
 
@@ -50,32 +50,32 @@ public class PaperService {
     }
 
     @Transactional
-    public void 시험지등록(PaperRequest.SaveDTO reqDTO) {
-        Subject subjectPS = subjectRepository.findById(reqDTO.getSubjectId())
+    public void 시험지등록(PaperCommand.Save command) {
+        Subject subjectPS = subjectRepository.findById(command.getSubjectId())
                 .orElseThrow(() -> new Exception404("해당 교과목을 찾을 수 없어요"));
 
         // ORIGINAL 유형이면 해당 교과목에 이미 존재하는지 확인
-        if (reqDTO.getPaperVersion() == PaperVersion.ORIGINAL) {
+        if (command.getPaperVersion() == PaperVersion.ORIGINAL) {
             boolean exists = paperRepository.existsBySubjectIdAndPaperVersion(subjectPS.getId(), PaperVersion.ORIGINAL);
             if (exists) {
                 throw new Exception404("해당 교과목에는 이미 본평가(ORIGINAL) 시험지가 존재합니다.");
             }
         }
 
-        paperRepository.save(reqDTO.toEntity(subjectPS));
+        paperRepository.save(command.toEntity(subjectPS));
     }
 
     @Transactional
-    public void 문제등록(Long paperId, PaperRequest.QuestionSaveDTO reqDTO) {
+    public void 문제등록(Long paperId, PaperCommand.QuestionSave command) {
         Paper paper = paperRepository.findById(paperId)
                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
-        SubjectElement subjectElement = subjectElementRepository.findById(reqDTO.getElementId())
+        SubjectElement subjectElement = subjectElementRepository.findById(command.getElementId())
                 .orElseThrow(() -> new Exception404("능력단위 요소가 존재하지 않아요"));
 
         // 저장
-        Question question = questionRepository.save(reqDTO.toEntity(paper, subjectElement));
-        List<QuestionOption> options = reqDTO.getOptions().stream()
+        Question question = questionRepository.save(command.toEntity(paper, subjectElement));
+        List<QuestionOption> options = command.getOptions().stream()
                 .map(opt -> opt.toEntity(question))
                 .toList();
         questionOptionRepository.saveAll(options);

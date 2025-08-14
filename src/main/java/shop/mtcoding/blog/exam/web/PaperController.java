@@ -22,7 +22,7 @@ public class PaperController {
     @GetMapping
     public ResponseEntity<?> list(Long subjectId) { // /api/papers?subjectId=1
         var output = paperService.교과목별시험지목록(subjectId);
-        var respDTO = output.papers().stream().map(paper -> new PaperResponse.DTO(paper)).toList();
+        var respDTO = output.papers().stream().map(PaperResponse.Max::from).toList();
         return ResponseEntity.ok(Resp.ok(respDTO));
     }
 
@@ -33,18 +33,18 @@ public class PaperController {
         var detail = paperService.시험지상세(paperId);
 
         if (detail.paper().getEvaluationWay() == EvaluationWay.MCQ) {
-            var respDTO = new PaperResponse.McqDetailDTO(detail.paper(), detail.questions());
+            var respDTO = PaperResponse.McqDetail.from(detail.paper(), detail.questions());
             return ResponseEntity.ok(Resp.ok(respDTO));
         } else {
-            var respDTO = new PaperResponse.RubricDetailDTO(detail.paper(), detail.questions());
+            var respDTO = PaperResponse.RubricDetail.from(detail.paper(), detail.questions());
             return ResponseEntity.ok(Resp.ok(respDTO));
         }
     }
 
     // 시험지등록(교과목별)
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody PaperRequest.SaveDTO reqDTO) {
-        paperService.시험지등록(reqDTO);
+    public ResponseEntity<?> save(@RequestBody PaperRequest.Save reqDTO) {
+        paperService.시험지등록(reqDTO.toCommand());
         return ResponseEntity.ok(Resp.ok(null));
     }
 
@@ -58,8 +58,8 @@ public class PaperController {
 
     // 문제등록
     @PostMapping("/{paperId}/questions")
-    public ResponseEntity<?> questionSave(@PathVariable("paperId") Long paperId, @RequestBody PaperRequest.QuestionSaveDTO reqDTO) {
-        paperService.문제등록(paperId, reqDTO);
+    public ResponseEntity<?> questionSave(@PathVariable("paperId") Long paperId, @RequestBody PaperRequest.QuestionSave reqDTO) {
+        paperService.문제등록(paperId, reqDTO.toCommand());
         return ResponseEntity.ok(Resp.ok(null));
     }
 

@@ -15,7 +15,7 @@ import shop.mtcoding.blog.domainv2222222.user.teacher.Teacher;
 import java.time.LocalDate;
 import java.util.List;
 
-public class ExamResponse {
+public class ExamTeacherResponse {
 
     @Data
     public static class CourseListDTO {

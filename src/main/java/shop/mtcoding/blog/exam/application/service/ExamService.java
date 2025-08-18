@@ -5,8 +5,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.api.Exception403;
 import shop.mtcoding.blog._core.errors.exception.api.Exception404;
-import shop.mtcoding.blog.webv2.exam.ExamRequest;
-import shop.mtcoding.blog.webv2.student.exam.StudentExamRequest;
+import shop.mtcoding.blog.course.application.repository.SubjectElementRepository;
+import shop.mtcoding.blog.exam.application.domain.Paper;
+import shop.mtcoding.blog.exam.application.repository.ExamRepository;
+import shop.mtcoding.blog.exam.application.repository.PaperRepository;
+import shop.mtcoding.blog.exam.application.repository.QuestionRepository;
+import shop.mtcoding.blog.user.application.domain.User;
+import shop.mtcoding.blog.user.application.repository.UserRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -18,10 +23,11 @@ import java.util.stream.Collectors;
 public class ExamService {
     private final ExamRepository examRepository;
     private final PaperRepository paperRepository;
-    private final StudentRepository studentRepository;
-    private final SubjectElementRepository elementRepository;
     private final QuestionRepository questionRepository;
-    private final TeacherRepository teacherRepository;
+
+    // 어뎁터로 가져와야함
+    private final SubjectElementRepository subjectElementRepository;
+    private final UserRepository userRepository;
 
 
     /// (객관식 -> Exam, ExamAnswer)
@@ -31,7 +37,7 @@ public class ExamService {
         Paper paper = paperRepository.findById(reqDTO.getPaperId())
                 .orElseThrow(() -> new Exception404("시험지를 찾을 수 없어요"));
 
-        Student student = studentRepository.findByUserId(sessionUser.getId())
+        User student = userRepository.findById(sessionUser.getId())
                 .orElseThrow(() -> new Exception404("학생을 찾을 수 없어요"));
 
         // 2. 재평가라면. 본평가를 찾아서 사용안함이라고 업데이트 해주기

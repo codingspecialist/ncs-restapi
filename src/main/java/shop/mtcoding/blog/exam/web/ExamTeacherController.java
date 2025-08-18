@@ -23,7 +23,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
-public class ExamController {
+public class ExamTeacherController {
 
     private final CourseService courseService;
     private final SubjectService subjectService;

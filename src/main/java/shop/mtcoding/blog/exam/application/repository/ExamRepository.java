@@ -16,17 +16,17 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     @Query("select ex from Exam ex left join fetch ex.paper p left join fetch p.subject sb where sb.id = :subjectId and p.paperVersion = :paperVersion")
     List<Exam> findAllBySubjectIdAndPaperVersion(Long subjectId, PaperVersion paperVersion);
 
-    @Query("select ex from Exam ex where ex.paper.subject.id = :subjectId and ex.student.id = :studentId and ex.isActive = :isActive")
+    @Query("select ex from Exam ex where ex.paper.subject.id = :subjectId and ex.courseStudent.id = :studentId and ex.isActive = :isActive")
     Optional<Exam> findBySubjectIdAndStudentIdAndIsUse(@Param("subjectId") Long subjectId, @Param("studentId") Long studentId, @Param("isActive") Boolean isActive);
 
-    @Query("select ex from Exam ex left join fetch ex.paper p join fetch p.subject sb join fetch ex.student st join fetch st.user u where sb.id = :subjectId and ex.isActive = true order by st.name")
+    @Query("select ex from Exam ex left join fetch ex.paper p join fetch p.subject sb join fetch ex.courseStudent st join fetch st.student.user u where sb.id = :subjectId and ex.isActive = true order by st.student.name")
     List<Exam> findBySubjectIdAndIsUseOrderByStudentNameAsc(@Param("subjectId") Long subjectId);
 
 
-    @Query("select ex from Exam ex join fetch ex.paper p join fetch ex.student st join fetch st.user u where ex.paper.subject.id = :subjectId order by st.name asc")
+    @Query("select ex from Exam ex join fetch ex.paper p join fetch ex.courseStudent st join fetch st.student.user u where ex.paper.subject.id = :subjectId order by st.student.name asc")
     List<Exam> findAllBySubjectId(@Param("subjectId") Long subjectId);
 
 
-    @Query("select ex from Exam ex join fetch ex.paper p join fetch ex.student st where ex.student.id = :studentId order by p.subject.no asc")
+    @Query("select ex from Exam ex join fetch ex.paper p join fetch ex.courseStudent st where st.student.id = :studentId order by p.subject.no asc")
     List<Exam> findAllByStudentId(@Param("studentId") Long studentId);
 }

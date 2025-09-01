@@ -1,21 +1,22 @@
 package shop.mtcoding.blog.user.web;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import lombok.RequiredArgsConstructor;
 import shop.mtcoding.blog._core.utils.Resp;
 import shop.mtcoding.blog.user.application.service.EmpService;
 import shop.mtcoding.blog.user.application.service.StudentService;
 import shop.mtcoding.blog.user.application.service.TeacherService;
 import shop.mtcoding.blog.user.application.service.UserService;
-
 import shop.mtcoding.blog.user.web.dto.UserRequest;
-import shop.mtcoding.blog.user.web.dto.UserResponse;
 
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class AuthController {
     private final UserService userService;
     private final StudentService studentService;

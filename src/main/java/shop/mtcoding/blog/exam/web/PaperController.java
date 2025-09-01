@@ -2,7 +2,7 @@ package shop.mtcoding.blog.exam.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog._core.utils.Resp;
 import shop.mtcoding.blog.exam.application.domain.enums.EvaluationWay;
@@ -12,7 +12,7 @@ import shop.mtcoding.blog.exam.web.dto.PaperResponse;
 
 @RequestMapping("/api/papers")
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class PaperController {
     private final PaperService paperService;
 

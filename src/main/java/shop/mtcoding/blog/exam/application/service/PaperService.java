@@ -6,8 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.api.Exception404;
 import shop.mtcoding.blog.course.application.domain.Subject;
 import shop.mtcoding.blog.course.application.domain.SubjectElement;
-import shop.mtcoding.blog.course.application.repository.SubjectElementRepository;
-import shop.mtcoding.blog.course.application.repository.SubjectRepository;
+import shop.mtcoding.blog.exam.adapter.CourseRepositoryAdapterInExam;
 import shop.mtcoding.blog.exam.application.domain.Paper;
 import shop.mtcoding.blog.exam.application.domain.Question;
 import shop.mtcoding.blog.exam.application.domain.QuestionOption;
@@ -31,8 +30,7 @@ public class PaperService {
         private final QuestionOptionRepository questionOptionRepository;
 
         // 어뎁터로 가져와야함
-        private final SubjectElementRepository subjectElementRepository;
-        private final SubjectRepository subjectRepository;
+        private final CourseRepositoryAdapterInExam courseRepositoryAdapter;
 
         // 교과목별 시험지 목록
         public PaperResponse.MaxList 교과목별시험지목록(Long subjectId) {
@@ -51,7 +49,7 @@ public class PaperService {
 
         @Transactional
         public void 시험지등록(PaperRequest.Save request) {
-                Subject subjectPS = subjectRepository.findById(request.getSubjectId())
+                Subject subjectPS = courseRepositoryAdapter.findSubjectById(request.getSubjectId())
                                 .orElseThrow(() -> new Exception404("해당 교과목을 찾을 수 없어요"));
 
                 // ORIGINAL 유형이면 해당 교과목에 이미 존재하는지 확인
@@ -86,7 +84,7 @@ public class PaperService {
                 Paper paper = paperRepository.findById(paperId)
                                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
-                SubjectElement subjectElement = subjectElementRepository.findById(request.getElementId())
+                SubjectElement subjectElement = courseRepositoryAdapter.findSubjectElementById(request.getElementId())
                                 .orElseThrow(() -> new Exception404("능력단위 요소가 존재하지 않아요"));
 
                 // 저장
@@ -118,7 +116,7 @@ public class PaperService {
                 Paper paperPS = paperRepository.findById(paperId)
                                 .orElseThrow(() -> new Exception404("시험지가 존재하지 않아요"));
 
-                List<SubjectElement> elementListPS = subjectElementRepository
+                List<SubjectElement> elementListPS = courseRepositoryAdapter
                                 .findAllBySubjectId(paperPS.getSubject().getId());
 
                 PaperResponse.NextQuestion nextQuestion = questionQueryRepository.findNextNo(paperId)

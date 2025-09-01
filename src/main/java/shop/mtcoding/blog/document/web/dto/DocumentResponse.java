@@ -357,27 +357,25 @@ public class DocumentResponse {
         private String sign;
 
         public No2McqDTO(Subject subject, List<Question> questions) {
-            Paper paper = null; // Subject에서 Paper를 직접 가져올 수 없음
             this.draftingTeam = "교육운영팀";
-            this.docNumber = "부산 " + paper.getEvaluationDate().toString().substring(2);
-            this.writingDate = paper.getEvaluationDate().toString();
-            this.requestDate = paper.getEvaluationDate().toString();
+            this.docNumber = "부산 임시";
+            this.writingDate = "임시";
+            this.requestDate = "임시";
             this.retentionPeriod = "5년";
-            this.author = paper.getSubject().getCourseTeacher().getTeacher().getName();
+            this.author = subject.getCourseTeacher().getTeacher().getName();
             this.recipient = "내부결재";
-            this.title = paper.getSubject().getCourse().getTitle() + " 평가 실시보고";
-            this.ga = paper.getSubject().getCourse().getTitle();
-            this.na = paper.getSubject().getCourse().getStartDate() + " ~ "
-                    + paper.getSubject().getCourse().getEndDate() + " (" + paper.getSubject().getCourse().getTotalTime()
+            this.title = subject.getCourse().getTitle() + " 평가 실시보고";
+            this.ga = subject.getCourse().getTitle();
+            this.na = subject.getCourse().getStartDate() + " ~ "
+                    + subject.getCourse().getEndDate() + " (" + subject.getCourse().getTotalTime()
                     + "시간)";
-            this.da = paper.getSubject().getTitle() + " (" + paper.getEvaluationWay().toKorean() + ")";
-            this.ra = paper.getSubject().getCourseTeacher().getTeacher().getName();
-            this.ma = paper.getEvaluationDate().toString();
+            this.da = subject.getTitle() + " (임시)";
+            this.ra = subject.getCourseTeacher().getTeacher().getName();
+            this.ma = "임시";
 
             // 중탈안한 총 학생수
-            long allStudentCount = paper.getSubject().getCourse().getCourseStudents().stream()
-                    .filter(student -> student.getStudent().getDropOutDate() == null
-                            || student.getStudent().getDropOutDate().isAfter(paper.getEvaluationDate()))
+            long allStudentCount = subject.getCourse().getCourseStudents().stream()
+                    .filter(student -> student.getStudent().getDropOutDate() == null)
                     .count();
             this.ba = "재적 " + allStudentCount + "명";
 
@@ -415,27 +413,25 @@ public class DocumentResponse {
         private String sign;
 
         public No2RubricDTO(Subject subject, List<Question> questions) {
-            Paper paper = null; // Subject에서 Paper를 직접 가져올 수 없음
             this.draftingTeam = "교육운영팀";
-            this.docNumber = "부산 " + paper.getEvaluationDate().toString().substring(2);
-            this.writingDate = paper.getEvaluationDate().toString();
-            this.requestDate = paper.getEvaluationDate().toString();
+            this.docNumber = "부산 임시";
+            this.writingDate = "임시";
+            this.requestDate = "임시";
             this.retentionPeriod = "5년";
-            this.author = paper.getSubject().getCourseTeacher().getTeacher().getName();
+            this.author = subject.getCourseTeacher().getTeacher().getName();
             this.recipient = "내부결재";
-            this.title = paper.getSubject().getCourse().getTitle() + " 평가 실시보고";
-            this.ga = paper.getSubject().getCourse().getTitle();
-            this.na = paper.getSubject().getCourse().getStartDate() + " ~ "
-                    + paper.getSubject().getCourse().getEndDate() + " (" + paper.getSubject().getCourse().getTotalTime()
+            this.title = subject.getCourse().getTitle() + " 평가 실시보고";
+            this.ga = subject.getCourse().getTitle();
+            this.na = subject.getCourse().getStartDate() + " ~ "
+                    + subject.getCourse().getEndDate() + " (" + subject.getCourse().getTotalTime()
                     + "시간)";
-            this.da = paper.getSubject().getTitle() + " (" + paper.getEvaluationWay().toKorean() + ")";
-            this.ra = paper.getSubject().getCourseTeacher().getTeacher().getName();
-            this.ma = paper.getEvaluationDate().toString();
+            this.da = subject.getTitle() + " (임시)";
+            this.ra = subject.getCourseTeacher().getTeacher().getName();
+            this.ma = "임시";
 
             // 중탈안한 총 학생수
-            long allStudentCount = paper.getSubject().getCourse().getCourseStudents().stream()
-                    .filter(student -> student.getStudent().getDropOutDate() == null
-                            || student.getStudent().getDropOutDate().isAfter(paper.getEvaluationDate()))
+            long allStudentCount = subject.getCourse().getCourseStudents().stream()
+                    .filter(student -> student.getStudent().getDropOutDate() == null)
                     .count();
             this.ba = "재적 " + allStudentCount + "명";
 
@@ -592,26 +588,4 @@ public class DocumentResponse {
         }
     }
 
-    // DocumentModel 대신 사용할 record들
-    public record CourseSlice(Page<Course> coursePage) {
-    }
-
-    public record SubjectItems(List<Subject> subjects) {
-    }
-
-    public record No1(Subject subject, List<Question> questions, Teacher teacher, Paper paper) {
-    }
-
-    public record No2(EvaluationWay evaluationWay, Subject subject, List<Question> questions) {
-    }
-
-    public record No3(Paper paper, List<SubjectElement> elements, List<Question> questions, Teacher teacher) {
-    }
-
-    public record No4(Exam exam, List<SubjectElement> elements, Teacher teacher, Integer prevIndex, Integer nextIndex,
-            Integer currentIndex) {
-    }
-
-    public record No5(List<Exam> exams, List<Exam> reExams, Teacher teacher) {
-    }
 }

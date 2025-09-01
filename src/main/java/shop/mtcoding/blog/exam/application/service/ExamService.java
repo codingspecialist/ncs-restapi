@@ -10,47 +10,23 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.blog._core.errors.exception.api.Exception403;
 import shop.mtcoding.blog._core.errors.exception.api.Exception404;
-import shop.mtcoding.blog._core.utils.Base64Util;
-import shop.mtcoding.blog._core.utils.MyUtil;
-import shop.mtcoding.blog._core.utils.Resp;
-import shop.mtcoding.blog._core.utils.Script;
-import shop.mtcoding.blog._core.utils.PasswordUtil;
-import shop.mtcoding.blog._core.utils.JwtUtil;
-
-import shop.mtcoding.blog.course.application.domain.Course;
 import shop.mtcoding.blog.course.application.domain.CourseStudent;
-import shop.mtcoding.blog.course.application.domain.CourseTeacher;
-import shop.mtcoding.blog.course.application.domain.Subject;
 import shop.mtcoding.blog.course.application.domain.SubjectElement;
-import shop.mtcoding.blog.course.application.repository.CourseRepository;
-import shop.mtcoding.blog.course.application.repository.CourseStudentRepository;
-import shop.mtcoding.blog.course.application.repository.SubjectElementRepository;
-import shop.mtcoding.blog.course.application.repository.SubjectRepository;
+import shop.mtcoding.blog.exam.adapter.CourseRepositoryAdapterInExam;
+import shop.mtcoding.blog.exam.adapter.UserRepositoryAdapterInExam;
 import shop.mtcoding.blog.exam.application.domain.Exam;
-import shop.mtcoding.blog.exam.application.domain.ExamAnswer;
-import shop.mtcoding.blog.exam.application.domain.ExamResult;
 import shop.mtcoding.blog.exam.application.domain.Paper;
 import shop.mtcoding.blog.exam.application.domain.Question;
-import shop.mtcoding.blog.exam.application.domain.QuestionOption;
-import shop.mtcoding.blog.exam.application.domain.enums.ExamNotTakenReason;
 import shop.mtcoding.blog.exam.application.domain.enums.ExamResultStatus;
 import shop.mtcoding.blog.exam.application.domain.enums.ExamTakingStatus;
 import shop.mtcoding.blog.exam.application.domain.enums.PaperVersion;
-import shop.mtcoding.blog.exam.application.domain.enums.EvaluationWay;
 import shop.mtcoding.blog.exam.application.repository.ExamRepository;
-import shop.mtcoding.blog.exam.application.repository.ExamAnswerRepository;
-import shop.mtcoding.blog.exam.application.repository.ExamResultRepository;
 import shop.mtcoding.blog.exam.application.repository.PaperRepository;
 import shop.mtcoding.blog.exam.application.repository.QuestionRepository;
-import shop.mtcoding.blog.exam.application.repository.QuestionOptionRepository;
-import shop.mtcoding.blog.exam.application.repository.QuestionQueryRepository;
 import shop.mtcoding.blog.exam.web.dto.ExamStudentRequest;
 import shop.mtcoding.blog.exam.web.dto.ExamStudentResponse;
 import shop.mtcoding.blog.exam.web.dto.ExamTeacherRequest;
-import shop.mtcoding.blog.user.application.domain.Student;
-import shop.mtcoding.blog.user.application.domain.Teacher;
 import shop.mtcoding.blog.user.application.domain.User;
-import shop.mtcoding.blog.user.application.repository.UserRepository;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -61,9 +37,8 @@ public class ExamService {
         private final QuestionRepository questionRepository;
 
         // 어뎁터로 가져와야함
-        private final SubjectElementRepository subjectElementRepository;
-        private final UserRepository userRepository;
-        private final CourseStudentRepository courseStudentRepository;
+        private final CourseRepositoryAdapterInExam courseRepositoryAdapter;
+        private final UserRepositoryAdapterInExam userRepositoryAdapter;
 
         /// (객관식 -> Exam, ExamAnswer)
         @Transactional
@@ -72,11 +47,12 @@ public class ExamService {
                 Paper paper = paperRepository.findById(reqDTO.getPaperId())
                                 .orElseThrow(() -> new Exception404("시험지를 찾을 수 없어요"));
 
-                User user = userRepository.findById(sessionUser.getId())
+                User user = userRepositoryAdapter.findById(sessionUser.getId())
                                 .orElseThrow(() -> new Exception404("학생을 찾을 수 없어요"));
 
                 // 2. CourseStudent 객체 조회 (추가된 로직)
-                CourseStudent courseStudent = courseStudentRepository.findByStudentId(user.getStudent().getId())
+                CourseStudent courseStudent = courseRepositoryAdapter
+                                .findCourseStudentByStudentId(user.getStudent().getId())
                                 .orElseThrow(() -> new Exception404("해당 학생의 수강 정보를 찾을 수 없어요."));
 
                 // 3. 재평가라면. 본평가를 찾아서 사용안함이라고 업데이트 해주기
@@ -116,11 +92,12 @@ public class ExamService {
                 Paper paper = paperRepository.findById(reqDTO.getPaperId())
                                 .orElseThrow(() -> new Exception404("시험지를 찾을 수 없어요"));
 
-                User user = userRepository.findById(sessionUser.getId())
+                User user = userRepositoryAdapter.findById(sessionUser.getId())
                                 .orElseThrow(() -> new Exception404("학생을 찾을 수 없어요"));
 
                 // 2. CourseStudent 객체 조회 (추가된 로직)
-                CourseStudent courseStudent = courseStudentRepository.findByStudentId(user.getStudent().getId())
+                CourseStudent courseStudent = courseRepositoryAdapter
+                                .findCourseStudentByStudentId(user.getStudent().getId())
                                 .orElseThrow(() -> new Exception404("해당 학생의 수강 정보를 찾을 수 없어요."));
 
                 // 3. 재평가라면. 본평가를 찾아서 사용안함이라고 업데이트 해주기
@@ -182,14 +159,15 @@ public class ExamService {
         @Transactional
         public void 강사미응시이유처리(ExamTeacherRequest.NotTakenReason reqDTO) {
                 // 1. 학생/시험지 조회
-                User user = userRepository.findById(reqDTO.studentId())
+                User user = userRepositoryAdapter.findById(reqDTO.studentId())
                                 .orElseThrow(() -> new Exception404("학생을 찾을 수 없습니다."));
 
                 Paper paper = paperRepository.findById(reqDTO.paperId())
                                 .orElseThrow(() -> new Exception404("시험지를 찾을 수 없습니다."));
 
                 // 2. CourseStudent 객체 조회 (추가된 로직)
-                CourseStudent courseStudent = courseStudentRepository.findByStudentId(user.getStudent().getId())
+                CourseStudent courseStudent = courseRepositoryAdapter
+                                .findCourseStudentByStudentId(user.getStudent().getId())
                                 .orElseThrow(() -> new Exception404("해당 학생의 수강 정보를 찾을 수 없습니다."));
 
                 // 3. 미응시 이유 확정
@@ -205,7 +183,7 @@ public class ExamService {
                                 .orElseThrow(() -> new Exception404("본평가 시험지를 찾을 수 없습니다"));
 
                 // 2. 전체 학생 조회
-                List<CourseStudent> students = courseStudentRepository.findAllByCourseId(courseId);
+                List<CourseStudent> students = courseRepositoryAdapter.findAllByCourseId(courseId);
 
                 // 3. 해당 학생들의 시험 조회
                 List<Exam> exams = examRepository.findByCourseStudentInAndSubjectId(students, subjectId);
@@ -238,8 +216,8 @@ public class ExamService {
         public ExamStudentResponse.MyPaperItems 학생응시가능한시험지목록(User sessionUser) {
                 // 1. 학생의 수강 정보 조회 (CourseStudent)
                 // CourseStudent가 Student 엔티티를 가지고 있으므로, StudentId로 CourseStudent를 찾습니다.
-                CourseStudent myCourseStudent = courseStudentRepository
-                                .findByStudentId(sessionUser.getStudent().getId())
+                CourseStudent myCourseStudent = courseRepositoryAdapter
+                                .findCourseStudentByStudentId(sessionUser.getStudent().getId())
                                 .orElseThrow(() -> new Exception404("해당 학생의 수강 정보를 찾을 수 없습니다."));
 
                 // 2. 전체 시험지 조회
@@ -291,10 +269,10 @@ public class ExamService {
                                 .orElseThrow(() -> new Exception404("시험지를 찾을 수 없습니다."));
 
                 // 2. 과목 요소 조회
-                List<SubjectElement> elements = subjectElementRepository.findAllBySubjectId(paper.getSubject().getId());
+                List<SubjectElement> elements = courseRepositoryAdapter.findAllBySubjectId(paper.getSubject().getId());
 
                 // 3. 수험생 이름 조회
-                User user = userRepository.findById(sessionUser.getId())
+                User user = userRepositoryAdapter.findById(sessionUser.getId())
                                 .orElseThrow(() -> new Exception404("학생을 찾을 수 없어요"));
 
                 // 4. 문항 목록 조회
@@ -323,7 +301,7 @@ public class ExamService {
                 List<Exam> exams = examRepository.findBySubjectIdAndIsUseOrderByStudentNameAsc(subjectId);
 
                 // 3. 교과목 요소 및 교사 정보 조회
-                List<SubjectElement> elements = subjectElementRepository.findAllBySubjectId(subjectId);
+                List<SubjectElement> elements = courseRepositoryAdapter.findAllBySubjectId(subjectId);
 
                 return new ExamStudentResponse.ResultDetails(exam.getPaper().getEvaluationWay(),
                                 exams, elements, exam.getCourseTeacher().getTeacher());
@@ -339,7 +317,7 @@ public class ExamService {
                 Long subjectId = exam.getPaper().getSubject().getId();
 
                 // 3. 교과목 요소 및 교사 정보 조회
-                List<SubjectElement> elements = subjectElementRepository.findAllBySubjectId(subjectId);
+                List<SubjectElement> elements = courseRepositoryAdapter.findAllBySubjectId(subjectId);
 
                 return new ExamStudentResponse.ResultDetail(exam.getPaper().getEvaluationWay(),
                                 exam, elements, exam.getCourseTeacher().getTeacher());

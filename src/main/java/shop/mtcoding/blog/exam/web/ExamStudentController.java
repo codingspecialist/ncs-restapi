@@ -3,7 +3,7 @@ package shop.mtcoding.blog.exam.web;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog._core.utils.Resp;
 import shop.mtcoding.blog.exam.application.domain.enums.EvaluationWay;
@@ -12,9 +12,9 @@ import shop.mtcoding.blog.exam.web.dto.ExamStudentRequest;
 import shop.mtcoding.blog.exam.web.dto.ExamStudentResponse;
 import shop.mtcoding.blog.user.application.domain.User;
 
-@RequestMapping("/api/student/exams")
+@RequestMapping("/api/students/exams")
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class ExamStudentController {
 
     private final HttpSession session;

@@ -9,19 +9,16 @@ import shop.mtcoding.blog._core.errors.exception.api.Exception404;
 import shop.mtcoding.blog.course.application.domain.Course;
 import shop.mtcoding.blog.course.application.domain.Subject;
 import shop.mtcoding.blog.course.application.domain.SubjectElement;
-import shop.mtcoding.blog.course.application.repository.CourseRepository;
-import shop.mtcoding.blog.course.application.repository.SubjectRepository;
-import shop.mtcoding.blog.course.application.repository.SubjectElementRepository;
 import shop.mtcoding.blog.exam.application.domain.Exam;
 import shop.mtcoding.blog.exam.application.domain.Paper;
 import shop.mtcoding.blog.exam.application.domain.Question;
 import shop.mtcoding.blog.exam.application.domain.enums.PaperVersion;
-import shop.mtcoding.blog.exam.application.repository.ExamRepository;
-import shop.mtcoding.blog.exam.application.repository.PaperRepository;
-import shop.mtcoding.blog.exam.application.repository.QuestionRepository;
+import shop.mtcoding.blog.exam.application.domain.enums.EvaluationWay;
 import shop.mtcoding.blog.user.application.domain.Teacher;
 import shop.mtcoding.blog.user.application.domain.User;
-import shop.mtcoding.blog.user.application.repository.UserRepository;
+import shop.mtcoding.blog.document.adapter.CourseRepositoryAdapterInDocument;
+import shop.mtcoding.blog.document.adapter.ExamRepositoryAdapterInDocument;
+import shop.mtcoding.blog.document.adapter.UserRepositoryAdapterInDocument;
 import shop.mtcoding.blog.document.web.dto.DocumentResponse;
 
 import java.util.List;
@@ -31,56 +28,68 @@ import java.util.List;
 @Service
 public class DocumentService {
 
-    private final CourseRepository courseRepository;
-    private final SubjectRepository subjectRepository;
-    private final QuestionRepository questionRepository;
-    private final PaperRepository paperRepository;
-    private final UserRepository userRepository;
-    private final SubjectElementRepository elementRepository;
-    private final ExamRepository examRepository;
+    private final CourseRepositoryAdapterInDocument courseRepositoryAdapter;
+    private final ExamRepositoryAdapterInDocument examRepositoryAdapter;
+    private final UserRepositoryAdapterInDocument userRepositoryAdapter;
 
-    public DocumentResponse.CourseSlice 과정목록(User sessionUser, Pageable pageable) {
-        Page<Course> coursePagePS = courseRepository.findAllByTeacherId(sessionUser.getTeacher().getId(), pageable);
-        return new DocumentResponse.CourseSlice(coursePagePS);
+    public List<DocumentResponse.CourseDTO> 과정목록(User sessionUser, Pageable pageable) {
+        Page<Course> coursePagePS = courseRepositoryAdapter.findCoursesByTeacherId(sessionUser.getTeacher().getId(),
+                pageable);
+        return coursePagePS.getContent().stream().map(DocumentResponse.CourseDTO::new).toList();
     }
 
-    public DocumentResponse.SubjectItems 교과목목록(Long courseId) {
-        List<Subject> subjectListPS = subjectRepository.findAllByCourseId(courseId);
-        return new DocumentResponse.SubjectItems(subjectListPS);
+    public List<DocumentResponse.SubjectDTO> 교과목목록(Long courseId) {
+        List<Subject> subjectListPS = courseRepositoryAdapter.findSubjectsByCourseId(courseId);
+        return subjectListPS.stream().map(DocumentResponse.SubjectDTO::new).toList();
     }
 
-    public DocumentResponse.No1 no1(Long subjectId) {
-        Subject subjectPS = subjectRepository.findById(subjectId).orElseThrow(() -> new Exception404("해당 교과목이 없어요"));
-        User teacherUser = userRepository.findById(subjectPS.getCourseTeacher().getTeacher().getId())
+    public Object no1(Long subjectId) {
+        Subject subjectPS = courseRepositoryAdapter.findSubjectById(subjectId)
+                .orElseThrow(() -> new Exception404("해당 교과목이 없어요"));
+        User teacherUser = userRepositoryAdapter.findUserById(subjectPS.getCourseTeacher().getTeacher().getId())
                 .orElseThrow(() -> new Exception404("해당 선생님이 존재하지 않아요"));
-        Teacher teacherPS = teacherUser.getTeacher();
-        Paper paperPS = paperRepository.findBySubjectIdAndPaperVersion(subjectId, PaperVersion.ORIGINAL)
+        Teacher teacherPS = userRepositoryAdapter.getTeacherFromUser(teacherUser);
+        Paper paperPS = examRepositoryAdapter.findPaperBySubjectIdAndPaperVersion(subjectId, PaperVersion.ORIGINAL)
                 .orElseThrow(() -> new Exception404("해당 교과목의 본평가 시험지를 찾을 수 없습니다."));
-        List<Question> questionListPS = questionRepository.findAllByPaperId(paperPS.getId());
-        return new DocumentResponse.No1(subjectPS, questionListPS, teacherPS, paperPS);
+        List<Question> questionListPS = examRepositoryAdapter.findQuestionsByPaperId(paperPS.getId());
+
+        if (paperPS.getEvaluationWay() == EvaluationWay.MCQ) {
+            return new DocumentResponse.No1McqDTO(subjectPS, questionListPS, teacherPS.getSign(), paperPS);
+        } else {
+            return new DocumentResponse.No1RubricDTO(subjectPS, questionListPS, teacherPS.getSign(), paperPS);
+        }
     }
 
-    public DocumentResponse.No2 no2(Long subjectId) {
-        Paper paperPS = paperRepository.findBySubjectIdAndPaperVersion(subjectId, PaperVersion.ORIGINAL)
+    public Object no2(Long subjectId) {
+        Paper paperPS = examRepositoryAdapter.findPaperBySubjectIdAndPaperVersion(subjectId, PaperVersion.ORIGINAL)
                 .orElseThrow(() -> new Exception404("해당 교과목의 본평가 시험지를 찾을 수 없습니다."));
-        List<Question> questionListPS = questionRepository.findAllByPaperId(paperPS.getId());
+        List<Question> questionListPS = examRepositoryAdapter.findQuestionsByPaperId(paperPS.getId());
 
-        return new DocumentResponse.No2(paperPS.getEvaluationWay(), null, questionListPS);
+        if (paperPS.getEvaluationWay() == EvaluationWay.MCQ) {
+            return new DocumentResponse.No2McqDTO(paperPS.getSubject(), questionListPS);
+        } else {
+            return new DocumentResponse.No2RubricDTO(paperPS.getSubject(), questionListPS);
+        }
     }
 
-    public DocumentResponse.No3 no3(Long subjectId) {
-        Paper paperPS = paperRepository.findBySubjectIdAndPaperVersion(subjectId, PaperVersion.ORIGINAL)
+    public Object no3(Long subjectId) {
+        Paper paperPS = examRepositoryAdapter.findPaperBySubjectIdAndPaperVersion(subjectId, PaperVersion.ORIGINAL)
                 .orElseThrow(() -> new Exception404("해당 교과목의 본평가 시험지를 찾을 수 없습니다."));
-        List<Question> questionListPS = questionRepository.findAllByPaperId(paperPS.getId());
-        List<SubjectElement> elementListPS = elementRepository.findAllBySubjectId(subjectId);
-        User teacherUser = userRepository.findById(1L)
+        List<Question> questionListPS = examRepositoryAdapter.findQuestionsByPaperId(paperPS.getId());
+        List<SubjectElement> elementListPS = courseRepositoryAdapter.findSubjectElementsBySubjectId(subjectId);
+        User teacherUser = userRepositoryAdapter.findUserById(1L)
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
-        Teacher teacherPS = teacherUser.getTeacher();
-        return new DocumentResponse.No3(paperPS, elementListPS, questionListPS, teacherPS);
+        Teacher teacherPS = userRepositoryAdapter.getTeacherFromUser(teacherUser);
+
+        if (paperPS.getEvaluationWay() == EvaluationWay.MCQ) {
+            return new DocumentResponse.No3McqDTO(paperPS, elementListPS, questionListPS, teacherPS);
+        } else {
+            return new DocumentResponse.No3RubricDTO(paperPS, questionListPS, teacherPS);
+        }
     }
 
-    public DocumentResponse.No4 no4(Long subjectId, Integer currentIndex) {
-        List<Exam> examListPS = examRepository.findBySubjectIdAndIsUseOrderByStudentNameAsc(subjectId);
+    public Object no4(Long subjectId, Integer currentIndex) {
+        List<Exam> examListPS = examRepositoryAdapter.findExamsBySubjectIdAndIsUseOrderByStudentNameAsc(subjectId);
         Exam examPS = examListPS.get(currentIndex);
         if (examPS == null)
             throw new Exception404("시험친 기록이 없어요");
@@ -88,20 +97,27 @@ public class DocumentService {
         Integer prevIndex = currentIndex > 0 ? currentIndex - 1 : null;
         Integer nextIndex = currentIndex < examListPS.size() - 1 ? currentIndex + 1 : null;
 
-        List<SubjectElement> elementListPS = elementRepository.findAllBySubjectId(subjectId);
-        User teacherUser = userRepository.findById(examPS.getCourseTeacher().getTeacher().getId())
+        List<SubjectElement> elementListPS = courseRepositoryAdapter.findSubjectElementsBySubjectId(subjectId);
+        User teacherUser = userRepositoryAdapter.findUserById(examPS.getCourseTeacher().getTeacher().getId())
                 .orElseThrow(() -> new Exception404("해당 시험에 선생님이 존재하지 않아서 사인을 찾을 수 없어요"));
-        Teacher teacherPS = teacherUser.getTeacher();
+        Teacher teacherPS = userRepositoryAdapter.getTeacherFromUser(teacherUser);
 
-        return new DocumentResponse.No4(examPS, elementListPS, teacherPS, prevIndex, nextIndex, currentIndex);
+        if (examPS.getPaper().getEvaluationWay() == EvaluationWay.MCQ) {
+            return new DocumentResponse.No4McqDTO(examPS, elementListPS, teacherPS, prevIndex, nextIndex, currentIndex);
+        } else {
+            return new DocumentResponse.No4RubricDTO(examPS, elementListPS, teacherPS, prevIndex, nextIndex,
+                    currentIndex);
+        }
     }
 
-    public DocumentResponse.No5 no5(Long subjectId) {
-        List<Exam> examListPS = examRepository.findAllBySubjectIdAndPaperVersion(subjectId, PaperVersion.ORIGINAL);
-        List<Exam> reExamListPS = examRepository.findAllBySubjectIdAndPaperVersion(subjectId, PaperVersion.RETEST);
-        User teacherUser = userRepository.findById(examListPS.get(0).getCourseTeacher().getTeacher().getId())
+    public DocumentResponse.No5DTO no5(Long subjectId) {
+        List<Exam> examListPS = examRepositoryAdapter.findExamsBySubjectIdAndPaperVersion(subjectId,
+                PaperVersion.ORIGINAL);
+        List<Exam> reExamListPS = examRepositoryAdapter.findExamsBySubjectIdAndPaperVersion(subjectId,
+                PaperVersion.RETEST);
+        User teacherUser = userRepositoryAdapter.findUserById(examListPS.get(0).getCourseTeacher().getTeacher().getId())
                 .orElseThrow(() -> new Exception404("해당 선생님이 존재하지 않아요"));
-        Teacher teacherPS = teacherUser.getTeacher();
-        return new DocumentResponse.No5(examListPS, reExamListPS, teacherPS);
+        Teacher teacherPS = userRepositoryAdapter.getTeacherFromUser(teacherUser);
+        return new DocumentResponse.No5DTO(examListPS, reExamListPS, teacherPS);
     }
 }

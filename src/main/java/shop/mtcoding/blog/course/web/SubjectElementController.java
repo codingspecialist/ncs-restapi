@@ -2,7 +2,7 @@ package shop.mtcoding.blog.course.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog._core.utils.Resp;
 import shop.mtcoding.blog.course.application.service.SubjectElementService;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @RequestMapping("/api/subjects/{subjectId}/elements")
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class SubjectElementController {
     private final SubjectElementService subjectElementService;
 

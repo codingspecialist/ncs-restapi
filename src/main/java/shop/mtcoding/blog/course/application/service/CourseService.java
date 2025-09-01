@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.api.Exception404;
-import shop.mtcoding.blog.course.adapter.UserRepositoryAdapter;
+import shop.mtcoding.blog.course.adapter.UserRepositoryAdapterInCourse;
 import shop.mtcoding.blog.course.application.domain.Course;
 import shop.mtcoding.blog.course.application.domain.CourseStudent;
 import shop.mtcoding.blog.course.application.domain.CourseTeacher;
@@ -29,7 +29,7 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final CourseStudentRepository courseStudentRepository;
     private final SubjectRepository subjectRepository;
-    private final UserRepositoryAdapter userRepositoryAdapter;
+    private final UserRepositoryAdapterInCourse userRepositoryAdapter;
 
     public CourseResponse.MaxPage 과정목록(Long teacherId, Pageable pageable) {
         Page<Course> coursePG = courseRepository.findAllByTeacherId(teacherId, pageable);

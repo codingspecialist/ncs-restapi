@@ -1,15 +1,15 @@
 package shop.mtcoding.blog.course.adapter;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import shop.mtcoding.blog.user.application.domain.User;
 import shop.mtcoding.blog.user.application.repository.UserRepository;
 
 import java.util.List;
 
-@Repository
+@Component("userRepositoryAdapterInCourse")
 @RequiredArgsConstructor
-public class UserRepositoryAdapter {
+public class UserRepositoryAdapterInCourse {
 
     private final UserRepository userRepository;
 

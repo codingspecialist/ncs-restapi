@@ -13,6 +13,8 @@ import shop.mtcoding.blog.course.application.domain.CourseTeacher;
 import shop.mtcoding.blog.course.application.domain.Subject;
 import shop.mtcoding.blog.course.application.domain.enums.TeacherType;
 import shop.mtcoding.blog.course.application.repository.CourseRepository;
+import shop.mtcoding.blog.course.application.repository.CourseStudentRepository;
+import shop.mtcoding.blog.course.application.repository.SubjectRepository;
 import shop.mtcoding.blog.course.application.service.dto.CourseCommand;
 import shop.mtcoding.blog.course.application.service.dto.CourseOutput;
 import shop.mtcoding.blog.user.application.domain.User;
@@ -25,6 +27,8 @@ import java.util.List;
 public class CourseService {
 
     private final CourseRepository courseRepository;
+    private final CourseStudentRepository courseStudentRepository;
+    private final SubjectRepository subjectRepository;
     private final UserRepositoryAdapter userRepositoryAdapter;
 
     public CourseOutput.MaxPage 과정목록(Long teacherId, Pageable pageable) {
@@ -59,8 +63,8 @@ public class CourseService {
         Course findCourse = courseRepository.findById(courseId)
                 .orElseThrow(() -> new Exception404("과정을 찾을 수 없습니다"));
 
-        List<Subject> findSubjects = courseRepository.findAllSubjectsByCourseId(findCourse.getId());
-        List<CourseStudent> findStudents = courseRepository.findAllStudentsByCourseId(findCourse.getId());
+        List<Subject> findSubjects = subjectRepository.findAllByCourseId(findCourse.getId());
+        List<CourseStudent> findStudents = courseStudentRepository.findAllByCourseId(findCourse.getId());
         return new CourseOutput.Detail(findCourse, findSubjects, findStudents);
     }
 }

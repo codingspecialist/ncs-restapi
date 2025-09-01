@@ -3,11 +3,11 @@ package shop.mtcoding.blog.exam.web.dto;
 import lombok.Data;
 import shop.mtcoding.blog._core.errors.exception.api.Exception400;
 import shop.mtcoding.blog._core.errors.exception.api.Exception404;
-import shop.mtcoding.blog.domainv2222222.course.exam.Exam;
-import shop.mtcoding.blog.domainv2222222.course.exam.answer.ExamAnswer;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.Paper;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.question.Question;
-import shop.mtcoding.blog.domainv2222222.user.student.Student;
+import shop.mtcoding.blog.course.application.domain.CourseStudent;
+import shop.mtcoding.blog.exam.application.domain.Exam;
+import shop.mtcoding.blog.exam.application.domain.ExamAnswer;
+import shop.mtcoding.blog.exam.application.domain.Paper;
+import shop.mtcoding.blog.exam.application.domain.Question;
 
 import java.util.List;
 
@@ -29,8 +29,8 @@ public class ExamStudentRequest {
             }
         }
 
-        public Exam toEntityWithAnswers(Student student, Paper paper, List<Question> questionList) {
-            Exam exam = Exam.createRubricExam(student, paper, rubricSubmitLink);
+        public Exam toEntityWithAnswers(CourseStudent courseStudent, Paper paper, List<Question> questionList) {
+            Exam exam = Exam.createRubricExam(courseStudent, paper, rubricSubmitLink);
             for (Answer answer : answers) {
                 Question question = questionList.stream()
                         .filter(q -> q.getNo().equals(answer.getQuestionNo()))
@@ -61,8 +61,8 @@ public class ExamStudentRequest {
             }
         }
 
-        public Exam toEntityWithAnswers(Student student, Paper paper, List<Question> questionList) {
-            Exam exam = Exam.createMcqExam(student, paper);
+        public Exam toEntityWithAnswers(CourseStudent courseStudent, Paper paper, List<Question> questionList) {
+            Exam exam = Exam.createMcqExam(courseStudent, paper);
             for (AnswerDTO dto : answers) {
                 Question question = questionList.stream()
                         .filter(q -> q.getNo().equals(dto.getQuestionNo()))

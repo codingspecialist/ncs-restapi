@@ -1,12 +1,15 @@
-package shop.mtcoding.blog.domainv2222222.course.exam;
+package shop.mtcoding.blog.exam.application.service.dto;
 
-import shop.mtcoding.blog.domainv2222222.course.subject.Subject;
-import shop.mtcoding.blog.domainv2222222.course.subject.element.SubjectElement;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.EvaluationWay;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.Paper;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.question.Question;
-import shop.mtcoding.blog.domainv2222222.user.student.Student;
-import shop.mtcoding.blog.domainv2222222.user.teacher.Teacher;
+import shop.mtcoding.blog.course.application.domain.Subject;
+import shop.mtcoding.blog.course.application.domain.SubjectElement;
+import shop.mtcoding.blog.exam.application.domain.Exam;
+import shop.mtcoding.blog.exam.application.domain.Paper;
+import shop.mtcoding.blog.exam.application.domain.Question;
+import shop.mtcoding.blog.exam.application.domain.enums.EvaluationWay;
+import shop.mtcoding.blog.exam.application.domain.enums.ExamResultStatus;
+import shop.mtcoding.blog.exam.application.domain.enums.ExamTakingStatus;
+import shop.mtcoding.blog.user.application.domain.Student;
+import shop.mtcoding.blog.user.application.domain.Teacher;
 
 import java.util.List;
 
@@ -55,17 +58,17 @@ public class ExamModel {
         public static Result fromExam(Exam exam) {
             return new Result(
                     exam.getId(),
-                    exam.getStudent().getName(),
+                    exam.getCourseStudent().getStudent().getName(),
                     exam.getSubject().getTitle(),
-                    exam.getTeacher().getName(),
+                    exam.getCourseTeacher().getTeacher().getName(),
                     exam.getTotalScorePercent(),
                     exam.getGradeLevel(),
                     exam.getResultStatus().toKorean(),
                     exam.getNotTakenReason() != null ? exam.getNotTakenReason().toKorean() : "",
-                    exam.getStudent().getId(),
+                    exam.getCourseStudent().getStudent().getId(),
                     exam.getPaper().getId(),
                     exam.getIsActive(),
-                    exam.getStudent().getStudentStatus().toKorean()
+                    exam.getCourseStudent().getStudent().getStudentStatus().toKorean()
             );
         }
 
@@ -74,7 +77,7 @@ public class ExamModel {
                     null,
                     student.getName(),
                     subject.getTitle(),
-                    subject.getTeacher().getName(),
+                    subject.getCourseTeacher().getTeacher().getName(),
                     0.0,
                     1,
                     ExamResultStatus.NOT_TAKEN.toKorean(),

@@ -12,7 +12,7 @@ import shop.mtcoding.blog.course.application.domain.Subject;
 import shop.mtcoding.blog.exam.application.domain.enums.EvaluationWay;
 import shop.mtcoding.blog.exam.application.domain.enums.ExamNotTakenReason;
 import shop.mtcoding.blog.exam.application.domain.enums.ExamResultStatus;
-import shop.mtcoding.blog.webv2.exam.ExamRequest;
+import shop.mtcoding.blog.exam.web.dto.ExamTeacherRequest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -151,36 +151,36 @@ public class Exam {
                 .build();
     }
 
-    public void applyMcqGrading(List<ExamRequest.GradeMcq.AnswerMcq> answers, String teacherComment) {
+    public void applyMcqGrading(List<ExamTeacherRequest.GradeMcq.AnswerMcq> answers, String teacherComment) {
         updateTeacherComment(teacherComment);
 
-        for (ExamRequest.GradeMcq.AnswerMcq dto : answers) {
+        for (ExamTeacherRequest.GradeMcq.AnswerMcq dto : answers) {
             ExamAnswer answer = this.examAnswers.stream()
-                    .filter(a -> a.getId().equals(dto.getAnswerId()))
+                    .filter(a -> a.getId().equals(dto.answerId()))
                     .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("answerId " + dto.getAnswerId() + " not found"));
+                    .orElseThrow(() -> new IllegalArgumentException("answerId " + dto.answerId() + " not found"));
 
-            answer.setSelectedOptionNo(dto.getSelectedOptionNo());
+            answer.setSelectedOptionNo(dto.selectedOptionNo());
         }
 
         gradeMcq();
     }
 
-    public void applyRubricGrading(List<ExamRequest.GradeRubric.AnswerRubric> answers, String teacherComment) {
+    public void applyRubricGrading(List<ExamTeacherRequest.GradeRubric.AnswerRubric> answers, String teacherComment) {
         updateTeacherComment(teacherComment);
 
         Map<Long, String> prLinkMap = answers.stream()
                 .collect(Collectors.toMap(
-                        ExamRequest.GradeRubric.AnswerRubric::getAnswerId,
-                        ExamRequest.GradeRubric.AnswerRubric::getCodeReviewFeedbackPRLink));
+                        ExamTeacherRequest.GradeRubric.AnswerRubric::answerId,
+                        ExamTeacherRequest.GradeRubric.AnswerRubric::codeReviewFeedbackPRLink));
 
-        for (ExamRequest.GradeRubric.AnswerRubric dto : answers) {
+        for (ExamTeacherRequest.GradeRubric.AnswerRubric dto : answers) {
             ExamAnswer answer = this.examAnswers.stream()
-                    .filter(a -> a.getId().equals(dto.getAnswerId()))
+                    .filter(a -> a.getId().equals(dto.answerId()))
                     .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("answerId " + dto.getAnswerId() + " not found"));
+                    .orElseThrow(() -> new IllegalArgumentException("answerId " + dto.answerId() + " not found"));
 
-            answer.setSelectedOptionNo(dto.getSelectedOptionNo());
+            answer.setSelectedOptionNo(dto.selectedOptionNo());
         }
 
         gradeRubric(prLinkMap);

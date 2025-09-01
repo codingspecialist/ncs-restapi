@@ -2,15 +2,11 @@ package shop.mtcoding.blog.exam.web.dto;
 
 import lombok.Data;
 import shop.mtcoding.blog._core.utils.MyUtil;
-import shop.mtcoding.blog.domainv2222222.course.exam.Exam;
-import shop.mtcoding.blog.domainv2222222.course.exam.ExamModel;
-import shop.mtcoding.blog.domainv2222222.course.exam.ExamTakingStatus;
-import shop.mtcoding.blog.domainv2222222.course.exam.answer.ExamAnswer;
-import shop.mtcoding.blog.domainv2222222.course.subject.element.SubjectElement;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.Paper;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.question.Question;
-import shop.mtcoding.blog.domainv2222222.course.subject.paper.question.QuestionOption;
-import shop.mtcoding.blog.domainv2222222.user.teacher.Teacher;
+import shop.mtcoding.blog.course.application.domain.SubjectElement;
+import shop.mtcoding.blog.exam.application.domain.*;
+import shop.mtcoding.blog.exam.application.domain.enums.ExamTakingStatus;
+import shop.mtcoding.blog.exam.application.service.dto.ExamModel;
+import shop.mtcoding.blog.user.application.domain.Teacher;
 
 import java.util.Comparator;
 import java.util.List;
@@ -233,15 +229,15 @@ public class ExamStudentResponse {
         private Long studentId;
 
         public ResultDTO(Exam exam) {
-            this.studentId = exam.getStudent().getId();
+            this.studentId = exam.getCourseStudent().getStudent().getId();
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
             //this.subjectNo = exam.getPaper().getSubject().getNo();
-            this.courseNameAndRound = exam.getStudent().getCourse().getTitle() + "/" + exam.getStudent().getCourse().getRound() + "회차";
+            this.courseNameAndRound = exam.getCourseStudent().getCourse().getTitle() + "/" + exam.getCourseStudent().getCourse().getRound() + "회차";
             //this.subjectTitle = exam.getPaper().getSubject().getTitle();
 
-            this.studentName = exam.getStudent().getName();
-            this.teacherName = exam.getTeacher().getName();
+            this.studentName = exam.getCourseStudent().getStudent().getName();
+            this.teacherName = exam.getCourseTeacher().getTeacher().getName();
 
             this.resultStatus = exam.getResultStatus().toKorean();
             this.notTakenReason = exam.getNotTakenReason().toKorean();
@@ -288,8 +284,8 @@ public class ExamStudentResponse {
         public RubricResultDetailDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher) {
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
-            this.studentName = exam.getStudent().getName();
-            this.teacherName = exam.getTeacher().getName();
+            this.studentName = exam.getCourseStudent().getStudent().getName();
+            this.teacherName = exam.getCourseTeacher().getTeacher().getName();
             this.evaluationDate = exam.getPaper().getEvaluationDate().toString();
             this.evaluationRoom = exam.getPaper().getEvaluationRoom();
             this.evaluationDevice = exam.getPaper().getEvaluationDevice();
@@ -398,8 +394,8 @@ public class ExamStudentResponse {
         public McqResultDetailDTO(Exam exam, List<SubjectElement> subjectElements, Teacher teacher) {
             this.examId = exam.getId();
             this.paperId = exam.getPaper().getId();
-            this.studentName = exam.getStudent().getName();
-            this.teacherName = exam.getTeacher().getName();
+            this.studentName = exam.getCourseStudent().getStudent().getName();
+            this.teacherName = exam.getCourseTeacher().getTeacher().getName();
             this.evaluationDate = exam.getPaper().getEvaluationDate().toString();
             this.evaluationRoom = exam.getPaper().getEvaluationRoom();
             this.evaluationDevice = exam.getPaper().getEvaluationDevice();

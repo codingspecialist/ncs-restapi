@@ -24,7 +24,7 @@ values (1, 'A1001', 'NOT_STARTED', '2025-08-01', '2025-12-31', 5, '마이크로 
         now());
 
 -- CourseTeacher Entity
-insert into course_teacher_tb(id, course_id, teacher_id, role, created_at)
+insert into course_teacher_tb(id, course_id, teacher_id, teacher_type, created_at)
 values (1, 1, 1, 'MAIN', now()),
        (2, 1, 2, 'SUB', now()),
        (3, 1, 3, 'SUB', now());

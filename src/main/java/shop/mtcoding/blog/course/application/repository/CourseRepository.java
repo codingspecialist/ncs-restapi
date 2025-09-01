@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import shop.mtcoding.blog.course.application.domain.Course;
-import shop.mtcoding.blog.course.application.domain.CourseStudent;
-import shop.mtcoding.blog.course.application.domain.Subject;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,8 +21,4 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     Page<Course> findAllByTeacherId(@Param("teacherId") Long teacherId, Pageable pageable);
 
     Course save(Course course);
-
-    List<Subject> findAllSubjectsByCourseId(Long courseId);
-
-    List<CourseStudent> findAllStudentsByCourseId(Long courseId);
 }

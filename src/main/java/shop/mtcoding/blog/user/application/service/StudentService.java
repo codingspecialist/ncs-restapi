@@ -7,8 +7,8 @@ import shop.mtcoding.blog._core.errors.exception.api.Exception400;
 import shop.mtcoding.blog._core.utils.MyUtil;
 import shop.mtcoding.blog.user.application.domain.User;
 import shop.mtcoding.blog.user.application.repository.UserRepository;
-import shop.mtcoding.blog.user.application.service.dto.UserCommand;
-import shop.mtcoding.blog.user.application.service.dto.UserOutput;
+import shop.mtcoding.blog.user.web.dto.UserRequest;
+import shop.mtcoding.blog.user.web.dto.UserResponse;
 
 import java.util.Optional;
 
@@ -19,14 +19,14 @@ public class StudentService {
     private final UserRepository userRepository;
 
     @Transactional
-    public UserOutput.Max 학생회원가입(UserCommand.StudentJoin command) {
-        Optional<User> userOP = userRepository.findByUsername(command.username());
+    public UserResponse.Item 학생회원가입(UserRequest.StudentJoin request) {
+        Optional<User> userOP = userRepository.findByUsername(request.username());
         if (userOP.isPresent())
             throw new Exception400("중복된 유저네임입니다.");
 
         String authCode = MyUtil.generateAuthCode();
-        User savedUser = userRepository.save(User.createStudent(command, authCode));
+        User savedUser = userRepository.save(User.createStudent(request, authCode));
 
-        return new UserOutput.Max(savedUser);
+        return UserResponse.Item.from(savedUser);
     }
 }

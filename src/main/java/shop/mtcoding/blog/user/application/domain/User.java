@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.user.application.domain.enums.StudentStatus;
 import shop.mtcoding.blog.user.application.domain.enums.UserRole;
-import shop.mtcoding.blog.user.application.service.dto.UserCommand;
+import shop.mtcoding.blog.user.web.dto.UserRequest;
 
 import java.time.LocalDateTime;
 
@@ -72,19 +72,19 @@ public class User {
     }
 
     // 3. 팩토리 메서드 from 혹은 create
-    public static User createStudent(UserCommand.StudentJoin command, String authCode) {
+    public static User createStudent(UserRequest.StudentJoin request, String authCode) {
         Student student = Student.builder()
                 .studentStatus(StudentStatus.ENROLL) // 기본 상태
-                .birthday(command.birthday())
+                .birthday(request.birthday())
                 .authCode(authCode)
                 .isVerified(false) // 기본값
-                .name(command.name())
+                .name(request.name())
                 .build();
 
         User user = User.builder()
-                .username(command.username())
-                .password(command.password())
-                .email(command.email())
+                .username(request.username())
+                .password(request.password())
+                .email(request.email())
                 .role(UserRole.STUDENT) // 역할 명시
                 .student(student) // User가 주인이므로 Student 객체 설정
                 .build();
@@ -93,16 +93,16 @@ public class User {
         return user;
     }
 
-    public static User createTeacher(UserCommand.TeacherJoin command) {
+    public static User createTeacher(UserRequest.TeacherJoin request) {
         Teacher teacher = Teacher.builder()
-                .name(command.name())
-                .sign(command.sign())
+                .name(request.name())
+                .sign(request.sign())
                 .build();
 
         User user = User.builder()
-                .username(command.username())
-                .password(command.password())
-                .email(command.email())
+                .username(request.username())
+                .password(request.password())
+                .email(request.email())
                 .role(UserRole.TEACHER) // 역할 명시
                 .teacher(teacher) // User가 주인이므로 Teacher 객체 설정
                 .build();
@@ -111,16 +111,16 @@ public class User {
         return user;
     }
 
-    public static User createEmp(UserCommand.EmpJoin command) {
+    public static User createEmp(UserRequest.EmpJoin request) {
         Emp emp = Emp.builder()
-                .name(command.name())
-                .sign(command.sign())
+                .name(request.name())
+                .sign(request.sign())
                 .build();
 
         User user = User.builder()
-                .username(command.username())
-                .password(command.password())
-                .email(command.email())
+                .username(request.username())
+                .password(request.password())
+                .email(request.email())
                 .role(UserRole.EMP) // 역할 명시
                 .emp(emp) // User가 주인이므로 Emp 객체 설정
                 .build();

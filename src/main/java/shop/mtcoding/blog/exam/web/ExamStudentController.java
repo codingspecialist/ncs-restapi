@@ -24,8 +24,7 @@ public class ExamStudentController {
     public ResponseEntity<?> studentPaperList() {
         User sessionUser = (User) session.getAttribute("sessionUser");
 
-        var modelData = examService.학생응시가능한시험지목록(sessionUser);
-        var respDTO = new ExamStudentResponse.MyPaperItems(modelData.studentId(), modelData.papers());
+        var respDTO = examService.학생응시가능한시험지목록(sessionUser);
         return ResponseEntity.ok(Resp.ok(respDTO));
     }
 
@@ -35,10 +34,12 @@ public class ExamStudentController {
         var modelData = examService.학생시험시작정보(sessionUser, paperId);
 
         if (modelData.paperPS().getEvaluationWay() == EvaluationWay.MCQ) {
-            var respDTO = new ExamStudentResponse.McqStartDTO(modelData.paperPS(), modelData.studentName(), modelData.subjectElementListPS(), modelData.questionListPS());
+            var respDTO = new ExamStudentResponse.McqStartDTO(modelData.paperPS(), modelData.studentName(),
+                    modelData.subjectElementListPS(), modelData.questionListPS());
             return ResponseEntity.ok(Resp.ok(respDTO));
         } else {
-            var respDTO = new ExamStudentResponse.RubricStartDTO(modelData.paperPS(), modelData.studentName(), modelData.subjectElementListPS(), modelData.questionListPS());
+            var respDTO = new ExamStudentResponse.RubricStartDTO(modelData.paperPS(), modelData.studentName(),
+                    modelData.subjectElementListPS(), modelData.questionListPS());
             return ResponseEntity.ok(Resp.ok(respDTO));
         }
     }
@@ -63,9 +64,8 @@ public class ExamStudentController {
     public ResponseEntity<?> studentExamResultList() {
         User sessionUser = (User) session.getAttribute("sessionUser");
 
-        var modelData = examService.학생시험결과목록(sessionUser);
-        var respDTOs = modelData.exams().stream().map(ExamStudentResponse.ResultDTO::new).toList();
-        return ResponseEntity.ok(Resp.ok(respDTOs));
+        var respDTO = examService.학생시험결과목록(sessionUser);
+        return ResponseEntity.ok(Resp.ok(respDTO));
     }
 
     @GetMapping("/{examId}")
@@ -73,20 +73,20 @@ public class ExamStudentController {
         var modelData = examService.시험상세결과(examId);
 
         if (modelData.exam().getPaper().getEvaluationWay() == EvaluationWay.MCQ) {
-            var respDTO = new ExamStudentResponse.McqResultDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher());
+            var respDTO = new ExamStudentResponse.McqResultDetailDTO(modelData.exam(), modelData.subjectElements(),
+                    modelData.teacher());
             return ResponseEntity.ok(Resp.ok(respDTO));
         } else {
-            var respDTO = new ExamStudentResponse.RubricResultDetailDTO(modelData.exam(), modelData.subjectElements(), modelData.teacher());
+            var respDTO = new ExamStudentResponse.RubricResultDetailDTO(modelData.exam(), modelData.subjectElements(),
+                    modelData.teacher());
             return ResponseEntity.ok(Resp.ok(respDTO));
         }
     }
-
 
     @PutMapping("/sign")
     public ResponseEntity<?> sign(@RequestBody ExamStudentRequest.SignDTO reqDTO) {
         examService.학생사인저장(reqDTO);
         return ResponseEntity.ok(Resp.ok(null));
     }
-
 
 }

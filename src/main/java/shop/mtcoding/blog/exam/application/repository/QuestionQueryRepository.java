@@ -4,20 +4,20 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import shop.mtcoding.blog.exam.application.service.dto.PaperOutput;
+import shop.mtcoding.blog.exam.web.dto.PaperResponse;
 
 @RequiredArgsConstructor
 @Repository
 public class QuestionQueryRepository {
     private final EntityManager em;
 
-    public PaperOutput.NextQuestion findNextNo(Long paperId) {
+    public PaperResponse.NextQuestion findNextNo(Long paperId) {
         String sql = """
-                    SELECT 
+                    SELECT
                         IFNULL(MAX(no) + 1, 1) AS expectNo
-                    FROM 
-                        question_tb 
-                    WHERE 
+                    FROM
+                        question_tb
+                    WHERE
                         paper_id = ?
                 """;
 
@@ -27,6 +27,6 @@ public class QuestionQueryRepository {
         Object obs = query.getSingleResult();
         int expectNo = (Integer) obs;
 
-        return new PaperOutput.NextQuestion(expectNo, paperId);
+        return new PaperResponse.NextQuestion(expectNo, paperId);
     }
 }

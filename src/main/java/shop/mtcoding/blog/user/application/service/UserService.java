@@ -6,8 +6,8 @@ import shop.mtcoding.blog._core.errors.exception.api.Exception401;
 import shop.mtcoding.blog._core.utils.JwtUtil;
 import shop.mtcoding.blog.user.application.domain.User;
 import shop.mtcoding.blog.user.application.repository.UserRepository;
-import shop.mtcoding.blog.user.application.service.dto.UserCommand;
-import shop.mtcoding.blog.user.application.service.dto.UserOutput;
+import shop.mtcoding.blog.user.web.dto.UserRequest;
+import shop.mtcoding.blog.user.web.dto.UserResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -15,16 +15,15 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserOutput.Session 로그인(UserCommand.Login command) {
+    public UserResponse.SessionItem 로그인(UserRequest.Login request) {
         User findUser = userRepository.findByUsernameAndPassword(
-                        command.username(), command.password())
+                request.username(), request.password())
                 .orElseThrow(() -> new Exception401("인증되지 않았습니다"));
 
         String accessToken = JwtUtil.create(findUser);
         String refreshToken = JwtUtil.createRefresh(findUser);
 
-        return new UserOutput.Session(findUser, accessToken, refreshToken);
+        return UserResponse.SessionItem.from(findUser, accessToken, refreshToken);
     }
-
 
 }

@@ -25,23 +25,20 @@ public class CourseController {
             @SessionUser User sessionUser,
             @PageableDefault(size = 10, direction = Sort.Direction.DESC, sort = "id", page = 0) Pageable pageable) {
 
-        var output = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
-        var respDTO = CourseResponse.MaxPage.from(output.coursePG());
+        var respDTO = courseService.과정목록(sessionUser.getTeacher().getId(), pageable);
         return ResponseEntity.ok(Resp.ok(respDTO));
     }
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody CourseRequest.Save reqDTO) {
-        var output = courseService.과정등록(reqDTO.toCommand());
-        var respDTO = CourseResponse.Max.from(output.course());
+        var respDTO = courseService.과정등록(reqDTO);
         return ResponseEntity.ok(Resp.ok(respDTO));
     }
 
     // 과정정보만 포함
     @GetMapping("/{courseId}")
     public ResponseEntity<?> info(@PathVariable(value = "courseId") Long courseId) {
-        var output = courseService.과정정보(courseId);
-        var respDTO = CourseResponse.Max.from(output.course());
+        var respDTO = courseService.과정정보(courseId);
         return ResponseEntity.ok(Resp.ok(respDTO));
     }
 
@@ -49,8 +46,7 @@ public class CourseController {
     @GetMapping("/{courseId}/detail")
     public ResponseEntity<?> detail(@PathVariable(value = "courseId") Long courseId) {
         // TODO: 평가일, 재평가일 추후 고려하기
-        var output = courseService.과정상세(courseId);
-        var respDTO = CourseResponse.Detail.from(output.course(), output.subjects(), output.students());
+        var respDTO = courseService.과정상세(courseId);
         return ResponseEntity.ok(Resp.ok(respDTO));
     }
 

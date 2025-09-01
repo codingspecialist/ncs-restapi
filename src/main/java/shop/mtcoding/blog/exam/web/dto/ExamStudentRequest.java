@@ -2,11 +2,8 @@ package shop.mtcoding.blog.exam.web.dto;
 
 import lombok.Data;
 import shop.mtcoding.blog._core.errors.exception.api.Exception400;
-import shop.mtcoding.blog._core.errors.exception.api.Exception404;
-import shop.mtcoding.blog.course.application.domain.CourseStudent;
 import shop.mtcoding.blog.exam.application.domain.Exam;
 import shop.mtcoding.blog.exam.application.domain.ExamAnswer;
-import shop.mtcoding.blog.exam.application.domain.Paper;
 import shop.mtcoding.blog.exam.application.domain.Question;
 
 import java.util.List;
@@ -29,17 +26,6 @@ public class ExamStudentRequest {
             }
         }
 
-        public Exam toEntityWithAnswers(CourseStudent courseStudent, Paper paper, List<Question> questionList) {
-            Exam exam = Exam.createRubricExam(courseStudent, paper, rubricSubmitLink);
-            for (Answer answer : answers) {
-                Question question = questionList.stream()
-                        .filter(q -> q.getNo().equals(answer.getQuestionNo()))
-                        .findFirst()
-                        .orElseThrow(() -> new Exception404("해당 questionNo 없음: " + answer.getQuestionNo()));
-                exam.addAnswer(answer.toEntity(exam, question));
-            }
-            return exam;
-        }
     }
 
     // ✅ 객관식 시험 응시
@@ -61,17 +47,7 @@ public class ExamStudentRequest {
             }
         }
 
-        public Exam toEntityWithAnswers(CourseStudent courseStudent, Paper paper, List<Question> questionList) {
-            Exam exam = Exam.createMcqExam(courseStudent, paper);
-            for (AnswerDTO dto : answers) {
-                Question question = questionList.stream()
-                        .filter(q -> q.getNo().equals(dto.getQuestionNo()))
-                        .findFirst()
-                        .orElseThrow(() -> new Exception404("해당 questionNo 없음: " + dto.getQuestionNo()));
-                exam.addAnswer(dto.toEntity(exam, question));
-            }
-            return exam;
-        }
+
     }
 
     // ✅ 서명 제출

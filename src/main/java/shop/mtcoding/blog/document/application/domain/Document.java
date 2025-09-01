@@ -1,4 +1,4 @@
-package shop.mtcoding.blog.document;
+package shop.mtcoding.blog.document.application.domain;
 
 import java.time.LocalDateTime;
 

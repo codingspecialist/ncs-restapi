@@ -5,8 +5,11 @@ import shop.mtcoding.blog._core.utils.MyUtil;
 import shop.mtcoding.blog.course.application.domain.SubjectElement;
 import shop.mtcoding.blog.exam.application.domain.*;
 import shop.mtcoding.blog.exam.application.domain.enums.ExamTakingStatus;
-import shop.mtcoding.blog.exam.application.service.dto.ExamModel;
+import shop.mtcoding.blog.exam.application.domain.enums.EvaluationWay;
+import shop.mtcoding.blog.exam.application.domain.enums.ExamResultStatus;
 import shop.mtcoding.blog.user.application.domain.Teacher;
+import shop.mtcoding.blog.user.application.domain.Student;
+import shop.mtcoding.blog.course.application.domain.Subject;
 
 import java.util.Comparator;
 import java.util.List;
@@ -23,7 +26,7 @@ public class ExamStudentResponse {
          * 서비스 계층에서 계산된 PaperItem 리스트(Paper+Status)를 받아
          * 최종 응답 DTO 리스트로 변환합니다.
          */
-        public MyPaperItems(Long studentId, List<ExamModel.PaperItem> paperItems) {
+        public MyPaperItems(Long studentId, List<PaperItem> paperItems) {
             this.studentId = studentId;
             this.papers = paperItems.stream()
                     .map(item -> new PaperInfo(item.paper(), item.status())) // paper와 status를 함께 전달
@@ -466,4 +469,76 @@ public class ExamStudentResponse {
         }
     }
 
+    /**
+     * 학생에게 보여줄 시험지 목록의 각 항목
+     *
+     * @param paper  원본 시험지 객체
+     * @param status 학생의 현재 응시 상태
+     */
+    public record PaperItem(Paper paper, ExamTakingStatus status) {
+    }
+
+    public record ExamItems(List<Exam> exams) {
+    }
+
+    public record Result(
+            Long examId,
+            String studentName,
+            String subjectTitle,
+            String teacherName,
+            Double totalScorePercent,
+            Integer gradeLevel,
+            String resultStatus,
+            String notTakenReason,
+            Long studentId,
+            Long paperId,
+            Boolean isActive,
+            String studentStatus
+    ) {
+        public static Result fromExam(Exam exam) {
+            return new Result(
+                    exam.getId(),
+                    exam.getCourseStudent().getStudent().getName(),
+                    exam.getPaper().getSubject().getTitle(),
+                    exam.getCourseTeacher().getTeacher().getName(),
+                    exam.getTotalScorePercent(),
+                    exam.getGradeLevel(),
+                    exam.getResultStatus().toKorean(),
+                    exam.getNotTakenReason() != null ? exam.getNotTakenReason().toKorean() : "",
+                    exam.getCourseStudent().getStudent().getId(),
+                    exam.getPaper().getId(),
+                    exam.getIsActive(),
+                    exam.getCourseStudent().getStudent().getStudentStatus().toKorean()
+            );
+        }
+
+        public static Result createNotTakenTemplate(Student student, Subject subject, Paper paper) {
+            return new Result(
+                    null,
+                    student.getName(),
+                    subject.getTitle(),
+                    subject.getCourseTeacher().getTeacher().getName(),
+                    0.0,
+                    1,
+                    ExamResultStatus.NOT_TAKEN.toKorean(),
+                    "",
+                    student.getId(),
+                    paper.getId(),
+                    true,
+                    student.getStudentStatus().toKorean()
+            );
+        }
+    }
+
+    public record Start(Paper paperPS, String studentName, List<SubjectElement> subjectElementListPS,
+                        List<Question> questionListPS) {
+    }
+
+    public record ResultDetails(EvaluationWay evaluationWay, List<Exam> exams, List<SubjectElement> subjectElements,
+                                Teacher teacher) {
+    }
+
+    public record ResultDetail(EvaluationWay evaluationWay, Exam exam, List<SubjectElement> subjectElements,
+                               Teacher teacher) {
+    }
 }

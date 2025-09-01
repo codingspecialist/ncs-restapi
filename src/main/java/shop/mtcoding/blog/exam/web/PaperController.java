@@ -21,11 +21,9 @@ public class PaperController {
     // 시험지목록(교과목별)
     @GetMapping
     public ResponseEntity<?> list(Long subjectId) { // /api/papers?subjectId=1
-        var output = paperService.교과목별시험지목록(subjectId);
-        var respDTO = output.papers().stream().map(PaperResponse.Max::from).toList();
+        var respDTO = paperService.교과목별시험지목록(subjectId);
         return ResponseEntity.ok(Resp.ok(respDTO));
     }
-
 
     // 시험지상세
     @GetMapping("/{paperId}")
@@ -44,7 +42,7 @@ public class PaperController {
     // 시험지등록(교과목별)
     @PostMapping
     public ResponseEntity<?> save(@RequestBody PaperRequest.Save reqDTO) {
-        paperService.시험지등록(reqDTO.toCommand());
+        paperService.시험지등록(reqDTO);
         return ResponseEntity.ok(Resp.ok(null));
     }
 
@@ -58,10 +56,10 @@ public class PaperController {
 
     // 문제등록
     @PostMapping("/{paperId}/questions")
-    public ResponseEntity<?> questionSave(@PathVariable("paperId") Long paperId, @RequestBody PaperRequest.QuestionSave reqDTO) {
-        paperService.문제등록(paperId, reqDTO.toCommand());
+    public ResponseEntity<?> questionSave(@PathVariable("paperId") Long paperId,
+            @RequestBody PaperRequest.QuestionSave reqDTO) {
+        paperService.문제등록(paperId, reqDTO);
         return ResponseEntity.ok(Resp.ok(null));
     }
-
 
 }

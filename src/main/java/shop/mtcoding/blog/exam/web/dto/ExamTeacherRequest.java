@@ -1,7 +1,6 @@
 package shop.mtcoding.blog.exam.web.dto;
 
 import shop.mtcoding.blog.exam.application.domain.enums.ExamNotTakenReason;
-import shop.mtcoding.blog.exam.application.service.dto.ExamTeacherCommand;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,31 +18,15 @@ public class ExamTeacherRequest {
     public record GradeMcq(
             Long examId,
             String teacherComment,
-            List<AnswerMcq> answers
-    ) {
+            List<AnswerMcq> answers) {
         /**
          * 객관식 시험 답안지 내의 개별 답안 레코드.
          */
         public record AnswerMcq(
                 Integer answerId,
-                Integer selectedOptionNo
-        ) {
+                Integer selectedOptionNo) {
         }
 
-        /**
-         * 이 GradeMcq 레코드를 ExamTeacherCommand.GradeMcq 커맨드로 변환합니다.
-         *
-         * @return 변환된 ExamTeacherCommand.GradeMcq 레코드 객체
-         */
-        public ExamTeacherCommand.GradeMcq toCommand() {
-            // answers 리스트를 ExamTeacherCommand의 내부 DTO 리스트로 변환
-            List<ExamTeacherCommand.GradeMcq.AnswerMcq> mcqAnswers = this.answers.stream()
-                    .map(answer -> new ExamTeacherCommand.GradeMcq.AnswerMcq(answer.answerId(), answer.selectedOptionNo()))
-                    .collect(Collectors.toList());
-
-            // 변환된 데이터를 사용하여 ExamTeacherCommand.GradeMcq 레코드 객체 생성
-            return new ExamTeacherCommand.GradeMcq(this.examId, this.teacherComment, mcqAnswers);
-        }
     }
 
     /**
@@ -53,32 +36,16 @@ public class ExamTeacherRequest {
     public record GradeRubric(
             Integer examId,
             String teacherComment,
-            List<AnswerRubric> answers
-    ) {
+            List<AnswerRubric> answers) {
         /**
          * 주관식 시험 답안지 내의 개별 답안 레코드.
          */
         public record AnswerRubric(
                 Long answerId,
                 Integer selectedOptionNo,
-                String codeReviewFeedbackPRLink
-        ) {
+                String codeReviewFeedbackPRLink) {
         }
 
-        /**
-         * 이 GradeRubric 레코드를 ExamTeacherCommand.GradeRubric 커맨드로 변환합니다.
-         *
-         * @return 변환된 ExamTeacherCommand.GradeRubric 레코드 객체
-         */
-        public ExamTeacherCommand.GradeRubric toCommand() {
-            // answers 리스트를 ExamTeacherCommand의 내부 DTO 리스트로 변환
-            List<ExamTeacherCommand.GradeRubric.AnswerRubric> rubricAnswers = this.answers.stream()
-                    .map(answer -> new ExamTeacherCommand.GradeRubric.AnswerRubric(answer.answerId(), answer.selectedOptionNo(), answer.codeReviewFeedbackPRLink()))
-                    .collect(Collectors.toList());
-
-            // 변환된 데이터를 사용하여 ExamTeacherCommand.GradeRubric 레코드 객체 생성
-            return new ExamTeacherCommand.GradeRubric(this.examId, this.teacherComment, rubricAnswers);
-        }
     }
 
     /**
@@ -88,16 +55,7 @@ public class ExamTeacherRequest {
     public record NotTakenReason(
             Long studentId,
             Long paperId,
-            ExamNotTakenReason notTakenReason
-    ) {
-        /**
-         * 이 NotTakenReason 레코드를 ExamTeacherCommand.NotTakenReason 커맨드로 변환합니다.
-         *
-         * @return 변환된 ExamTeacherCommand.NotTakenReason 레코드 객체
-         */
-        public ExamTeacherCommand.NotTakenReason toCommand() {
-            // ExamTeacherCommand.NotTakenReason 레코드 객체 반환
-            return new ExamTeacherCommand.NotTakenReason(this.studentId, this.paperId, this.notTakenReason);
-        }
+            ExamNotTakenReason notTakenReason) {
+
     }
 }

@@ -3,7 +3,7 @@ package shop.mtcoding.blog.course.web.dto;
 
 import shop.mtcoding.blog.course.application.domain.enums.LearningWay;
 import shop.mtcoding.blog.course.application.domain.enums.NcsType;
-import shop.mtcoding.blog.course.application.service.dto.SubjectCommand;
+
 
 import java.time.LocalDate;
 
@@ -23,22 +23,5 @@ public class SubjectRequest {
             LocalDate startDate,
             LocalDate endDate
     ) {
-
-        public SubjectCommand.Save toCommand() {
-            return new SubjectCommand.Save(
-                    this.courseTeacherId,
-                    this.code,
-                    this.title,
-                    this.purpose,
-                    this.ncsType,
-                    this.gradeLevel,
-                    this.totalTime,
-                    this.no,
-                    this.scorePolicy,
-                    this.learningWay,
-                    this.startDate,
-                    this.endDate
-            );
-        }
     }
 }

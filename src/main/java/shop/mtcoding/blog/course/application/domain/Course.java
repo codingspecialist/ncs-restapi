@@ -8,7 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog._core.utils.MyUtil;
 import shop.mtcoding.blog.course.application.domain.enums.CourseStatus;
 import shop.mtcoding.blog.course.application.domain.enums.TeacherType;
-import shop.mtcoding.blog.course.application.service.dto.CourseCommand;
+import shop.mtcoding.blog.course.web.dto.CourseRequest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -74,7 +74,9 @@ public class Course {
     }
 
     @Builder
-    public Course(Long id, String title, String code, Integer level, String purpose, Integer totalTime, Integer totalDay, Integer round, LocalDate startDate, LocalDate endDate, CourseStatus courseStatus, LocalDateTime createdAt) {
+    public Course(Long id, String title, String code, Integer level, String purpose, Integer totalTime,
+            Integer totalDay, Integer round, LocalDate startDate, LocalDate endDate, CourseStatus courseStatus,
+            LocalDateTime createdAt) {
         this.id = id;
         this.title = title;
         this.code = code;
@@ -89,23 +91,22 @@ public class Course {
         this.createdAt = createdAt;
     }
 
-    public static Course create(CourseCommand.Save command) {
-        CourseStatus initialStatus = MyUtil.courseStatusUpdate(command.startDate(), command.endDate());
+    public static Course create(CourseRequest.Save request) {
+        CourseStatus initialStatus = MyUtil.courseStatusUpdate(request.startDate(), request.endDate());
 
         return Course.builder()
-                .code(command.code())
-                .title(command.title())
-                .level(command.level())
-                .round(command.round())
-                .purpose(command.purpose())
-                .totalTime(command.totalTime())
-                .totalDay(command.totalDay())
-                .startDate(command.startDate())
-                .endDate(command.endDate())
+                .code(request.code())
+                .title(request.title())
+                .level(request.level())
+                .round(request.round())
+                .purpose(request.purpose())
+                .totalTime(request.totalTime())
+                .totalDay(request.totalDay())
+                .startDate(request.startDate())
+                .endDate(request.endDate())
                 .courseStatus(initialStatus)
                 .build();
     }
-
 
     public void setCourseStatus(CourseStatus courseStatus) {
         this.courseStatus = courseStatus;
@@ -119,4 +120,3 @@ public class Course {
                 .orElse(null); // 혹은 null 처리 가능
     }
 }
-

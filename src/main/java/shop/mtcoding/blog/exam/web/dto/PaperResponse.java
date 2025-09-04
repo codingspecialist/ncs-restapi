@@ -19,8 +19,7 @@ public class PaperResponse {
             String subjectTitle,
             String teacherName,
             Integer questionCount,
-            List<QuestionMax> questions
-    ) {
+            List<QuestionMax> questions) {
         private McqDetail(Paper paper, List<Question> questions) {
             this(
                     paper.getId(),
@@ -30,8 +29,7 @@ public class PaperResponse {
                     paper.getSubject().getTitle(),
                     paper.getSubject().getCourseTeacher().getTeacher().getName(),
                     questions.size(),
-                    questions.stream().map(QuestionMax::from).toList()
-            );
+                    questions.stream().map(QuestionMax::from).toList());
         }
 
         public static McqDetail from(Paper paper, List<Question> questions) {
@@ -44,8 +42,7 @@ public class PaperResponse {
                 String questionTitle,
                 String questionSummary,
                 Double maxScore,
-                List<Option> options
-        ) {
+                List<Option> options) {
             private QuestionMax(Question question) {
                 this(
                         question.getId(),
@@ -53,8 +50,7 @@ public class PaperResponse {
                         question.getTitle(),
                         question.getSummary(),
                         question.getPaper().getMaxScore(),
-                        question.getQuestionOptions().stream().map(Option::from).toList()
-                );
+                        question.getQuestionOptions().stream().map(Option::from).toList());
             }
 
             public static QuestionMax from(Question question) {
@@ -66,16 +62,14 @@ public class PaperResponse {
                     Integer optionNo,
                     String optionContent,
                     Integer optionPoint,
-                    Boolean isRight
-            ) {
+                    Boolean isRight) {
                 private Option(QuestionOption option) {
                     this(
                             option.getId(),
                             option.getNo(),
                             option.getContent(),
                             option.getPoint(),
-                            option.getPoint() > 0
-                    );
+                            option.getPoint() > 0);
                 }
 
                 public static Option from(QuestionOption option) {
@@ -99,8 +93,7 @@ public class PaperResponse {
             List<String> taskSubmitFormats,
             String taskSubmitTemplateLink,
             List<String> taskChallenges,
-            List<QuestionMax> questions
-    ) {
+            List<QuestionMax> questions) {
         private RubricDetail(Paper paper, List<Question> questions) {
             this(
                     paper.getId(),
@@ -116,8 +109,7 @@ public class PaperResponse {
                     MyUtil.parseMultilineWithoutHyphen(paper.getTaskSubmitFormat()),
                     paper.getTaskSubmitTemplateLink(),
                     MyUtil.parseMultilineWithoutHyphen(paper.getTaskChallenge()),
-                    questions.stream().map(QuestionMax::from).toList()
-            );
+                    questions.stream().map(QuestionMax::from).toList());
         }
 
         public static RubricDetail from(Paper paper, List<Question> questions) {
@@ -129,16 +121,14 @@ public class PaperResponse {
                 Integer questionNo,
                 String questionTitle,
                 List<String> questionSummaries,
-                List<Option> options
-        ) {
+                List<Option> options) {
             private QuestionMax(Question question) {
                 this(
                         question.getId(),
                         question.getNo(),
                         question.getTitle(),
                         MyUtil.parseMultiline(question.getSummary()),
-                        question.getQuestionOptions().stream().map(Option::from).toList()
-                );
+                        question.getQuestionOptions().stream().map(Option::from).toList());
             }
 
             public static QuestionMax from(Question question) {
@@ -149,15 +139,13 @@ public class PaperResponse {
                     Long optionId,
                     Integer optionNo,
                     String optionContent,
-                    Integer optionPoint
-            ) {
+                    Integer optionPoint) {
                 private Option(QuestionOption option) {
                     this(
                             option.getId(),
                             option.getNo(),
                             option.getContent(),
-                            option.getPoint()
-                    );
+                            option.getPoint());
                 }
 
                 public static Option from(QuestionOption option) {
@@ -176,8 +164,7 @@ public class PaperResponse {
             Integer questionCount,
             String paperVersion,
             String evaluationWay,
-            String evaluationDate
-    ) {
+            String evaluationDate) {
         private Max(Paper paper) {
             this(
                     paper.getId(),
@@ -188,8 +175,7 @@ public class PaperResponse {
                     paper.getQuestions().size(),
                     paper.getPaperVersion().toKorean(),
                     paper.getEvaluationWay().toKorean(),
-                    MyUtil.localDateToString(paper.getEvaluationDate())
-            );
+                    MyUtil.localDateToString(paper.getEvaluationDate()));
         }
 
         public static Max from(Paper paper) {

@@ -1,9 +1,9 @@
 package shop.mtcoding.blog.user.web.dto;
 
 // Lombok 어노테이션은 레코드가 자동 생성하는 기능과 겹치므로 제거하거나 최소화
+
 // import lombok.AllArgsConstructor;
 // import lombok.Data;
-
 
 import shop.mtcoding.blog.user.application.domain.Emp;
 import shop.mtcoding.blog.user.application.domain.Student;
@@ -25,44 +25,38 @@ public class UserResponse {
             String name,
             String birthday,
             StudentStatus studentStatus,
-            Boolean isVerified
-    ) {
+            Boolean isVerified) {
         public static StudentItem from(Student student) {
             return new StudentItem(
                     student.getId(),
                     student.getName(),
                     student.getBirthday(),
                     student.getStudentStatus(),
-                    student.getIsVerified()
-            );
+                    student.getIsVerified());
         }
     }
 
     public record TeacherItem(
             Long teacherId,
             String sign,
-            String name
-    ) {
+            String name) {
         public static TeacherItem from(Teacher teacher) {
             return new TeacherItem(
                     teacher.getId(),
                     teacher.getSign(),
-                    teacher.getName()
-            );
+                    teacher.getName());
         }
     }
 
     public record EmpItem(
             Long empId,
             String sign,
-            String name
-    ) {
+            String name) {
         public static EmpItem from(Emp emp) {
             return new EmpItem(
                     emp.getId(),
                     emp.getSign(),
-                    emp.getName()
-            );
+                    emp.getName());
         }
     }
 
@@ -75,8 +69,7 @@ public class UserResponse {
             String refreshToken,
             StudentItem student,
             TeacherItem teacher,
-            EmpItem emp
-    ) {
+            EmpItem emp) {
         public static SessionItem from(User user, String accessToken, String refreshToken) {
             StudentItem studentItem = null;
             TeacherItem teacherItem = null;
@@ -99,10 +92,8 @@ public class UserResponse {
                     refreshToken,
                     studentItem,
                     teacherItem,
-                    empItem
-            );
+                    empItem);
         }
     }
-
 
 }

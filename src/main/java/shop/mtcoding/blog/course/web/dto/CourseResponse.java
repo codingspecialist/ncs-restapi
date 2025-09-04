@@ -21,8 +21,7 @@ public class CourseResponse {
             LocalDate startDate,
             LocalDate endDate,
             String courseStatus,
-            String mainTeacherName
-    ) {
+            String mainTeacherName) {
         private Max(Course course) {
             this(course.getId(),
                     course.getCode(),
@@ -35,8 +34,7 @@ public class CourseResponse {
                     course.getStartDate(),
                     course.getEndDate(),
                     course.getCourseStatus().toKorean(),
-                    course.getMainTeacherName()
-            );
+                    course.getMainTeacherName());
         }
 
         public static Max from(Course course) {
@@ -50,8 +48,7 @@ public class CourseResponse {
             Integer pageNumber,
             Boolean isFirst,
             Boolean isLast,
-            List<Max> courses
-    ) {
+            List<Max> courses) {
         private MaxPage(Page<Course> paging) {
             this(
                     paging.getTotalPages(),
@@ -61,8 +58,7 @@ public class CourseResponse {
                     paging.isLast(),
                     paging.getContent().stream()
                             .map(Max::from) // 여기에서 from 메서드를 사용합니다!
-                            .toList()
-            );
+                            .toList());
         }
 
         public static MaxPage from(Page<Course> paging) {
@@ -70,24 +66,20 @@ public class CourseResponse {
         }
     }
 
-
     public record Detail(
             Max course,
             List<SubjectMax> subjects,
-            List<StudentMax> students
-    ) {
+            List<StudentMax> students) {
         private Detail(Course course, List<Subject> subjects, List<CourseStudent> students) {
             this(
                     new Max(course),
                     subjects.stream().map(SubjectMax::new).toList(),
-                    students.stream().map(StudentMax::new).toList()
-            );
+                    students.stream().map(StudentMax::new).toList());
         }
 
         public static Detail from(Course course, List<Subject> subjects, List<CourseStudent> students) {
             return new Detail(course, subjects, students);
         }
-
 
         public record StudentMax(
                 Long studentId,
@@ -99,19 +91,22 @@ public class CourseResponse {
                 String comment,
                 String grade,
                 String authCode,
-                Long courseId
-        ) {
+                Long courseId) {
             private StudentMax(CourseStudent courseStudent) { // Student 엔티티 대신 CourseStudent 엔티티를 받도록 변경
                 this(
                         courseStudent.getStudent().getId(), // CourseStudent에서 실제 Student 엔티티 접근
                         courseStudent.getStudent().getName(),
                         courseStudent.getStudent().getBirthday(),
                         courseStudent.getStudent().getStudentStatus().toKorean(),
-                        courseStudent.getStudent().getDropOutDate() == null ? "" : courseStudent.getStudent().getDropOutDate().toString(),
-                        courseStudent.getStudent().getDropOutReason() == null ? "" : courseStudent.getStudent().getDropOutReason(),
+                        courseStudent.getStudent().getDropOutDate() == null ? ""
+                                : courseStudent.getStudent().getDropOutDate().toString(),
+                        courseStudent.getStudent().getDropOutReason() == null ? ""
+                                : courseStudent.getStudent().getDropOutReason(),
                         courseStudent.getStudent().getComment() == null ? "" : courseStudent.getStudent().getComment(),
-                        courseStudent.getStudent().getGradeLevel() == null ? "" : courseStudent.getStudent().getGradeLevel().toString(),
-                        courseStudent.getStudent().getAuthCode() == null ? "완료" : courseStudent.getStudent().getAuthCode().toString(),
+                        courseStudent.getStudent().getGradeLevel() == null ? ""
+                                : courseStudent.getStudent().getGradeLevel().toString(),
+                        courseStudent.getStudent().getAuthCode() == null ? "완료"
+                                : courseStudent.getStudent().getAuthCode().toString(),
                         courseStudent.getCourse().getId() // CourseStudent에서 실제 Course 엔티티 접근
                 );
             }
@@ -130,8 +125,7 @@ public class CourseResponse {
                 String learningWay,
                 LocalDate startDate,
                 LocalDate endDate,
-                Long courseId
-        ) {
+                Long courseId) {
             private SubjectMax(Subject subject) {
                 this(
                         subject.getId(),
@@ -145,8 +139,7 @@ public class CourseResponse {
                         subject.getLearningWay().toKorean(),
                         subject.getStartDate(),
                         subject.getEndDate(),
-                        subject.getCourse().getId()
-                );
+                        subject.getCourse().getId());
             }
         }
     }
